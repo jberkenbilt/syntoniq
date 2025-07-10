@@ -369,6 +369,7 @@ dependencies = [
  "clap",
  "clap_complete",
  "ctrlc",
+ "log",
  "midir",
  "midly",
 ]
