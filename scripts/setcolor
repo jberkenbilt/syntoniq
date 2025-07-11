@@ -1,0 +1,7 @@
+#!/bin/bash
+set -euo pipefail
+port=$(amidi -l | grep 'LPProMK3 MIDI' | awk '{print $2}')
+pos=$1
+color=$2
+# e.g. lower-left yellow: setcolor 0b 0d
+amidi --port $port -S 90${pos}${color}

@@ -1,0 +1,3 @@
+#!/bin/bash
+port=$(amidi -l | grep 'LPProMK3 MIDI' | awk '{print $2}')
+amidi --port $port -S F0002029020E0E01F7
