@@ -1,8 +1,9 @@
 use clap::{Arg, ArgAction, Command, value_parser};
 use clap_complete::{Generator, Shell, aot};
-use qlaunchpad::controller::Controller;
+use log::LevelFilter;
+use qlaunchpad::controller::{Controller, ToDevice};
 use std::error::Error;
-use std::io;
+use std::{env, io, thread};
 
 fn build_cli() -> Command {
     //TODO: decide if I want to use derive or arg macro, get completion working, figure out real
@@ -11,13 +12,8 @@ fn build_cli() -> Command {
         .arg(
             Arg::new("port")
                 .long("port")
+                .required(true)
                 .help("midi port name (amidiplay -l)"),
-        )
-        .arg(
-            Arg::new("no-prog")
-                .long("no-prog")
-                .help("don't enter programmer mode")
-                .action(ArgAction::SetTrue),
         )
         .arg(
             Arg::new("generator")
@@ -36,23 +32,34 @@ fn print_completions<G: Generator>(generator: G, cmd: &mut Command) {
     );
 }
 
-fn main() -> Result<(), Box<dyn Error>> {
-    ctrlc::set_handler(move || {
-        println!("TODO: restore live mode; hit enter to exit");
-    })?;
-    let matches = build_cli().get_matches();
+fn to_sync_send(e: Box<dyn Error>) -> Box<dyn Error + Sync + Send> {
+    e.to_string().into()
+}
 
+fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
+    let mut log_builder = env_logger::builder();
+    if env::var("RUST_LOG").is_err() {
+        println!("Logging is controlled with RUST_LOG; see docs for the env_logger crate.");
+        println!("Defaulting to INFO.");
+        log_builder.filter_level(LevelFilter::Info);
+    }
+    log_builder.init();
+    let matches = build_cli().get_matches();
     if let Some(generator) = matches.get_one::<Shell>("generator").copied() {
         let mut cmd = build_cli();
         eprintln!("Generating completion file for {generator}...");
         print_completions(generator, &mut cmd);
+        return Ok(());
     }
-    if let Some(port) = matches.get_one::<String>("port") {
-        let no_prog = matches
-            .get_one::<bool>("no-prog")
-            .copied()
-            .unwrap_or_default();
-        Controller::run(port, no_prog)?;
-    }
-    Ok(())
+    let port = matches.get_one::<String>("port").unwrap();
+    let mut c = Controller::new(port).map_err(to_sync_send)?;
+    let sender = c.sender();
+    ctrlc::set_handler(move || {
+        let _ = sender.send(ToDevice::Shutdown);
+    })?;
+    let sender = c.sender();
+    let th = thread::spawn(move || c.run().map_err(to_sync_send));
+    sender.send(ToDevice::Data(vec![0x90, 59, 0x2d]))?;
+    log::info!("Hit CTRL-C to exit");
+    th.join().unwrap()
 }
