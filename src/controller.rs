@@ -6,34 +6,50 @@ use std::fmt::{Display, Formatter};
 use tokio::sync::{broadcast, mpsc};
 use tokio::task::JoinHandle;
 
-// TODO: All messages start with the same six bytes and end with 0xf7.
-const ENTER_LIVE: &[u8] = &[0xf0, 0x00, 0x20, 0x29, 0x02, 0x0e, 0x0e, 0x00, 0xf7];
-const ENTER_PROGRAMMER: &[u8] = &[0xf0, 0x00, 0x20, 0x29, 0x02, 0x0e, 0x0e, 0x01, 0xf7];
+mod message;
 
-// See programmer docs. These use note on messages to control LED
-// color. There are also SysEx messages, but these work in programmer
-// mode.
-const LOWER_LEFT_SOLID_RED: &[u8] = &[
-    0x90, // note on channel 1 -> static lighting
-    11,   // note number 11 (lower left in programmer mode)
-    0x05, // red
-];
-const UPPER_RIGHT_FLASHING_GREEN: &[u8] = &[
-    0x91, // note on channel 2 -> flashing
-    88, 0x13,
-];
-const MIDDLE_PULSING_BLUE: &[u8] = &[
-    0x92, // note on channel 3 -> pulsing
-    55, 0x2d,
-];
-// Also works for non-note buttons. These persist when you enter and exit programmer mode.
-const XXX1: &[u8] = &[0x90, 95, 0x2d];
-// Turn off: 0x90, note, 0x00
+#[derive(Copy, Clone, Debug)]
+pub enum LightMode {
+    On,
+    Flashing,
+    Pulsing,
+}
 
 #[derive(Clone, Debug)]
 pub enum ToDevice {
     Shutdown,
-    Data(Vec<u8>), // TODO: encapsulate the messages
+    LightOn {
+        mode: LightMode,
+        position: u8,
+        color: u8, // TODO: name
+    },
+    LightOff {
+        position: u8,
+    },
+}
+impl From<ToDevice> for Vec<u8> {
+    fn from(value: ToDevice) -> Self {
+        // See programmer docs. There are SysEx messages to control the LEDs, but in programmer
+        // mode, you can send NoteOn events, which is what 0x90..0x92 are.
+        match value {
+            ToDevice::Shutdown => Vec::new(),
+            ToDevice::LightOn {
+                mode,
+                position,
+                color,
+            } => {
+                let mode: u8 = match mode {
+                    LightMode::On => 0x90,
+                    LightMode::Flashing => 0x91,
+                    LightMode::Pulsing => 0x92,
+                };
+                vec![mode, position, color]
+            }
+            ToDevice::LightOff { position } => {
+                vec![0x90, position, 0]
+            }
+        }
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -189,10 +205,7 @@ impl Device {
                     self.input_connection.take();
                     return Ok(());
                 }
-                ToDevice::Data(data) => {
-                    // TODO: abstract
-                    self.output_connection.send(&data)?
-                }
+                msg => self.output_connection.send(&Vec::from(msg))?,
             }
         }
     }
@@ -244,18 +257,12 @@ impl Device {
     }
 
     fn init(&mut self) -> Result<(), Box<dyn Error>> {
-        let conn = &mut self.output_connection;
-        conn.send(ENTER_PROGRAMMER)?;
-        conn.send(LOWER_LEFT_SOLID_RED)?;
-        conn.send(UPPER_RIGHT_FLASHING_GREEN)?;
-        conn.send(MIDDLE_PULSING_BLUE)?;
-        conn.send(XXX1)?;
-        Ok(())
+        Ok(self.output_connection.send(message::ENTER_PROGRAMMER)?)
     }
 }
 
 impl Drop for Device {
     fn drop(&mut self) {
-        let _ = self.output_connection.send(ENTER_LIVE);
+        let _ = self.output_connection.send(message::ENTER_LIVE);
     }
 }
