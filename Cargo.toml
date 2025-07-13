@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-clap = "4.5.41"
+clap = { version = "4.5.41", features = ["derive"] }
 clap_complete = "4.5.55"
 ctrlc = "3.4.7"
 midir = "0.10.1"
