@@ -4,7 +4,7 @@ use clap_complete::{Generator, Shell, aot};
 use log::LevelFilter;
 use qlaunchpad::controller::{Controller, ToDevice};
 use std::error::Error;
-use std::{env, io, thread};
+use std::{env, io};
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
 /// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
@@ -40,11 +40,8 @@ fn print_completions<G: Generator>(generator: G, cmd: &mut Command) {
     );
 }
 
-fn to_sync_send(e: Box<dyn Error>) -> Box<dyn Error + Sync + Send> {
-    e.to_string().into()
-}
-
-fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     let cli = Cli::parse();
     if let Commands::Completion { shell } = cli.command {
         let mut cmd = Cli::command();
@@ -61,25 +58,33 @@ fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
         log_builder.filter_level(LevelFilter::Info);
     }
     log_builder.init();
+
+    // Create midi controller.
+    let controller = Controller::new(port.to_string()).await?;
+
+    // Make sure everything is cleaned up on exit.
+    let sender = controller.sender();
+    tokio::spawn(async move {
+        let _ = tokio::signal::ctrl_c().await;
+        let _ = sender.send(ToDevice::Shutdown).await;
+    });
+
     match cli.command {
-        Commands::Events => events_main(&port),
-        Commands::Completion { shell } => {
-            let mut cmd = Cli::command();
-            print_completions(shell, &mut cmd);
-            Ok(())
-        }
+        Commands::Events => events_main(controller).await,
+        Commands::Completion { .. } => unreachable!("already handled"),
     }
 }
 
-fn events_main(port: &str) -> Result<(), Box<dyn Error + Sync + Send>> {
-    let mut c = Controller::new(port).map_err(to_sync_send)?;
-    let sender = c.sender();
-    ctrlc::set_handler(move || {
-        let _ = sender.send(ToDevice::Shutdown);
-    })?;
-    let sender = c.sender();
-    let th = thread::spawn(move || c.run().map_err(to_sync_send));
-    sender.send(ToDevice::Data(vec![0x90, 59, 0x2d]))?;
+async fn events_main(controller: Controller) -> Result<(), Box<dyn Error + Sync + Send>> {
+    let mut rx = controller.subscribe();
+    let h = tokio::spawn(async move {
+        while let Ok(event) = rx.recv().await {
+            println!("{event}");
+        }
+    });
+    let sender = controller.sender();
+    sender.send(ToDevice::Data(vec![0x90, 59, 0x2d])).await?;
     log::info!("Hit CTRL-C to exit");
-    th.join().unwrap()
+    h.await?;
+    controller.join().await
 }
