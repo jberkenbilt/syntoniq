@@ -2,11 +2,23 @@
 
 This has scratch notes in varying degrees of completeness.
 
+# Color Choices
+
+off/off interval colors
+
+2D/15  4th  5th  blue/green
+35/38 +3rd -6th  magenta/pink
+06/09 -3rd +6th  red/orange
+25/0D root       cyan/yellow
+01/03 others     gray/white
+
 # Pitch Colors
 
-Iterating on this. See color.py, which will be replaced by colors mode. See also ./colors.png, which is the image from page 10 of the programmer's manual.
+color.py is a Python script for manually iterating with colors. To use it, first put the device in programmer mode with `./scripts/progmode`. You can then use it to set the colors based on the values by number to match the image on page 10 (also in `./colors.png`), a manual table, or a failed attempt at HSV. See above for the choices.
 
-First, measure how far off a just-tuned interval you can be for it to still sound good. To my ear, it starts becoming unacceptable around 15 cents, but that may need to be tweaked.
+You can run `qlaunchpad colors` to see the colors in action. Along the bottom row, all the colors are displayed. Above, there is a scale. Touch any note to turn it and the other of the same pitch from the off to the on color.
+
+With real scales, colors are determined by closeness to Just intervals. We tolerate a specific range, initially ±15 cents.
 
 Use these ratios only:
 * Fifth: 3/2
@@ -15,14 +27,6 @@ Use these ratios only:
 * Minor sixth: 8/5
 * Minor third: 6/5
 * Major sixth: 5/3
-
-For intervals above, use these colors only when within tolerance:
-* Fourth/Fifth: Blue off, Green on
-* Major third, Minor sixth: Purple off, Magenta on
-* Minor third, Major sixth: Red off, Orange on
-* Tonic: White off, Cyan on
-
-For everything else, use Brown off, Yellow on. This includes good semitones and whole tones as well as intervals that aren't close to one of the above.
 
 With the scheme, EDO-{12,19,31} will show all the intervals. EDO-17 will only show fourths and fifths. You will be able to tell at a glance which intervals are good in a given tuning system. I don't think it's worth trying to distinguish "okay" (like 12 cents) with "excellent" (like < 3 cents) with color, but it would be useful to provide that in some other fashion.
 

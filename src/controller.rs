@@ -8,6 +8,30 @@ use tokio::task::JoinHandle;
 
 mod message;
 
+// See color.py for iterating on color choices.
+pub mod colors {
+    pub const LED_BLUE: u8 = 0x2d;
+    pub const RGB_BLUE: &str = "#6161ff";
+    pub const LED_GREEN: u8 = 0x15;
+    pub const RGB_GREEN: &str = "#61ff61";
+    pub const LED_PURPLE: u8 = 0x35;
+    pub const RGB_PURPLE: &str = "#a161ff";
+    pub const LED_PINK: u8 = 0x38;
+    pub const RGB_PINK: &str = "#f98cff";
+    pub const LED_RED: u8 = 0x06;
+    pub const RGB_RED: &str = "#dd6161";
+    pub const LED_ORANGE: u8 = 0x09;
+    pub const RGB_ORANGE: &str = "#ffb361";
+    pub const LED_CYAN: u8 = 0x25;
+    pub const RGB_CYAN: &str = "#61eeff";
+    pub const LED_YELLOW: u8 = 0x0d;
+    pub const RGB_YELLOW: &str = "#ffff61";
+    pub const LED_GRAY: u8 = 0x01;
+    pub const RGB_GRAY: &str = "#b3b3b3";
+    pub const LED_WHITE: u8 = 0x03;
+    pub const RGB_WHITE: &str = "#ffffff";
+}
+
 #[derive(Copy, Clone, Debug)]
 pub enum LightMode {
     On,
@@ -149,7 +173,7 @@ impl Controller {
         self.to_device.clone()
     }
 
-    pub fn subscribe(&self) -> broadcast::Receiver<FromDevice> {
+    pub fn receiver(&self) -> broadcast::Receiver<FromDevice> {
         self.from_device.resubscribe()
     }
 
@@ -217,10 +241,15 @@ impl Device {
         };
         match event {
             LiveEvent::Midi { message, .. } => match message {
-                MidiMessage::NoteOn { key, vel } => Some(FromDevice::KeyDown {
-                    key: key.as_int(),
-                    velocity: vel.as_int(),
-                }),
+                MidiMessage::NoteOn { key, vel } => {
+                    let key = key.as_int();
+                    let velocity = vel.as_int();
+                    if velocity == 0 {
+                        Some(FromDevice::KeyUp { key, velocity })
+                    } else {
+                        Some(FromDevice::KeyDown { key, velocity })
+                    }
+                },
                 MidiMessage::NoteOff { key, vel } => Some(FromDevice::KeyUp {
                     key: key.as_int(),
                     velocity: vel.as_int(),

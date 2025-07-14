@@ -1,0 +1,143 @@
+This is a mapping from color codes to the RGB values used in the chart
+in the programmer's manual. It is not necessarily a perfect
+representation of the color.
+
+00 #616161
+2f #6161b3
+2e #6161dd
+2d #6161ff
+43 = 2d
+43 #6161ff
+2b #6181b3
+42 #618cd5
+27 #61a1b3
+2a #61a1dd
+4f #61a1ff
+17 #61b361
+40 = 17
+40 #61b361
+7b = 40
+7b #61b361
+1b #61b36b
+1f #61b381
+41 #61b38c
+23 #61b396
+44 #61b3b3
+65 #61ba76
+26 #61c7dd
+29 #61c7ff
+16 #61dd61
+1a #61dd76
+1e #61dda1
+22 #61ddc2
+4e #61e9ff
+25 #61eeff
+15 #61ff61
+57 = 15
+57 #61ff61
+19 #61ff8c
+1d #61ffcc
+4d = 1d
+4d #61ffcc
+21 #61ffe9
+33 #7661b3
+66 #76c28c
+4c #76dd61
+32 #8161dd
+67 #8181a1
+70 = 67
+70 #8181a1
+68 #818ccc
+13 #81b361
+7a #81f661
+45 #8c61f3
+50 #8c61ff
+47 #8c7681
+31 #a161ff
+53 #a17661
+2c #a18cff
+3f #a1a161
+5c #a1c2f6
+12 #a1dd61
+79 #aa6161
+07 #b36161
+3b #b3618c
+37 #b361b3
+0b #b37661
+64 #b3a161
+7d = 64
+7d #b3a161
+0f #b3b361
+01 #b3b3b3
+75 = 01
+75 #b3b3b3
+58 #b3ffa1
+5a #b3fff6
+7f #c27661
+28 #c2ddff
+24 #c2f3ff
+11 #c2ff61
+14 #c2ffb3
+18 #c2ffc2
+1c #c2ffcc
+20 #c2fff3
+51 #cc61fc
+69 #ccaa81
+46 #ccb3c2
+30 #ccb3ff
+5b #cce4ff
+59 #ccfcd5
+4b #ccff61
+5d #d5c2f9
+76 #d5d5d5
+6f #d5ee76
+56 #d5ff8c
+06 #dd6161
+6a = 06
+6a #dd6161
+3a #dd61a1
+36 #dd61dd
+0a #dd8c61
+3e #ddc261
+63 #ddcc61
+0e #dddd61
+02 #dddddd
+55 #ddf961
+72 #ddfce4
+10 #ddffa1
+74 #e4d5ff
+62 #e4ff61
+78 #e96161
+3d #e9b361
+73 #e9e9ff
+6e #e9f9a1
+52 #ee8cdd
+7e #eec261
+4a #eefc61
+61 #f3ee61
+7c = 61
+7c #f3ee61
+49 #f3ffa1
+5e #f98cff
+6b #f9b3a1
+6c #f9ba76
+71 #f9f9d5
+77 #f9ffff
+05 #ff6161
+48 = 05
+48 #ff6161
+39 #ff61c2
+5f #ff61cc
+35 #ff61ff
+3c #ff7661
+54 #ffa161
+09 #ffb361
+04 #ffb3b3
+38 #ffb3d5
+34 #ffb3ff
+60 #ffc261
+0c #ffeea1
+6d #fff38c
+08 #fff3d5
+0d #ffff61
+03 #ffffff

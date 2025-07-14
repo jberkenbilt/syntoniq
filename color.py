@@ -79,7 +79,7 @@ def dump_rgb():
         print(f'{label} #{r:02x}{g:02x}{b:02x}')
 
 
-# TODO: These need work
+# Use this to look at colors in arbitrary groupings.
 
 manual_colors = [
     # red
@@ -102,6 +102,10 @@ manual_colors = [
     '31', '50', '45', '32', '00', '00', '00', '70',
     # cyan
     '4D', '21', '1E', '1F', '00', '00', '00', '00',
+    # scale colors: off
+    '2D', '35', '06', '25', '01', '00', '29', '5E',
+    # scale colors: on
+    '15', '38', '09', '0D', '03', '00', '34', '53',
 ]
 
 manual_colors = list([i] for i in manual_colors)
