@@ -4,6 +4,7 @@ use clap_complete::{Generator, Shell, aot};
 use log::LevelFilter;
 use qlaunchpad::controller::colors::*;
 use qlaunchpad::controller::{Controller, FromDevice, LightMode, ToDevice};
+use qlaunchpad::midi_player;
 use std::collections::HashMap;
 use std::error::Error;
 use std::{env, io};
@@ -28,6 +29,8 @@ enum Commands {
     Events,
     /// Display color choices
     Colors,
+    /// Send notes to a virtual output port. Use QLaunchPad as the input device.
+    Output,
     /// Generate shell completion
     Completion {
         /// shell
@@ -78,6 +81,7 @@ async fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
         Commands::Completion { .. } => unreachable!("already handled"),
         Commands::Events => events_main(&mut controller).await,
         Commands::Colors => colors_main(&mut controller).await,
+        Commands::Output => midi_player::play_midi(&mut controller).await,
     }?;
     controller.join().await
 }
@@ -144,8 +148,7 @@ async fn colors_main(controller: &mut Controller) -> Result<(), Box<dyn Error + 
     let mut rx = controller.receiver();
     while let Ok(event) = rx.recv().await {
         let (touched, color_map) = match event {
-            FromDevice::KeyDown { key, .. } => (key, &pos_to_on),
-            FromDevice::KeyUp { key, .. } => (key, &pos_to_off),
+            FromDevice::Key { key, .. } => (key, &pos_to_on),
             _ => continue,
         };
         if let Some(color) = color_map.get(&touched) {

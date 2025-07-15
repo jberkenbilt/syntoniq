@@ -156,6 +156,10 @@ A clear button can turn off all notes.
 
 Maybe we can save chords.
 
+# MIDI Output
+
+In `output` mode, create a virtual midi port, receive events, and translate them not to pitches but to midi note numbers based on steps away from middle C. The virtual port can be an input to Surge XT to enable us to play sounds using Scala tunings.
+
 # Architecture
 
 See [programmer's reference](~/Q/instruction-manuals/launchpad_pro_mk3.pdf)

@@ -78,19 +78,15 @@ impl From<ToDevice> for Vec<u8> {
 
 #[derive(Clone, Debug)]
 pub enum FromDevice {
-    KeyDown { key: u8, velocity: u8 },
-    KeyUp { key: u8, velocity: u8 },
+    Key { key: u8, velocity: u8 },
     Pressure { key: Option<u8>, velocity: u8 },
 }
 
 impl Display for FromDevice {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            FromDevice::KeyDown { key, velocity } => {
-                write!(f, "key down: key={key:02}, velocity={velocity}")
-            }
-            FromDevice::KeyUp { key, velocity } => {
-                write!(f, "key up: key={key:02}, velocity={velocity}")
+            FromDevice::Key { key, velocity } => {
+                write!(f, "key: key={key:02}, velocity={velocity}")
             }
             FromDevice::Pressure { key, velocity } => {
                 write!(
@@ -129,10 +125,6 @@ fn find_port<T: MidiIO>(ports: &T, name: &str) -> Result<T::Port, Box<dyn Error>
         .ok_or(format!("no port found containing '{name}'").into())
 }
 
-fn to_sync_send(e: Box<dyn Error>) -> Box<dyn Error + Sync + Send> {
-    e.to_string().into()
-}
-
 impl Controller {
     pub async fn new(port_name: String) -> Result<Self, Box<dyn Error + Sync + Send>> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
@@ -158,8 +150,8 @@ impl Controller {
         let handle: JoinHandle<Result<(), Box<dyn Error + Sync + Send>>> =
             tokio::task::spawn_blocking(move || {
                 let mut device = Device::new(&port_name, to_device_sync_rx, from_device_sync_tx)
-                    .map_err(to_sync_send)?;
-                device.run().map_err(to_sync_send)?;
+                    .map_err(crate::to_sync_send)?;
+                device.run().map_err(crate::to_sync_send)?;
                 Ok(())
             });
         Ok(Self {
@@ -188,7 +180,7 @@ impl Device {
         to_device_rx: flume::Receiver<ToDevice>,
         from_device_tx: flume::Sender<FromDevice>,
     ) -> Result<Self, Box<dyn Error>> {
-        let midi_in = MidiInput::new("device-input")?;
+        let midi_in = MidiInput::new("q-launchpad")?;
         let in_port = find_port(&midi_in, port_name)?;
         log::debug!("opening input port: {}", midi_in.port_name(&in_port)?);
         // Handler keeps running until connection is dropped
@@ -205,10 +197,10 @@ impl Device {
             (),
         )?;
 
-        let midi_out = MidiOutput::new("device-output")?;
+        let midi_out = MidiOutput::new("q-launchpad")?;
         let out_port = find_port(&midi_out, port_name)?;
         log::debug!("opening output port: {}", midi_out.port_name(&out_port)?);
-        let output_connection = midi_out.connect(&out_port, "device-output")?;
+        let output_connection = midi_out.connect(&out_port, "from-q-launchpad")?;
         let mut controller = Self {
             input_connection: Some(input_connection),
             output_connection,
@@ -244,16 +236,8 @@ impl Device {
                 MidiMessage::NoteOn { key, vel } => {
                     let key = key.as_int();
                     let velocity = vel.as_int();
-                    if velocity == 0 {
-                        Some(FromDevice::KeyUp { key, velocity })
-                    } else {
-                        Some(FromDevice::KeyDown { key, velocity })
-                    }
-                },
-                MidiMessage::NoteOff { key, vel } => Some(FromDevice::KeyUp {
-                    key: key.as_int(),
-                    velocity: vel.as_int(),
-                }),
+                    Some(FromDevice::Key { key, velocity })
+                }
                 MidiMessage::Aftertouch { key, vel } => {
                     // polyphonic after-touch; not supported on MK3 Pro as of 2025-07
                     Some(FromDevice::Pressure {
@@ -264,11 +248,7 @@ impl Device {
                 MidiMessage::Controller { controller, value } => {
                     let key = controller.as_int();
                     let velocity = value.as_int();
-                    if value == 0 {
-                        Some(FromDevice::KeyUp { key, velocity })
-                    } else {
-                        Some(FromDevice::KeyDown { key, velocity })
-                    }
+                    Some(FromDevice::Key { key, velocity })
                 }
                 MidiMessage::ChannelAftertouch { vel } => Some(FromDevice::Pressure {
                     key: None,
