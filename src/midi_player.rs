@@ -1,18 +1,19 @@
-use crate::controller::{Controller, FromDevice};
+use crate::events;
+use crate::events::{Event, KeyEvent};
 use midir::MidiOutput;
 use midir::os::unix::VirtualOutput;
 use std::error::Error;
 
-pub async fn play_midi(controller: &mut Controller) -> Result<(), Box<dyn Error + Sync + Send>> {
-    //TODO: This is subscribing directly from the controller, but instead, we might want something
-    // else to subscribe and translate these to some kind of note event. Then other things, like
-    // a csound output module and this, can subscribe to *that* instead. That might be a cleaner
-    // way to keep the button to note mapping in one place.
-    let mut controller_rx = controller.receiver();
-    let (tx, rx) = flume::unbounded::<FromDevice>();
+pub async fn play_midi(
+    mut events_rx: events::Receiver,
+) -> Result<(), Box<dyn Error + Sync + Send>> {
+    let (tx, rx) = flume::unbounded();
     let h = tokio::spawn(async move {
-        while let Ok(event) = controller_rx.recv().await {
-            tx.send_async(event).await.unwrap();
+        while let Ok(event) = events_rx.recv().await {
+            let Event::Key(key_event) = event else {
+                continue;
+            };
+            tx.send_async(key_event).await.unwrap();
         }
     });
 
@@ -21,11 +22,8 @@ pub async fn play_midi(controller: &mut Controller) -> Result<(), Box<dyn Error 
         .create_virtual("QLaunchPad")
         .map_err(crate::to_sync_send)?;
     tokio::task::spawn_blocking(move || -> Result<(), Box<dyn Error + Sync + Send>> {
-        while let Ok(event) = rx.recv() {
-            let FromDevice::Key { key, velocity } = event else {
-                continue;
-            };
-            // TODO: need key to note mapping; should use same logic as key to pitch mapping
+        // TODO: when we have it, this should subscribe to Note events, not Key events.
+        while let Ok(KeyEvent { key, velocity }) = rx.recv() {
             output_connection.send(&[0x90, 100 - key, velocity])?;
         }
         Ok(())

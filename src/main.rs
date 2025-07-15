@@ -2,9 +2,9 @@ use clap::{Command, CommandFactory};
 use clap::{Parser, Subcommand};
 use clap_complete::{Generator, Shell, aot};
 use log::LevelFilter;
-use qlaunchpad::controller::colors::*;
-use qlaunchpad::controller::{Controller, FromDevice, LightMode, ToDevice};
-use qlaunchpad::midi_player;
+use qlaunchpad::controller::Controller;
+use qlaunchpad::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
+use qlaunchpad::{events, midi_player};
 use std::collections::HashMap;
 use std::error::Error;
 use std::{env, io};
@@ -66,66 +66,79 @@ async fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     }
     log_builder.init();
 
+    let events = Events::new();
+    let events_tx = events.sender();
+    let events_rx = events.receiver();
+
     // Create midi controller.
-    let mut controller = Controller::new(port.to_string()).await?;
+    let controller =
+        Controller::new(port.to_string(), events_tx.clone(), events_rx.resubscribe()).await?;
 
     // Make sure everything is cleaned up on exit.
-    let sender = controller.sender();
     tokio::spawn(async move {
         log::info!("Hit CTRL-C to exit");
         let _ = tokio::signal::ctrl_c().await;
-        let _ = sender.send(ToDevice::Shutdown).await;
+        events.shutdown();
     });
 
     match cli.command {
         Commands::Completion { .. } => unreachable!("already handled"),
-        Commands::Events => events_main(&mut controller).await,
-        Commands::Colors => colors_main(&mut controller).await,
-        Commands::Output => midi_player::play_midi(&mut controller).await,
+        Commands::Events => events_main(events_rx.resubscribe()).await,
+        Commands::Colors => colors_main(events_tx.clone(), events_rx.resubscribe()).await,
+        Commands::Output => midi_player::play_midi(events_rx.resubscribe()).await,
     }?;
+    drop(events_tx);
+    drop(events_rx);
     controller.join().await
 }
 
-async fn events_main(controller: &mut Controller) -> Result<(), Box<dyn Error + Sync + Send>> {
-    let mut rx = controller.receiver();
+async fn events_main(mut rx: events::Receiver) -> Result<(), Box<dyn Error + Sync + Send>> {
     while let Ok(event) = rx.recv().await {
         println!("{event}");
     }
     Ok(())
 }
 
-async fn colors_main(controller: &mut Controller) -> Result<(), Box<dyn Error + Sync + Send>> {
-    let sender = controller.sender();
+async fn colors_main(
+    events_tx: events::Sender,
+    mut events_rx: events::Receiver,
+) -> Result<(), Box<dyn Error + Sync + Send>> {
+    let Some(tx) = events_tx.upgrade() else {
+        return Ok(());
+    };
     for position in 1..=108 {
-        sender.send(ToDevice::LightOff { position }).await.unwrap();
+        tx.send(Event::Light(LightEvent {
+            mode: LightMode::Off,
+            position,
+            color: Color::Off,
+        }))
+        .unwrap();
     }
-    for [position, color] in [
-        [11, LED_BLUE],
-        [12, LED_PURPLE],
-        [13, LED_RED],
-        [14, LED_CYAN],
-        [15, LED_GREEN],
-        [16, LED_PINK],
-        [17, LED_ORANGE],
-        [18, LED_YELLOW],
+    for (position, color) in [
+        (11, Color::Blue),
+        (12, Color::Purple),
+        (13, Color::Red),
+        (14, Color::Cyan),
+        (15, Color::Green),
+        (16, Color::Pink),
+        (17, Color::Orange),
+        (18, Color::Yellow),
     ] {
-        sender
-            .send(ToDevice::LightOn {
-                mode: LightMode::On,
-                position,
-                color,
-            })
-            .await?;
+        tx.send(Event::Light(LightEvent {
+            mode: LightMode::On,
+            position,
+            color,
+        }))?;
     }
     let simulated = [
-        (LED_CYAN, LED_YELLOW, [32, 51]),
-        (LED_GRAY, LED_WHITE, [33, 52]),
-        (LED_PURPLE, LED_PINK, [34, 53]),
-        (LED_BLUE, LED_GREEN, [44, 63]),
-        (LED_BLUE, LED_GREEN, [45, 64]),
-        (LED_RED, LED_ORANGE, [46, 65]),
-        (LED_GRAY, LED_WHITE, [47, 66]),
-        (LED_CYAN, LED_YELLOW, [57, 76]),
+        (Color::Cyan, Color::Yellow, [32, 51]),
+        (Color::Gray, Color::White, [33, 52]),
+        (Color::Purple, Color::Pink, [34, 53]),
+        (Color::Blue, Color::Green, [44, 63]),
+        (Color::Blue, Color::Green, [45, 64]),
+        (Color::Red, Color::Orange, [46, 65]),
+        (Color::Gray, Color::White, [47, 66]),
+        (Color::Cyan, Color::Yellow, [57, 76]),
     ];
     let mut pos_to_off = HashMap::new();
     let mut pos_to_on = HashMap::new();
@@ -136,30 +149,33 @@ async fn colors_main(controller: &mut Controller) -> Result<(), Box<dyn Error + 
         for position in positions {
             pos_to_off.insert(position, color);
             pos_to_on.insert(position, on_color);
-            sender
-                .send(ToDevice::LightOn {
-                    mode: LightMode::On,
-                    position,
-                    color,
-                })
-                .await?;
+            tx.send(Event::Light(LightEvent {
+                mode: LightMode::On,
+                position,
+                color,
+            }))?;
         }
     }
-    let mut rx = controller.receiver();
-    while let Ok(event) = rx.recv().await {
-        let (touched, color_map) = match event {
-            FromDevice::Key { key, .. } => (key, &pos_to_on),
-            _ => continue,
+    drop(tx);
+    while let Some(event) = events::receive_ignore_lag(&mut events_rx).await {
+        let Event::Key(KeyEvent { key, velocity }) = event else {
+            continue;
         };
-        if let Some(color) = color_map.get(&touched) {
-            for position in [touched, *pos_to_other.get(&touched).unwrap()] {
-                sender
-                    .send(ToDevice::LightOn {
+        let color_map = if velocity == 0 {
+            &pos_to_off
+        } else {
+            &pos_to_on
+        };
+
+        if let Some(color) = color_map.get(&key) {
+            for position in [key, *pos_to_other.get(&key).unwrap()] {
+                if let Some(tx) = events_tx.upgrade() {
+                    tx.send(Event::Light(LightEvent {
                         mode: LightMode::On,
                         position,
                         color: *color,
-                    })
-                    .await?;
+                    }))?;
+                }
             }
         }
     }

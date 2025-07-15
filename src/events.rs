@@ -1,0 +1,133 @@
+use std::fmt::{Display, Formatter};
+use std::sync::RwLock;
+use tokio::sync::broadcast;
+use tokio::sync::broadcast::error::RecvError;
+
+#[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
+pub enum Color {
+    Off,
+    Blue,
+    Green,
+    Purple,
+    Pink,
+    Red,
+    Orange,
+    Cyan,
+    Yellow,
+    Gray,
+    White,
+}
+
+#[derive(Copy, Clone, Debug)]
+pub enum LightMode {
+    Off,
+    On,
+    Flashing,
+    Pulsing,
+}
+
+#[derive(Clone, Debug)]
+pub struct LightEvent {
+    pub mode: LightMode,
+    pub position: u8,
+    pub color: Color,
+}
+#[derive(Clone, Debug)]
+pub struct KeyEvent {
+    /// Midi note number
+    pub key: u8,
+    /// 0..127, 0 = off
+    pub velocity: u8,
+}
+#[derive(Clone, Debug)]
+pub struct PressureEvent {
+    pub key: Option<u8>,
+    pub velocity: u8,
+}
+
+#[derive(Clone, Debug)]
+pub enum Event {
+    Light(LightEvent),
+    Key(KeyEvent),
+    Pressure(PressureEvent),
+}
+
+impl Display for Event {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Event::Light(LightEvent {
+                mode,
+                position,
+                color,
+            }) => write!(
+                f,
+                "light: mode={mode:?}, position={position}, color={color:?}"
+            ),
+            Event::Key(KeyEvent { key, velocity }) => {
+                write!(f, "key: key={key:02}, velocity={velocity}")
+            }
+            Event::Pressure(PressureEvent { key, velocity }) => write!(
+                f,
+                "pressure: key={}, velocity={velocity}",
+                key.map(|x| format!("{x:02}"))
+                    .unwrap_or("global".to_string())
+            ),
+        }
+    }
+}
+
+pub type Sender = broadcast::WeakSender<Event>;
+pub type Receiver = broadcast::Receiver<Event>;
+
+pub struct Events {
+    tx: RwLock<Option<broadcast::Sender<Event>>>,
+    rx: Receiver,
+}
+
+impl Default for Events {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
+/// Receive an event, ignoring lag
+pub async fn receive_ignore_lag(rx: &mut Receiver) -> Option<Event> {
+    loop {
+        let event = rx.recv().await;
+        match event {
+            Ok(event) => return Some(event),
+            Err(err) => match err {
+                RecvError::Closed => return None,
+                RecvError::Lagged(_) => continue,
+            },
+        }
+    }
+}
+
+impl Events {
+    pub fn new() -> Self {
+        let (tx, rx) = broadcast::channel(1000);
+        Self {
+            tx: RwLock::new(Some(tx)),
+            rx,
+        }
+    }
+
+    pub fn sender(&self) -> Sender {
+        let tx = self
+            .tx
+            .read()
+            .unwrap()
+            .clone()
+            .expect("sender called after shutdown");
+        tx.downgrade()
+    }
+
+    pub fn receiver(&self) -> Receiver {
+        self.rx.resubscribe()
+    }
+
+    pub fn shutdown(&self) {
+        self.tx.write().unwrap().take();
+    }
+}

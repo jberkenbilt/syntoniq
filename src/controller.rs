@@ -1,115 +1,22 @@
+use crate::events::{Color, Event, KeyEvent, LightEvent, LightMode, PressureEvent};
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
 use midly::MidiMessage;
 use midly::live::LiveEvent;
 use std::error::Error;
-use std::fmt::{Display, Formatter};
-use tokio::sync::{broadcast, mpsc};
+use tokio::sync::broadcast;
+use tokio::sync::broadcast::error::RecvError;
 use tokio::task::JoinHandle;
 
 mod message;
 
-// See color.py for iterating on color choices.
-pub mod colors {
-    pub const LED_BLUE: u8 = 0x2d;
-    pub const RGB_BLUE: &str = "#6161ff";
-    pub const LED_GREEN: u8 = 0x15;
-    pub const RGB_GREEN: &str = "#61ff61";
-    pub const LED_PURPLE: u8 = 0x35;
-    pub const RGB_PURPLE: &str = "#a161ff";
-    pub const LED_PINK: u8 = 0x38;
-    pub const RGB_PINK: &str = "#f98cff";
-    pub const LED_RED: u8 = 0x06;
-    pub const RGB_RED: &str = "#dd6161";
-    pub const LED_ORANGE: u8 = 0x09;
-    pub const RGB_ORANGE: &str = "#ffb361";
-    pub const LED_CYAN: u8 = 0x25;
-    pub const RGB_CYAN: &str = "#61eeff";
-    pub const LED_YELLOW: u8 = 0x0d;
-    pub const RGB_YELLOW: &str = "#ffff61";
-    pub const LED_GRAY: u8 = 0x01;
-    pub const RGB_GRAY: &str = "#b3b3b3";
-    pub const LED_WHITE: u8 = 0x03;
-    pub const RGB_WHITE: &str = "#ffffff";
-}
-
-#[derive(Copy, Clone, Debug)]
-pub enum LightMode {
-    On,
-    Flashing,
-    Pulsing,
-}
-
-#[derive(Clone, Debug)]
-pub enum ToDevice {
-    Shutdown,
-    LightOn {
-        mode: LightMode,
-        position: u8,
-        color: u8, // TODO: name
-    },
-    LightOff {
-        position: u8,
-    },
-}
-impl From<ToDevice> for Vec<u8> {
-    fn from(value: ToDevice) -> Self {
-        // See programmer docs. There are SysEx messages to control the LEDs, but in programmer
-        // mode, you can send NoteOn events, which is what 0x90..0x92 are.
-        match value {
-            ToDevice::Shutdown => Vec::new(),
-            ToDevice::LightOn {
-                mode,
-                position,
-                color,
-            } => {
-                let mode: u8 = match mode {
-                    LightMode::On => 0x90,
-                    LightMode::Flashing => 0x91,
-                    LightMode::Pulsing => 0x92,
-                };
-                vec![mode, position, color]
-            }
-            ToDevice::LightOff { position } => {
-                vec![0x90, position, 0]
-            }
-        }
-    }
-}
-
-#[derive(Clone, Debug)]
-pub enum FromDevice {
-    Key { key: u8, velocity: u8 },
-    Pressure { key: Option<u8>, velocity: u8 },
-}
-
-impl Display for FromDevice {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            FromDevice::Key { key, velocity } => {
-                write!(f, "key: key={key:02}, velocity={velocity}")
-            }
-            FromDevice::Pressure { key, velocity } => {
-                write!(
-                    f,
-                    "pressure: key={}, velocity={velocity}",
-                    key.map(|x| format!("{x:02}"))
-                        .unwrap_or("global".to_string())
-                )
-            }
-        }
-    }
-}
-
 struct Device {
     input_connection: Option<MidiInputConnection<()>>,
     output_connection: MidiOutputConnection,
-    to_device: flume::Receiver<ToDevice>,
+    to_device: flume::Receiver<LightEvent>,
 }
 
 pub struct Controller {
     handle: JoinHandle<Result<(), Box<dyn Error + Sync + Send>>>,
-    from_device: broadcast::Receiver<FromDevice>,
-    to_device: mpsc::Sender<ToDevice>,
 }
 
 fn find_port<T: MidiIO>(ports: &T, name: &str) -> Result<T::Port, Box<dyn Error>> {
@@ -126,47 +33,53 @@ fn find_port<T: MidiIO>(ports: &T, name: &str) -> Result<T::Port, Box<dyn Error>
 }
 
 impl Controller {
-    pub async fn new(port_name: String) -> Result<Self, Box<dyn Error + Sync + Send>> {
+    pub async fn new(
+        port_name: String,
+        event_tx: broadcast::WeakSender<Event>,
+        mut event_rx: broadcast::Receiver<Event>,
+    ) -> Result<Self, Box<dyn Error + Sync + Send>> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
         // async. To bridge the gap, we create flume channels to relay back and forth.
-        let (from_device_tx, from_device_rx) = broadcast::channel::<FromDevice>(5);
-        let (to_device_tx, mut to_device_rx) = mpsc::channel(100);
-        let (from_device_sync_tx, from_device_sync_rx) = flume::unbounded::<FromDevice>();
-        let (to_device_sync_tx, to_device_sync_rx) = flume::unbounded::<ToDevice>();
+        let (from_device_tx, from_device_rx) = flume::unbounded();
+        let (to_device_tx, to_device_rx) = flume::unbounded();
+        let mut device =
+            Device::new(&port_name, to_device_rx, from_device_tx).map_err(crate::to_sync_send)?;
         tokio::spawn(async move {
-            while let Some(msg) = to_device_rx.recv().await {
-                if let Err(e) = to_device_sync_tx.send_async(msg).await {
+            loop {
+                let event = event_rx.recv().await;
+                let event = match event {
+                    Ok(event) => event,
+                    Err(err) => match err {
+                        RecvError::Closed => break,
+                        RecvError::Lagged(n) => {
+                            log::error!("controller missed messages (count: {n})");
+                            continue;
+                        }
+                    },
+                };
+                let Event::Light(event) = event else {
+                    continue;
+                };
+                if let Err(e) = to_device_tx.send_async(event).await {
                     log::error!("failed to relay message to device: {e}");
                 }
             }
         });
         tokio::spawn(async move {
-            while let Ok(msg) = from_device_sync_rx.recv_async().await {
-                if let Err(e) = from_device_tx.send(msg) {
-                    log::error!("failed to relay message from device: {e}");
+            while let Ok(msg) = from_device_rx.recv_async().await {
+                if let Some(tx) = event_tx.upgrade() {
+                    if let Err(e) = tx.send(msg) {
+                        log::error!("failed to relay message from device: {e}");
+                    }
                 }
             }
         });
         let handle: JoinHandle<Result<(), Box<dyn Error + Sync + Send>>> =
             tokio::task::spawn_blocking(move || {
-                let mut device = Device::new(&port_name, to_device_sync_rx, from_device_sync_tx)
-                    .map_err(crate::to_sync_send)?;
                 device.run().map_err(crate::to_sync_send)?;
                 Ok(())
             });
-        Ok(Self {
-            handle,
-            from_device: from_device_rx,
-            to_device: to_device_tx,
-        })
-    }
-
-    pub fn sender(&self) -> mpsc::Sender<ToDevice> {
-        self.to_device.clone()
-    }
-
-    pub fn receiver(&self) -> broadcast::Receiver<FromDevice> {
-        self.from_device.resubscribe()
+        Ok(Self { handle })
     }
 
     pub async fn join(self) -> Result<(), Box<dyn Error + Sync + Send>> {
@@ -177,8 +90,8 @@ impl Controller {
 impl Device {
     pub fn new(
         port_name: &str,
-        to_device_rx: flume::Receiver<ToDevice>,
-        from_device_tx: flume::Sender<FromDevice>,
+        to_device_rx: flume::Receiver<LightEvent>,
+        from_device_tx: flume::Sender<Event>,
     ) -> Result<Self, Box<dyn Error>> {
         let midi_in = MidiInput::new("q-launchpad")?;
         let in_port = find_port(&midi_in, port_name)?;
@@ -211,22 +124,38 @@ impl Device {
     }
 
     pub fn run(&mut self) -> Result<(), Box<dyn Error>> {
-        loop {
-            match self.to_device.recv()? {
-                ToDevice::Shutdown => {
-                    log::debug!("device received shutdown request");
-                    // Dropping the input connection triggers the series events that leads
-                    // to clean shutdown: the on_midi loop closes, which closes the transmit
-                    // side of from_device, which causes all subscribers to exit.
-                    self.input_connection.take();
-                    return Ok(());
-                }
-                msg => self.output_connection.send(&Vec::from(msg))?,
-            }
+        while let Ok(event) = self.to_device.recv() {
+            let mode = match event.mode {
+                LightMode::Off | LightMode::On => 0x90,
+                LightMode::Flashing => 0x91,
+                LightMode::Pulsing => 0x92,
+            };
+            // See color.py for iterating on color choices.
+            let color = match event.color {
+                Color::Off => 0,
+                Color::Blue => 0x2d,
+                Color::Green => 0x15,
+                Color::Purple => 0x35,
+                Color::Pink => 0x38,
+                Color::Red => 0x06,
+                Color::Orange => 0x09,
+                Color::Cyan => 0x25,
+                Color::Yellow => 0x0d,
+                Color::Gray => 0x01,
+                Color::White => 0x03,
+            };
+            self.output_connection
+                .send(&[mode, event.position, color])?;
         }
+        log::debug!("device received shutdown request");
+        // Dropping the input connection triggers the series events that leads
+        // to clean shutdown: the on_midi loop closes, which closes the transmit
+        // side of from_device, which causes all subscribers to exit.
+        self.input_connection.take();
+        Ok(())
     }
 
-    fn on_midi(_stamp_ms: u64, event: &[u8]) -> Option<FromDevice> {
+    fn on_midi(_stamp_ms: u64, event: &[u8]) -> Option<Event> {
         let Ok(event) = LiveEvent::parse(event) else {
             log::error!("invalid midi event received and ignored");
             return None;
@@ -236,24 +165,24 @@ impl Device {
                 MidiMessage::NoteOn { key, vel } => {
                     let key = key.as_int();
                     let velocity = vel.as_int();
-                    Some(FromDevice::Key { key, velocity })
+                    Some(Event::Key(KeyEvent { key, velocity }))
                 }
                 MidiMessage::Aftertouch { key, vel } => {
                     // polyphonic after-touch; not supported on MK3 Pro as of 2025-07
-                    Some(FromDevice::Pressure {
+                    Some(Event::Pressure(PressureEvent {
                         key: Some(key.as_int()),
                         velocity: vel.as_int(),
-                    })
+                    }))
                 }
                 MidiMessage::Controller { controller, value } => {
                     let key = controller.as_int();
                     let velocity = value.as_int();
-                    Some(FromDevice::Key { key, velocity })
+                    Some(Event::Key(KeyEvent { key, velocity }))
                 }
-                MidiMessage::ChannelAftertouch { vel } => Some(FromDevice::Pressure {
+                MidiMessage::ChannelAftertouch { vel } => Some(Event::Pressure(PressureEvent {
                     key: None,
                     velocity: vel.as_int(),
-                }),
+                })),
                 _ => None,
             },
             LiveEvent::Common(common) => {
