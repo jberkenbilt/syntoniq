@@ -6,7 +6,6 @@ use qlaunchpad::controller::Controller;
 use qlaunchpad::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
 use qlaunchpad::{events, midi_player};
 use std::collections::HashMap;
-use std::error::Error;
 use std::{env, io};
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -48,7 +47,7 @@ fn print_completions<G: Generator>(generator: G, cmd: &mut Command) {
 }
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
+async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
     if let Commands::Completion { shell } = cli.command {
         let mut cmd = Cli::command();
@@ -92,7 +91,7 @@ async fn main() -> Result<(), Box<dyn Error + Sync + Send>> {
     controller.join().await
 }
 
-async fn events_main(mut rx: events::Receiver) -> Result<(), Box<dyn Error + Sync + Send>> {
+async fn events_main(mut rx: events::Receiver) -> anyhow::Result<()> {
     while let Ok(event) = rx.recv().await {
         println!("{event}");
     }
@@ -102,7 +101,7 @@ async fn events_main(mut rx: events::Receiver) -> Result<(), Box<dyn Error + Syn
 async fn colors_main(
     events_tx: events::Sender,
     mut events_rx: events::Receiver,
-) -> Result<(), Box<dyn Error + Sync + Send>> {
+) -> anyhow::Result<()> {
     let Some(tx) = events_tx.upgrade() else {
         return Ok(());
     };

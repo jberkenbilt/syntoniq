@@ -1,8 +1,9 @@
 use crate::events::{Color, Event, KeyEvent, LightEvent, LightMode, PressureEvent};
+use crate::to_anyhow;
+use anyhow::anyhow;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
 use midly::MidiMessage;
 use midly::live::LiveEvent;
-use std::error::Error;
 use tokio::sync::broadcast;
 use tokio::sync::broadcast::error::RecvError;
 use tokio::task::JoinHandle;
@@ -16,10 +17,10 @@ struct Device {
 }
 
 pub struct Controller {
-    handle: JoinHandle<Result<(), Box<dyn Error + Sync + Send>>>,
+    handle: JoinHandle<anyhow::Result<()>>,
 }
 
-fn find_port<T: MidiIO>(ports: &T, name: &str) -> Result<T::Port, Box<dyn Error>> {
+fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::Port> {
     ports
         .ports()
         .into_iter()
@@ -29,7 +30,7 @@ fn find_port<T: MidiIO>(ports: &T, name: &str) -> Result<T::Port, Box<dyn Error>
                 .map(|n| n.contains(name))
                 .unwrap_or(false)
         })
-        .ok_or(format!("no port found containing '{name}'").into())
+        .ok_or(anyhow!("no port found containing '{name}'"))
 }
 
 impl Controller {
@@ -37,13 +38,13 @@ impl Controller {
         port_name: String,
         event_tx: broadcast::WeakSender<Event>,
         mut event_rx: broadcast::Receiver<Event>,
-    ) -> Result<Self, Box<dyn Error + Sync + Send>> {
+    ) -> anyhow::Result<Self> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
         // async. To bridge the gap, we create flume channels to relay back and forth.
         let (from_device_tx, from_device_rx) = flume::unbounded();
         let (to_device_tx, to_device_rx) = flume::unbounded();
         let mut device =
-            Device::new(&port_name, to_device_rx, from_device_tx).map_err(crate::to_sync_send)?;
+            Device::new(&port_name, to_device_rx, from_device_tx).map_err(to_anyhow)?;
         tokio::spawn(async move {
             loop {
                 let event = event_rx.recv().await;
@@ -74,15 +75,14 @@ impl Controller {
                 }
             }
         });
-        let handle: JoinHandle<Result<(), Box<dyn Error + Sync + Send>>> =
-            tokio::task::spawn_blocking(move || {
-                device.run().map_err(crate::to_sync_send)?;
-                Ok(())
-            });
+        let handle: JoinHandle<anyhow::Result<()>> = tokio::task::spawn_blocking(move || {
+            device.run()?;
+            Ok(())
+        });
         Ok(Self { handle })
     }
 
-    pub async fn join(self) -> Result<(), Box<dyn Error + Sync + Send>> {
+    pub async fn join(self) -> anyhow::Result<()> {
         self.handle.await?
     }
 }
@@ -92,28 +92,32 @@ impl Device {
         port_name: &str,
         to_device_rx: flume::Receiver<LightEvent>,
         from_device_tx: flume::Sender<Event>,
-    ) -> Result<Self, Box<dyn Error>> {
+    ) -> anyhow::Result<Self> {
         let midi_in = MidiInput::new("q-launchpad")?;
         let in_port = find_port(&midi_in, port_name)?;
         log::debug!("opening input port: {}", midi_in.port_name(&in_port)?);
         // Handler keeps running until connection is dropped
-        let input_connection = midi_in.connect(
-            &in_port,
-            "device-input",
-            move |stamp_ms, message, _| {
-                if let Some(event) = Self::on_midi(stamp_ms, message) {
-                    if let Err(e) = from_device_tx.send(event) {
-                        log::error!("error notifying of device event: {e}")
+        let input_connection = midi_in
+            .connect(
+                &in_port,
+                "device-input",
+                move |stamp_ms, message, _| {
+                    if let Some(event) = Self::on_midi(stamp_ms, message) {
+                        if let Err(e) = from_device_tx.send(event) {
+                            log::error!("error notifying of device event: {e}")
+                        }
                     }
-                }
-            },
-            (),
-        )?;
+                },
+                (),
+            )
+            .map_err(to_anyhow)?;
 
         let midi_out = MidiOutput::new("q-launchpad")?;
         let out_port = find_port(&midi_out, port_name)?;
         log::debug!("opening output port: {}", midi_out.port_name(&out_port)?);
-        let output_connection = midi_out.connect(&out_port, "from-q-launchpad")?;
+        let output_connection = midi_out
+            .connect(&out_port, "from-q-launchpad")
+            .map_err(to_anyhow)?;
         let mut controller = Self {
             input_connection: Some(input_connection),
             output_connection,
@@ -123,7 +127,7 @@ impl Device {
         Ok(controller)
     }
 
-    pub fn run(&mut self) -> Result<(), Box<dyn Error>> {
+    pub fn run(&mut self) -> anyhow::Result<()> {
         while let Ok(event) = self.to_device.recv() {
             let mode = match event.mode {
                 LightMode::Off | LightMode::On => 0x90,
@@ -194,7 +198,7 @@ impl Device {
         }
     }
 
-    fn init(&mut self) -> Result<(), Box<dyn Error>> {
+    fn init(&mut self) -> anyhow::Result<()> {
         Ok(self.output_connection.send(message::ENTER_PROGRAMMER)?)
     }
 }

@@ -1,6 +1,5 @@
-use std::error::Error;
+use anyhow::anyhow;
 use std::fmt::Display;
-
 pub mod config;
 pub mod controller;
 pub mod events;
@@ -9,6 +8,6 @@ pub mod pitch;
 pub mod scale;
 pub mod web;
 
-fn to_sync_send<E: Display>(e: E) -> Box<dyn Error + Sync + Send> {
-    e.to_string().into()
+fn to_anyhow<E: Display>(e: E) -> anyhow::Error {
+    anyhow!("{e}")
 }
