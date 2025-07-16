@@ -1,5 +1,5 @@
 use crate::layout::Layout;
-use crate::scale::Scale;
+use crate::scale::{Scale, ScaleType};
 use anyhow::anyhow;
 use serde::Deserialize;
 use std::collections::HashMap;
@@ -24,6 +24,16 @@ impl Config {
         let mut scales_by_name = HashMap::new();
         for scale in c.scale {
             let name = scale.name.clone();
+            match &scale.scale_type {
+                ScaleType::EqualDivision(ed) => {
+                    let (steps, num, den) = ed.divisions;
+                    if den == 0 || num == den || steps < 2 {
+                        return Err(anyhow!(
+                            "scale divisions for {name}: {steps},{num},{den} can't generate a scale"
+                        ));
+                    }
+                }
+            }
             if scales_by_name
                 .insert(name.clone(), Arc::new(scale))
                 .is_some()
@@ -50,21 +60,21 @@ impl Config {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::pitch::{EqualDivision, Multiplier, Pitch};
+    use crate::pitch::{Exponent, Multiplier, Pitch};
+    use crate::scale::{EqualDivision, ScaleType};
 
     #[test]
     fn test_toml() {
         const CONFIG: &str = r#"
 [[scale]]
 name = "EDO-12"
-tonic = "220*3\\12"
-octave_steps = 12
-step_factor = "*1\\12"
+type = "EqualDivision"
+divisions = [12, 2, 1]
+base_pitch = "220*3\\12" # middle C for A-440 12-TET scale
 note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"]
 [[layout]]
 name = "5x3"
-ll = [1, 1]
-ur = [8, 8]
+bbox = [1, 1, 8, 8]
 base = [2, 2]
 scale_name = "EDO-12"
 steps = [2, 1]
@@ -72,25 +82,18 @@ steps = [2, 1]
         let exp = ConfigFile {
             scale: vec![Scale {
                 name: "EDO-12".to_string(),
-                tonic: Pitch {
+                base_pitch: Pitch {
                     base: 220.0,
-                    multipliers: vec![Multiplier::EqualDivision(EqualDivision {
+                    multipliers: vec![Multiplier::Exponent(Exponent {
                         exp_numerator: 3,
                         exp_denominator: 12,
                         base_numerator: 2,
                         base_denominator: 1,
                     })],
                 },
-                octave_steps: 12,
-                step_factor: Pitch {
-                    base: 1.0,
-                    multipliers: vec![Multiplier::EqualDivision(EqualDivision {
-                        exp_numerator: 1,
-                        exp_denominator: 12,
-                        base_numerator: 2,
-                        base_denominator: 1,
-                    })],
-                },
+                scale_type: ScaleType::EqualDivision(EqualDivision {
+                    divisions: (12, 2, 1),
+                }),
                 note_names: [
                     "C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B",
                 ]
@@ -100,8 +103,7 @@ steps = [2, 1]
             }],
             layout: vec![Layout {
                 name: "5x3".to_string(),
-                ll: (1, 1),
-                ur: (8, 8),
+                bbox: (1, 1, 8, 8),
                 base: (2, 2),
                 scale_name: "EDO-12".to_string(),
                 steps: (2, 1),

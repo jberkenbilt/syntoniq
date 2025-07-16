@@ -14,7 +14,7 @@ pub struct Pitch {
 #[derive(Debug, PartialEq)]
 pub enum Multiplier {
     Ratio(Ratio),
-    EqualDivision(EqualDivision),
+    Exponent(Exponent),
 }
 #[derive(Debug, PartialEq)]
 pub struct Ratio {
@@ -22,7 +22,7 @@ pub struct Ratio {
     pub denominator: u8,
 }
 #[derive(Debug, PartialEq)]
-pub struct EqualDivision {
+pub struct Exponent {
     pub exp_numerator: u8,
     pub exp_denominator: u8,
     pub base_numerator: u8,
@@ -33,7 +33,7 @@ impl Multiplier {
     pub fn as_float(&self) -> f32 {
         match self {
             Multiplier::Ratio(r) => r.numerator as f32 / r.denominator as f32,
-            Multiplier::EqualDivision(ed) => {
+            Multiplier::Exponent(ed) => {
                 let base = ed.base_numerator as f32 / ed.base_denominator as f32;
                 let exp = ed.exp_numerator as f32 / ed.exp_denominator as f32;
                 base.powf(exp)
@@ -81,8 +81,8 @@ impl Pitch {
                             (?P<r_den>\d+)
                         )
                         |
-                        # EqualDivision: a\b[c[/d]]
-                        (?P<ediv>
+                        # Exponent: a\b[c[/d]]
+                        (?P<exp>
                             (?P<e_num>\d+)
                             \\
                             (?P<e_den>\d+)
@@ -110,8 +110,8 @@ impl Pitch {
                     }));
                     continue;
                 }
-                // EqualDivision, eg. 3\12, 4\7/4/3
-                if cap.name("ediv").is_some() {
+                // Exponent, eg. 3\12, 4\7/4/3
+                if cap.name("exp").is_some() {
                     let exp_numerator: u8 = cap["e_num"].parse()?;
                     let exp_denominator: u8 = cap["e_den"].parse()?;
 
@@ -126,7 +126,7 @@ impl Pitch {
                         1 // default base denominator
                     };
 
-                    multipliers.push(Multiplier::EqualDivision(EqualDivision {
+                    multipliers.push(Multiplier::Exponent(Exponent {
                         exp_numerator,
                         exp_denominator,
                         base_numerator,
@@ -205,7 +205,7 @@ mod tests {
             Pitch {
                 base: 440.0,
                 multipliers: vec![
-                    Multiplier::EqualDivision(EqualDivision {
+                    Multiplier::Exponent(Exponent {
                         exp_numerator: 3,
                         exp_denominator: 12,
                         base_numerator: 2,
@@ -234,7 +234,7 @@ mod tests {
             p,
             Pitch {
                 base: 500.0,
-                multipliers: vec![Multiplier::EqualDivision(EqualDivision {
+                multipliers: vec![Multiplier::Exponent(Exponent {
                     exp_numerator: 4,
                     exp_denominator: 7,
                     base_numerator: 4,

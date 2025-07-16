@@ -1,8 +1,11 @@
 [[scale]]
 name = "EDO-31"
-tonic = "220*3\\12" # middle C for A-440 12-TET scale
-octave_steps = 31
-step_factor = "*1\\31"
+type = "EqualDivison"
+# reference_freq is the pitch of the base of the scale and assigned MIDI note 60
+# in adjusted MIDI mode. It would would typically be middle C for something used
+# as a diatonic scale.
+divisions = [31, 2, 1] # 31 divisions of the octave: [a, b, c] = ((b^c)^*(1/a))
+reference_freq = "220*3\\12" # middle C for A-440 12-TET scale
 note_names = [
   "C",
   "C↑", "C♯", "D♭", "D↓", "D",

@@ -43,8 +43,12 @@ Examples:
 - `220*1\31\4` = 1 step of the division of two octaves into 31 equal divisions
 - `264*9/8*6/5` = Just minor third above Just whole tone above middle C
 
+# Scales
+
 Scale:
-```yaml
+```toml
+
+
 - scale: name
   tonic: pitch
   octave: n  # steps in an octave, optional
