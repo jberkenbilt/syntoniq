@@ -11,6 +11,7 @@ off/off interval colors
 06/09 -3rd +6th  red/orange
 25/0D root       cyan/yellow
 01/03 others     gray/white
++1 step          bright-yellow/white
 
 # Pitch Colors
 
@@ -29,6 +30,8 @@ Use these ratios only:
 * Major sixth: 5/3
 
 With the scheme, EDO-{12,19,31} will show all the intervals. EDO-17 will only show fourths and fifths. You will be able to tell at a glance which intervals are good in a given tuning system. I don't think it's worth trying to distinguish "okay" (like 12 cents) with "excellent" (like < 3 cents) with color, but it would be useful to provide that in some other fashion.
+
+We also use a special highlight color for the single step is it's immediately clear where it is.
 
 # Pitch specification
 

@@ -29,7 +29,7 @@ name = "EDO-12"
 type = "EqualDivision"
 divisions = [12, 2, 1]
 base_pitch = "220*3\\12"
-note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯","A", "B♭", "B"]
+note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"]
 
 [[layout]]
 name = "EDO-12-2x1"
@@ -37,3 +37,18 @@ bbox = [1, 1, 8, 8]
 base = [2, 3]
 scale_name = "EDO-12"
 steps = [2, 1]
+
+[[scale]]
+name = "EDO-19"
+type = "EqualDivision"
+divisions = [19, 2, 1]
+base_pitch = "220*3\\12"
+note_names = ["C", "C♯", "D♭", "D", "D♯", "E♭", "E", "E♯", "F", "F♯", "G♭",
+              "G", "G♯", "A♭", "A", "A♯", "B♭", "B", "B♯"]
+
+[[layout]]
+name = "EDO-19-2x1"
+bbox = [1, 1, 8, 8]
+base = [2, 3]
+scale_name = "EDO-19"
+steps = [3, 2]

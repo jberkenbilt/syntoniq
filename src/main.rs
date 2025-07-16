@@ -134,12 +134,12 @@ async fn colors_main(
     }
     let simulated = [
         (Color::Cyan, Color::Yellow, [32, 51]),
-        (Color::Gray, Color::White, [33, 52]),
+        (Color::HighlightGray, Color::White, [33, 52]),
         (Color::Purple, Color::Pink, [34, 53]),
         (Color::Blue, Color::Green, [44, 63]),
         (Color::Blue, Color::Green, [45, 64]),
         (Color::Red, Color::Orange, [46, 65]),
-        (Color::Gray, Color::White, [47, 66]),
+        (Color::DullGray, Color::White, [47, 66]),
         (Color::Cyan, Color::Yellow, [57, 76]),
     ];
     let mut pos_to_off = HashMap::new();

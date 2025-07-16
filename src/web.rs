@@ -13,7 +13,7 @@ static _RGB_COLORS: LazyLock<HashMap<Color, &'static str>> = LazyLock::new(|| {
         (Color::Orange, "#ffb361"),
         (Color::Cyan, "#61eeff"),
         (Color::Yellow, "#ffff61"),
-        (Color::Gray, "#b3b3b3"),
+        (Color::DullGray, "#b3b3b3"),
         (Color::White, "#ffffff"),
     ])
 });

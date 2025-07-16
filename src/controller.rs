@@ -145,7 +145,8 @@ impl Device {
                 Color::Orange => 0x09,
                 Color::Cyan => 0x25,
                 Color::Yellow => 0x0d,
-                Color::Gray => 0x01,
+                Color::DullGray => 0x47,
+                Color::HighlightGray => 0x7d,
                 Color::White => 0x03,
             };
             self.output_connection

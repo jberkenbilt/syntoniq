@@ -16,7 +16,8 @@ pub enum Color {
     Orange,
     Cyan,
     Yellow,
-    Gray,
+    DullGray,
+    HighlightGray,
     White,
 }
 

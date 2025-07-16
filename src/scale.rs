@@ -63,7 +63,13 @@ impl Scale {
         let adjusted_midi = (60 + divisions * cycle + step) as u8;
         let note_idx = (step % divisions) as usize;
         let name = self.note_names.get(note_idx).cloned().unwrap_or_default();
-        let colors = Self::interval_color(freq / base);
+        let colors = if note_idx == 1 {
+            // Special case: use a slightly different color for idx 1 so we can see clearly
+            // where the single step is.
+            (Color::HighlightGray, Color::White)
+        } else {
+            Self::interval_color(freq / base)
+        };
         Note {
             name,
             scale_name: self.name.clone(),
@@ -106,7 +112,7 @@ impl Scale {
                 }
             }
         }
-        (Color::Gray, Color::White)
+        (Color::DullGray, Color::White)
     }
 
     /// Compute a frequency to a midi note number and a pitch bend value using ±2 semitones.
@@ -189,6 +195,6 @@ mod tests {
         assert_eq!(get_color("1*9\\12"), Color::Red); // EDO-12 minor sixth
         assert_eq!(get_color("1*10\\31"), Color::Purple); // EDO-31 major third
         assert_eq!(get_color("1*7\\17"), Color::Blue); // EDO-17 fourth
-        assert_eq!(get_color("1*5\\17"), Color::Gray); // nope
+        assert_eq!(get_color("1*5\\17"), Color::DullGray); // nope
     }
 }
