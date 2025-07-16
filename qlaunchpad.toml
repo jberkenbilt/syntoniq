@@ -1,0 +1,23 @@
+[[scale]]
+name = "EDO-31"
+tonic = "220*3\\12" # middle C for A-440 12-TET scale
+octave_steps = 31
+step_factor = "*1\\31"
+note_names = [
+  "C",
+  "C↑", "C♯", "D♭", "D↓", "D",
+  "D↑", "D♯", "E♭", "E↓", "E",
+  "E↑", "F↓", "F",
+  "F↑", "F♯", "G♭", "G↓", "G",
+  "G↑", "G♯", "A♭", "A↓", "A",
+  "A↑", "A♯", "B♭", "B↓", "B",
+  "B↑", "C↓",
+]
+
+[[layout]]
+name = "EDO-31-5x3"
+ll = [1, 1]
+ur = [8, 8]
+base = [2, 2]
+scale_name = "EDO-31"
+steps = [5, 3]

@@ -1,10 +1,9 @@
-use crate::events::{Color, Event, KeyEvent, LightEvent, LightMode, PressureEvent};
-use crate::to_anyhow;
+use crate::events::{Color, Event, KeyEvent, LightEvent, LightMode, PressureEvent, UpgradedSender};
+use crate::{events, to_anyhow};
 use anyhow::anyhow;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
 use midly::MidiMessage;
 use midly::live::LiveEvent;
-use tokio::sync::broadcast;
 use tokio::sync::broadcast::error::RecvError;
 use tokio::task::JoinHandle;
 
@@ -33,11 +32,22 @@ fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::Port> {
         .ok_or(anyhow!("no port found containing '{name}'"))
 }
 
+pub async fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {
+    for position in 1..=108 {
+        tx.send(Event::Light(LightEvent {
+            mode: LightMode::Off,
+            position,
+            color: Color::Off,
+        }))?;
+    }
+    Ok(())
+}
+
 impl Controller {
     pub async fn new(
         port_name: String,
-        event_tx: broadcast::WeakSender<Event>,
-        mut event_rx: broadcast::Receiver<Event>,
+        event_tx: events::Sender,
+        mut event_rx: events::Receiver,
     ) -> anyhow::Result<Self> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
         // async. To bridge the gap, we create flume channels to relay back and forth.
@@ -137,7 +147,7 @@ impl Device {
             // See color.py for iterating on color choices.
             let color = match event.color {
                 Color::Off => 0,
-                Color::Blue => 0x2d,
+                Color::Blue => 0x4f, //2d,
                 Color::Green => 0x15,
                 Color::Purple => 0x35,
                 Color::Pink => 0x38,

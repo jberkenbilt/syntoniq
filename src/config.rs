@@ -1,9 +1,50 @@
+use crate::layout::Layout;
 use crate::scale::Scale;
+use anyhow::anyhow;
 use serde::Deserialize;
+use std::collections::HashMap;
+use std::fs;
+use std::path::PathBuf;
+use std::sync::Arc;
 
 #[derive(Deserialize, Debug, PartialEq)]
-struct Config {
+struct ConfigFile {
     scale: Vec<Scale>,
+    layout: Vec<Layout>,
+}
+
+pub struct Config {
+    pub layouts: Vec<Arc<Layout>>,
+}
+
+impl Config {
+    pub fn load(file: PathBuf) -> anyhow::Result<Self> {
+        let data = fs::read(&file)?;
+        let c: ConfigFile = toml::from_slice(&data)?;
+        let mut scales_by_name = HashMap::new();
+        for scale in c.scale {
+            let name = scale.name.clone();
+            if scales_by_name
+                .insert(name.clone(), Arc::new(scale))
+                .is_some()
+            {
+                return Err(anyhow!("duplicated scale {}", name));
+            }
+        }
+        let mut layouts = Vec::new();
+        for mut layout in c.layout.into_iter() {
+            let Some(scale) = scales_by_name.get(&layout.scale_name) else {
+                return Err(anyhow!(
+                    "layout {}: no scale {}",
+                    layout.name,
+                    layout.scale_name
+                ));
+            };
+            layout.scale = Some(scale.clone());
+            layouts.push(Arc::new(layout));
+        }
+        Ok(Config { layouts })
+    }
 }
 
 #[cfg(test)]
@@ -20,8 +61,15 @@ tonic = "220*3\\12"
 octave_steps = 12
 step_factor = "*1\\12"
 note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"]
+[[layout]]
+name = "5x3"
+ll = [1, 1]
+ur = [8, 8]
+base = [2, 2]
+scale_name = "EDO-12"
+steps = [2, 1]
 "#;
-        let exp = Config {
+        let exp = ConfigFile {
             scale: vec![Scale {
                 name: "EDO-12".to_string(),
                 tonic: Pitch {
@@ -50,8 +98,17 @@ note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B�
                 .map(str::to_string)
                 .collect(),
             }],
+            layout: vec![Layout {
+                name: "5x3".to_string(),
+                ll: (1, 1),
+                ur: (8, 8),
+                base: (2, 2),
+                scale_name: "EDO-12".to_string(),
+                steps: (2, 1),
+                scale: None,
+            }],
         };
-        let c: Config = toml::from_str(CONFIG).unwrap();
+        let c: ConfigFile = toml::from_str(CONFIG).unwrap();
         assert_eq!(c, exp);
     }
 }

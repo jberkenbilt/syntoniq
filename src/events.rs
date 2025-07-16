@@ -1,5 +1,6 @@
+use crate::layout::Layout;
 use std::fmt::{Display, Formatter};
-use std::sync::RwLock;
+use std::sync::{Arc, RwLock};
 use tokio::sync::broadcast;
 use tokio::sync::broadcast::error::RecvError;
 
@@ -46,10 +47,24 @@ pub struct PressureEvent {
 }
 
 #[derive(Clone, Debug)]
+pub struct AssignLayoutEvent {
+    pub position: u8,
+    pub layout: Arc<Layout>,
+}
+
+#[derive(Clone, Debug)]
+pub struct SelectLayoutEvent {
+    pub layout: Arc<Layout>,
+}
+
+#[derive(Clone, Debug)]
 pub enum Event {
     Light(LightEvent),
     Key(KeyEvent),
     Pressure(PressureEvent),
+    Reset,
+    AssignLayout(AssignLayoutEvent),
+    SelectLayout(SelectLayoutEvent),
 }
 
 impl Display for Event {
@@ -72,15 +87,17 @@ impl Display for Event {
                 key.map(|x| format!("{x:02}"))
                     .unwrap_or("global".to_string())
             ),
+            _ => write!(f, "{self:?}"),
         }
     }
 }
 
+pub type UpgradedSender = broadcast::Sender<Event>;
 pub type Sender = broadcast::WeakSender<Event>;
 pub type Receiver = broadcast::Receiver<Event>;
 
 pub struct Events {
-    tx: RwLock<Option<broadcast::Sender<Event>>>,
+    tx: RwLock<Option<UpgradedSender>>,
     rx: Receiver,
 }
 

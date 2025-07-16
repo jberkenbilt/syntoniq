@@ -20,6 +20,8 @@ pub struct Note {
     pub adjusted_midi: u8,
     /// This is the closest 12-TET midi number to the pitch and a pitch bend assuming ±2 cents.
     pub nearest_pitch_midi: (u8, u16),
+    /// TODO: indicate whether close to one of the special just intonation intervals
+    pub _closest_just_interval: Option<()>,
 }
 
 impl Scale {
@@ -42,6 +44,7 @@ impl Scale {
             freq,
             adjusted_midi,
             nearest_pitch_midi: pitch_midi,
+            _closest_just_interval: None,
         }
     }
 

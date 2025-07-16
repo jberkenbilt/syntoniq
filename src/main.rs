@@ -4,8 +4,9 @@ use clap_complete::{Generator, Shell, aot};
 use log::LevelFilter;
 use qlaunchpad::controller::Controller;
 use qlaunchpad::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
-use qlaunchpad::{events, midi_player};
+use qlaunchpad::{controller, engine, events, midi_player};
 use std::collections::HashMap;
+use std::path::PathBuf;
 use std::{env, io};
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -24,6 +25,12 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// Main command -- handle events and send music commands
+    Run {
+        /// toml-format config file
+        #[arg(long)]
+        config_file: PathBuf,
+    },
     /// Log device events during interaction
     Events,
     /// Display color choices
@@ -85,6 +92,9 @@ async fn main() -> anyhow::Result<()> {
         Commands::Events => events_main(events_rx.resubscribe()).await,
         Commands::Colors => colors_main(events_tx.clone(), events_rx.resubscribe()).await,
         Commands::Output => midi_player::play_midi(events_rx.resubscribe()).await,
+        Commands::Run { config_file } => {
+            engine::run(config_file, events_tx.clone(), events_rx.resubscribe()).await
+        }
     }?;
     drop(events_tx);
     drop(events_rx);
@@ -105,14 +115,7 @@ async fn colors_main(
     let Some(tx) = events_tx.upgrade() else {
         return Ok(());
     };
-    for position in 1..=108 {
-        tx.send(Event::Light(LightEvent {
-            mode: LightMode::Off,
-            position,
-            color: Color::Off,
-        }))
-        .unwrap();
-    }
+    controller::clear_lights(&tx).await?;
     for (position, color) in [
         (11, Color::Blue),
         (12, Color::Purple),
