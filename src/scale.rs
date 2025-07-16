@@ -15,12 +15,13 @@ pub struct Scale {
 #[serde(tag = "type")]
 pub enum ScaleType {
     EqualDivision(EqualDivision),
+    _KeepClippyQuiet, // TODO: remove when we add a second type
 }
 
 #[derive(Deserialize, Debug, PartialEq)]
 pub struct EqualDivision {
     /// divisions, interval numerator, interval denominator, e.g. (31, 2, 1) for EDO-31
-    pub divisions: (u8, u8, u8),
+    pub divisions: (i8, i8, i8),
 }
 
 #[derive(Debug, PartialEq)]
@@ -46,6 +47,7 @@ impl Scale {
     pub fn note(&self, cycle: i8, step: i8) -> Note {
         match &self.scale_type {
             ScaleType::EqualDivision(data) => self.note_equal_division(data, cycle, step),
+            ScaleType::_KeepClippyQuiet => unreachable!(),
         }
     }
 
@@ -58,8 +60,8 @@ impl Scale {
         let step_factor = interval.powf(1.0 / divisions as f32);
         freq *= step_factor.powf(step as f32);
         let pitch_midi = Self::freq_midi(freq);
-        let adjusted_midi = (60 + divisions as i8 * cycle + step) as u8;
-        let note_idx = (step % divisions as i8) as usize;
+        let adjusted_midi = (60 + divisions * cycle + step) as u8;
+        let note_idx = (step % divisions) as usize;
         let name = self.note_names.get(note_idx).cloned().unwrap_or_default();
         let colors = Self::interval_color(freq / base);
         Note {

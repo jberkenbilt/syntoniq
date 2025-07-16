@@ -1,3 +1,4 @@
+use crate::engine::PlayedNote;
 use crate::layout::Layout;
 use std::fmt::{Display, Formatter};
 use std::sync::{Arc, RwLock};
@@ -58,6 +59,12 @@ pub struct SelectLayoutEvent {
 }
 
 #[derive(Clone, Debug)]
+pub struct UpdateNoteEvent {
+    pub position: u8,
+    pub played_note: Option<PlayedNote>,
+}
+
+#[derive(Clone, Debug)]
 pub enum Event {
     Light(LightEvent),
     Key(KeyEvent),
@@ -65,6 +72,7 @@ pub enum Event {
     Reset,
     AssignLayout(AssignLayoutEvent),
     SelectLayout(SelectLayoutEvent),
+    UpdateNote(UpdateNoteEvent),
 }
 
 impl Display for Event {
@@ -108,14 +116,19 @@ impl Default for Events {
 }
 
 /// Receive an event, ignoring lag
-pub async fn receive_ignore_lag(rx: &mut Receiver) -> Option<Event> {
+pub async fn receive_ignore_lag(rx: &mut Receiver, warn_prefix: Option<&str>) -> Option<Event> {
     loop {
         let event = rx.recv().await;
         match event {
             Ok(event) => return Some(event),
             Err(err) => match err {
                 RecvError::Closed => return None,
-                RecvError::Lagged(_) => continue,
+                RecvError::Lagged(n) => {
+                    if let Some(p) = warn_prefix {
+                        log::warn!("{p}: missed {n} events");
+                    }
+                    continue
+                },
             },
         }
     }

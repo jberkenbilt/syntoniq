@@ -33,6 +33,7 @@ impl Config {
                         ));
                     }
                 }
+                ScaleType::_KeepClippyQuiet => unreachable!(),
             }
             if scales_by_name
                 .insert(name.clone(), Arc::new(scale))
