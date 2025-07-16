@@ -159,7 +159,7 @@ async fn colors_main(
         }
     }
     drop(tx);
-    while let Some(event) = events::receive_ignore_lag(&mut events_rx).await {
+    while let Some(event) = events::receive_check_lag(&mut events_rx, None).await {
         let Event::Key(KeyEvent { key, velocity }) = event else {
             continue;
         };

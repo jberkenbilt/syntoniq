@@ -116,7 +116,7 @@ impl Default for Events {
 }
 
 /// Receive an event, ignoring lag
-pub async fn receive_ignore_lag(rx: &mut Receiver, warn_prefix: Option<&str>) -> Option<Event> {
+pub async fn receive_check_lag(rx: &mut Receiver, warn_prefix: Option<&str>) -> Option<Event> {
     loop {
         let event = rx.recv().await;
         match event {
@@ -127,8 +127,8 @@ pub async fn receive_ignore_lag(rx: &mut Receiver, warn_prefix: Option<&str>) ->
                     if let Some(p) = warn_prefix {
                         log::warn!("{p}: missed {n} events");
                     }
-                    continue
-                },
+                    continue;
+                }
             },
         }
     }

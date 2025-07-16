@@ -6,7 +6,8 @@ use midir::os::unix::VirtualOutput;
 pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
     let (tx, rx) = flume::unbounded();
     let h = tokio::spawn(async move {
-        while let Ok(event) = events_rx.recv().await {
+        while let Some(event) = events::receive_check_lag(&mut events_rx, Some("midi player")).await
+        {
             let Event::Key(key_event) = event else {
                 continue;
             };

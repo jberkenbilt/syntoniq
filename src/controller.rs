@@ -4,7 +4,6 @@ use anyhow::anyhow;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
 use midly::MidiMessage;
 use midly::live::LiveEvent;
-use tokio::sync::broadcast::error::RecvError;
 use tokio::task::JoinHandle;
 
 mod message;
@@ -46,8 +45,8 @@ pub async fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {
 impl Controller {
     pub async fn new(
         port_name: String,
-        event_tx: events::Sender,
-        mut event_rx: events::Receiver,
+        events_tx: events::Sender,
+        mut events_rx: events::Receiver,
     ) -> anyhow::Result<Self> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
         // async. To bridge the gap, we create flume channels to relay back and forth.
@@ -56,18 +55,9 @@ impl Controller {
         let mut device =
             Device::new(&port_name, to_device_rx, from_device_tx).map_err(to_anyhow)?;
         tokio::spawn(async move {
-            loop {
-                let event = event_rx.recv().await;
-                let event = match event {
-                    Ok(event) => event,
-                    Err(err) => match err {
-                        RecvError::Closed => break,
-                        RecvError::Lagged(n) => {
-                            log::error!("controller missed messages (count: {n})");
-                            continue;
-                        }
-                    },
-                };
+            while let Some(event) =
+                events::receive_check_lag(&mut events_rx, Some("controller")).await
+            {
                 let Event::Light(event) = event else {
                     continue;
                 };
@@ -78,7 +68,7 @@ impl Controller {
         });
         tokio::spawn(async move {
             while let Ok(msg) = from_device_rx.recv_async().await {
-                if let Some(tx) = event_tx.upgrade() {
+                if let Some(tx) = events_tx.upgrade() {
                     if let Err(e) = tx.send(msg) {
                         log::error!("failed to relay message from device: {e}");
                     }

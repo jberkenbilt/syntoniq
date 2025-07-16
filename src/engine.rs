@@ -218,7 +218,7 @@ pub async fn run(
     if let Some(tx) = events_tx.upgrade() {
         tx.send(Event::Reset)?;
     }
-    while let Some(event) = events::receive_ignore_lag(&mut rx).await {
+    while let Some(event) = events::receive_check_lag(&mut rx, Some("engine")).await {
         // Note: this event loop calls event handlers inline. Sometimes those event handlers
         // generate other events, which are piling up in our queue while we are handling earlier
         // events. As long as the backlog on the event receiver is high enough and/or we don't
