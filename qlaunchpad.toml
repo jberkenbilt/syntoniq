@@ -52,3 +52,18 @@ bbox = [1, 1, 8, 8]
 base = [2, 3]
 scale_name = "EDO-19"
 steps = [3, 2]
+
+[[scale]]
+name = "EDO-17"
+type = "EqualDivision"
+divisions = [17, 2, 1]
+base_pitch = "220*3\\12"
+note_names = ["C", "C#-", "C#+", "D+", "E%-", "E-", "E+", "F", "F#-",
+              "F#+", "G", "A%-", "A%+", "A+", "B%-", "B-", "B+", "C"]
+
+[[layout]]
+name = "EDO-17-2x1"
+bbox = [1, 1, 8, 8]
+base = [2, 3]
+scale_name = "EDO-17"
+steps = [3, 2]

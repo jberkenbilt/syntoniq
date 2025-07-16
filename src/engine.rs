@@ -167,7 +167,7 @@ impl Engine {
                 }))?;
             }
         }
-        log::warn!("got layout {}, scale {}", layout.name, scale.name);
+        log::info!("got layout {}, scale {}", layout.name, scale.name);
         Ok(())
     }
 
