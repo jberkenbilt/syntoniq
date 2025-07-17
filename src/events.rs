@@ -5,6 +5,8 @@ use std::sync::{Arc, RwLock};
 use tokio::sync::broadcast;
 use tokio::sync::broadcast::error::RecvError;
 
+mod rgb_colors;
+
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
     Off,
@@ -19,6 +21,28 @@ pub enum Color {
     DullGray,
     HighlightGray,
     White,
+}
+impl Color {
+    pub fn launchpad_color(&self) -> u8 {
+        match self {
+            Color::Off => 0,
+            Color::Blue => 0x4f, //2d,
+            Color::Green => 0x15,
+            Color::Purple => 0x35,
+            Color::Pink => 0x38,
+            Color::Red => 0x06,
+            Color::Orange => 0x09,
+            Color::Cyan => 0x25,
+            Color::Yellow => 0x0d,
+            Color::DullGray => 0x47,
+            Color::HighlightGray => 0x7d,
+            Color::White => 0x03,
+        }
+    }
+
+    pub fn rgb_color(&self) -> &'static str {
+        rgb_colors::RGB_COLORS[self.launchpad_color() as usize]
+    }
 }
 
 #[derive(Copy, Clone, Debug)]

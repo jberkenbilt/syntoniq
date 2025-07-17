@@ -135,20 +135,7 @@ impl Device {
                 LightMode::Pulsing => 0x92,
             };
             // See color.py for iterating on color choices.
-            let color = match event.color {
-                Color::Off => 0,
-                Color::Blue => 0x4f, //2d,
-                Color::Green => 0x15,
-                Color::Purple => 0x35,
-                Color::Pink => 0x38,
-                Color::Red => 0x06,
-                Color::Orange => 0x09,
-                Color::Cyan => 0x25,
-                Color::Yellow => 0x0d,
-                Color::DullGray => 0x47,
-                Color::HighlightGray => 0x7d,
-                Color::White => 0x03,
-            };
+            let color = event.color.launchpad_color();
             self.output_connection
                 .send(&[mode, event.position, color])?;
         }

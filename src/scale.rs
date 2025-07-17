@@ -118,6 +118,7 @@ impl Scale {
     /// Compute a frequency to a midi note number and a pitch bend value using ±2 semitones.
     /// Panics if the frequency is out of range.
     fn freq_midi(f: f32) -> (u8, u16) {
+        // TODO: do proper range checking
         let n1 = 69.0 + 12.0 * (f / 440.0).log2();
         let note = n1.round() as u8;
         let delta = n1 - note as f32;
