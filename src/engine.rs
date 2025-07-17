@@ -1,13 +1,13 @@
 use crate::config::Config;
 use crate::events::{
-    AssignLayoutEvent, Color, Event, KeyEvent, LightEvent, LightMode, SelectLayoutEvent,
-    UpdateNoteEvent,
+    AssignLayoutEvent, Color, Event, KeyEvent, LightEvent, LightMode, PlayNoteEvent,
+    SelectLayoutEvent, UpdateNoteEvent,
 };
 use crate::layout::Layout;
 use crate::scale::{Note, Scale, ScaleType};
-use crate::{controller, events};
+use crate::{controller, events, midi_player};
 use anyhow::anyhow;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::sync::Arc;
 
@@ -32,6 +32,7 @@ struct Engine {
     /// control key position -> selected layout
     assigned_layouts: HashMap<u8, Arc<Layout>>,
     notes: HashMap<u8, Option<PlayedNote>>,
+    note_positions: HashMap<String, HashSet<u8>>,
 }
 
 impl Engine {
@@ -112,7 +113,27 @@ impl Engine {
             keys::CLEAR if off => {
                 tx.send(Event::Reset)?;
             }
-            _ => (), // ignore
+            position if self.notes.contains_key(&position) => {
+                if let Some(note) = self.notes.get(&position).unwrap() {
+                    let note_id = &note.note.unique_id;
+                    let Some(others) = self.note_positions.get(note_id) else {
+                        // This would indicate a bug in which we assigned something to notes
+                        // without also assigning its position to note positions or otherwise
+                        // allowed notes and note_positions to get out of sync.
+                        return Err(anyhow!("note positions is missing for {note_id}"));
+                    };
+                    // TODO: handle sustain mode
+                    // TODO: do we want to heed velocity or not?
+                    for position in others.iter().copied() {
+                        tx.send(note.note.light_event(position, velocity))?;
+                    }
+                    tx.send(Event::PlayNote(PlayNoteEvent {
+                        note: note.note.clone(),
+                        velocity,
+                    }))?;
+                }
+            }
+            _ => {} // TODO
         }
         Ok(())
     }
@@ -129,18 +150,11 @@ impl Engine {
         match played_note {
             Some(played_note) => {
                 let note = played_note.note.clone();
-                let color = if played_note.velocity == 0 {
-                    note.colors.0
-                } else {
-                    note.colors.1
-                };
-                tx.send(Event::Light(LightEvent {
-                    mode: LightMode::On,
-                    position,
-                    color,
-                    label1: note.name.clone(),
-                    label2: format!("{}.{}", note.cycle, note.step),
-                }))?;
+                self.note_positions
+                    .entry(note.unique_id.clone())
+                    .or_default()
+                    .insert(position);
+                tx.send(note.light_event(position, played_note.velocity))?;
             }
             None => {
                 tx.send(Event::Light(LightEvent {
@@ -155,7 +169,7 @@ impl Engine {
         Ok(())
     }
 
-    async fn draw_edo_layout(&self, layout: &Layout, scale: &Scale) -> anyhow::Result<()> {
+    async fn draw_edo_layout(&mut self, layout: &Layout, scale: &Scale) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -167,6 +181,8 @@ impl Engine {
         let (steps_x, steps_y) = layout.steps;
         let (base_x, base_y) = layout.base;
         let (divisions, _, _) = ed.divisions;
+        self.note_positions.clear();
+        self.notes.clear();
         for row in 1..=8 {
             for col in 1..=8 {
                 let played_note = if !(llx..=urx).contains(&col) || !(lly..=ury).contains(&row) {
@@ -188,16 +204,18 @@ impl Engine {
                 }))?;
             }
         }
-        log::info!("got layout {}, scale {}", layout.name, scale.name);
+        log::info!("layout: {}, scale: {}", layout.name, scale.name);
         Ok(())
     }
 
     async fn select_layout(&mut self, event: SelectLayoutEvent) -> anyhow::Result<()> {
         self.layout = Some(event.layout);
-        let layout = self.layout.as_ref().unwrap().as_ref();
+        let layout = self.layout.clone().unwrap();
         if let Some(scale) = &layout.scale {
             match scale.scale_type {
-                ScaleType::EqualDivision(_) => self.draw_edo_layout(layout, scale.as_ref()).await?,
+                ScaleType::EqualDivision(_) => {
+                    self.draw_edo_layout(&layout, scale.as_ref()).await?
+                }
                 ScaleType::_KeepClippyQuiet => unreachable!(),
             }
         }
@@ -227,6 +245,7 @@ impl Engine {
 
 pub async fn run(
     config_file: PathBuf,
+    midi: bool,
     events_tx: events::Sender,
     mut rx: events::Receiver,
 ) -> anyhow::Result<()> {
@@ -238,7 +257,16 @@ pub async fn run(
         layout: None,
         assigned_layouts: Default::default(),
         notes: Default::default(),
+        note_positions: Default::default(),
     };
+    if midi {
+        let rx2 = rx.resubscribe();
+        tokio::spawn(async move {
+            if let Err(e) = midi_player::play_midi(rx2).await {
+                log::error!("midi player error: {e}");
+            };
+        });
+    }
     if let Some(tx) = events_tx.upgrade() {
         tx.send(Event::Reset)?;
     }
@@ -257,6 +285,7 @@ pub async fn run(
             Event::AssignLayout(e) => engine.assign_layout(e).await?,
             Event::SelectLayout(e) => engine.select_layout(e).await?,
             Event::UpdateNote(e) => engine.update_note(e).await?,
+            Event::PlayNote(_) => {}
         }
     }
     Ok(())

@@ -1,4 +1,4 @@
-use crate::events::Color;
+use crate::events::{Color, Event, LightEvent, LightMode};
 use crate::pitch::Pitch;
 use serde::Deserialize;
 
@@ -27,6 +27,7 @@ pub struct EqualDivision {
 #[derive(Debug, PartialEq)]
 pub struct Note {
     pub name: String,
+    pub unique_id: String,
     pub scale_name: String,
     pub cycle: i8,
     pub step: i8,
@@ -38,6 +39,22 @@ pub struct Note {
     /// This is the closest 12-TET midi number to the pitch and a pitch bend assuming ±2 cents.
     pub nearest_pitch_midi: (u8, u16),
     pub colors: (Color, Color), // note off, note on
+}
+impl Note {
+    pub fn light_event(&self, position: u8, velocity: u8) -> Event {
+        let color = if velocity == 0 {
+            self.colors.0
+        } else {
+            self.colors.1
+        };
+        Event::Light(LightEvent {
+            mode: LightMode::On,
+            position,
+            color,
+            label1: self.name.clone(),
+            label2: format!("{}.{}", self.cycle, self.step),
+        })
+    }
 }
 
 impl Scale {
@@ -61,9 +78,11 @@ impl Scale {
         freq *= step_factor.powf(step as f32);
         let pitch_midi = Self::freq_midi(freq);
         let adjusted_midi = (60 + divisions * cycle + step) as u8;
-        let note_idx = (step % divisions) as usize;
+        let normalized_step = step % divisions;
+        let normalized_cycle = cycle + (step - normalized_step) / divisions;
+        let note_idx = normalized_step as usize;
         let name = self.note_names.get(note_idx).cloned().unwrap_or_default();
-        let colors = if note_idx == 1 {
+        let colors = if normalized_step == 1 {
             // Special case: use a slightly different color for idx 1 so we can see clearly
             // where the single step is.
             (Color::HighlightGray, Color::White)
@@ -72,6 +91,7 @@ impl Scale {
         };
         Note {
             name,
+            unique_id: format!("{}:{normalized_cycle}.{normalized_step}", self.name),
             scale_name: self.name.clone(),
             cycle,
             step,

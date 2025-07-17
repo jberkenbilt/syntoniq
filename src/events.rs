@@ -1,5 +1,6 @@
 use crate::engine::PlayedNote;
 use crate::layout::Layout;
+use crate::scale::Note;
 use std::fmt::{Display, Formatter};
 use std::sync::{Arc, RwLock};
 use tokio::sync::broadcast;
@@ -92,6 +93,12 @@ pub struct UpdateNoteEvent {
 }
 
 #[derive(Clone, Debug)]
+pub struct PlayNoteEvent {
+    pub note: Arc<Note>,
+    pub velocity: u8,
+}
+
+#[derive(Clone, Debug)]
 pub enum Event {
     Light(LightEvent),
     Key(KeyEvent),
@@ -100,6 +107,7 @@ pub enum Event {
     AssignLayout(AssignLayoutEvent),
     SelectLayout(SelectLayoutEvent),
     UpdateNote(UpdateNoteEvent),
+    PlayNote(PlayNoteEvent),
 }
 
 impl Display for Event {
