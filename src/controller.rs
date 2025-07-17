@@ -37,6 +37,8 @@ pub async fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {
             mode: LightMode::Off,
             position,
             color: Color::Off,
+            label1: String::new(),
+            label2: String::new(),
         }))?;
     }
     Ok(())

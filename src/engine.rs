@@ -58,16 +58,24 @@ impl Engine {
             (Color::Orange, vec![84]),
             (Color::Yellow, vec![85]),
             (Color::Red, vec![86]),
-            (Color::White, vec![keys::CLEAR]),
         ] {
             for position in positions {
                 tx.send(Event::Light(LightEvent {
                     mode: LightMode::On,
                     position,
                     color,
+                    label1: String::new(),
+                    label2: String::new(),
                 }))?;
             }
         }
+        tx.send(Event::Light(LightEvent {
+            mode: LightMode::On,
+            position: keys::CLEAR,
+            color: Color::White,
+            label1: "Reset".to_string(),
+            label2: String::new(),
+        }))?;
         let mut position = keys::LAYOUT_MIN;
         self.assigned_layouts.clear();
         for layout in self.config.layouts.iter().cloned() {
@@ -80,6 +88,8 @@ impl Engine {
                     mode: LightMode::On,
                     position: keys::LAYOUT_SCROLL,
                     color: Color::White,
+                    label1: "Scroll".to_string(),
+                    label2: "layouts".to_string(),
                 }))?;
                 break;
             }
@@ -128,6 +138,8 @@ impl Engine {
                     mode: LightMode::On,
                     position,
                     color,
+                    label1: note.name.clone(),
+                    label2: format!("{}.{}", note.cycle, note.step),
                 }))?;
             }
             None => {
@@ -135,6 +147,8 @@ impl Engine {
                     mode: LightMode::Off,
                     position,
                     color: Color::Off,
+                    label1: String::new(),
+                    label2: String::new(),
                 }))?;
             }
         }
@@ -199,11 +213,13 @@ impl Engine {
         if !(keys::LAYOUT_MIN..=keys::LAYOUT_MAX).contains(&position) {
             return Ok(());
         }
-        self.assigned_layouts.insert(position, layout);
+        self.assigned_layouts.insert(position, layout.clone());
         tx.send(Event::Light(LightEvent {
             mode: LightMode::On,
             position,
             color: Color::White,
+            label1: layout.name.clone(),
+            label2: layout.scale_name.clone(),
         }))?;
         Ok(())
     }

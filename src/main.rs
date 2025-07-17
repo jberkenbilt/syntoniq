@@ -123,6 +123,8 @@ async fn colors_main(
                 mode: LightMode::On,
                 position,
                 color: Color::White,
+                label1: String::new(),
+                label2: String::new(),
             }))?;
         }
     }
@@ -132,6 +134,8 @@ async fn colors_main(
                 mode: LightMode::On,
                 position,
                 color: Color::White,
+                label1: String::new(),
+                label2: String::new(),
             }))?;
         }
     }
@@ -149,6 +153,8 @@ async fn colors_main(
             mode: LightMode::On,
             position,
             color,
+            label1: String::new(),
+            label2: String::new(),
         }))?;
     }
     let simulated = [
@@ -174,6 +180,8 @@ async fn colors_main(
                 mode: LightMode::On,
                 position,
                 color,
+                label1: String::new(),
+                label2: String::new(),
             }))?;
         }
     }
@@ -195,6 +203,8 @@ async fn colors_main(
                         mode: LightMode::On,
                         position,
                         color: *color,
+                        label1: String::new(),
+                        label2: String::new(),
                     }))?;
                 }
             }

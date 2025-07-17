@@ -58,6 +58,8 @@ pub struct LightEvent {
     pub mode: LightMode,
     pub position: u8,
     pub color: Color,
+    pub label1: String,
+    pub label2: String,
 }
 #[derive(Clone, Debug)]
 pub struct KeyEvent {
@@ -107,6 +109,7 @@ impl Display for Event {
                 mode,
                 position,
                 color,
+                ..
             }) => write!(
                 f,
                 "light: mode={mode:?}, position={position}, color={color:?}"
