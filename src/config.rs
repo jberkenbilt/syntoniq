@@ -18,8 +18,8 @@ pub struct Config {
 }
 
 impl Config {
-    pub fn load(file: PathBuf) -> anyhow::Result<Self> {
-        let data = fs::read(&file)?;
+    pub fn load(file: &PathBuf) -> anyhow::Result<Self> {
+        let data = fs::read(file)?;
         let c: ConfigFile = toml::from_slice(&data)?;
         let mut scales_by_name = HashMap::new();
         for scale in c.scale {

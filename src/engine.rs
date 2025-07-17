@@ -25,6 +25,7 @@ pub struct PlayedNote {
 }
 
 struct Engine {
+    config_file: PathBuf,
     config: Config,
     events_tx: events::Sender,
     layout: Option<Arc<Layout>>,
@@ -35,6 +36,12 @@ struct Engine {
 
 impl Engine {
     async fn reset(&mut self) -> anyhow::Result<()> {
+        match Config::load(&self.config_file) {
+            Ok(config) => self.config = config,
+            Err(e) => {
+                log::error!("error reloading config; retaining old: {e}");
+            }
+        }
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -207,8 +214,9 @@ pub async fn run(
     events_tx: events::Sender,
     mut rx: events::Receiver,
 ) -> anyhow::Result<()> {
-    let config = Config::load(config_file)?;
+    let config = Config::load(&config_file)?;
     let mut engine = Engine {
+        config_file,
         config,
         events_tx: events_tx.clone(),
         layout: None,
