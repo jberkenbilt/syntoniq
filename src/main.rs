@@ -116,6 +116,25 @@ async fn colors_main(
         return Ok(());
     };
     controller::clear_lights(&tx).await?;
+    // Light all control keys
+    for range in [1..=8, 101..=108, 90..=99] {
+        for position in range {
+            tx.send(Event::Light(LightEvent {
+                mode: LightMode::On,
+                position,
+                color: Color::White,
+            }))?;
+        }
+    }
+    for row in 1..=8 {
+        for position in [row * 10, row * 10 + 9] {
+            tx.send(Event::Light(LightEvent {
+                mode: LightMode::On,
+                position,
+                color: Color::White,
+            }))?;
+        }
+    }
     for (position, color) in [
         (11, Color::Blue),
         (12, Color::Purple),
