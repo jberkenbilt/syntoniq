@@ -146,7 +146,7 @@ impl Scale {
         // - bend range is typically 2 semitones
         // - 8192*delta/2 is 4096*delta
         // In other words, this the fraction numerator centered at 8192.
-        let bend = 8192 + (4096.0 * delta).round() as u16;
+        let bend = (8192.0 + (4096.0 * delta).round()) as u16;
         (note, bend)
     }
 }
