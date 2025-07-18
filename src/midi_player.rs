@@ -1,13 +1,13 @@
-use crate::events::{Event, PlayNoteEvent};
+use crate::events::Event;
 use crate::scale::Note;
 use crate::{events, to_anyhow};
 use midir::os::unix::VirtualOutput;
 use midir::{MidiOutput, MidiOutputConnection};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 struct Player {
     output_connection: MidiOutputConnection,
-    bend_to_notes: HashMap<u16, HashSet<String>>,
+    bend_to_notes: HashMap<u16, HashMap<String, u8>>,
     bend_to_channel: HashMap<u16, u8>,
     channels: [bool; 16],
 }
@@ -22,64 +22,93 @@ impl Player {
             // Remove the note if it was on, freeing the channel if we can
             let Some(notes) = notes else {
                 // Should not be possible
-                log::warn!("midi player: ignoring note off for note we don't know about");
+                log::warn!("midi player: no notes for {bend}; ignoring off for {note_id}");
                 return Ok(());
             };
-            notes.remove(note_id);
+            let Some(count) = notes.get_mut(note_id) else {
+                log::warn!("midi player: no count for {note_id}; ignoring off");
+                return Ok(());
+            };
+            *count -= 1;
+            if *count == 0 {
+                notes.remove(note_id);
+            }
             if notes.is_empty() {
                 self.bend_to_notes.remove(&bend);
                 let old = self.bend_to_channel.remove(&bend);
                 if let Some(old) = old {
-                    log::warn!("XXX removing {bend} from channel {old}");
+                    log::debug!("midi player: channel {old} is free");
                     self.channels[old as usize] = false;
                 }
             }
-        } else if ch.is_none() {
-            // No channel is associated with this bend, so allocate one
-            for i in 0..16 {
-                if !self.channels[i] {
-                    self.channels[i] = true;
-                    self.bend_to_channel.insert(bend, i as u8);
-                    self.bend_to_notes
-                        .entry(bend)
-                        .or_default()
-                        .insert(note.unique_id.clone());
-                    ch = Some(i as u8);
-                    log::warn!("XXX {bend} to channel {i}");
-                    break;
+        } else {
+            if ch.is_none() {
+                // No channel is associated with this bend, so allocate one
+                for i in 0..16 {
+                    if !self.channels[i] {
+                        self.channels[i] = true;
+                        self.bend_to_channel.insert(bend, i as u8);
+                        ch = Some(i as u8);
+                        let lsb = (bend & 0x7f) as u8;
+                        let msb = (bend >> 7) as u8;
+                        self.output_connection.send(&[0xe0 | i as u8, lsb, msb])?;
+                        log::debug!("midi player: using channel {i} for bend {bend}");
+                        break;
+                    }
                 }
             }
+            if ch.is_none() {
+                log::warn!("midi player: no available channels; ignoring note operation");
+                return Ok(());
+            };
+            *self
+                .bend_to_notes
+                .entry(bend)
+                .or_default()
+                .entry(note.unique_id.clone())
+                .or_default() += 1;
         }
         let Some(ch) = ch else {
-            log::warn!("midi player: no available channels");
+            // Should not be possible -- ch should always be Some after the above logic.
+            log::error!("midi player: ch is None after channel selection; ignoring note");
             return Ok(());
         };
-        log::warn!("XXX {bend}; using channel {ch}");
-        let lsb = (bend & 0x7f) as u8;
-        let msb = (bend >> 7) as u8;
-        self.output_connection.send(&[0xe0 | ch, lsb, msb])?;
         self.output_connection
             .send(&[0x90 | ch, note_number, velocity])?;
+        Ok(())
+    }
+
+    fn init_mpe(&mut self) -> anyhow::Result<()> {
+        // Initialize MPE (MIDI Polyphonic Expression) and allocate channels 2-16 (1-15 in our
+        // zero-based numbering) for MPE notes.
+        let commands: &[&[u8]] = &[
+            &[0xB0, 0x65, 0x06], // select MPE (MSB)
+            &[0xB0, 0x64, 0x00], // select MPE (LSB)
+            &[0xB0, 0x06, 0x00], // Data Entry (MSB)
+            &[0xB0, 0x26, 0x0E], // Data Entry (LSB)
+        ];
+        for buf in commands {
+            self.output_connection.send(buf)?;
+        }
         Ok(())
     }
 }
 
 pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
-    //TODO
-    // - This almost works if you do things in the right order:
+    // - This almost works if you do things in the right order, but there seem to be issues with
+    //   Surge-XT
     //   - Start in midi mode so the output port exists
     //   - Start Surge-XT and ensure only QLaunchpad is input
     //   - Exit surge before exiting qlaunchpad.
-    // - Can we turn off all notes at start and end?
-    // - Sometimes, notes continue to play
-    // - Surge doesn't really seem happy with this
     let (tx, rx) = flume::unbounded();
     let h = tokio::spawn(async move {
         while let Some(event) = events::receive_check_lag(&mut events_rx, Some("midi player")).await
         {
-            let Event::PlayNote(event) = event else {
-                continue;
-            };
+            match event {
+                Event::SelectLayout(_) => {}
+                Event::PlayNote(_) => {}
+                _ => continue,
+            }
             tx.send_async(event).await.unwrap();
         }
     });
@@ -93,8 +122,13 @@ pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
             bend_to_channel: Default::default(),
             channels: [false; 16],
         };
-        while let Ok(PlayNoteEvent { note, velocity }) = rx.recv() {
-            p.handle_note(note.as_ref(), velocity)?;
+        p.channels[0] = true; // reserve channel 1 -- MPE doesn't expect note on it
+        while let Ok(event) = rx.recv() {
+            match event {
+                Event::PlayNote(e) => p.handle_note(e.note.as_ref(), e.velocity)?,
+                Event::SelectLayout(_) => p.init_mpe()?,
+                _ => {}
+            }
         }
         Ok(())
     })

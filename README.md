@@ -1,7 +1,6 @@
 2025-07-13
 
 Next tasks, in undefined order, are:
-* Add sustain mode.
 * Do the actual csound integration
 * Get the web UI up
 
@@ -13,3 +12,11 @@ Other:
 
 See also
 * [design](./design.md)
+
+Remember:
+
+```
+# Find QLaunchPad as output port
+aconnect -l
+aseqdump -p 128:0
+```

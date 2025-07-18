@@ -13,6 +13,7 @@ use std::sync::Arc;
 
 mod keys {
     pub const CLEAR: u8 = 60;
+    pub const SUSTAIN: u8 = 95; // Chord
     pub const LAYOUT_MIN: u8 = 101;
     pub const LAYOUT_MAX: u8 = 108;
     pub const LAYOUT_SCROLL: u8 = 19;
@@ -33,6 +34,8 @@ struct Engine {
     assigned_layouts: HashMap<u8, Arc<Layout>>,
     notes: HashMap<u8, Option<PlayedNote>>,
     note_positions: HashMap<String, HashSet<u8>>,
+    sustain: bool,
+    notes_on: HashMap<String, u8>, // number of times a note is on
 }
 
 impl Engine {
@@ -113,6 +116,10 @@ impl Engine {
             keys::CLEAR if off => {
                 tx.send(Event::Reset)?;
             }
+            keys::SUSTAIN if off => {
+                self.sustain = !self.sustain;
+                tx.send(self.sustain_event())?;
+            }
             position if self.notes.contains_key(&position) => {
                 if let Some(note) = self.notes.get(&position).unwrap() {
                     let note_id = &note.note.unique_id;
@@ -122,8 +129,37 @@ impl Engine {
                         // allowed notes and note_positions to get out of sync.
                         return Err(anyhow!("note positions is missing for {note_id}"));
                     };
-                    // TODO: handle sustain mode
-                    // TODO: do we want to heed velocity or not?
+                    let note_count = self.notes_on.entry(note_id.clone()).or_default();
+                    // When not in sustain mode, touch turns a note on, and release turns it off.
+                    // Since the same note may appear in multiple locations, we keep a count, and on
+                    // send a note event if we transition to or from 0. In sustain mode, "off"
+                    // events are ignored. Touching a note in any of its positions toggles whether
+                    // it's on or off. Changing scales, transposing, shifting, etc. doesn't affect
+                    // which notes are on or off, making it possible to play a note in one scale,
+                    // switch scales, and play a note in another scale.
+                    if self.sustain {
+                        if off {
+                            return Ok(());
+                        }
+                        if *note_count > 0 {
+                            *note_count = 0;
+                        } else {
+                            *note_count = 1;
+                        }
+                    } else if off {
+                        if *note_count > 0 {
+                            *note_count -= 1
+                        }
+                        if *note_count > 0 {
+                            return Ok(());
+                        }
+                    } else {
+                        *note_count += 1;
+                        if *note_count > 1 {
+                            return Ok(());
+                        }
+                    }
+                    let velocity = if *note_count > 0 { 127 } else { 0 };
                     for position in others.iter().copied() {
                         tx.send(note.note.light_event(position, velocity))?;
                     }
@@ -192,9 +228,20 @@ impl Engine {
                     let cycle = steps / divisions;
                     let step = steps % divisions;
                     let note = scale.note(cycle, step);
+                    let velocity = if self
+                        .notes_on
+                        .get(&note.unique_id)
+                        .copied()
+                        .unwrap_or_default()
+                        > 0
+                    {
+                        127
+                    } else {
+                        0
+                    };
                     Some(PlayedNote {
                         note: Arc::new(note),
-                        velocity: 0,
+                        velocity,
                     })
                 };
                 let position = (10 * row + col) as u8;
@@ -208,7 +255,25 @@ impl Engine {
         Ok(())
     }
 
+    fn sustain_event(&self) -> Event {
+        let sustain_color = if self.sustain {
+            Color::Green
+        } else {
+            Color::Red
+        };
+        Event::Light(LightEvent {
+            mode: LightMode::On,
+            position: keys::SUSTAIN,
+            color: sustain_color,
+            label1: "Sustain".to_string(),
+            label2: String::new(),
+        })
+    }
+
     async fn select_layout(&mut self, event: SelectLayoutEvent) -> anyhow::Result<()> {
+        let Some(tx) = self.events_tx.upgrade() else {
+            return Ok(());
+        };
         self.layout = Some(event.layout);
         let layout = self.layout.clone().unwrap();
         if let Some(scale) = &layout.scale {
@@ -218,6 +283,7 @@ impl Engine {
                 }
                 ScaleType::_KeepClippyQuiet => unreachable!(),
             }
+            tx.send(self.sustain_event())?;
         }
         Ok(())
     }
@@ -258,6 +324,8 @@ pub async fn run(
         assigned_layouts: Default::default(),
         notes: Default::default(),
         note_positions: Default::default(),
+        sustain: false,
+        notes_on: Default::default(),
     };
     if midi {
         let rx2 = rx.resubscribe();
