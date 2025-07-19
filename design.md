@@ -2,6 +2,17 @@
 
 This has scratch notes in varying degrees of completeness.
 
+```elisp
+(progn
+  (set-register ?s "♯")
+  (set-register ?b "♭")
+  (set-register ?x "𝄪")
+  (set-register ?f "𝄫")
+  (set-register ?u "↑")
+  (set-register ?d "↓")
+)
+```
+
 # Color Choices
 
 off/off interval colors
@@ -46,12 +57,41 @@ Examples:
 - `220*1\31\4` = 1 step of the division of two octaves into 31 equal divisions
 - `264*9/8*6/5` = Just minor third above Just whole tone above middle C
 
+Enhancements:
+* Parser fixes
+  * Treat bare number as `a/b` numerator
+  * Allow fixed point in `a/b` numerator position; convert to rational
+  * This makes a bare ratio/exponent valid, so need for `1*`
+* Recognize that `a/b` is `1/1\a/b`
+* Canonicalize:
+  * Multiply all terms with exponent 1
+  * Add exponents together for each distinct base
+  * Sort the (a, b, c, d) tuple numerically
+  * Example:
+    - 3/4*5/3*1\12*10\31*1\2/3/2 =
+    - 3/4 * 5/3 * 2^(1/12) * 2^(10/31) * (3/2)^(1/2) =
+    - 15/12 * 2^(1/12 + 10/31) * (3/2)^(1/2) =
+    - 5/4 * 2^(1/12 + 10/31) * (3/2)^(1/2) =
+    - 5/4 * 2^(151/372) * (3/2)^(1/2)
+    - 1\1/5/4 * 151\372/2/1 * 1\2*3/2 =
+    - 1\1/5/4 * 1\2*3/2 * 151\372/2/1
+
+# Idea for Just Intonation layout
+
+17/16 16/15 6/5 11/8  17/12  8/5  7/4 16/9
+ C♯    D♭    E♭   F↑   F♯     A♭  B♭↓  B♭
+
+ 1    9/8   5/4  4/3   3/2   5/3 15/8  2
+ C     D     E    F     G     A    B   C
+
+Repeat in octaves to get 4 octaves?
+
 # Scales
+
+(Outdated)
 
 Scale:
 ```toml
-
-
 - scale: name
   tonic: pitch
   octave: n  # steps in an octave, optional
