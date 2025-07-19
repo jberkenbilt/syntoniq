@@ -1,8 +1,12 @@
 #!/usr/bin/env python3
 import json
+import os
 import sys
 from operator import itemgetter
 import subprocess
+
+
+whereami = os.path.dirname(os.path.realpath(__file__))
 
 
 def rgb_to_hsv(r, g, b):
@@ -33,7 +37,7 @@ def rgb_to_hsv(r, g, b):
     return int(h), int(s*255), int(v*255)
 
 
-with open('colors.json', 'r') as f:
+with open(os.path.join(whereami, 'colors.json'), 'r') as f:
     colors = json.loads(f.read())
 
 hsv_colors = []

@@ -11,14 +11,14 @@ mod rgb_colors;
 const COLOR_WHITE: u8 = 0x03;
 const COLOR_BLUE: u8 = 0x4f;
 const COLOR_GREEN: u8 = 0x15;
-const COLOR_PURPLE: u8 = 0x35;
+const COLOR_PURPLE: u8 = 0x31;
 const COLOR_PINK: u8 = 0x38;
 const COLOR_RED: u8 = 0x06;
 const COLOR_ORANGE: u8 = 0x09;
-const COLOR_CYAN: u8 = 0x25;
+const COLOR_CYAN: u8 = 0x27;
 const COLOR_YELLOW: u8 = 0x0d;
 const COLOR_DULL_GRAY: u8 = 0x47;
-const COLOR_HIGHLIGHT_GRAY: u8 = 0x7d;
+const COLOR_HIGHLIGHT_GRAY: u8 = 0x01;
 
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
