@@ -154,7 +154,7 @@ impl Scale {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::pitch::{Multiplier, Ratio};
+    use crate::pitch::Factor;
 
     #[test]
     pub fn test_notes() -> anyhow::Result<()> {
@@ -163,10 +163,7 @@ mod tests {
             scale_type: ScaleType::EqualDivision(EqualDivision {
                 divisions: (12, 2, 1),
             }),
-            base_pitch: Pitch {
-                base: 261.626,
-                multipliers: vec![],
-            },
+            base_pitch: Pitch::new(vec![Factor::new(261626, 1000, 1, 1)?]),
             note_names: vec![],
         };
         let note = edo12.note(0, 9);
@@ -184,13 +181,7 @@ mod tests {
             scale_type: ScaleType::EqualDivision(EqualDivision {
                 divisions: (6, 2, 1),
             }),
-            base_pitch: Pitch {
-                base: 440.0,
-                multipliers: vec![Multiplier::Ratio(Ratio {
-                    numerator: 3,
-                    denominator: 5,
-                })],
-            },
+            base_pitch: Pitch::new(vec![Factor::new(440, 1, 1, 1)?, Factor::new(3, 5, 1, 1)?]),
             note_names: ["C", "D", "E", "F#", "G#", "A#"]
                 .into_iter()
                 .map(str::to_string)

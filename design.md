@@ -46,6 +46,11 @@ We also use a special highlight color for the single step is it's immediately cl
 
 # Pitch specification
 
+Update:
+* no more freq; just factors
+* rational is `a[/b]`
+* rational numerator may have up to three decimal places
+
 * `freq*a/b` = obvious
 * `freq*a\b\c/d` = `c/d^(a/b)`, default for c = 2, default for d = 1
 * Can chain multiplications

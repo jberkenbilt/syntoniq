@@ -61,7 +61,7 @@ impl Config {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::pitch::{Exponent, Multiplier, Pitch};
+    use crate::pitch::{Factor, Pitch};
     use crate::scale::{EqualDivision, ScaleType};
 
     #[test]
@@ -83,15 +83,10 @@ steps = [2, 1]
         let exp = ConfigFile {
             scale: vec![Scale {
                 name: "EDO-12".to_string(),
-                base_pitch: Pitch {
-                    base: 220.0,
-                    multipliers: vec![Multiplier::Exponent(Exponent {
-                        exp_numerator: 3,
-                        exp_denominator: 12,
-                        base_numerator: 2,
-                        base_denominator: 1,
-                    })],
-                },
+                base_pitch: Pitch::new(vec![
+                    Factor::new(220, 1, 1, 1).unwrap(),
+                    Factor::new(2, 1, 3, 12).unwrap(),
+                ]),
                 scale_type: ScaleType::EqualDivision(EqualDivision {
                     divisions: (12, 2, 1),
                 }),
