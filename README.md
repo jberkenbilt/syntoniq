@@ -1,7 +1,6 @@
 2025-07-19
 
 Next tasks, in undefined order, are:
-* Generalize pitch, canonicalize; use canonical note for note unique ID
 * Get the web UI up
 * Vertical arrow keys (70, 80) shift pitch up and down by a cycle (or octave if no cycle)
 

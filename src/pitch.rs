@@ -5,6 +5,7 @@ use serde::de::Visitor;
 use serde::{Deserialize, Deserializer, de};
 use std::collections::HashMap;
 use std::fmt;
+use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -18,6 +19,31 @@ pub struct Factor {
     exp: Ratio<i32>,
 }
 
+impl Display for Factor {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        fn write_frac(f: &mut Formatter<'_>, num: u32, den: u32) -> fmt::Result {
+            write!(f, "{num}")?;
+            if den != 1 {
+                write!(f, "/{den}")?;
+            }
+            Ok(())
+        }
+
+        let num = self.base.numer();
+        let den = self.base.denom();
+        if self.exp == Ratio::from_integer(1) {
+            write_frac(f, *num, *den)?;
+        } else {
+            write!(f, "{}\\{}", *self.exp.numer(), *self.exp.denom())?;
+            if self.base != Ratio::from_integer(2) {
+                write!(f, "/")?;
+                write_frac(f, *num, *den)?;
+            }
+        }
+        Ok(())
+    }
+}
+
 impl Factor {
     pub fn new(
         base_numerator: u32,
@@ -25,12 +51,8 @@ impl Factor {
         exp_numerator: i32,
         exp_denominator: i32,
     ) -> anyhow::Result<Self> {
-        if base_numerator == 0
-            || base_denominator == 0
-            || exp_numerator == 0
-            || exp_denominator == 0
-        {
-            bail!("zero may not appear in pitch specification");
+        if base_numerator == 0 || base_denominator == 0 || exp_denominator == 0 {
+            bail!("zero may not appear in pitch specification denominator");
         }
         Ok(Self {
             base: Ratio::new(base_numerator, base_denominator),
@@ -46,6 +68,21 @@ impl Factor {
             let exp = *self.exp.numer() as f32 / *self.exp.denom() as f32;
             base.powf(exp)
         }
+    }
+}
+
+impl Display for Pitch {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        let mut first = true;
+        for factor in &self.factors {
+            if first {
+                first = false;
+            } else {
+                write!(f, "*")?;
+            }
+            write!(f, "{factor}")?;
+        }
+        Ok(())
     }
 }
 
@@ -224,7 +261,7 @@ impl<'de> Deserialize<'de> for Pitch {
         impl<'de> Visitor<'de> for PitchVisitor {
             type Value = Pitch;
 
-            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+            fn expecting(&self, formatter: &mut Formatter) -> fmt::Result {
                 formatter.write_str("a string representing a pitch")
             }
 
@@ -303,12 +340,21 @@ mod tests {
         check("250*5\\31", "100*2\\31*3\\31*5/2")?;
         check("100*2\\2", "200")?;
         check("660*-5\\12", "330*7\\12")?;
+        check("500*0\\31", "500")?;
 
         let p1 = Pitch::parse("440")?;
         let p2 = p1.concat(Pitch::parse("3/2")?);
         assert_eq!(p2, Pitch::parse("660")?);
         let p3 = p2.concat(Pitch::parse("-5\\12")?);
         assert_eq!(p3, Pitch::parse("330*7\\12")?);
+
+        assert_eq!(p1.to_string(), "440");
+        assert_eq!(p2.to_string(), "660");
+        assert_eq!(p3.to_string(), "330*7\\12");
+        assert_eq!(
+            Pitch::parse("3/4*5/3*1\\12*10\\31*1\\2/3/2")?.to_string(),
+            "151\\372*1\\2/3/2*5/4"
+        );
 
         Ok(())
     }

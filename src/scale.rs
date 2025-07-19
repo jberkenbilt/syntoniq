@@ -1,5 +1,5 @@
 use crate::events::{Color, Event, LightEvent, LightMode};
-use crate::pitch::Pitch;
+use crate::pitch::{Factor, Pitch};
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug, PartialEq)]
@@ -21,17 +21,16 @@ pub enum ScaleType {
 #[derive(Deserialize, Debug, PartialEq)]
 pub struct EqualDivision {
     /// divisions, interval numerator, interval denominator, e.g. (31, 2, 1) for EDO-31
-    pub divisions: (i8, i8, i8),
+    pub divisions: (u32, u32, u32),
 }
 
 #[derive(Debug, PartialEq)]
 pub struct Note {
     pub name: String,
-    pub unique_id: String,
+    pub pitch: Pitch,
     pub scale_name: String,
     pub cycle: i8,
     pub step: i8,
-    pub freq: f32,
     /// The midi number in adjusted_midi not based on pitch but rather based on scale degrees away
     /// from the tonic, which is always note 60. This allows us to send MIDI not numbers to a system
     /// like Surge-XT
@@ -69,17 +68,15 @@ impl Scale {
     }
 
     pub fn note_equal_division(&self, data: &EqualDivision, cycle: i8, step: i8) -> Note {
-        let mut freq = self.base_pitch.as_float();
-        let base = freq;
         let (divisions, num, den) = data.divisions;
-        let interval = num as f32 / den as f32;
-        freq *= interval.powf(cycle as f32);
-        let step_factor = interval.powf(1.0 / divisions as f32);
-        freq *= step_factor.powf(step as f32);
+        let steps = divisions as i32 * cycle as i32 + step as i32;
+        let pitch = self.base_pitch.concat(Pitch::new(vec![
+            Factor::new(num, den, steps, divisions as i32).unwrap(),
+        ]));
+        let freq = pitch.as_float();
         let pitch_midi = Self::freq_midi(freq);
-        let adjusted_midi = (60 + divisions * cycle + step) as u8;
-        let normalized_step = step % divisions;
-        let normalized_cycle = cycle + (step - normalized_step) / divisions;
+        let adjusted_midi = (60 + steps) as u8;
+        let normalized_step = step % divisions as i8;
         let note_idx = normalized_step as usize;
         let name = self.note_names.get(note_idx).cloned().unwrap_or_default();
         let colors = if normalized_step == 1 {
@@ -87,15 +84,14 @@ impl Scale {
             // where the single step is.
             (Color::HighlightGray, Color::White)
         } else {
-            Self::interval_color(freq / base)
+            Self::interval_color(freq / self.base_pitch.as_float())
         };
         Note {
             name,
-            unique_id: format!("{}:{normalized_cycle}.{normalized_step}", self.name),
+            pitch,
             scale_name: self.name.clone(),
             cycle,
             step,
-            freq,
             adjusted_midi,
             nearest_pitch_midi: pitch_midi,
             colors,
@@ -168,7 +164,7 @@ mod tests {
         };
         let note = edo12.note(0, 9);
         dbg!(&note);
-        assert_eq!(note.freq.round(), 440.0);
+        assert_eq!(note.pitch.as_float().round(), 440.0);
         assert_eq!(note.adjusted_midi, 69);
         assert_eq!(note.nearest_pitch_midi, (69, 8192));
         assert_eq!(note.name, "");
@@ -189,7 +185,7 @@ mod tests {
         };
         let note = edo6.note(0, 3);
         dbg!(&note);
-        assert_eq!((100.0 * note.freq).round(), 37335.0);
+        assert_eq!((100.0 * note.pitch.as_float()).round(), 37335.0);
         assert_eq!(note.adjusted_midi, 63);
         assert_eq!(note.nearest_pitch_midi, (66, 8833));
         assert_eq!(note.name, "F#");

@@ -4,6 +4,7 @@ use crate::events::{
     SelectLayoutEvent, UpdateNoteEvent,
 };
 use crate::layout::Layout;
+use crate::pitch::Pitch;
 use crate::scale::{Note, Scale, ScaleType};
 use crate::{controller, csound, events, midi_player};
 use anyhow::anyhow;
@@ -33,9 +34,9 @@ struct Engine {
     /// control key position -> selected layout
     assigned_layouts: HashMap<u8, Arc<Layout>>,
     notes: HashMap<u8, Option<PlayedNote>>,
-    note_positions: HashMap<String, HashSet<u8>>,
+    note_positions: HashMap<Pitch, HashSet<u8>>,
     sustain: bool,
-    notes_on: HashMap<String, u8>, // number of times a note is on
+    notes_on: HashMap<Pitch, u8>, // number of times a note is on
 }
 
 impl Engine {
@@ -122,14 +123,14 @@ impl Engine {
             }
             position if self.notes.contains_key(&position) => {
                 if let Some(note) = self.notes.get(&position).unwrap() {
-                    let note_id = &note.note.unique_id;
-                    let Some(others) = self.note_positions.get(note_id) else {
+                    let pitch = &note.note.pitch;
+                    let Some(others) = self.note_positions.get(pitch) else {
                         // This would indicate a bug in which we assigned something to notes
                         // without also assigning its position to note positions or otherwise
                         // allowed notes and note_positions to get out of sync.
-                        return Err(anyhow!("note positions is missing for {note_id}"));
+                        return Err(anyhow!("note positions is missing for {pitch}"));
                     };
-                    let note_count = self.notes_on.entry(note_id.clone()).or_default();
+                    let note_count = self.notes_on.entry(pitch.clone()).or_default();
                     // When not in sustain mode, touch turns a note on, and release turns it off.
                     // Since the same note may appear in multiple locations, we keep a count, and on
                     // send a note event if we transition to or from 0. In sustain mode, "off"
@@ -187,7 +188,7 @@ impl Engine {
             Some(played_note) => {
                 let note = played_note.note.clone();
                 self.note_positions
-                    .entry(note.unique_id.clone())
+                    .entry(note.pitch.clone())
                     .or_default()
                     .insert(position);
                 tx.send(note.light_event(position, played_note.velocity))?;
@@ -217,6 +218,7 @@ impl Engine {
         let (steps_x, steps_y) = layout.steps;
         let (base_x, base_y) = layout.base;
         let (divisions, _, _) = ed.divisions;
+        let divisions = divisions as i32;
         self.note_positions.clear();
         self.notes.clear();
         for row in 1..=8 {
@@ -224,21 +226,16 @@ impl Engine {
                 let played_note = if !(llx..=urx).contains(&col) || !(lly..=ury).contains(&row) {
                     None
                 } else {
-                    let steps = steps_x * (col - base_x) + steps_y * (row - base_y);
+                    let steps = (steps_x * (col - base_x) + steps_y * (row - base_y)) as i32;
                     let cycle = steps / divisions;
                     let step = steps % divisions;
-                    let note = scale.note(cycle, step);
-                    let velocity = if self
-                        .notes_on
-                        .get(&note.unique_id)
-                        .copied()
-                        .unwrap_or_default()
-                        > 0
-                    {
-                        127
-                    } else {
-                        0
-                    };
+                    let note = scale.note(cycle as i8, step as i8);
+                    let velocity =
+                        if self.notes_on.get(&note.pitch).copied().unwrap_or_default() > 0 {
+                            127
+                        } else {
+                            0
+                        };
                     Some(PlayedNote {
                         note: Arc::new(note),
                         velocity,

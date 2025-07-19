@@ -1,4 +1,5 @@
 use crate::events::Event;
+use crate::pitch::Pitch;
 use crate::scale::Note;
 use crate::{events, to_anyhow};
 use midir::os::unix::VirtualOutput;
@@ -7,7 +8,7 @@ use std::collections::HashMap;
 
 struct Player {
     output_connection: MidiOutputConnection,
-    bend_to_notes: HashMap<u16, HashMap<String, u8>>,
+    bend_to_notes: HashMap<u16, HashMap<Pitch, u8>>,
     bend_to_channel: HashMap<u16, u8>,
     channels: [bool; 16],
 }
@@ -15,23 +16,23 @@ struct Player {
 impl Player {
     pub fn handle_note(&mut self, note: &Note, velocity: u8) -> anyhow::Result<()> {
         let (note_number, bend) = note.nearest_pitch_midi;
-        let note_id = &note.unique_id;
+        let pitch = &note.pitch;
         let notes = self.bend_to_notes.get_mut(&bend);
         let mut ch = self.bend_to_channel.get(&bend).copied();
         if velocity == 0 {
             // Remove the note if it was on, freeing the channel if we can
             let Some(notes) = notes else {
                 // Should not be possible
-                log::warn!("midi player: no notes for {bend}; ignoring off for {note_id}");
+                log::warn!("midi player: no notes for {bend}; ignoring off for {pitch}");
                 return Ok(());
             };
-            let Some(count) = notes.get_mut(note_id) else {
-                log::warn!("midi player: no count for {note_id}; ignoring off");
+            let Some(count) = notes.get_mut(pitch) else {
+                log::warn!("midi player: no count for {pitch}; ignoring off");
                 return Ok(());
             };
             *count -= 1;
             if *count == 0 {
-                notes.remove(note_id);
+                notes.remove(pitch);
             }
             if notes.is_empty() {
                 self.bend_to_notes.remove(&bend);
@@ -65,7 +66,7 @@ impl Player {
                 .bend_to_notes
                 .entry(bend)
                 .or_default()
-                .entry(note.unique_id.clone())
+                .entry(note.pitch.clone())
                 .or_default() += 1;
         }
         let Some(ch) = ch else {

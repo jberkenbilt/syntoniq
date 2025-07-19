@@ -1,6 +1,7 @@
 use crate::csound::wrapper::CsoundApi;
 use crate::events;
 use crate::events::Event;
+use crate::pitch::Pitch;
 use crate::scale::Note;
 use std::collections::HashMap;
 
@@ -8,9 +9,9 @@ mod wrapper;
 
 struct CSound {
     api: CsoundApi,
-    notes: HashMap<String, u32>,
-    note_to_number: HashMap<String, u32>,
-    number_to_note: HashMap<u32, String>,
+    notes: HashMap<Pitch, u32>,
+    note_to_number: HashMap<Pitch, u32>,
+    number_to_note: HashMap<u32, Pitch>,
 }
 
 const CSOUND_FILE: &str = include_str!("sound.csd");
@@ -27,11 +28,11 @@ impl CSound {
     }
 
     pub async fn handle_note(&mut self, note: &Note, velocity: u8) -> anyhow::Result<()> {
-        let note_id = note.unique_id.clone();
-        let e = self.notes.entry(note.unique_id.clone()).or_default();
+        let pitch = note.pitch.clone();
+        let e = self.notes.entry(note.pitch.clone()).or_default();
         let (turn_on, number) = if velocity == 0 {
             if *e == 0 {
-                log::warn!("csound received note off for unknown note {note_id}");
+                log::warn!("csound received note off for unknown note {pitch}");
                 return Ok(());
             }
             *e -= 1;
@@ -39,8 +40,8 @@ impl CSound {
                 // The note is on more than once
                 return Ok(());
             }
-            let Some(n) = self.note_to_number.get(&note_id) else {
-                log::warn!("no note number known for note {note_id}");
+            let Some(n) = self.note_to_number.get(&pitch) else {
+                log::warn!("no note number known for note {pitch}");
                 return Ok(());
             };
             (false, *n)
@@ -63,12 +64,12 @@ impl CSound {
         };
 
         let message = if turn_on {
-            self.note_to_number.insert(note_id.clone(), number);
-            self.number_to_note.insert(number, note_id.clone());
-            let freq = note.freq;
+            self.note_to_number.insert(pitch.clone(), number);
+            self.number_to_note.insert(number, pitch.clone());
+            let freq = note.pitch.as_float();
             format!("i 1.{number} 0 -1 {freq}")
         } else {
-            self.note_to_number.remove(&note_id);
+            self.note_to_number.remove(&pitch);
             self.number_to_note.remove(&number);
             format!("i 1.{number} 0 0")
         };
