@@ -15,15 +15,15 @@ pub struct Pitch {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Factor {
     base: Ratio<u32>,
-    exp: Ratio<u32>,
+    exp: Ratio<i32>,
 }
 
 impl Factor {
     pub fn new(
         base_numerator: u32,
         base_denominator: u32,
-        exp_numerator: u32,
-        exp_denominator: u32,
+        exp_numerator: i32,
+        exp_denominator: i32,
     ) -> anyhow::Result<Self> {
         if base_numerator == 0
             || base_denominator == 0
@@ -51,13 +51,14 @@ impl Factor {
 
 impl Pitch {
     pub fn new(factors: Vec<Factor>) -> Self {
-        // Canonicalize. This was AI-generated with an extremely detailed spec of the algorithm.
+        // Canonicalize. This was AI-generated with an extremely detailed spec of the algorithm
+        // and subsequently modified.
 
         // For factors with exponent = 1, we'll multiply them together
         let mut exp_1 = Ratio::<u32>::from_integer(1);
 
         // For other factors, group by base and sum exponents
-        let mut by_base: HashMap<Ratio<u32>, Ratio<u32>> = HashMap::new();
+        let mut by_base: HashMap<Ratio<u32>, Ratio<i32>> = HashMap::new();
 
         for factor in factors {
             // Create rationals and reduce to simplest terms
@@ -73,8 +74,26 @@ impl Pitch {
             }
         }
 
-        // Build result vector
         let mut result = Vec::new();
+
+        // Add all other factors with base other than 1. If the exponent is negative, adjust
+        // the exp_1 base and make it positive.
+        for (base, mut exp) in by_base {
+            // Skip if exponent reduces to 0 (shouldn't happen with your validation)
+            while *exp.numer() < 0 {
+                exp += Ratio::from_integer(1);
+                exp_1 /= base;
+            }
+            if *exp.numer() == 0 {
+                continue;
+            }
+            if base == Ratio::from_integer(1) {
+                // The exponent doesn't matter if the base is 1
+                exp = Ratio::from_integer(1);
+            }
+
+            result.push(Factor { base, exp });
+        }
 
         // Add the multiplied factors if we had any
         if exp_1 != Ratio::from_integer(1) {
@@ -84,19 +103,7 @@ impl Pitch {
             });
         }
 
-        // Add all the other factors
-        for (base, mut exp) in by_base {
-            // Skip if exponent reduces to 0 (shouldn't happen with your validation)
-            if *exp.numer() != 0 {
-                if base == Ratio::from_integer(1) {
-                    // The exponent doesn't matter if the base is 1
-                    exp = Ratio::from_integer(1);
-                }
-                result.push(Factor { base, exp });
-            }
-        }
-
-        // Sort by the tuple as specified
+        // Sort for predictability
         result.sort_by_key(|f| (f.base, f.exp));
         result.reverse();
 
@@ -122,7 +129,7 @@ impl Pitch {
                         |
                         # Exponent: a\b[c[/d]]
                         (?P<exp>
-                            (?P<e_num>\d+)
+                            (?P<e_num>-?\d+)
                             \\
                             (?P<e_den>\d+)
                             (?:
@@ -159,8 +166,8 @@ impl Pitch {
                 }
                 // Exponent, eg. 3\12, 4\7/4/3
                 if cap.name("exp").is_some() {
-                    let exp_numerator: u32 = cap["e_num"].parse()?;
-                    let exp_denominator: u32 = cap["e_den"].parse()?;
+                    let exp_numerator: i32 = cap["e_num"].parse()?;
+                    let exp_denominator: i32 = cap["e_den"].parse()?;
 
                     let base_numerator: u32 = if let Some(num) = cap.name("e_base_num") {
                         num.as_str().parse()?
@@ -295,10 +302,13 @@ mod tests {
         check("440", "440*3/4*4/3")?;
         check("250*5\\31", "100*2\\31*3\\31*5/2")?;
         check("100*2\\2", "200")?;
+        check("660*-5\\12", "330*7\\12")?;
 
         let p1 = Pitch::parse("440")?;
         let p2 = p1.concat(Pitch::parse("3/2")?);
         assert_eq!(p2, Pitch::parse("660")?);
+        let p3 = p2.concat(Pitch::parse("-5\\12")?);
+        assert_eq!(p3, Pitch::parse("330*7\\12")?);
 
         Ok(())
     }
