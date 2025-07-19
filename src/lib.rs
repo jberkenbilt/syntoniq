@@ -9,7 +9,6 @@ pub mod layout;
 pub mod midi_player;
 pub mod pitch;
 pub mod scale;
-pub mod web;
 
 fn to_anyhow<E: Display>(e: E) -> anyhow::Error {
     anyhow!("{e}")

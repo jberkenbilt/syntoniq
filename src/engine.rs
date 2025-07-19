@@ -51,18 +51,19 @@ impl Engine {
             return Ok(());
         };
         controller::clear_lights(&tx).await?;
+        // TODO: fix these
         for (color, positions) in [
             (
-                Color::Green,
+                Color::FifthOn, // green
                 vec![63u8, 64, 65, 66, 52, 57, 42, 47, 32, 37, 23, 24, 25],
             ),
-            (Color::Blue, vec![34, 35, 16, 17, 18]),
-            (Color::Cyan, vec![26]),
-            (Color::Purple, vec![72, 73, 74, 75, 76, 77]),
-            (Color::Pink, vec![83]),
-            (Color::Orange, vec![84]),
-            (Color::Yellow, vec![85]),
-            (Color::Red, vec![86]),
+            (Color::FifthOff, vec![34, 35, 16, 17, 18]), // blue
+            (Color::TonicOff, vec![26]),                 // cyan
+            (Color::MajorThirdOff, vec![72, 73, 74, 75, 76, 77]), // purple
+            (Color::MajorThirdOn, vec![83]),             // pink
+            (Color::MinorThirdOn, vec![84]),             // orange
+            (Color::TonicOn, vec![85]),                  // yellow
+            (Color::MinorThirdOff, vec![86]),            //red
         ] {
             for position in positions {
                 tx.send(Event::Light(LightEvent {
@@ -77,7 +78,7 @@ impl Engine {
         tx.send(Event::Light(LightEvent {
             mode: LightMode::On,
             position: keys::CLEAR,
-            color: Color::White,
+            color: Color::Active,
             label1: "Reset".to_string(),
             label2: String::new(),
         }))?;
@@ -92,7 +93,7 @@ impl Engine {
                 tx.send(Event::Light(LightEvent {
                     mode: LightMode::On,
                     position: keys::LAYOUT_SCROLL,
-                    color: Color::White,
+                    color: Color::Active,
                     label1: "Scroll".to_string(),
                     label2: "layouts".to_string(),
                 }))?;
@@ -254,9 +255,9 @@ impl Engine {
 
     fn sustain_event(&self) -> Event {
         let sustain_color = if self.sustain {
-            Color::Green
+            Color::ToggleOn
         } else {
-            Color::Red
+            Color::ToggleOff
         };
         Event::Light(LightEvent {
             mode: LightMode::On,
@@ -298,7 +299,7 @@ impl Engine {
         tx.send(Event::Light(LightEvent {
             mode: LightMode::On,
             position,
-            color: Color::White,
+            color: Color::Active,
             label1: layout.name.clone(),
             label2: layout.scale_name.clone(),
         }))?;

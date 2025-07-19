@@ -132,7 +132,7 @@ async fn colors_main(
             tx.send(Event::Light(LightEvent {
                 mode: LightMode::On,
                 position,
-                color: Color::White,
+                color: Color::Active,
                 label1: String::new(),
                 label2: String::new(),
             }))?;
@@ -143,21 +143,21 @@ async fn colors_main(
             tx.send(Event::Light(LightEvent {
                 mode: LightMode::On,
                 position,
-                color: Color::White,
+                color: Color::Active,
                 label1: String::new(),
                 label2: String::new(),
             }))?;
         }
     }
     for (position, color) in [
-        (11, Color::Blue),
-        (12, Color::Purple),
-        (13, Color::Red),
-        (14, Color::Cyan),
-        (15, Color::Green),
-        (16, Color::Pink),
-        (17, Color::Orange),
-        (18, Color::Yellow),
+        (11, Color::FifthOff),
+        (12, Color::MajorThirdOff),
+        (13, Color::MinorThirdOff),
+        (14, Color::TonicOff),
+        (15, Color::FifthOn),
+        (16, Color::MajorThirdOn),
+        (17, Color::MinorThirdOn),
+        (18, Color::TonicOn),
     ] {
         tx.send(Event::Light(LightEvent {
             mode: LightMode::On,
@@ -168,14 +168,15 @@ async fn colors_main(
         }))?;
     }
     let simulated = [
-        (Color::Cyan, Color::Yellow, [32, 51]),
-        (Color::HighlightGray, Color::White, [33, 52]),
-        (Color::Purple, Color::Pink, [34, 53]),
-        (Color::Blue, Color::Green, [44, 63]),
-        (Color::Blue, Color::Green, [45, 64]),
-        (Color::Red, Color::Orange, [46, 65]),
-        (Color::DullGray, Color::White, [47, 66]),
-        (Color::Cyan, Color::Yellow, [57, 76]),
+        (Color::TonicOff, Color::TonicOn, [32, 51]),
+        (Color::SingleStepOff, Color::SingleStepOn, [33, 52]),
+        (Color::MinorThirdOff, Color::MinorThirdOn, [43, 62]),
+        (Color::MajorThirdOff, Color::MajorThirdOn, [34, 53]),
+        (Color::FifthOff, Color::FifthOn, [44, 63]),
+        (Color::FifthOff, Color::FifthOn, [45, 64]),
+        (Color::MinorThirdOff, Color::MinorThirdOn, [46, 65]),
+        (Color::OtherOff, Color::OtherOn, [47, 66]),
+        (Color::TonicOff, Color::TonicOn, [57, 76]),
     ];
     let mut pos_to_off = HashMap::new();
     let mut pos_to_on = HashMap::new();

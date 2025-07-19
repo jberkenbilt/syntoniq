@@ -82,7 +82,7 @@ impl Scale {
         let colors = if normalized_step == 1 {
             // Special case: use a slightly different color for idx 1 so we can see clearly
             // where the single step is.
-            (Color::HighlightGray, Color::White)
+            (Color::SingleStepOff, Color::SingleStepOn)
         } else {
             Self::interval_color(freq / self.base_pitch.as_float())
         };
@@ -110,10 +110,10 @@ impl Scale {
         // Note: EDO-12 minor third is by 15.64 cents.
         let tolerance_cents = 2.0f32.powf(16.0 / 1200.0);
         for (ratio, colors) in [
-            (1.0, (Color::Cyan, Color::Yellow)),
-            (3.0 / 2.0, (Color::Blue, Color::Green)),
-            (5.0 / 4.0, (Color::Purple, Color::Pink)),
-            (6.0 / 5.0, (Color::Red, Color::Orange)),
+            (1.0, (Color::TonicOff, Color::TonicOn)),
+            (3.0 / 2.0, (Color::FifthOff, Color::FifthOn)),
+            (5.0 / 4.0, (Color::MajorThirdOff, Color::MajorThirdOn)),
+            (6.0 / 5.0, (Color::MinorThirdOff, Color::MinorThirdOn)),
         ] {
             // Interval will never be zero unless someone put zeros in their scale files, and we
             // check against that when validating the config file.
@@ -128,7 +128,7 @@ impl Scale {
                 }
             }
         }
-        (Color::DullGray, Color::White)
+        (Color::OtherOff, Color::OtherOn)
     }
 
     /// Compute a frequency to a midi note number and a pitch bend value using ±2 semitones.
@@ -170,7 +170,7 @@ mod tests {
         assert_eq!(note.name, "");
         assert_eq!(note.cycle, 0);
         assert_eq!(note.step, 9);
-        assert_eq!(note.colors, (Color::Red, Color::Orange));
+        assert_eq!(note.colors, (Color::MinorThirdOff, Color::MinorThirdOn));
 
         let edo6 = Scale {
             name: "edo-6".to_string(),
@@ -199,10 +199,10 @@ mod tests {
             let (c, _) = Scale::interval_color(Pitch::parse(pitch).unwrap().as_float());
             c
         }
-        assert_eq!(get_color("1*3/2"), Color::Blue); // JI 5th
-        assert_eq!(get_color("1*9\\12"), Color::Red); // EDO-12 minor sixth
-        assert_eq!(get_color("1*10\\31"), Color::Purple); // EDO-31 major third
-        assert_eq!(get_color("1*7\\17"), Color::Blue); // EDO-17 fourth
-        assert_eq!(get_color("1*5\\17"), Color::DullGray); // nope
+        assert_eq!(get_color("1*3/2"), Color::FifthOff); // JI 5th
+        assert_eq!(get_color("1*9\\12"), Color::MinorThirdOff); // EDO-12 major sixth
+        assert_eq!(get_color("1*10\\31"), Color::MajorThirdOff); // EDO-31 major third
+        assert_eq!(get_color("1*7\\17"), Color::FifthOff); // EDO-17 fourth
+        assert_eq!(get_color("1*5\\17"), Color::OtherOff); // nope
     }
 }

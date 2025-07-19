@@ -8,36 +8,56 @@ use tokio::sync::broadcast::error::RecvError;
 
 mod rgb_colors;
 
+const COLOR_WHITE: u8 = 0x03;
+const COLOR_BLUE: u8 = 0x4f;
+const COLOR_GREEN: u8 = 0x15;
+const COLOR_PURPLE: u8 = 0x35;
+const COLOR_PINK: u8 = 0x38;
+const COLOR_RED: u8 = 0x06;
+const COLOR_ORANGE: u8 = 0x09;
+const COLOR_CYAN: u8 = 0x25;
+const COLOR_YELLOW: u8 = 0x0d;
+const COLOR_DULL_GRAY: u8 = 0x47;
+const COLOR_HIGHLIGHT_GRAY: u8 = 0x7d;
+
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
     Off,
-    Blue,
-    Green,
-    Purple,
-    Pink,
-    Red,
-    Orange,
-    Cyan,
-    Yellow,
-    DullGray,
-    HighlightGray,
-    White,
+    Active,
+    ToggleOff,
+    ToggleOn,
+    FifthOff,
+    FifthOn,
+    MajorThirdOff,
+    MajorThirdOn,
+    MinorThirdOff,
+    MinorThirdOn,
+    TonicOff,
+    TonicOn,
+    SingleStepOff,
+    SingleStepOn,
+    OtherOff,
+    OtherOn,
 }
 impl Color {
     pub fn launchpad_color(&self) -> u8 {
         match self {
             Color::Off => 0,
-            Color::Blue => 0x4f, //2d,
-            Color::Green => 0x15,
-            Color::Purple => 0x35,
-            Color::Pink => 0x38,
-            Color::Red => 0x06,
-            Color::Orange => 0x09,
-            Color::Cyan => 0x25,
-            Color::Yellow => 0x0d,
-            Color::DullGray => 0x47,
-            Color::HighlightGray => 0x7d,
-            Color::White => 0x03,
+            Color::Active => COLOR_WHITE,
+            Color::ToggleOff => COLOR_RED,
+            Color::ToggleOn => COLOR_GREEN,
+            Color::FifthOff => COLOR_BLUE,
+            Color::FifthOn => COLOR_GREEN,
+            Color::MajorThirdOff => COLOR_PURPLE,
+            Color::MajorThirdOn => COLOR_PINK,
+            Color::MinorThirdOff => COLOR_RED,
+            Color::MinorThirdOn => COLOR_ORANGE,
+            Color::TonicOff => COLOR_CYAN,
+            Color::TonicOn => COLOR_YELLOW,
+            Color::OtherOff => COLOR_DULL_GRAY,
+            Color::OtherOn => COLOR_WHITE,
+            Color::SingleStepOff => COLOR_HIGHLIGHT_GRAY,
+            Color::SingleStepOn => COLOR_WHITE,
         }
     }
 
