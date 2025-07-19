@@ -100,6 +100,7 @@ pub struct PlayNoteEvent {
 
 #[derive(Clone, Debug)]
 pub enum Event {
+    Shutdown,
     Light(LightEvent),
     Key(KeyEvent),
     Pressure(PressureEvent),
@@ -156,6 +157,7 @@ pub async fn receive_check_lag(rx: &mut Receiver, warn_prefix: Option<&str>) -> 
     loop {
         let event = rx.recv().await;
         match event {
+            Ok(Event::Shutdown) => return None,
             Ok(event) => return Some(event),
             Err(err) => match err {
                 RecvError::Closed => return None,

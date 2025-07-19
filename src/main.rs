@@ -9,9 +9,13 @@ use std::collections::HashMap;
 use std::path::PathBuf;
 use std::{env, io};
 
+// TODO: format or wrap help text
+
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
 /// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
 /// If RUST_LOG is not set, the log level defaults to Info.
+/// Set RUST_LOG=qlaunchpad::module::path=level to see messages for a given module.
+/// Set RUST_LOG=qlaunchpad to see all messages.
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Cli {

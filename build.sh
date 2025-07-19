@@ -8,7 +8,8 @@ set -eo pipefail
 cargo fmt
 cargo clippy --no-deps
 cargo clippy --tests --no-deps
-cargo doc --document-private-items --no-deps
+# Avoid --document-private-items -- generates warnings with csound docs
+cargo doc --no-deps
 cargo build --workspace --all-targets
 export RUST_BACKTRACE=1
 cargo test --workspace

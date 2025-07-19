@@ -5,7 +5,7 @@ use crate::events::{
 };
 use crate::layout::Layout;
 use crate::scale::{Note, Scale, ScaleType};
-use crate::{controller, events, midi_player};
+use crate::{controller, csound, events, midi_player};
 use anyhow::anyhow;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
@@ -327,11 +327,18 @@ pub async fn run(
         sustain: false,
         notes_on: Default::default(),
     };
+    let rx2 = rx.resubscribe();
+    let tx2 = events_tx.clone();
     if midi {
-        let rx2 = rx.resubscribe();
         tokio::spawn(async move {
             if let Err(e) = midi_player::play_midi(rx2).await {
                 log::error!("midi player error: {e}");
+            };
+        });
+    } else {
+        tokio::spawn(async move {
+            if let Err(e) = csound::run_csound(rx2, tx2).await {
+                log::error!("csound player error: {e}");
             };
         });
     }
@@ -346,6 +353,7 @@ pub async fn run(
         // be most likely to miss our the ones we just sent, but we could also miss other people's
         // responses to those. We are not as likely to miss user events.
         match event {
+            Event::Shutdown => break,
             Event::Light(_) => {}
             Event::Key(e) => engine.handle_key(e).await?,
             Event::Pressure(_) => {}
