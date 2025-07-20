@@ -31,12 +31,6 @@ pub struct Note {
     pub scale_name: String,
     pub cycle: i8,
     pub step: i8,
-    /// The midi number in adjusted_midi not based on pitch but rather based on scale degrees away
-    /// from the tonic, which is always note 60. This allows us to send MIDI not numbers to a system
-    /// like Surge-XT
-    pub adjusted_midi: u8,
-    /// This is the closest 12-TET midi number to the pitch and a pitch bend assuming ±2 cents.
-    pub nearest_pitch_midi: (u8, u16),
     pub colors: (Color, Color), // note off, note on
 }
 impl Note {
@@ -74,8 +68,6 @@ impl Scale {
             Factor::new(num, den, steps, divisions as i32).unwrap(),
         ]));
         let freq = pitch.as_float();
-        let pitch_midi = Self::freq_midi(freq);
-        let adjusted_midi = (60 + steps) as u8;
         let normalized_step = step % divisions as i8;
         let note_idx = normalized_step as usize;
         let name = self.note_names.get(note_idx).cloned().unwrap_or_default();
@@ -92,8 +84,6 @@ impl Scale {
             scale_name: self.name.clone(),
             cycle,
             step,
-            adjusted_midi,
-            nearest_pitch_midi: pitch_midi,
             colors,
         }
     }
@@ -130,21 +120,6 @@ impl Scale {
         }
         (Color::OtherOff, Color::OtherOn)
     }
-
-    /// Compute a frequency to a midi note number and a pitch bend value using ±2 semitones.
-    /// Panics if the frequency is out of range.
-    fn freq_midi(f: f32) -> (u8, u16) {
-        // TODO: do proper range checking
-        let n1 = 69.0 + 12.0 * (f / 440.0).log2();
-        let note = n1.round() as u8;
-        let delta = n1 - note as f32;
-        // - pitch bend is 8192 + 8192 * (semitones/bend range)
-        // - bend range is typically 2 semitones
-        // - 8192*delta/2 is 4096*delta
-        // In other words, this the fraction numerator centered at 8192.
-        let bend = (8192.0 + (4096.0 * delta).round()) as u16;
-        (note, bend)
-    }
 }
 
 #[cfg(test)]
@@ -165,8 +140,7 @@ mod tests {
         let note = edo12.note(0, 9);
         dbg!(&note);
         assert_eq!(note.pitch.as_float().round(), 440.0);
-        assert_eq!(note.adjusted_midi, 69);
-        assert_eq!(note.nearest_pitch_midi, (69, 8192));
+        assert_eq!(note.pitch.midi(), (69, 8192));
         assert_eq!(note.name, "");
         assert_eq!(note.cycle, 0);
         assert_eq!(note.step, 9);
@@ -186,8 +160,7 @@ mod tests {
         let note = edo6.note(0, 3);
         dbg!(&note);
         assert_eq!((100.0 * note.pitch.as_float()).round(), 37335.0);
-        assert_eq!(note.adjusted_midi, 63);
-        assert_eq!(note.nearest_pitch_midi, (66, 8833));
+        assert_eq!(note.pitch.midi(), (66, 8833));
         assert_eq!(note.name, "F#");
 
         Ok(())

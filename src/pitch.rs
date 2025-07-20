@@ -240,6 +240,22 @@ impl Pitch {
             .iter()
             .fold(1.0f32, |accum, factor| accum * factor.as_float())
     }
+
+    /// Compute a frequency to a midi note number and a pitch bend value using ±2 semitones.
+    /// Panics if the frequency is out of range.
+    pub fn midi(&self) -> (u8, u16) {
+        // TODO: do proper range checking
+        let f = self.as_float();
+        let n1 = 69.0 + 12.0 * (f / 440.0).log2();
+        let note = n1.round() as u8;
+        let delta = n1 - note as f32;
+        // - pitch bend is 8192 + 8192 * (semitones/bend range)
+        // - bend range is typically 2 semitones
+        // - 8192*delta/2 is 4096*delta
+        // In other words, this the fraction numerator centered at 8192.
+        let bend = (8192.0 + (4096.0 * delta).round()) as u16;
+        (note, bend)
+    }
 }
 
 impl FromStr for Pitch {

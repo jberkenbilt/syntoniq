@@ -1,6 +1,6 @@
 use crate::engine::PlayedNote;
 use crate::layout::Layout;
-use crate::scale::Note;
+use crate::pitch::Pitch;
 use std::fmt::{Display, Formatter};
 use std::sync::{Arc, RwLock};
 use tokio::sync::broadcast;
@@ -114,7 +114,7 @@ pub struct UpdateNoteEvent {
 
 #[derive(Clone, Debug)]
 pub struct PlayNoteEvent {
-    pub note: Arc<Note>,
+    pub pitch: Pitch,
     pub velocity: u8,
 }
 

@@ -1,6 +1,5 @@
 use crate::events::Event;
 use crate::pitch::Pitch;
-use crate::scale::Note;
 use crate::{events, to_anyhow};
 use midir::os::unix::VirtualOutput;
 use midir::{MidiOutput, MidiOutputConnection};
@@ -14,9 +13,8 @@ struct Player {
 }
 
 impl Player {
-    pub fn handle_note(&mut self, note: &Note, velocity: u8) -> anyhow::Result<()> {
-        let (note_number, bend) = note.nearest_pitch_midi;
-        let pitch = &note.pitch;
+    pub fn handle_note(&mut self, pitch: &Pitch, velocity: u8) -> anyhow::Result<()> {
+        let (note_number, bend) = pitch.midi();
         let notes = self.bend_to_notes.get_mut(&bend);
         let mut ch = self.bend_to_channel.get(&bend).copied();
         if velocity == 0 {
@@ -66,7 +64,7 @@ impl Player {
                 .bend_to_notes
                 .entry(bend)
                 .or_default()
-                .entry(note.pitch.clone())
+                .entry(pitch.clone())
                 .or_default() += 1;
         }
         let Some(ch) = ch else {
@@ -126,7 +124,7 @@ pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
         p.channels[0] = true; // reserve channel 1 -- MPE doesn't expect note on it
         while let Ok(event) = rx.recv() {
             match event {
-                Event::PlayNote(e) => p.handle_note(e.note.as_ref(), e.velocity)?,
+                Event::PlayNote(e) => p.handle_note(&e.pitch, e.velocity)?,
                 Event::SelectLayout(_) => p.init_mpe()?,
                 _ => {}
             }

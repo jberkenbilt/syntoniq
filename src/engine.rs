@@ -31,13 +31,18 @@ struct Engine {
     config_file: PathBuf,
     config: Config,
     events_tx: events::Sender,
-    layout: Option<Arc<Layout>>,
     /// control key position -> selected layout
     assigned_layouts: HashMap<u8, Arc<Layout>>,
+    transient_state: TransientState,
+}
+
+#[derive(Default)]
+struct TransientState {
+    layout: Option<Arc<Layout>>,
     notes: HashMap<u8, Option<Arc<Note>>>,
     note_positions: HashMap<Pitch, HashSet<u8>>,
-    sustain: bool,
     notes_on: HashMap<Pitch, u8>, // number of times a note is on
+    sustain: bool,
 }
 
 impl Engine {
@@ -51,6 +56,19 @@ impl Engine {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
+
+        // Turn off all notes
+        for (pitch, count) in &self.transient_state.notes_on {
+            if *count > 0 {
+                tx.send(Event::PlayNote(PlayNoteEvent {
+                    pitch: pitch.clone(),
+                    velocity: 0,
+                }))?;
+            }
+        }
+        self.transient_state = Default::default();
+
+        // Draw the logo.
         controller::clear_lights(&tx).await?;
         // TODO: fix these
         for (color, positions) in [
@@ -117,19 +135,23 @@ impl Engine {
                 tx.send(Event::Reset)?;
             }
             keys::SUSTAIN if off => {
-                self.sustain = !self.sustain;
+                self.transient_state.sustain = !self.transient_state.sustain;
                 tx.send(self.sustain_event())?;
             }
-            position if self.notes.contains_key(&position) => {
-                if let Some(note) = self.notes.get(&position).unwrap() {
+            position if self.transient_state.notes.contains_key(&position) => {
+                if let Some(note) = self.transient_state.notes.get(&position).unwrap() {
                     let pitch = &note.pitch;
-                    let Some(others) = self.note_positions.get(pitch) else {
+                    let Some(others) = self.transient_state.note_positions.get(pitch) else {
                         // This would indicate a bug in which we assigned something to notes
                         // without also assigning its position to note positions or otherwise
                         // allowed notes and note_positions to get out of sync.
                         return Err(anyhow!("note positions is missing for {pitch}"));
                     };
-                    let note_count = self.notes_on.entry(pitch.clone()).or_default();
+                    let note_count = self
+                        .transient_state
+                        .notes_on
+                        .entry(pitch.clone())
+                        .or_default();
                     // When not in sustain mode, touch turns a note on, and release turns it off.
                     // Since the same note may appear in multiple locations, we keep a count, and on
                     // send a note event if we transition to or from 0. In sustain mode, "off"
@@ -137,7 +159,7 @@ impl Engine {
                     // it's on or off. Changing scales, transposing, shifting, etc. doesn't affect
                     // which notes are on or off, making it possible to play a note in one scale,
                     // switch scales, and play a note in another scale.
-                    if self.sustain {
+                    if self.transient_state.sustain {
                         if off {
                             return Ok(());
                         }
@@ -164,7 +186,7 @@ impl Engine {
                         tx.send(note.light_event(position, velocity))?;
                     }
                     tx.send(Event::PlayNote(PlayNoteEvent {
-                        note: note.clone(),
+                        pitch: pitch.clone(),
                         velocity,
                     }))?;
                 }
@@ -182,12 +204,14 @@ impl Engine {
             position,
             played_note,
         } = event;
-        self.notes
+        self.transient_state
+            .notes
             .insert(position, played_note.as_ref().map(|x| x.note.clone()));
         match played_note {
             Some(played_note) => {
                 let note = played_note.note.clone();
-                self.note_positions
+                self.transient_state
+                    .note_positions
                     .entry(note.pitch.clone())
                     .or_default()
                     .insert(position);
@@ -219,8 +243,8 @@ impl Engine {
         let (base_x, base_y) = layout.base;
         let (divisions, _, _) = ed.divisions;
         let divisions = divisions as i32;
-        self.note_positions.clear();
-        self.notes.clear();
+        self.transient_state.note_positions.clear();
+        self.transient_state.notes.clear();
         for row in 1..=8 {
             for col in 1..=8 {
                 let played_note = if !(llx..=urx).contains(&col) || !(lly..=ury).contains(&row) {
@@ -230,12 +254,18 @@ impl Engine {
                     let cycle = steps / divisions;
                     let step = steps % divisions;
                     let note = scale.note(cycle as i8, step as i8);
-                    let velocity =
-                        if self.notes_on.get(&note.pitch).copied().unwrap_or_default() > 0 {
-                            127
-                        } else {
-                            0
-                        };
+                    let velocity = if self
+                        .transient_state
+                        .notes_on
+                        .get(&note.pitch)
+                        .copied()
+                        .unwrap_or_default()
+                        > 0
+                    {
+                        127
+                    } else {
+                        0
+                    };
                     Some(PlayedNote {
                         note: Arc::new(note),
                         velocity,
@@ -253,7 +283,7 @@ impl Engine {
     }
 
     fn sustain_event(&self) -> Event {
-        let sustain_color = if self.sustain {
+        let sustain_color = if self.transient_state.sustain {
             Color::ToggleOn
         } else {
             Color::ToggleOff
@@ -271,8 +301,8 @@ impl Engine {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        self.layout = Some(event.layout);
-        let layout = self.layout.clone().unwrap();
+        self.transient_state.layout = Some(event.layout);
+        let layout = self.transient_state.layout.clone().unwrap();
         if let Some(scale) = &layout.scale {
             match scale.scale_type {
                 ScaleType::EqualDivision(_) => {
@@ -317,12 +347,8 @@ pub async fn run(
         config_file,
         config,
         events_tx: events_tx.clone(),
-        layout: None,
         assigned_layouts: Default::default(),
-        notes: Default::default(),
-        note_positions: Default::default(),
-        sustain: false,
-        notes_on: Default::default(),
+        transient_state: Default::default(),
     };
     let rx2 = events_rx.resubscribe();
     let tx2 = events_tx.clone();
