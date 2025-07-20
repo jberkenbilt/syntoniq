@@ -5,21 +5,31 @@ Next tasks, in undefined order, are:
 * Pitch shift; see below
 * The logger might want to track note names in addition to pitches. At this moment, note names are not visible to the PlayNote event, so a separate LogEvent might be in order.
 
-Other:
+Shifting and transposition mute the scales. When we reset, scales loaded from the config file and are owned by the engine. Octave shifting and transposition change the base pitch. Note shifting changes the base position.
+
+Pitch shift:
 * Pitch/scale overflows: handle gracefully for moving up/down octaves
 * `shift` key behavior
   * When pressed, toggle
   * When released, if any other key was touched, turn off; otherwise no action
   * Implies shift down, shift up, shift down, key, shift up => effect shift is ignored
-* Implement shift to move keyboard or transpose:
-  * shift + non-note = reserved for future use
-  * shift + (note1, note2)  = move note2 to the position of note1
-  * shift + (note1, note1) = move base pitch to pitch of that note in the octave closest to it
-  * shift + (note1) = do nothing
-  * UI:
-    - note1 stays flashing until second note is pressed or shift is released
-    - second note cancels shift
-  * When we set a scale, we can have an optional shift and transpose that can be used to set the notes. There may need to be a way to persist this so it stays when we switch back to a scale.
+* For non-EDO: octave shift with ^/v keys
+* For EDO
+  * ^/v keys shift by a cycle
+  * shift, note1, note2 moves note1 to the position of note2
+
+Transposition:
+* Press Note key
+* Note key flashes; currently selected scale is pending
+* The pitch of next note pressed becomes the tonic of the pending scale.
+* Example:
+  * Select a Just Intonation scale
+  * Press the "Note" key; note flashes
+  * Switch to EDO-19
+  * Touch the key for step 1
+  * Note turns off; JI layout is selected
+  * Now the "C" of the JI scale has the pitch aligned with EDO-19's step 1.
+
 * General keyboard layout. Probably don't bother with specific JI/Harmonic layouts
   * define 64-element array of relative pitches and 64-element array of names
 * Cabbage with wave form with filter, LFO, maybe stereo, detune, pan knobs as basic example
