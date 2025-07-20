@@ -22,8 +22,8 @@ mod keys {
 
 #[derive(Debug, Clone)]
 pub struct PlayedNote {
-    note: Arc<Note>,
-    velocity: u8,
+    pub note: Arc<Note>,
+    pub velocity: u8,
 }
 
 struct Engine {
@@ -33,7 +33,7 @@ struct Engine {
     layout: Option<Arc<Layout>>,
     /// control key position -> selected layout
     assigned_layouts: HashMap<u8, Arc<Layout>>,
-    notes: HashMap<u8, Option<PlayedNote>>,
+    notes: HashMap<u8, Option<Arc<Note>>>,
     note_positions: HashMap<Pitch, HashSet<u8>>,
     sustain: bool,
     notes_on: HashMap<Pitch, u8>, // number of times a note is on
@@ -121,7 +121,7 @@ impl Engine {
             }
             position if self.notes.contains_key(&position) => {
                 if let Some(note) = self.notes.get(&position).unwrap() {
-                    let pitch = &note.note.pitch;
+                    let pitch = &note.pitch;
                     let Some(others) = self.note_positions.get(pitch) else {
                         // This would indicate a bug in which we assigned something to notes
                         // without also assigning its position to note positions or otherwise
@@ -160,10 +160,10 @@ impl Engine {
                     }
                     let velocity = if *note_count > 0 { 127 } else { 0 };
                     for position in others.iter().copied() {
-                        tx.send(note.note.light_event(position, velocity))?;
+                        tx.send(note.light_event(position, velocity))?;
                     }
                     tx.send(Event::PlayNote(PlayNoteEvent {
-                        note: note.note.clone(),
+                        note: note.clone(),
                         velocity,
                     }))?;
                 }
@@ -181,7 +181,8 @@ impl Engine {
             position,
             played_note,
         } = event;
-        self.notes.insert(position, played_note.clone());
+        self.notes
+            .insert(position, played_note.as_ref().map(|x| x.note.clone()));
         match played_note {
             Some(played_note) => {
                 let note = played_note.note.clone();
