@@ -6,6 +6,7 @@ use crate::events::{
 use crate::layout::Layout;
 use crate::pitch::Pitch;
 use crate::scale::{Note, Scale, ScaleType};
+use crate::view::web;
 use crate::{controller, csound, events, midi_player};
 use anyhow::anyhow;
 use std::collections::{HashMap, HashSet};
@@ -16,7 +17,7 @@ mod keys {
     pub const CLEAR: u8 = 60;
     pub const SUSTAIN: u8 = 95; // Chord
     pub const LAYOUT_MIN: u8 = 101;
-    pub const LAYOUT_MAX: u8 = 108;
+    pub const LAYOUT_MAX: u8 = 109;
     pub const LAYOUT_SCROLL: u8 = 19;
 }
 
@@ -309,7 +310,7 @@ pub async fn run(
     config_file: PathBuf,
     midi: bool,
     events_tx: events::Sender,
-    mut rx: events::Receiver,
+    mut events_rx: events::Receiver,
 ) -> anyhow::Result<()> {
     let config = Config::load(&config_file)?;
     let mut engine = Engine {
@@ -323,7 +324,7 @@ pub async fn run(
         sustain: false,
         notes_on: Default::default(),
     };
-    let rx2 = rx.resubscribe();
+    let rx2 = events_rx.resubscribe();
     let tx2 = events_tx.clone();
     if midi {
         tokio::spawn(async move {
@@ -338,10 +339,14 @@ pub async fn run(
             };
         });
     }
+    let rx2 = events_rx.resubscribe();
+    tokio::spawn(async move {
+        web::http_view(rx2, 8440).await;
+    });
     if let Some(tx) = events_tx.upgrade() {
         tx.send(Event::Reset)?;
     }
-    while let Some(event) = events::receive_check_lag(&mut rx, Some("engine")).await {
+    while let Some(event) = events::receive_check_lag(&mut events_rx, Some("engine")).await {
         // Note: this event loop calls event handlers inline. Sometimes those event handlers
         // generate other events, which are piling up in our queue while we are handling earlier
         // events. As long as the backlog on the event receiver is high enough and/or we don't

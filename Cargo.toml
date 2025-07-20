@@ -17,6 +17,9 @@ serde = { version = "1.0.219", features = ["derive"] }
 anyhow = "1.0.98"
 regex = "1.11.1"
 num-rational = "0.4.2"
+axum = { version = "0.8.4", features = ["macros", "json"] }
+askama = "0.14.0"
+tokio-stream = { version = "0.1.17", features = ["sync"] }
 
 [build-dependencies]
 bindgen = "0.72.0"

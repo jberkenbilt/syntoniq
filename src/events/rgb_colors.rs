@@ -1,8 +1,8 @@
-pub(super) const RGB_COLORS: &[&str] = &[
+pub const RGB_COLORS: &[&str] = &[
     // This is a mapping from color codes to the RGB values used in the chart
     // in the programmer's manual. It is not necessarily a perfect
     // representation of the color.
-    "#616161", // 00
+    "",        // 00 -- varies by position; handled by content
     "#b3b3b3", // 01
     "#dddddd", // 02
     "#ffffff", // 03

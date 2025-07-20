@@ -1,7 +1,9 @@
 2025-07-19
 
 Next tasks, in undefined order, are:
+* XXX Fix reset bug
 * Get the web UI up
+  * Download htmx locally
 * Vertical arrow keys (70, 80) shift pitch up and down by a cycle (or octave if no cycle)
 
 Other:

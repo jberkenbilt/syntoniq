@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {# TODO: download locally -#}
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.2"></script>
+    <meta charset="utf-8">
+    <title>Q Launchpad</title>
+    <style>
+      :root {
+          --cell-size: 60px;
+          --off-background: #616161;
+          --control-background: #333;
+          --outer-border: 6px solid black;
+          --regular-border: 3px solid black;
+          --thick-border: 9px solid #111;
+          --short-height: 50px;
+      }
+      body {
+          background: #eee;
+          color: #222;
+      }
+      @media (prefers-color-scheme: dark) {
+          body {
+              background: #222;
+              color: #eee;
+          }
+      }
+      table.grid {
+          border-collapse: collapse;
+          border: var(--outer-border);
+      }
+      table.grid tr {
+          height: var(--cell-size);
+      }
+      table.grid tr.short {
+          height: var(--short-height);
+      }
+      table.grid td {
+          width: var(--cell-size);
+          height: 100%;
+          border: var(--regular-border);
+          padding: 0;
+          text-align: center;
+          vertical-align: middle;
+      }
+      .cell-content {
+          width: var(--cell-size);
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 12px;
+          line-height: 1.1;
+      }
+      .cell-text {
+          color: #fff;
+          background: var(--off-background);
+          padding: 3px;
+      }
+    </style>
+  </head>
+  <body hx-ext="sse" sse-connect="/sse">
+    <table class="grid">
+      {% for row in (0..rows).into_iter() %}
+      <tr {% if row >= rows - 2 %}class="short"{% endif %}>
+        {% for col in (0..cols).into_iter() %}
+          <td>
+          {{ self.get_cell(row, col) | safe }}
+          </td>
+        {% endfor %}
+      </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>
