@@ -1,20 +1,18 @@
 use crate::events;
-use crate::events::{Event, KeyEvent};
+use crate::events::Event;
 use crate::view::content::App;
-use crate::view::state::{AppState, LockedState};
+use crate::view::state::LockedState;
 use askama::Template;
 use axum::extract::{Path, State};
 use axum::http::header;
 use axum::response::Sse;
-use axum::routing::post;
 use axum::{
-    Form, Router,
+    Router,
     http::StatusCode,
     response::{Html, IntoResponse},
     routing::get,
 };
 use rust_embed::RustEmbed;
-use serde::Deserialize;
 use std::net::SocketAddr;
 use std::sync::LazyLock;
 use tokio::sync::{Mutex, oneshot};
@@ -39,30 +37,9 @@ async fn static_asset(Path(path): Path<String>) -> impl IntoResponse {
     }
 }
 
-#[derive(Deserialize, Debug)]
-struct KeyInput {
-    key: u8,
-    on: bool,
-}
-
 async fn view(State(lock): State<LockedState>) -> impl IntoResponse {
     let s = lock.read().await;
     Html(App::new(s.get_cells()).render().unwrap())
-}
-
-async fn key(State(lock): State<LockedState>, data: Form<KeyInput>) -> impl IntoResponse {
-    let Some(tx) = lock.read().await.get_events_tx() else {
-        return StatusCode::SERVICE_UNAVAILABLE.into_response();
-    };
-    let velocity = if data.on { 127 } else { 0 };
-    if let Err(e) = tx.send(Event::Key(KeyEvent {
-        key: data.key,
-        velocity,
-    })) {
-        log::error!("web server: error sending key event: {e}");
-        return StatusCode::SERVICE_UNAVAILABLE.into_response();
-    }
-    StatusCode::ACCEPTED.into_response()
 }
 
 async fn sse_handler(State(lock): State<LockedState>) -> impl IntoResponse {
@@ -83,12 +60,11 @@ async fn sse_handler(State(lock): State<LockedState>) -> impl IntoResponse {
     Sse::new(stream).into_response()
 }
 
-pub async fn http_view(events_tx: events::Sender, events_rx: events::Receiver, port: u16) {
-    let state: LockedState = AppState::new_locked(events_tx);
+pub async fn http_view(events_rx: events::Receiver, port: u16) {
+    let state: LockedState = Default::default();
     let app = Router::new()
         .route("/sse", get(sse_handler))
         .route("/assets/{*path}", get(static_asset))
-        .route("/key", post(key))
         .route("/", get(view))
         .with_state(state.clone());
 

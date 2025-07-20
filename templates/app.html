@@ -62,19 +62,6 @@
     </style>
   </head>
   <body hx-ext="sse" sse-connect="/sse">
-    <script>
-      document.body.addEventListener('htmx:configRequest', function(event) {
-          const cell = event.target;
-          if (cell.classList && cell.classList.contains('cell-content')) {
-              const ev = event.detail.triggeringEvent;
-              if (ev && (ev.type === "mousedown" || ev.type === "mouseup")) {
-                  const key = cell.getAttribute('data-key');
-                  const on = (ev.type === "mousedown");
-                  event.detail.parameters = { key: key, on: on };
-              }
-          }
-      });
-    </script>
     <table class="grid">
       {% for row in (0..rows).into_iter() %}
       <tr {% if row >= rows - 2 %}class="short"{% endif %}>

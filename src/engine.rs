@@ -366,9 +366,8 @@ pub async fn run(
         });
     }
     let rx2 = events_rx.resubscribe();
-    let tx2 = events_tx.clone();
     tokio::spawn(async move {
-        web::http_view(tx2, rx2, 8440).await;
+        web::http_view(rx2, 8440).await;
     });
     if let Some(tx) = events_tx.upgrade() {
         tx.send(Event::Reset)?;
