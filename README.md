@@ -3,7 +3,7 @@
 Next tasks, in undefined order, are:
 * Vertical arrow keys (70, 80) shift pitch up and down by a cycle (or octave if no cycle)
 * Pitch shift; see below
-* The logger might want to track note names in addition to pitches
+* The logger might want to track note names in addition to pitches. At this moment, note names are not visible to the PlayNote event, so a separate LogEvent might be in order.
 
 Other:
 * Pitch/scale overflows: handle gracefully for moving up/down octaves
