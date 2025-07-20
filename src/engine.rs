@@ -58,12 +58,9 @@ impl Engine {
                 vec![63u8, 64, 65, 66, 52, 57, 42, 47, 32, 37, 23, 24, 25],
             ),
             (Color::FifthOff, vec![34, 35, 16, 17, 18]), // blue
-            (Color::TonicOff, vec![26]),                 // cyan
-            (Color::MajorThirdOff, vec![72, 73, 74, 75, 76, 77]), // purple
-            (Color::MajorThirdOn, vec![83]),             // pink
-            (Color::MinorThirdOn, vec![84]),             // orange
-            (Color::TonicOn, vec![85]),                  // yellow
-            (Color::MinorThirdOff, vec![86]),            //red
+            (Color::MajorThirdOn, vec![26]),             // pink
+            (Color::MajorThirdOff, vec![72, 73, 83, 84, 85, 86, 76, 77]), // purple
+            (Color::TonicOff, vec![74, 75]),             // cyan
         ] {
             for position in positions {
                 tx.send(Event::Light(LightEvent {
