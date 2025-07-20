@@ -3,7 +3,8 @@ use crate::events::Event;
 use crate::view::content::App;
 use crate::view::state::LockedState;
 use askama::Template;
-use axum::extract::State;
+use axum::extract::{Path, State};
+use axum::http::header;
 use axum::response::Sse;
 use axum::{
     Router,
@@ -11,6 +12,7 @@ use axum::{
     response::{Html, IntoResponse},
     routing::get,
 };
+use rust_embed::RustEmbed;
 use std::net::SocketAddr;
 use std::sync::LazyLock;
 use tokio::sync::{Mutex, oneshot};
@@ -20,6 +22,20 @@ use tokio_stream::wrappers::BroadcastStream;
 use tokio_stream::wrappers::errors::BroadcastStreamRecvError;
 
 static SHUTDOWN: LazyLock<Mutex<Option<oneshot::Sender<()>>>> = LazyLock::new(Default::default);
+
+#[derive(RustEmbed)]
+#[folder = "static/"]
+struct Assets;
+
+async fn static_asset(Path(path): Path<String>) -> impl IntoResponse {
+    match Assets::get(&path) {
+        Some(content) => {
+            let mime = mime_guess::from_path(&path).first_or_octet_stream();
+            ([(header::CONTENT_TYPE, mime.as_ref())], content.data).into_response()
+        }
+        None => StatusCode::NOT_FOUND.into_response(),
+    }
+}
 
 async fn view(State(lock): State<LockedState>) -> impl IntoResponse {
     let s = lock.read().await;
@@ -48,6 +64,7 @@ pub async fn http_view(events_rx: events::Receiver, port: u16) {
     let state: LockedState = Default::default();
     let app = Router::new()
         .route("/sse", get(sse_handler))
+        .route("/assets/{*path}", get(static_asset))
         .route("/", get(view))
         .with_state(state.clone());
 

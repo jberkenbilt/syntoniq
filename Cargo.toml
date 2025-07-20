@@ -20,6 +20,8 @@ num-rational = "0.4.2"
 axum = { version = "0.8.4", features = ["macros", "json"] }
 askama = "0.14.0"
 tokio-stream = { version = "0.1.17", features = ["sync"] }
+rust-embed = "8.7.2"
+mime_guess = "2.0.5"
 
 [build-dependencies]
 bindgen = "0.72.0"

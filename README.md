@@ -1,8 +1,6 @@
 2025-07-19
 
 Next tasks, in undefined order, are:
-* Get the web UI up
-  * Download htmx locally
 * Vertical arrow keys (70, 80) shift pitch up and down by a cycle (or octave if no cycle)
 * Pitch shift; see below
 * The logger might want to track note names in addition to pitches
@@ -35,4 +33,13 @@ Remember:
 # Find QLaunchPad as output port
 aconnect -l
 aseqdump -p 128:0
+```
+
+# Static Assets
+
+Static assets are served from `static` with the help of `rust-embed`. The htmx files were downloaded:
+```
+cd static
+https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js
+https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.2
 ```
