@@ -1,3 +1,8 @@
-<div sse-swap="{{self.event_name()}}" class="cell-content" style="background:{{color}};">
+<div sse-swap="{{self.event_name()}}"
+     class="cell-content"
+     data-key="{{position}}"
+     hx-post="/key"
+     hx-trigger="mousedown, mouseup"
+     style="background:{{color}};">
   {{cell_text | safe}}
 </div>
