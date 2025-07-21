@@ -14,9 +14,7 @@ struct Device {
     to_device: flume::Receiver<LightEvent>,
 }
 
-pub struct Controller {
-    handle: JoinHandle<anyhow::Result<()>>,
-}
+pub struct Controller;
 
 fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::Port> {
     ports
@@ -45,11 +43,11 @@ pub async fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {
 }
 
 impl Controller {
-    pub async fn new(
+    pub async fn run(
         port_name: String,
         events_tx: events::Sender,
         mut events_rx: events::Receiver,
-    ) -> anyhow::Result<Self> {
+    ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
         // async. To bridge the gap, we create flume channels to relay back and forth.
         let (from_device_tx, from_device_rx) = flume::unbounded();
@@ -81,11 +79,7 @@ impl Controller {
             device.run()?;
             Ok(())
         });
-        Ok(Self { handle })
-    }
-
-    pub async fn join(self) -> anyhow::Result<()> {
-        self.handle.await?
+        Ok(handle)
     }
 }
 

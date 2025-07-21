@@ -24,6 +24,9 @@ struct Cli {
     #[arg(long)]
     port: Option<String>,
 
+    #[arg(long)]
+    no_dev: bool,
+
     #[command(subcommand)]
     command: Commands,
 }
@@ -67,8 +70,8 @@ async fn main() -> anyhow::Result<()> {
         print_completions(shell, &mut cmd);
         return Ok(());
     }
-    let Some(port) = cli.port else {
-        eprintln!("The --port option is required");
+    if cli.port.is_none() && !cli.no_dev {
+        eprintln!("One of --port or --no-dev is required");
         std::process::exit(2);
     };
 
@@ -83,8 +86,16 @@ async fn main() -> anyhow::Result<()> {
     let events_rx = events.receiver();
 
     // Create midi controller.
-    let controller =
-        Controller::new(port.to_string(), events_tx.clone(), events_rx.resubscribe()).await?;
+    let tx2 = events_tx.clone();
+    let mut rx2 = events_rx.resubscribe();
+    let main_handle = match cli.port {
+        Some(port) => Controller::run(port.to_string(), tx2, rx2).await?,
+        None => tokio::spawn(async move {
+            while events::receive_check_lag(&mut rx2, None).await.is_some() {}
+            Ok(())
+        }),
+    };
+
     let tx2 = events_tx.clone();
     let rx2 = events_rx.resubscribe();
     tokio::spawn(async move {
@@ -114,7 +125,7 @@ async fn main() -> anyhow::Result<()> {
     }?;
     drop(events_tx);
     drop(events_rx);
-    controller.join().await
+    main_handle.await?
 }
 
 async fn events_main(mut rx: events::Receiver) -> anyhow::Result<()> {
