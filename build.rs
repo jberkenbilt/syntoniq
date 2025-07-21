@@ -31,15 +31,14 @@ fn main() {
         .expect("lib not in a directory")
         .to_str()
         .unwrap();
-    let lib = full_lib
-        .file_name()
-        .unwrap()
-        .to_str()
-        .unwrap()
-        .strip_prefix("lib")
-        .expect("library didn't start with lib")
-        .replace(".so", "")
-        .replace(".dylib", "");
+    let lib = full_lib.file_name().unwrap().to_str().unwrap();
+    let lib = if lib_dir.starts_with("framework=") {
+        lib.to_string()
+    } else {
+        lib.strip_prefix("lib")
+            .expect("library didn't start with lib")
+            .replace(".so", "")
+    };
     println!("cargo:rustc-link-search={lib_dir}");
     println!("cargo:rustc-link-lib={lib}");
     let bindings = bindgen::Builder::default()
