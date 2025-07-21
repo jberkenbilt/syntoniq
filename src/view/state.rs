@@ -1,6 +1,7 @@
 //! The state module is responsible for keeping track of the live values for the app. It also
 //! manages the broadcast channel used for SSE events so it can own the process of updating the
 //! clients when state changes.
+use crate::events;
 use crate::events::LightEvent;
 use crate::view::content::Cell;
 use askama::Template;
@@ -18,30 +19,31 @@ pub const COLS: u8 = 10;
 pub struct AppState {
     cells: HashMap<u8, Cell>,
     sse_tx: Option<broadcast::Sender<Event>>,
+    events_tx: events::Sender,
 }
 pub type LockedState = Arc<RwLock<AppState>>;
 
-impl Default for AppState {
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
 impl AppState {
-    pub fn new() -> Self {
+    pub fn new_locked(events_tx: events::Sender) -> LockedState {
         let (sse_tx, _) = broadcast::channel(1000);
         let tx = sse_tx.clone().downgrade();
         tokio::spawn(async move {
             Self::sse_keepalive(tx).await;
         });
-        Self {
+        let app = Self {
             cells: Default::default(),
             sse_tx: Some(sse_tx),
-        }
+            events_tx,
+        };
+        Arc::new(RwLock::new(app))
     }
 
     pub fn get_sse_tx(&self) -> Option<broadcast::Sender<Event>> {
         self.sse_tx.clone()
+    }
+
+    pub fn get_events_tx(&self) -> Option<events::UpgradedSender> {
+        self.events_tx.upgrade()
     }
 
     pub fn shutdown(&mut self) {

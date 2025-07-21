@@ -1,5 +1,11 @@
 2025-07-19
 
+# Documentation Notes
+
+* You can send key events with `curl http://localhost:8440/key -d key=k -d velocity=v`
+
+# To Do
+
 Next tasks, in undefined order, are:
 * Vertical arrow keys (70, 80) shift pitch up and down by a cycle (or octave if no cycle)
 * Pitch shift; see below
@@ -35,8 +41,8 @@ Other:
 * General keyboard layout. Probably don't bother with specific JI/Harmonic layouts
   * define 64-element array of relative pitches and 64-element array of names
 * Cabbage with wave form with filter, LFO, maybe stereo, detune, pan knobs as basic example
+* Create note-entry CLI that uses HTTP interface; can be a separate tool to not interfere with logs.
 * Alternatives to the MIDI controller
-  * Note entry CLI/socket interface
   * Replay recorded session
   * No-op; just use HTTP
 

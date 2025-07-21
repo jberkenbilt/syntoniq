@@ -85,9 +85,10 @@ async fn main() -> anyhow::Result<()> {
     // Create midi controller.
     let controller =
         Controller::new(port.to_string(), events_tx.clone(), events_rx.resubscribe()).await?;
+    let tx2 = events_tx.clone();
     let rx2 = events_rx.resubscribe();
     tokio::spawn(async move {
-        web::http_view(rx2, 8440).await;
+        web::http_view(tx2, rx2, 8440).await;
     });
 
     // Make sure everything is cleaned up on exit.
