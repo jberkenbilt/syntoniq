@@ -62,6 +62,7 @@ impl Engine {
                 tx.send(Event::PlayNote(PlayNoteEvent {
                     pitch: pitch.clone(),
                     velocity: 0,
+                    note: None,
                 }))?;
             }
         }
@@ -187,6 +188,7 @@ impl Engine {
                     tx.send(Event::PlayNote(PlayNoteEvent {
                         pitch: pitch.clone(),
                         velocity,
+                        note: Some(note.clone()),
                     }))?;
                 }
             }

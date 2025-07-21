@@ -31,6 +31,7 @@ Transposition:
   * Now the "C" of the JI scale has the pitch aligned with EDO-19's step 1.
 
 Other:
+* Add a logger. This can subscribe to PlayNote events and use the optional note to log. It can record actual semantic note information as well as key events. We can have a replay mode that will transmit key events at specific times to effectively replay an entire session. This can be an alternate controller.
 * General keyboard layout. Probably don't bother with specific JI/Harmonic layouts
   * define 64-element array of relative pitches and 64-element array of names
 * Cabbage with wave form with filter, LFO, maybe stereo, detune, pan knobs as basic example
