@@ -56,7 +56,7 @@ impl Cell {
     }
 
     pub fn event_name(&self) -> String {
-        format!("see-cell-{}", self.position)
+        format!("sse-cell-{}", self.position)
     }
 }
 
