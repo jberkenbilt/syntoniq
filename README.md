@@ -1,9 +1,5 @@
 2025-07-19
 
-# Documentation Notes
-
-* You can send key events with `curl http://localhost:8440/key -d key=k -d velocity=v`
-
 # To Do
 
 Next tasks, in undefined order, are:
@@ -49,13 +45,18 @@ Other:
 See also
 * [design](./design.md)
 
-Remember:
+# May Someday
 
-```
-# Find QLaunchPad as output port
-aconnect -l
-aseqdump -p 128:0
-```
+* In web, track whether a key "down" or "up" just as a web only extraction. Each click sends the appropriate event and toggles the state which also sends an SSE event. No need to reset state -- click once and hit reset is the same as pressing clear while holding a note, and it prevents two successive on or two successive off events, which can't happen on the actual device. It means double-click for sustain mode, but that's fine.
+
+# Remember
+
+* You can send key events with `curl http://localhost:8440/key -d key=k -d velocity=v`
+* Find QLaunchPad MIDI output port
+  ```
+  aconnect -l
+  aseqdump -p 128:0
+  ```
 
 # Static Assets
 
