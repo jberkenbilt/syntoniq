@@ -30,8 +30,13 @@ struct Assets;
 async fn static_asset(Path(path): Path<String>) -> impl IntoResponse {
     match Assets::get(&path) {
         Some(content) => {
-            let mime = mime_guess::from_path(&path).first_or_octet_stream();
-            ([(header::CONTENT_TYPE, mime.as_ref())], content.data).into_response()
+            // We only server js assets, so hard-code the content type. There is a `mime_guess`
+            // crate that could help.
+            (
+                [(header::CONTENT_TYPE, "application/javascript")],
+                content.data,
+            )
+                .into_response()
         }
         None => StatusCode::NOT_FOUND.into_response(),
     }

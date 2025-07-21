@@ -50,6 +50,6 @@ aseqdump -p 128:0
 Static assets are served from `static` with the help of `rust-embed`. The htmx files were downloaded:
 ```
 cd static
-https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js
-https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.2
+wget https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js
+wget https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.2
 ```
