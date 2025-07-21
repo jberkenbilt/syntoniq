@@ -4,6 +4,7 @@ use clap_complete::{Generator, Shell, aot};
 use log::LevelFilter;
 use qlaunchpad::controller::Controller;
 use qlaunchpad::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
+use qlaunchpad::view::web;
 use qlaunchpad::{controller, engine, events};
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -34,8 +35,8 @@ enum Commands {
         /// toml-format config file
         #[arg(long)]
         config_file: PathBuf,
-        #[arg(long)]
         /// Send notes to a virtual output port named QLaunchPad
+        #[arg(long)]
         midi: bool,
     },
     /// Log device events during interaction
@@ -84,6 +85,10 @@ async fn main() -> anyhow::Result<()> {
     // Create midi controller.
     let controller =
         Controller::new(port.to_string(), events_tx.clone(), events_rx.resubscribe()).await?;
+    let rx2 = events_rx.resubscribe();
+    tokio::spawn(async move {
+        web::http_view(rx2, 8440).await;
+    });
 
     // Make sure everything is cleaned up on exit.
     tokio::spawn(async move {

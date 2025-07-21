@@ -6,7 +6,6 @@ use crate::events::{
 use crate::layout::Layout;
 use crate::pitch::Pitch;
 use crate::scale::{Note, Scale, ScaleType};
-use crate::view::web;
 use crate::{controller, csound, events, midi_player};
 use anyhow::anyhow;
 use std::collections::{HashMap, HashSet};
@@ -365,10 +364,6 @@ pub async fn run(
             };
         });
     }
-    let rx2 = events_rx.resubscribe();
-    tokio::spawn(async move {
-        web::http_view(rx2, 8440).await;
-    });
     if let Some(tx) = events_tx.upgrade() {
         tx.send(Event::Reset)?;
     }

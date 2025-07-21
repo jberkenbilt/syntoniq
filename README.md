@@ -30,9 +30,14 @@ Transposition:
   * Note turns off; JI layout is selected
   * Now the "C" of the JI scale has the pitch aligned with EDO-19's step 1.
 
+Other:
 * General keyboard layout. Probably don't bother with specific JI/Harmonic layouts
   * define 64-element array of relative pitches and 64-element array of names
 * Cabbage with wave form with filter, LFO, maybe stereo, detune, pan knobs as basic example
+* Alternatives to the MIDI controller
+  * Note entry CLI/socket interface
+  * Replay recorded session
+  * No-op; just use HTTP
 
 See also
 * [design](./design.md)
