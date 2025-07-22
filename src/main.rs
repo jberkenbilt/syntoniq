@@ -82,7 +82,7 @@ async fn main() -> anyhow::Result<()> {
     log_builder.init();
 
     let events = Events::new();
-    let events_tx = events.sender();
+    let events_tx = events.sender().await;
     let events_rx = events.receiver();
 
     // Create midi controller.
@@ -106,7 +106,7 @@ async fn main() -> anyhow::Result<()> {
     tokio::spawn(async move {
         log::info!("Hit CTRL-C to exit");
         let _ = tokio::signal::ctrl_c().await;
-        events.shutdown();
+        events.shutdown().await;
     });
 
     match cli.command {

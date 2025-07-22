@@ -2,7 +2,7 @@ use crate::events::{Color, Event, LightEvent, LightMode};
 use crate::pitch::{Factor, Pitch};
 use serde::Deserialize;
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Clone, Debug, PartialEq)]
 pub struct Scale {
     pub name: String,
     #[serde(flatten)]
@@ -11,14 +11,14 @@ pub struct Scale {
     pub note_names: Vec<String>,
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Clone, Debug, PartialEq)]
 #[serde(tag = "type")]
 pub enum ScaleType {
     EqualDivision(EqualDivision),
     _KeepClippyQuiet, // TODO: remove when we add a second type
 }
 
-#[derive(Deserialize, Debug, PartialEq)]
+#[derive(Deserialize, Clone, Debug, PartialEq)]
 pub struct EqualDivision {
     /// divisions, interval numerator, interval denominator, e.g. (31, 2, 1) for EDO-31
     pub divisions: (u32, u32, u32),
@@ -119,6 +119,10 @@ impl Scale {
             }
         }
         (Color::OtherOff, Color::OtherOn)
+    }
+
+    pub fn transpose(&mut self, amount: Pitch) {
+        self.base_pitch = self.base_pitch.concat(amount);
     }
 }
 

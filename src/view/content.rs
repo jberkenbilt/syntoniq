@@ -60,19 +60,28 @@ impl Cell {
     }
 }
 
+#[derive(Template, Default)]
+#[template(path = "side-info.html")]
+pub struct SideInfo {
+    pub selected_layout: String,
+    pub base_pitch: String,
+}
+
 #[derive(Template)]
 #[template(path = "app.html")]
 pub struct App<'a> {
     rows: u8,
     cols: u8,
     cells: &'a HashMap<u8, Cell>,
+    side_info: &'a SideInfo,
 }
 impl<'a> App<'a> {
-    pub fn new(cells: &'a HashMap<u8, Cell>) -> Self {
+    pub fn new(cells: &'a HashMap<u8, Cell>, side_info: &'a SideInfo) -> Self {
         Self {
             rows: state::ROWS,
             cols: state::COLS,
             cells,
+            side_info,
         }
     }
 

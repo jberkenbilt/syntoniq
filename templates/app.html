@@ -16,6 +16,14 @@
           --thick-border: 9px solid #111;
           --short-height: 50px;
       }
+      .container {
+          display: flex;
+          align-items: flex-start; /* top alignment */
+          gap: 2rem;  /* space between columns */
+      }
+      .side-info {
+          min-width: 200px;
+      }
       body {
           background: #eee;
           color: #222;
@@ -24,6 +32,13 @@
           body {
               background: #222;
               color: #eee;
+          }
+      }
+      @media (max-width: 600px) {
+          /* change container flow direction on smaller screens; probably not
+             useful, but kept for information. */
+          .container {
+              flex-direction: column;
           }
       }
       table.grid {
@@ -62,16 +77,19 @@
     </style>
   </head>
   <body hx-ext="sse" sse-connect="/sse">
-    <table class="grid">
-      {% for row in (0..rows).into_iter() %}
-      <tr {% if row >= rows - 2 %}class="short"{% endif %}>
-        {% for col in (0..cols).into_iter() %}
+    <div class="container">
+      <table class="grid">
+        {% for row in (0..rows).into_iter() %}
+        <tr {% if row >= rows - 2 %}class="short"{% endif %}>
+          {% for col in (0..cols).into_iter() %}
           <td>
-          {{ self.get_cell(row, col) | safe }}
+            {{ self.get_cell(row, col) | safe }}
           </td>
+          {% endfor %}
+        </tr>
         {% endfor %}
-      </tr>
-      {% endfor %}
-    </table>
+      </table>
+      {{ side_info | safe }}
+    </div>
   </body>
 </html>

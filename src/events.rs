@@ -3,9 +3,9 @@ use crate::layout::Layout;
 use crate::pitch::Pitch;
 use crate::scale::Note;
 use std::fmt::{Display, Formatter};
-use std::sync::{Arc, RwLock};
-use tokio::sync::broadcast;
+use std::sync::Arc;
 use tokio::sync::broadcast::error::RecvError;
+use tokio::sync::{RwLock, broadcast};
 
 mod rgb_colors;
 
@@ -99,12 +99,12 @@ pub struct PressureEvent {
 #[derive(Clone, Debug)]
 pub struct AssignLayoutEvent {
     pub position: u8,
-    pub layout: Arc<Layout>,
+    pub layout: Arc<RwLock<Layout>>,
 }
 
 #[derive(Clone, Debug)]
 pub struct SelectLayoutEvent {
-    pub layout: Arc<Layout>,
+    pub layout: Arc<RwLock<Layout>>,
 }
 
 #[derive(Clone, Debug)]
@@ -203,11 +203,11 @@ impl Events {
         }
     }
 
-    pub fn sender(&self) -> Sender {
+    pub async fn sender(&self) -> Sender {
         let tx = self
             .tx
             .read()
-            .unwrap()
+            .await
             .clone()
             .expect("sender called after shutdown");
         tx.downgrade()
@@ -217,7 +217,7 @@ impl Events {
         self.rx.resubscribe()
     }
 
-    pub fn shutdown(&self) {
-        self.tx.write().unwrap().take();
+    pub async fn shutdown(&self) {
+        self.tx.write().await.take();
     }
 }

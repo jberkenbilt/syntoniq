@@ -1,4 +1,4 @@
-use crate::layout::Layout;
+use crate::layout::{Layout, LayoutConfig};
 use crate::scale::{Scale, ScaleType};
 use anyhow::anyhow;
 use serde::Deserialize;
@@ -6,15 +6,16 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
+use tokio::sync::RwLock;
 
 #[derive(Deserialize, Debug, PartialEq)]
 struct ConfigFile {
     scale: Vec<Scale>,
-    layout: Vec<Layout>,
+    layout: Vec<LayoutConfig>,
 }
 
 pub struct Config {
-    pub layouts: Vec<Arc<Layout>>,
+    pub layouts: Vec<Arc<RwLock<Layout>>>,
 }
 
 impl Config {
@@ -43,16 +44,22 @@ impl Config {
             }
         }
         let mut layouts = Vec::new();
-        for mut layout in c.layout.into_iter() {
-            let Some(scale) = scales_by_name.get(&layout.scale_name) else {
+        for layout_config in c.layout.into_iter() {
+            let Some(scale) = scales_by_name.get(&layout_config.scale_name) else {
                 return Err(anyhow!(
                     "layout {}: no scale {}",
-                    layout.name,
-                    layout.scale_name
+                    layout_config.name,
+                    layout_config.scale_name
                 ));
             };
-            layout.scale = Some(scale.clone());
-            layouts.push(Arc::new(layout));
+            let layout = Layout {
+                name: layout_config.name,
+                bbox: layout_config.bbox,
+                base: layout_config.base,
+                scale: scale.as_ref().to_owned(),
+                steps: layout_config.steps,
+            };
+            layouts.push(Arc::new(RwLock::new(layout)));
         }
         Ok(Config { layouts })
     }
@@ -97,13 +104,12 @@ steps = [2, 1]
                 .map(str::to_string)
                 .collect(),
             }],
-            layout: vec![Layout {
+            layout: vec![LayoutConfig {
                 name: "5x3".to_string(),
                 bbox: (1, 1, 8, 8),
                 base: (2, 2),
                 scale_name: "EDO-12".to_string(),
                 steps: (2, 1),
-                scale: None,
             }],
         };
         let c: ConfigFile = toml::from_str(CONFIG).unwrap();

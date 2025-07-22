@@ -2,8 +2,8 @@
 //! manages the broadcast channel used for SSE events so it can own the process of updating the
 //! clients when state changes.
 use crate::events;
-use crate::events::LightEvent;
-use crate::view::content::Cell;
+use crate::events::{LightEvent, SelectLayoutEvent};
+use crate::view::content::{Cell, SideInfo};
 use askama::Template;
 use axum::response::sse::Event;
 use std::collections::HashMap;
@@ -18,6 +18,7 @@ pub const COLS: u8 = 10;
 
 pub struct AppState {
     cells: HashMap<u8, Cell>,
+    side_info: SideInfo,
     sse_tx: Option<broadcast::Sender<Event>>,
     events_tx: events::Sender,
 }
@@ -32,6 +33,7 @@ impl AppState {
         });
         let app = Self {
             cells: Default::default(),
+            side_info: Default::default(),
             sse_tx: Some(sse_tx),
             events_tx,
         };
@@ -70,6 +72,10 @@ impl AppState {
         &self.cells
     }
 
+    pub fn get_side_info(&self) -> &SideInfo {
+        &self.side_info
+    }
+
     pub fn set_cell(&mut self, position: u8, color: &str, top: &str, bottom: &str) {
         let cell = Cell::new(position, color, top, bottom);
         let old = self.cells.insert(position, cell.clone());
@@ -88,5 +94,29 @@ impl AppState {
 
     pub fn handle_light_event(&mut self, e: LightEvent) {
         self.set_cell(e.position, e.color.rgb_color(), &e.label1, &e.label2);
+    }
+
+    async fn send_side_info(&mut self) {
+        let Some(tx) = self.sse_tx.clone() else {
+            return;
+        };
+        let event = Event::default()
+            .event("side-info")
+            .data(self.side_info.render().unwrap());
+        let _ = tx.send(event);
+    }
+
+    pub async fn handle_select_layout(&mut self, e: SelectLayoutEvent) {
+        {
+            let layout = e.layout.read().await;
+            self.side_info.base_pitch = layout.scale.base_pitch.to_string();
+            self.side_info.selected_layout = layout.name.clone();
+        }
+        self.send_side_info().await;
+    }
+
+    pub async fn handle_reset(&mut self) {
+        self.side_info = Default::default();
+        self.send_side_info().await;
     }
 }

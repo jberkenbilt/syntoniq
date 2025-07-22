@@ -4,17 +4,20 @@ use crate::events::{
     SelectLayoutEvent, UpdateNoteEvent,
 };
 use crate::layout::Layout;
-use crate::pitch::Pitch;
-use crate::scale::{Note, Scale, ScaleType};
+use crate::pitch::{Factor, Pitch};
+use crate::scale::{Note, ScaleType};
 use crate::{controller, csound, events, midi_player};
 use anyhow::anyhow;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::sync::Arc;
+use tokio::sync::RwLock;
 
 mod keys {
     pub const CLEAR: u8 = 60;
     pub const SUSTAIN: u8 = 95; // Chord
+    pub const DOWN_ARROW: u8 = 70;
+    pub const UP_ARROW: u8 = 80;
     pub const LAYOUT_MIN: u8 = 101;
     pub const LAYOUT_MAX: u8 = 109;
     pub const LAYOUT_SCROLL: u8 = 19;
@@ -28,16 +31,15 @@ pub struct PlayedNote {
 
 struct Engine {
     config_file: PathBuf,
-    config: Config,
     events_tx: events::Sender,
     /// control key position -> selected layout
-    assigned_layouts: HashMap<u8, Arc<Layout>>,
+    assigned_layouts: HashMap<u8, Arc<RwLock<Layout>>>,
     transient_state: TransientState,
 }
 
 #[derive(Default)]
 struct TransientState {
-    layout: Option<Arc<Layout>>,
+    layout: Option<Arc<RwLock<Layout>>>,
     notes: HashMap<u8, Option<Arc<Note>>>,
     note_positions: HashMap<Pitch, HashSet<u8>>,
     notes_on: HashMap<Pitch, u8>, // number of times a note is on
@@ -46,12 +48,8 @@ struct TransientState {
 
 impl Engine {
     async fn reset(&mut self) -> anyhow::Result<()> {
-        match Config::load(&self.config_file) {
-            Ok(config) => self.config = config,
-            Err(e) => {
-                log::error!("error reloading config; retaining old: {e}");
-            }
-        }
+        let config =
+            Config::load(&self.config_file).map_err(|e| anyhow!("error reloading config: {e}"))?;
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -91,16 +89,22 @@ impl Engine {
                 }))?;
             }
         }
-        tx.send(Event::Light(LightEvent {
-            mode: LightMode::On,
-            position: keys::CLEAR,
-            color: Color::Active,
-            label1: "Reset".to_string(),
-            label2: String::new(),
-        }))?;
+        for (position, label1) in [
+            (keys::CLEAR, "Reset"),
+            (keys::UP_ARROW, "▲"),
+            (keys::DOWN_ARROW, "▼"),
+        ] {
+            tx.send(Event::Light(LightEvent {
+                mode: LightMode::On,
+                position,
+                color: Color::Active,
+                label1: label1.to_string(),
+                label2: String::new(),
+            }))?;
+        }
         let mut position = keys::LAYOUT_MIN;
         self.assigned_layouts.clear();
-        for layout in self.config.layouts.iter().cloned() {
+        for layout in config.layouts.into_iter() {
             tx.send(Event::AssignLayout(AssignLayoutEvent { position, layout }))?;
             position += 1;
             if position > keys::LAYOUT_MAX {
@@ -137,6 +141,21 @@ impl Engine {
             keys::SUSTAIN if off => {
                 self.transient_state.sustain = !self.transient_state.sustain;
                 tx.send(self.sustain_event())?;
+            }
+            keys::UP_ARROW | keys::DOWN_ARROW if off && self.transient_state.layout.is_some() => {
+                // 2025-07-22, rust 1.88: "if let guards" are experimental. When stable, we can
+                // use one instead of is_some above and get rid of this unwrap.
+                let layout = self.transient_state.layout.take().unwrap();
+                {
+                    let locked = &mut *layout.write().await;
+                    let transposition = if key == keys::UP_ARROW {
+                        Pitch::new(vec![Factor::new(2, 1, 1, 1)?])
+                    } else {
+                        Pitch::new(vec![Factor::new(1, 2, 1, 1)?])
+                    };
+                    locked.scale.transpose(transposition);
+                }
+                tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
             }
             position if self.transient_state.notes.contains_key(&position) => {
                 if let Some(note) = self.transient_state.notes.get(&position).unwrap() {
@@ -231,11 +250,11 @@ impl Engine {
         Ok(())
     }
 
-    async fn draw_edo_layout(&mut self, layout: &Layout, scale: &Scale) -> anyhow::Result<()> {
+    async fn draw_edo_layout(&mut self, layout: &mut Layout) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        let ScaleType::EqualDivision(ed) = &scale.scale_type else {
+        let ScaleType::EqualDivision(ed) = &layout.scale.scale_type else {
             // Should not be possible
             return Err(anyhow!("draw_edo_layout called with non-EDO scale"));
         };
@@ -254,7 +273,7 @@ impl Engine {
                     let steps = (steps_x * (col - base_x) + steps_y * (row - base_y)) as i32;
                     let cycle = steps / divisions;
                     let step = steps % divisions;
-                    let note = scale.note(cycle as i8, step as i8);
+                    let note = layout.scale.note(cycle as i8, step as i8);
                     let velocity = if self
                         .transient_state
                         .notes_on
@@ -279,7 +298,7 @@ impl Engine {
                 }))?;
             }
         }
-        log::info!("layout: {}, scale: {}", layout.name, scale.name);
+        log::info!("layout: {}, scale: {}", layout.name, layout.scale.name);
         Ok(())
     }
 
@@ -302,17 +321,14 @@ impl Engine {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        self.transient_state.layout = Some(event.layout);
-        let layout = self.transient_state.layout.clone().unwrap();
-        if let Some(scale) = &layout.scale {
-            match scale.scale_type {
-                ScaleType::EqualDivision(_) => {
-                    self.draw_edo_layout(&layout, scale.as_ref()).await?
-                }
-                ScaleType::_KeepClippyQuiet => unreachable!(),
-            }
-            tx.send(self.sustain_event())?;
+        let layout_lock = event.layout;
+        self.transient_state.layout = Some(layout_lock.clone());
+        let layout = &mut *layout_lock.write().await;
+        match layout.scale.scale_type {
+            ScaleType::EqualDivision(_) => self.draw_edo_layout(layout).await?,
+            ScaleType::_KeepClippyQuiet => unreachable!(),
         }
+        tx.send(self.sustain_event())?;
         Ok(())
     }
 
@@ -325,13 +341,17 @@ impl Engine {
         if !(keys::LAYOUT_MIN..=keys::LAYOUT_MAX).contains(&position) {
             return Ok(());
         }
-        self.assigned_layouts.insert(position, layout.clone());
+        let (label1, label2) = {
+            let l = layout.read().await;
+            (l.name.clone(), l.scale.name.clone())
+        };
+        self.assigned_layouts.insert(position, layout);
         tx.send(Event::Light(LightEvent {
             mode: LightMode::On,
             position,
             color: Color::Active,
-            label1: layout.name.clone(),
-            label2: layout.scale_name.clone(),
+            label1,
+            label2,
         }))?;
         Ok(())
     }
@@ -343,10 +363,8 @@ pub async fn run(
     events_tx: events::Sender,
     mut events_rx: events::Receiver,
 ) -> anyhow::Result<()> {
-    let config = Config::load(&config_file)?;
     let mut engine = Engine {
         config_file,
-        config,
         events_tx: events_tx.clone(),
         assigned_layouts: Default::default(),
         transient_state: Default::default(),

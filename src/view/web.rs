@@ -52,7 +52,7 @@ struct KeyInput {
 
 async fn view(State(lock): State<LockedState>) -> impl IntoResponse {
     let s = lock.read().await;
-    Html(App::new(s.get_cells()).render().unwrap())
+    Html(App::new(s.get_cells(), s.get_side_info()).render().unwrap())
 }
 
 async fn key(State(lock): State<LockedState>, data: Form<KeyInput>) -> impl IntoResponse {
@@ -122,6 +122,8 @@ async fn main_loop(state: LockedState, mut events_rx: events::Receiver) {
         match event {
             Event::Shutdown => drop(SHUTDOWN.lock().await.take()),
             Event::Light(e) => state.write().await.handle_light_event(e),
+            Event::SelectLayout(e) => state.write().await.handle_select_layout(e).await,
+            Event::Reset => state.write().await.handle_reset().await,
             _ => {}
         }
     }
