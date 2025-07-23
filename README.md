@@ -2,6 +2,29 @@
 
 # To Do
 
+Before doing move (transpose/shift), implement automated testing for engine.
+* Should be able to just start it with events and monitor events and internal state.
+
+Desired behavior for move (transpose/shift) (different from below):
+* Press Note
+* Move state moves to Pending
+  * Pressing Note key again cancels the operation; resets any note color changes
+* Press note1
+  * Move state switches to FirstSelected
+  * save note, position, and current layout
+  * selected color (if possible, or color of Note button itself) changes to NoteSelected
+* Press note2
+  * Make sure either canceling or completing restores the color of note1
+  * If same as note1 (same layout, same position, same note), set base pitch of the layout that was active when note1 was pressed to the pitch of note2
+  * Otherwise, if different layout or selected layout is not EDO, cancel
+  * Otherwise, adjust the base position of the originally selected layout by the delta between note1 and note2 positions
+* Note about note colors:
+  * When sending note event, check to see whether the current layout and position matches what was stored in the move state of FirstSelected. If so, override with NoteSelected color. This would require encapsulating the call to note.light_event so it's only called in one place and can be overridden.
+
+* There are TODO comments in all the other places.
+* Probably should update side-info with in-progress and result. We
+  probably need a "current operation" or something.
+
 Next tasks, in undefined order, are:
 * Vertical arrow keys (70, 80) shift pitch up and down by a cycle (or octave if no cycle)
 * Pitch shift; see below

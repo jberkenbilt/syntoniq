@@ -13,20 +13,45 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
+#[cfg(test)]
+mod tests;
+
 mod keys {
-    pub const CLEAR: u8 = 60;
+    // Top Row, left to right
+    pub const SHIFT: u8 = 90;
+    pub const MOVE: u8 = 94; // Note
     pub const SUSTAIN: u8 = 95; // Chord
-    pub const DOWN_ARROW: u8 = 70;
+    // Left column, top to bottom
     pub const UP_ARROW: u8 = 80;
+    pub const DOWN_ARROW: u8 = 70;
+    pub const CLEAR: u8 = 60;
+    // Right column, top to bottom
+    pub const LAYOUT_SCROLL: u8 = 19;
+    // Upper bottom controls
     pub const LAYOUT_MIN: u8 = 101;
     pub const LAYOUT_MAX: u8 = 109;
-    pub const LAYOUT_SCROLL: u8 = 19;
 }
 
 #[derive(Debug, Clone)]
 pub struct PlayedNote {
     pub note: Arc<Note>,
     pub velocity: u8,
+}
+
+#[derive(Default, Copy, Clone, PartialEq)]
+enum ShiftKeyState {
+    #[default]
+    Off, // Next on event turns on
+    On,   // Next off event turns on
+    Down, // Next off event leaves on
+}
+
+#[derive(Default, Clone, PartialEq)]
+enum MoveState {
+    #[default]
+    Off,
+    Pending,
+    _FirstSelected,
 }
 
 struct Engine {
@@ -44,6 +69,8 @@ struct TransientState {
     note_positions: HashMap<Pitch, HashSet<u8>>,
     notes_on: HashMap<Pitch, u8>, // number of times a note is on
     sustain: bool,
+    shift_key: ShiftKeyState,
+    move_state: MoveState,
 }
 
 impl Engine {
@@ -129,7 +156,28 @@ impl Engine {
         };
         let KeyEvent { key, velocity } = key_event;
         let off = velocity == 0;
+        let have_layout = self.transient_state.layout.is_some();
+        if !off && matches!(self.transient_state.shift_key, ShiftKeyState::Down) {
+            // Update shift state -- see below for behavior of shift key.
+            self.set_shift(ShiftKeyState::On, &tx)?;
+        }
         match key {
+            keys::SHIFT if have_layout => {
+                // Behavior of shift key:
+                // - When pressed, state transitions from Off to Down
+                // - If any other key is pressed while in Down state, state transitions to On
+                // - If shift is released when Down, it changes to On
+                // - If shift is pressed or released when On, it changes to Off
+                // Effect: pressing and releasing the shift key without touching other keys toggles
+                // its state. Touching another key while holding it makes it act like a modifier.
+                let shift = match (self.transient_state.shift_key, off) {
+                    (ShiftKeyState::Off, false) => ShiftKeyState::Down,
+                    (ShiftKeyState::Down, true) => ShiftKeyState::On,
+                    (ShiftKeyState::On, _) => ShiftKeyState::Off,
+                    _ => self.transient_state.shift_key,
+                };
+                self.set_shift(shift, &tx)?;
+            }
             keys::LAYOUT_MIN..=keys::LAYOUT_MAX if off => {
                 if let Some(layout) = self.assigned_layouts.get(&key).cloned() {
                     tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
@@ -140,7 +188,14 @@ impl Engine {
             }
             keys::SUSTAIN if off => {
                 self.transient_state.sustain = !self.transient_state.sustain;
-                tx.send(self.sustain_event())?;
+                tx.send(self.sustain_light_event())?;
+            }
+            keys::MOVE if off => {
+                self.transient_state.move_state = match self.transient_state.move_state {
+                    MoveState::Off => MoveState::Pending,
+                    _ => MoveState::Off,
+                };
+                tx.send(self.move_light_event())?;
             }
             keys::UP_ARROW | keys::DOWN_ARROW if off && self.transient_state.layout.is_some() => {
                 // 2025-07-22, rust 1.88: "if let guards" are experimental. When stable, we can
@@ -159,60 +214,80 @@ impl Engine {
             }
             position if self.transient_state.notes.contains_key(&position) => {
                 if let Some(note) = self.transient_state.notes.get(&position).unwrap() {
-                    let pitch = &note.pitch;
-                    let Some(others) = self.transient_state.note_positions.get(pitch) else {
-                        // This would indicate a bug in which we assigned something to notes
-                        // without also assigning its position to note positions or otherwise
-                        // allowed notes and note_positions to get out of sync.
-                        return Err(anyhow!("note positions is missing for {pitch}"));
-                    };
-                    let note_count = self
-                        .transient_state
-                        .notes_on
-                        .entry(pitch.clone())
-                        .or_default();
-                    // When not in sustain mode, touch turns a note on, and release turns it off.
-                    // Since the same note may appear in multiple locations, we keep a count, and on
-                    // send a note event if we transition to or from 0. In sustain mode, "off"
-                    // events are ignored. Touching a note in any of its positions toggles whether
-                    // it's on or off. Changing scales, transposing, shifting, etc. doesn't affect
-                    // which notes are on or off, making it possible to play a note in one scale,
-                    // switch scales, and play a note in another scale.
-                    if self.transient_state.sustain {
-                        if off {
-                            return Ok(());
-                        }
-                        if *note_count > 0 {
-                            *note_count = 0;
-                        } else {
-                            *note_count = 1;
-                        }
-                    } else if off {
-                        if *note_count > 0 {
-                            *note_count -= 1
-                        }
-                        if *note_count > 0 {
-                            return Ok(());
-                        }
-                    } else {
-                        *note_count += 1;
-                        if *note_count > 1 {
-                            return Ok(());
-                        }
-                    }
-                    let velocity = if *note_count > 0 { 127 } else { 0 };
-                    for position in others.iter().copied() {
-                        tx.send(note.light_event(position, velocity))?;
-                    }
-                    tx.send(Event::PlayNote(PlayNoteEvent {
-                        pitch: pitch.clone(),
-                        velocity,
-                        note: Some(note.clone()),
-                    }))?;
-                }
+                    self.handle_note_key(&tx, note.clone(), position, off)?;
+                };
             }
-            _ => {} // TODO
+            _ => (),
         }
+        Ok(())
+    }
+
+    fn handle_note_key(
+        &mut self,
+        tx: &events::UpgradedSender,
+        note: Arc<Note>,
+        _position: u8,
+        off: bool,
+    ) -> anyhow::Result<()> {
+        self.handle_note_key_normal(tx, note, off)
+    }
+
+    fn handle_note_key_normal(
+        &mut self,
+        tx: &events::UpgradedSender,
+        note: Arc<Note>,
+        off: bool,
+    ) -> anyhow::Result<()> {
+        let pitch = &note.pitch;
+        let Some(others) = self.transient_state.note_positions.get(pitch) else {
+            // This would indicate a bug in which we assigned something to notes
+            // without also assigning its position to note positions or otherwise
+            // allowed notes and note_positions to get out of sync.
+            return Err(anyhow!("note positions is missing for {pitch}"));
+        };
+        let note_count = self
+            .transient_state
+            .notes_on
+            .entry(pitch.clone())
+            .or_default();
+        // When not in sustain mode, touch turns a note on, and release turns it off.
+        // Since the same note may appear in multiple locations, we keep a count, and on
+        // send a note event if we transition to or from 0. In sustain mode, "off"
+        // events are ignored. Touching a note in any of its positions toggles whether
+        // it's on or off. Changing scales, transposing, shifting, etc. doesn't affect
+        // which notes are on or off, making it possible to play a note in one scale,
+        // switch scales, and play a note in another scale.
+        if self.transient_state.sustain {
+            if off {
+                return Ok(());
+            }
+            if *note_count > 0 {
+                *note_count = 0;
+            } else {
+                *note_count = 1;
+            }
+        } else if off {
+            if *note_count > 0 {
+                *note_count -= 1
+            }
+            if *note_count > 0 {
+                return Ok(());
+            }
+        } else {
+            *note_count += 1;
+            if *note_count > 1 {
+                return Ok(());
+            }
+        }
+        let velocity = if *note_count > 0 { 127 } else { 0 };
+        for position in others.iter().copied() {
+            tx.send(note.light_event(position, velocity))?;
+        }
+        tx.send(Event::PlayNote(PlayNoteEvent {
+            pitch: pitch.clone(),
+            velocity,
+            note: Some(note.clone()),
+        }))?;
         Ok(())
     }
 
@@ -302,17 +377,57 @@ impl Engine {
         Ok(())
     }
 
-    fn sustain_event(&self) -> Event {
-        let sustain_color = if self.transient_state.sustain {
+    fn toggle_light_event(&self, on: bool, position: u8, label1: &str, label2: &str) -> Event {
+        let color = if on {
             Color::ToggleOn
         } else {
             Color::ToggleOff
         };
         Event::Light(LightEvent {
             mode: LightMode::On,
-            position: keys::SUSTAIN,
-            color: sustain_color,
-            label1: "Sustain".to_string(),
+            position,
+            color,
+            label1: label1.to_string(),
+            label2: label2.to_string(),
+        })
+    }
+
+    fn sustain_light_event(&self) -> Event {
+        self.toggle_light_event(self.transient_state.sustain, keys::SUSTAIN, "Sustain", "")
+    }
+
+    fn move_light_event(&self) -> Event {
+        self.toggle_light_event(
+            !matches!(self.transient_state.move_state, MoveState::Off),
+            keys::MOVE,
+            "Move/",
+            "Transpose",
+        )
+    }
+
+    fn set_shift(
+        &mut self,
+        shift: ShiftKeyState,
+        tx: &events::UpgradedSender,
+    ) -> anyhow::Result<()> {
+        if shift == self.transient_state.shift_key {
+            return Ok(());
+        }
+        self.transient_state.shift_key = shift;
+        tx.send(self.shift_light_event())?;
+        Ok(())
+    }
+
+    fn shift_light_event(&self) -> Event {
+        let color = match self.transient_state.shift_key {
+            ShiftKeyState::Off => Color::ToggleOff,
+            _ => Color::ToggleOn,
+        };
+        Event::Light(LightEvent {
+            mode: LightMode::On,
+            position: keys::SHIFT,
+            color,
+            label1: "Shift".to_string(),
             label2: String::new(),
         })
     }
@@ -328,7 +443,9 @@ impl Engine {
             ScaleType::EqualDivision(_) => self.draw_edo_layout(layout).await?,
             ScaleType::_KeepClippyQuiet => unreachable!(),
         }
-        tx.send(self.sustain_event())?;
+        tx.send(self.sustain_light_event())?;
+        tx.send(self.move_light_event())?;
+        tx.send(self.shift_light_event())?;
         Ok(())
     }
 

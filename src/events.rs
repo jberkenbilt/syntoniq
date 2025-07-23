@@ -20,6 +20,7 @@ const COLOR_CYAN: u8 = 0x27;
 const COLOR_YELLOW: u8 = 0x0d;
 const COLOR_DULL_GRAY: u8 = 0x47;
 const COLOR_HIGHLIGHT_GRAY: u8 = 0x01;
+const COLOR_MAGENTA: u8 = 0x5f;
 
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
@@ -39,6 +40,7 @@ pub enum Color {
     SingleStepOn,
     OtherOff,
     OtherOn,
+    NoteSelected,
 }
 impl Color {
     pub fn launchpad_color(&self) -> u8 {
@@ -59,6 +61,7 @@ impl Color {
             Color::OtherOn => COLOR_WHITE,
             Color::SingleStepOff => COLOR_HIGHLIGHT_GRAY,
             Color::SingleStepOn => COLOR_WHITE,
+            Color::NoteSelected => COLOR_MAGENTA,
         }
     }
 
