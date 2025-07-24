@@ -134,6 +134,10 @@ pub enum Event {
     SelectLayout(SelectLayoutEvent),
     UpdateNote(UpdateNoteEvent),
     PlayNote(PlayNoteEvent),
+    #[cfg(test)]
+    TestEngine,
+    #[cfg(test)]
+    TestWeb,
 }
 
 impl Display for Event {

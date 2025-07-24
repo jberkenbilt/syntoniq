@@ -32,13 +32,20 @@ mod keys {
     pub const LAYOUT_MAX: u8 = 109;
 }
 
+#[derive(Debug)]
+pub enum SoundType {
+    None,
+    Midi,
+    Csound,
+}
+
 #[derive(Debug, Clone)]
 pub struct PlayedNote {
     pub note: Arc<Note>,
     pub velocity: u8,
 }
 
-#[derive(Default, Copy, Clone, PartialEq)]
+#[derive(Default, Debug, Copy, Clone, PartialEq)]
 enum ShiftKeyState {
     #[default]
     Off, // Next on event turns on
@@ -46,7 +53,7 @@ enum ShiftKeyState {
     Down, // Next off event leaves on
 }
 
-#[derive(Default, Clone, PartialEq)]
+#[derive(Default, Debug, Clone, PartialEq)]
 enum MoveState {
     #[default]
     Off,
@@ -62,7 +69,7 @@ struct Engine {
     transient_state: TransientState,
 }
 
-#[derive(Default)]
+#[derive(Default, Clone, Debug)]
 struct TransientState {
     layout: Option<Arc<RwLock<Layout>>>,
     notes: HashMap<u8, Option<Arc<Note>>>,
@@ -476,7 +483,7 @@ impl Engine {
 
 pub async fn run(
     config_file: PathBuf,
-    midi: bool,
+    sound_type: SoundType,
     events_tx: events::WeakSender,
     mut events_rx: events::Receiver,
 ) -> anyhow::Result<()> {
@@ -488,18 +495,22 @@ pub async fn run(
     };
     let rx2 = events_rx.resubscribe();
     let tx2 = events_tx.clone();
-    if midi {
-        tokio::spawn(async move {
-            if let Err(e) = midi_player::play_midi(rx2).await {
-                log::error!("midi player error: {e}");
-            };
-        });
-    } else {
-        tokio::spawn(async move {
-            if let Err(e) = csound::run_csound(rx2, tx2).await {
-                log::error!("csound player error: {e}");
-            };
-        });
+    match sound_type {
+        SoundType::None => {}
+        SoundType::Midi => {
+            tokio::spawn(async move {
+                if let Err(e) = midi_player::play_midi(rx2).await {
+                    log::error!("midi player error: {e}");
+                };
+            });
+        }
+        SoundType::Csound => {
+            tokio::spawn(async move {
+                if let Err(e) = csound::run_csound(rx2, tx2).await {
+                    log::error!("csound player error: {e}");
+                };
+            });
+        }
     }
     if let Some(tx) = events_tx.upgrade() {
         tx.send(Event::Reset)?;
@@ -521,6 +532,17 @@ pub async fn run(
             Event::SelectLayout(e) => engine.select_layout(e).await?,
             Event::UpdateNote(e) => engine.update_note(e).await?,
             Event::PlayNote(_) => {}
+            #[cfg(test)]
+            Event::TestEngine => {
+                tests::ENGINE_CHANNEL
+                    .tx
+                    .read()
+                    .await
+                    .send(engine.transient_state.clone())
+                    .await?;
+            }
+            #[cfg(test)]
+            Event::TestWeb => {}
         }
     }
     Ok(())

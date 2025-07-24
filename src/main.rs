@@ -3,13 +3,13 @@ use clap::{Parser, Subcommand};
 use clap_complete::{Generator, Shell, aot};
 use log::LevelFilter;
 use qlaunchpad::controller::Controller;
+use qlaunchpad::engine::SoundType;
 use qlaunchpad::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
 use qlaunchpad::view::web;
 use qlaunchpad::{controller, engine, events};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::{env, io};
-
 // TODO: format or wrap help text
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -114,9 +114,14 @@ async fn main() -> anyhow::Result<()> {
         Commands::Events => events_main(events_rx.resubscribe()).await,
         Commands::Colors => colors_main(events_tx.clone(), events_rx.resubscribe()).await,
         Commands::Run { config_file, midi } => {
+            let sound_type = if midi {
+                SoundType::Midi
+            } else {
+                SoundType::Csound
+            };
             engine::run(
                 config_file,
-                midi,
+                sound_type,
                 events_tx.clone(),
                 events_rx.resubscribe(),
             )
