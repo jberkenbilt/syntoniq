@@ -136,7 +136,7 @@ async fn events_main(mut rx: events::Receiver) -> anyhow::Result<()> {
 }
 
 async fn colors_main(
-    events_tx: events::Sender,
+    events_tx: events::WeakSender,
     mut events_rx: events::Receiver,
 ) -> anyhow::Result<()> {
     let Some(tx) = events_tx.upgrade() else {

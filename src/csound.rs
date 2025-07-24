@@ -16,7 +16,7 @@ struct CSound {
 const CSOUND_FILE: &str = include_str!("sound.csd");
 
 impl CSound {
-    pub async fn new(events_tx: events::Sender) -> anyhow::Result<Self> {
+    pub async fn new(events_tx: events::WeakSender) -> anyhow::Result<Self> {
         let api = CsoundApi::new(CSOUND_FILE, events_tx).await?;
         Ok(Self {
             api,
@@ -89,7 +89,7 @@ impl CSound {
 
 pub async fn run_csound(
     mut events_rx: events::Receiver,
-    events_tx: events::Sender,
+    events_tx: events::WeakSender,
 ) -> anyhow::Result<()> {
     let mut csound = CSound::new(events_tx).await?;
     csound

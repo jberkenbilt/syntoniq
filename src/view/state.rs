@@ -20,12 +20,12 @@ pub struct AppState {
     cells: HashMap<u8, Cell>,
     side_info: SideInfo,
     sse_tx: Option<broadcast::Sender<Event>>,
-    events_tx: events::Sender,
+    events_tx: events::WeakSender,
 }
 pub type LockedState = Arc<RwLock<AppState>>;
 
 impl AppState {
-    pub fn new_locked(events_tx: events::Sender) -> LockedState {
+    pub fn new_locked(events_tx: events::WeakSender) -> LockedState {
         let (sse_tx, _) = broadcast::channel(1000);
         let tx = sse_tx.clone().downgrade();
         tokio::spawn(async move {

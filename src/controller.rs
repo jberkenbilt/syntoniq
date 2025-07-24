@@ -45,7 +45,7 @@ pub async fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {
 impl Controller {
     pub async fn run(
         port_name: String,
-        events_tx: events::Sender,
+        events_tx: events::WeakSender,
         mut events_rx: events::Receiver,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         // Communicating with the MIDI device must be sync. The rest of the application must be

@@ -87,7 +87,7 @@ async fn sse_handler(State(lock): State<LockedState>) -> impl IntoResponse {
     Sse::new(stream).into_response()
 }
 
-pub async fn http_view(events_tx: events::Sender, events_rx: events::Receiver, port: u16) {
+pub async fn http_view(events_tx: events::WeakSender, events_rx: events::Receiver, port: u16) {
     let state: LockedState = AppState::new_locked(events_tx);
     let app = Router::new()
         .route("/sse", get(sse_handler))

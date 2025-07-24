@@ -56,7 +56,7 @@ enum MoveState {
 
 struct Engine {
     config_file: PathBuf,
-    events_tx: events::Sender,
+    events_tx: events::WeakSender,
     /// control key position -> selected layout
     assigned_layouts: HashMap<u8, Arc<RwLock<Layout>>>,
     transient_state: TransientState,
@@ -477,7 +477,7 @@ impl Engine {
 pub async fn run(
     config_file: PathBuf,
     midi: bool,
-    events_tx: events::Sender,
+    events_tx: events::WeakSender,
     mut events_rx: events::Receiver,
 ) -> anyhow::Result<()> {
     let mut engine = Engine {

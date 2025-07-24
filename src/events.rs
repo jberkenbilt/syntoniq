@@ -163,7 +163,7 @@ impl Display for Event {
 }
 
 pub type UpgradedSender = broadcast::Sender<Event>;
-pub type Sender = broadcast::WeakSender<Event>;
+pub type WeakSender = broadcast::WeakSender<Event>;
 pub type Receiver = broadcast::Receiver<Event>;
 
 pub struct Events {
@@ -206,7 +206,7 @@ impl Events {
         }
     }
 
-    pub async fn sender(&self) -> Sender {
+    pub async fn sender(&self) -> WeakSender {
         let tx = self
             .tx
             .read()

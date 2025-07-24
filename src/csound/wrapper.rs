@@ -45,7 +45,7 @@ extern "C" fn csound_message_callback(_: *mut cs::CSOUND, attr: c_int, msg: *con
 }
 
 impl CsoundApi {
-    pub async fn new(csound_file: &str, events_tx: events::Sender) -> anyhow::Result<Self> {
+    pub async fn new(csound_file: &str, events_tx: events::WeakSender) -> anyhow::Result<Self> {
         let (tx, rx) = flume::unbounded();
         let csound = Self::start(csound_file)?;
         let h = task::spawn_blocking(|| {
@@ -92,7 +92,11 @@ impl CsoundApi {
         }
     }
 
-    fn main_loop(csound: CsoundPtr, rx: flume::Receiver<CsoundMessage>, events_tx: events::Sender) {
+    fn main_loop(
+        csound: CsoundPtr,
+        rx: flume::Receiver<CsoundMessage>,
+        events_tx: events::WeakSender,
+    ) {
         'top: while unsafe { cs::csoundPerformKsmps(csound.0) } == 0 {
             while let Ok(msg) = rx.try_recv() {
                 match msg {
