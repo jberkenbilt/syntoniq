@@ -2,6 +2,8 @@ use crate::engine::PlayedNote;
 use crate::layout::Layout;
 use crate::pitch::Pitch;
 use crate::scale::Note;
+use askama::Template;
+use std::collections::{HashMap, HashSet};
 use std::fmt::{Display, Formatter};
 use std::sync::Arc;
 use tokio::sync::broadcast::error::RecvError;
@@ -121,6 +123,40 @@ pub struct PlayNoteEvent {
     pub pitch: Pitch,
     pub velocity: u8,
     pub note: Option<Arc<Note>>,
+}
+
+#[derive(Default, Debug, Copy, Clone, PartialEq)]
+pub enum ShiftKeyState {
+    #[default]
+    Off, // Next on event turns on
+    On,   // Next off event turns on
+    Down, // Next off event leaves on
+}
+
+#[derive(Default, Debug, Clone, PartialEq)]
+pub enum MoveState {
+    #[default]
+    Off,
+    Pending,
+    _FirstSelected,
+}
+
+#[derive(Default, Clone, Debug)]
+pub struct EngineState {
+    pub layout: Option<Arc<RwLock<Layout>>>,
+    pub notes: HashMap<u8, Option<Arc<Note>>>,
+    pub note_positions: HashMap<Pitch, HashSet<u8>>,
+    pub notes_on: HashMap<Pitch, u8>, // number of times a note is on
+    pub sustain: bool,
+    pub shift_key: ShiftKeyState,
+    pub move_state: MoveState,
+}
+
+#[derive(Template, Default)]
+#[template(path = "state-view.html")]
+pub struct StateView {
+    pub selected_layout: String,
+    pub base_pitch: String,
 }
 
 #[derive(Clone, Debug)]

@@ -3,8 +3,8 @@ use crate::events::Events;
 use std::sync::LazyLock;
 
 pub struct EngineChannel {
-    pub tx: RwLock<tokio::sync::mpsc::Sender<TransientState>>,
-    pub rx: RwLock<tokio::sync::mpsc::Receiver<TransientState>>,
+    pub tx: RwLock<tokio::sync::mpsc::Sender<EngineState>>,
+    pub rx: RwLock<tokio::sync::mpsc::Receiver<EngineState>>,
 }
 
 pub static ENGINE_CHANNEL: LazyLock<Arc<EngineChannel>> = LazyLock::new(|| {
@@ -15,7 +15,7 @@ pub static ENGINE_CHANNEL: LazyLock<Arc<EngineChannel>> = LazyLock::new(|| {
     })
 });
 
-async fn get_engine_state(tx: &events::UpgradedSender) -> TransientState {
+async fn get_engine_state(tx: &events::UpgradedSender) -> EngineState {
     tx.send(events::Event::TestEngine).unwrap();
     ENGINE_CHANNEL.rx.write().await.recv().await.unwrap()
 }

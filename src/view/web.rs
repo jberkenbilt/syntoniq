@@ -52,7 +52,11 @@ struct KeyInput {
 
 async fn view(State(lock): State<LockedState>) -> impl IntoResponse {
     let s = lock.read().await;
-    Html(App::new(s.get_cells(), s.get_side_info()).render().unwrap())
+    Html(
+        App::new(s.get_cells(), s.get_state_view())
+            .render()
+            .unwrap(),
+    )
 }
 
 async fn key(State(lock): State<LockedState>, data: Form<KeyInput>) -> impl IntoResponse {

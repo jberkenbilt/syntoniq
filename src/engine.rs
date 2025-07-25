@@ -1,14 +1,14 @@
 use crate::config::Config;
 use crate::events::{
-    AssignLayoutEvent, Color, Event, KeyEvent, LightEvent, LightMode, PlayNoteEvent,
-    SelectLayoutEvent, UpdateNoteEvent,
+    AssignLayoutEvent, Color, EngineState, Event, KeyEvent, LightEvent, LightMode, MoveState,
+    PlayNoteEvent, SelectLayoutEvent, ShiftKeyState, UpdateNoteEvent,
 };
 use crate::layout::Layout;
 use crate::pitch::{Factor, Pitch};
 use crate::scale::{Note, ScaleType};
 use crate::{controller, csound, events, midi_player};
 use anyhow::anyhow;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -45,39 +45,12 @@ pub struct PlayedNote {
     pub velocity: u8,
 }
 
-#[derive(Default, Debug, Copy, Clone, PartialEq)]
-enum ShiftKeyState {
-    #[default]
-    Off, // Next on event turns on
-    On,   // Next off event turns on
-    Down, // Next off event leaves on
-}
-
-#[derive(Default, Debug, Clone, PartialEq)]
-enum MoveState {
-    #[default]
-    Off,
-    Pending,
-    _FirstSelected,
-}
-
 struct Engine {
     config_file: PathBuf,
     events_tx: events::WeakSender,
     /// control key position -> selected layout
     assigned_layouts: HashMap<u8, Arc<RwLock<Layout>>>,
-    transient_state: TransientState,
-}
-
-#[derive(Default, Clone, Debug)]
-struct TransientState {
-    layout: Option<Arc<RwLock<Layout>>>,
-    notes: HashMap<u8, Option<Arc<Note>>>,
-    note_positions: HashMap<Pitch, HashSet<u8>>,
-    notes_on: HashMap<Pitch, u8>, // number of times a note is on
-    sustain: bool,
-    shift_key: ShiftKeyState,
-    move_state: MoveState,
+    transient_state: EngineState,
 }
 
 impl Engine {
