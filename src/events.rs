@@ -161,6 +161,13 @@ pub struct StateView {
     pub base_pitch: String,
 }
 
+#[cfg(test)]
+#[derive(Clone, Copy, Debug, PartialEq)]
+pub enum TestEvent {
+    ResetComplete,
+    LayoutSelected,
+}
+
 #[derive(Clone, Debug)]
 pub enum Event {
     Shutdown,
@@ -176,6 +183,8 @@ pub enum Event {
     TestEngine(mpsc::Sender<EngineState>),
     #[cfg(test)]
     TestWeb(mpsc::Sender<StateView>),
+    #[cfg(test)]
+    TestEvent(TestEvent),
 }
 
 impl Display for Event {

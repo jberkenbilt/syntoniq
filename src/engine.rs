@@ -1,4 +1,6 @@
 use crate::config::Config;
+#[cfg(test)]
+use crate::events::TestEvent;
 use crate::events::{
     AssignLayoutEvent, Color, EngineState, Event, KeyEvent, LightEvent, LightMode, MoveState,
     PlayNoteEvent, SelectLayoutEvent, ShiftKeyState, UpdateNoteEvent,
@@ -127,6 +129,8 @@ impl Engine {
                 break;
             }
         }
+        #[cfg(test)]
+        self.send_test_event(TestEvent::ResetComplete);
         Ok(())
     }
 
@@ -426,6 +430,8 @@ impl Engine {
         tx.send(self.sustain_light_event())?;
         tx.send(self.move_light_event())?;
         tx.send(self.shift_light_event())?;
+        #[cfg(test)]
+        self.send_test_event(TestEvent::LayoutSelected);
         Ok(())
     }
 
@@ -451,6 +457,13 @@ impl Engine {
             label2,
         }))?;
         Ok(())
+    }
+
+    #[cfg(test)]
+    fn send_test_event(&self, test_event: TestEvent) {
+        if let Some(tx) = self.events_tx.upgrade() {
+            tx.send(Event::TestEvent(test_event)).unwrap();
+        }
     }
 }
 
@@ -509,6 +522,8 @@ pub async fn run(
             Event::TestEngine(test_tx) => test_tx.send(engine.transient_state.clone()).await?,
             #[cfg(test)]
             Event::TestWeb(_) => {}
+            #[cfg(test)]
+            Event::TestEvent(_) => {}
         }
     }
     Ok(())
