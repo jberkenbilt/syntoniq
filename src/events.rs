@@ -7,6 +7,8 @@ use std::collections::{HashMap, HashSet};
 use std::fmt::{Display, Formatter};
 use std::sync::Arc;
 use tokio::sync::broadcast::error::RecvError;
+#[cfg(test)]
+use tokio::sync::mpsc;
 use tokio::sync::{RwLock, broadcast};
 
 mod rgb_colors;
@@ -152,7 +154,7 @@ pub struct EngineState {
     pub move_state: MoveState,
 }
 
-#[derive(Template, Default)]
+#[derive(Template, Default, Clone)]
 #[template(path = "state-view.html")]
 pub struct StateView {
     pub selected_layout: String,
@@ -171,9 +173,9 @@ pub enum Event {
     UpdateNote(UpdateNoteEvent),
     PlayNote(PlayNoteEvent),
     #[cfg(test)]
-    TestEngine,
+    TestEngine(mpsc::Sender<EngineState>),
     #[cfg(test)]
-    TestWeb,
+    TestWeb(mpsc::Sender<StateView>),
 }
 
 impl Display for Event {

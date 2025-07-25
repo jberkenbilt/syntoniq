@@ -128,6 +128,13 @@ async fn main_loop(state: LockedState, mut events_rx: events::Receiver) {
             Event::Light(e) => state.write().await.handle_light_event(e),
             Event::SelectLayout(e) => state.write().await.handle_select_layout(e).await,
             Event::Reset => state.write().await.handle_reset().await,
+            #[cfg(test)]
+            Event::TestWeb(test_tx) => {
+                test_tx
+                    .send(state.read().await.get_state_view().clone())
+                    .await
+                    .unwrap();
+            }
             _ => {}
         }
     }

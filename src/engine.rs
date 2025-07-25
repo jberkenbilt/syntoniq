@@ -506,16 +506,9 @@ pub async fn run(
             Event::UpdateNote(e) => engine.update_note(e).await?,
             Event::PlayNote(_) => {}
             #[cfg(test)]
-            Event::TestEngine => {
-                tests::ENGINE_CHANNEL
-                    .tx
-                    .read()
-                    .await
-                    .send(engine.transient_state.clone())
-                    .await?;
-            }
+            Event::TestEngine(test_tx) => test_tx.send(engine.transient_state.clone()).await?,
             #[cfg(test)]
-            Event::TestWeb => {}
+            Event::TestWeb(_) => {}
         }
     }
     Ok(())
