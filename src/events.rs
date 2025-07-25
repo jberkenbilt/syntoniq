@@ -24,7 +24,7 @@ const COLOR_CYAN: u8 = 0x27;
 const COLOR_YELLOW: u8 = 0x0d;
 const COLOR_DULL_GRAY: u8 = 0x47;
 const COLOR_HIGHLIGHT_GRAY: u8 = 0x01;
-const COLOR_MAGENTA: u8 = 0x5f;
+const COLOR_MAGENTA: u8 = 0x5e;
 
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
@@ -135,12 +135,24 @@ pub enum ShiftKeyState {
     Down, // Next off event leaves on
 }
 
-#[derive(Default, Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
+pub struct SpecificNote {
+    pub layout: Arc<RwLock<Layout>>,
+    pub note: Arc<Note>,
+    pub position: u8,
+}
+
+#[derive(Default, Debug, Clone)]
 pub enum MoveState {
     #[default]
     Off,
-    Pending,
-    _FirstSelected,
+    Pending {
+        initial_layout: Arc<RwLock<Layout>>,
+    },
+    FirstSelected {
+        initial_layout: Arc<RwLock<Layout>>,
+        note1: SpecificNote,
+    },
 }
 
 #[derive(Default, Clone, Debug)]
@@ -168,6 +180,7 @@ pub enum TestEvent {
     LayoutSelected,
     EngineStateChange,
     HandledNote,
+    MoveCanceled,
 }
 
 #[derive(Clone, Debug)]

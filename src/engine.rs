@@ -3,7 +3,7 @@ use crate::config::Config;
 use crate::events::TestEvent;
 use crate::events::{
     AssignLayoutEvent, Color, EngineState, Event, KeyEvent, LightEvent, LightMode, MoveState,
-    PlayNoteEvent, SelectLayoutEvent, ShiftKeyState, UpdateNoteEvent,
+    PlayNoteEvent, SelectLayoutEvent, ShiftKeyState, SpecificNote, UpdateNoteEvent,
 };
 use crate::layout::Layout;
 use crate::pitch::{Factor, Pitch};
@@ -176,9 +176,11 @@ impl Engine {
                 #[cfg(test)]
                 self.send_test_event(TestEvent::EngineStateChange);
             }
-            keys::MOVE if off => {
+            keys::MOVE if off && have_layout => {
                 self.transient_state.move_state = match self.transient_state.move_state {
-                    MoveState::Off => MoveState::Pending,
+                    MoveState::Off => MoveState::Pending {
+                        initial_layout: self.transient_state.layout.clone().unwrap(),
+                    },
                     _ => MoveState::Off,
                 };
                 tx.send(self.move_light_event())?;
@@ -200,9 +202,16 @@ impl Engine {
                 }
                 tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
             }
-            position if self.transient_state.notes.contains_key(&position) => {
+            position if have_layout && self.transient_state.notes.contains_key(&position) => {
                 if let Some(note) = self.transient_state.notes.get(&position).unwrap() {
-                    self.handle_note_key(&tx, note.clone(), position, off)?;
+                    self.handle_note_key(
+                        &tx,
+                        self.transient_state.layout.clone().unwrap(),
+                        note.clone(),
+                        position,
+                        off,
+                    )
+                    .await?;
                 };
             }
             _ => (),
@@ -210,16 +219,108 @@ impl Engine {
         Ok(())
     }
 
-    fn handle_note_key(
+    async fn handle_note_key(
         &mut self,
         tx: &events::UpgradedSender,
+        layout: Arc<RwLock<Layout>>,
         note: Arc<Note>,
-        _position: u8,
+        position: u8,
         off: bool,
     ) -> anyhow::Result<()> {
-        self.handle_note_key_normal(tx, note, off)?;
+        let mut is_move = false;
+        match self.transient_state.move_state.clone() {
+            MoveState::Off => self.handle_note_key_normal(tx, note, off)?,
+            MoveState::Pending { initial_layout } => {
+                if off {
+                    is_move = true;
+                    self.transient_state.move_state = MoveState::FirstSelected {
+                        initial_layout,
+                        note1: SpecificNote {
+                            layout,
+                            note,
+                            position,
+                        },
+                    };
+                }
+            }
+            MoveState::FirstSelected {
+                initial_layout,
+                note1,
+            } => {
+                if off {
+                    is_move = true;
+                    self.transient_state.move_state = MoveState::Off;
+                    self.handle_move(
+                        initial_layout,
+                        note1,
+                        SpecificNote {
+                            layout,
+                            note,
+                            position,
+                        },
+                    )
+                    .await?;
+                }
+            }
+        }
+
+        if is_move {
+            if let Some(tx) = self.events_tx.upgrade() {
+                tx.send(self.move_light_event())?;
+            }
+            #[cfg(test)]
+            self.send_test_event(TestEvent::EngineStateChange);
+        }
+
         #[cfg(test)]
         self.send_test_event(TestEvent::HandledNote);
+        Ok(())
+    }
+
+    async fn handle_move(
+        &mut self,
+        initial_layout: Arc<RwLock<Layout>>,
+        note1: SpecificNote,
+        note2: SpecificNote,
+    ) -> anyhow::Result<()> {
+        let mut update_layout = false;
+        if note1.layout.read().await.name != note2.layout.read().await.name {
+            log::info!("move: note1 and note2 are from different layouts; ignoring");
+            #[cfg(test)]
+            self.send_test_event(TestEvent::MoveCanceled);
+            return Ok(());
+        }
+        if note1.note == note2.note {
+            let mut layout = initial_layout.write().await;
+            log::info!(
+                "resetting base pitch of {} to {}",
+                layout.scale.name,
+                note1.note.pitch
+            );
+            layout.scale.base_pitch = note1.note.pitch.clone();
+            update_layout = true;
+        } else if note1.layout.read().await.name != initial_layout.read().await.name {
+            log::info!("move: note1 and note2 are not from the original layout, so not shifting");
+            #[cfg(test)]
+            self.send_test_event(TestEvent::MoveCanceled);
+        } else {
+            let mut layout = initial_layout.write().await;
+            let note1_col = note1.position % 10;
+            let note1_row = note1.position / 10;
+            let note2_col = note2.position % 10;
+            let note2_row = note2.position / 10;
+            let dy = note2_row as i8 - note1_row as i8;
+            let dx = note2_col as i8 - note1_col as i8;
+            log::info!("shifting layout {} by dy={dy}, dx={dx}", layout.name);
+            let (old_x, old_y) = layout.base;
+            layout.base = (old_x + dx, old_y + dy);
+            update_layout = true;
+        }
+        if update_layout && let Some(tx) = self.events_tx.upgrade() {
+            tx.send(Event::SelectLayout(SelectLayoutEvent {
+                layout: initial_layout,
+            }))?;
+        }
         Ok(())
     }
 
@@ -383,17 +484,23 @@ impl Engine {
         })
     }
 
-    fn sustain_light_event(&self) -> Event {
-        self.toggle_light_event(self.transient_state.sustain, keys::SUSTAIN, "Sustain", "")
+    fn move_light_event(&self) -> Event {
+        let color = match self.transient_state.move_state {
+            MoveState::Off => Color::ToggleOff,
+            MoveState::Pending { .. } => Color::ToggleOn,
+            MoveState::FirstSelected { .. } => Color::NoteSelected,
+        };
+        Event::Light(LightEvent {
+            mode: LightMode::On,
+            position: keys::MOVE,
+            color,
+            label1: "Move/".to_string(),
+            label2: "Transpose".to_string(),
+        })
     }
 
-    fn move_light_event(&self) -> Event {
-        self.toggle_light_event(
-            !matches!(self.transient_state.move_state, MoveState::Off),
-            keys::MOVE,
-            "Move/",
-            "Transpose",
-        )
+    fn sustain_light_event(&self) -> Event {
+        self.toggle_light_event(self.transient_state.sustain, keys::SUSTAIN, "Sustain", "")
     }
 
     fn set_shift(

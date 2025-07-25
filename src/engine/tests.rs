@@ -74,16 +74,16 @@ impl TestController {
         self.web_channel.rx.recv().await.unwrap()
     }
 
-    async fn wait_for_event<F>(&mut self, f: F) -> bool
+    async fn wait_for_event<F>(&mut self, f: F) -> Option<Event>
     where
         F: Fn(&Event) -> bool,
     {
         while let Some(event) = events::receive_check_lag(&mut self.events_rx, None).await {
             if f(&event) {
-                return true;
+                return Some(event);
             }
         }
-        false
+        None
     }
 
     async fn wait_for_test_event(&mut self, test_event: TestEvent) {
@@ -96,7 +96,11 @@ impl TestController {
             key: position,
             velocity: if on { 127 } else { 0 },
         }))?;
-        assert!(self.wait_for_event(|e| matches!(e, Event::Key(_))).await);
+        assert!(
+            self.wait_for_event(|e| matches!(e, Event::Key(_)))
+                .await
+                .is_some()
+        );
         Ok(())
     }
 
@@ -207,6 +211,214 @@ async fn test_sustain() -> anyhow::Result<()> {
     tc.wait_for_test_event(TestEvent::EngineStateChange).await;
     let ts = tc.get_engine_state().await;
     assert!(!ts.sustain);
+
+    tc.shutdown().await
+}
+
+#[tokio::test]
+async fn test_move_cancels() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select EDO-19
+    tc.press_and_release_key(102).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+
+    // Enter move mode
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+
+    // Touch move to end move mode
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Off));
+
+    // Enter move mode
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+    // Touch a note
+    tc.press_and_release_key(32).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::FirstSelected { .. }));
+    // Move mode cancels
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Off));
+
+    // Enter move mode
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+    // Change layout
+    tc.press_and_release_key(103).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    // Touch two different notes -- this cancels because we can't do a shift
+    // after changing layouts.
+    tc.press_and_release_key(32).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.press_and_release_key(33).await?;
+    tc.wait_for_test_event(TestEvent::MoveCanceled).await;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Off));
+
+    tc.shutdown().await
+}
+
+#[tokio::test]
+async fn test_octave_transpose() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select EDO-19
+    tc.press_and_release_key(102).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    assert_eq!(
+        ts.layout.unwrap().read().await.scale.base_pitch.to_string(),
+        "220*^1|4"
+    );
+
+    // Go down an octave
+    tc.press_and_release_key(keys::DOWN_ARROW).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    assert_eq!(
+        ts.layout.unwrap().read().await.scale.base_pitch.to_string(),
+        "110*^1|4"
+    );
+
+    // Go up two octaves
+    tc.press_and_release_key(keys::UP_ARROW).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    tc.press_and_release_key(keys::UP_ARROW).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    assert_eq!(
+        ts.layout.unwrap().read().await.scale.base_pitch.to_string(),
+        "440*^1|4"
+    );
+
+    tc.shutdown().await
+}
+
+#[tokio::test]
+async fn test_transpose_same_layout() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select EDO-19
+    tc.press_and_release_key(102).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    assert_eq!(ts.layout.unwrap().read().await.scale.name, "EDO-19");
+
+    // Enter move mode
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+
+    // Touch a note twice to transpose
+    tc.press_and_release_key(44).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.press_and_release_key(44).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Off));
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    // Transpose up 8 EDO-19 steps: 1/4 + 8/19 = 51/76
+    assert_eq!(
+        ts.layout.unwrap().read().await.scale.base_pitch.to_string(),
+        "220*^51|76"
+    );
+
+    tc.shutdown().await
+}
+
+#[tokio::test]
+async fn test_transpose_different_layout() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select EDO-12
+    tc.press_and_release_key(101).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    assert_eq!(ts.layout.unwrap().read().await.scale.name, "EDO-12");
+
+    // Enter move mode
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+
+    // Select EDO-19
+    tc.press_and_release_key(102).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    let edo_19 = ts.layout.clone().unwrap();
+    assert_eq!(ts.layout.unwrap().read().await.scale.name, "EDO-19");
+
+    // Touch a note twice to transpose
+    tc.press_and_release_key(34).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.press_and_release_key(34).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Off));
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    // EDO-19 didn't change, but...
+    {
+        let layout = edo_19.read().await;
+        assert_eq!(layout.scale.name, "EDO-19");
+        assert_eq!(layout.scale.base_pitch.to_string(), "220*^1|4");
+    }
+    // EDO-12 did by 4 EDO-19 steps. 1/4 + 6/19 = 43. Also, this is now the selected layout.
+    {
+        let layout = ts.layout.as_ref().unwrap().read().await;
+        assert_eq!(layout.scale.name, "EDO-12");
+        assert_eq!(layout.scale.base_pitch.to_string(), "220*^43|76");
+    }
+    tc.shutdown().await
+}
+
+#[tokio::test]
+async fn test_move() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select EDO-31
+    tc.press_and_release_key(103).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    {
+        let layout = ts.layout.as_ref().unwrap().read().await;
+        assert_eq!(layout.scale.name, "EDO-31");
+        assert_eq!(layout.base, (2, 2));
+    }
+
+    // Enter move mode
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+
+    // Touch a note, then another to shift
+    tc.press_and_release_key(34).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    // Over 1 column, up 2 rows
+    tc.press_and_release_key(55).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Off));
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    {
+        let layout = ts.layout.as_ref().unwrap().read().await;
+        assert_eq!(layout.scale.name, "EDO-31");
+        assert_eq!(layout.base, (3, 4));
+    }
 
     tc.shutdown().await
 }
