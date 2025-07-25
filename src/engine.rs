@@ -173,6 +173,8 @@ impl Engine {
             keys::SUSTAIN if off => {
                 self.transient_state.sustain = !self.transient_state.sustain;
                 tx.send(self.sustain_light_event())?;
+                #[cfg(test)]
+                self.send_test_event(TestEvent::EngineStateChange);
             }
             keys::MOVE if off => {
                 self.transient_state.move_state = match self.transient_state.move_state {
@@ -180,6 +182,8 @@ impl Engine {
                     _ => MoveState::Off,
                 };
                 tx.send(self.move_light_event())?;
+                #[cfg(test)]
+                self.send_test_event(TestEvent::EngineStateChange);
             }
             keys::UP_ARROW | keys::DOWN_ARROW if off && self.transient_state.layout.is_some() => {
                 // 2025-07-22, rust 1.88: "if let guards" are experimental. When stable, we can
@@ -213,7 +217,10 @@ impl Engine {
         _position: u8,
         off: bool,
     ) -> anyhow::Result<()> {
-        self.handle_note_key_normal(tx, note, off)
+        self.handle_note_key_normal(tx, note, off)?;
+        #[cfg(test)]
+        self.send_test_event(TestEvent::HandledNote);
+        Ok(())
     }
 
     fn handle_note_key_normal(

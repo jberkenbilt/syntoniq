@@ -235,6 +235,10 @@ impl Pitch {
         Ok(Self::new(factors))
     }
 
+    pub fn must_parse(s: &str) -> Self {
+        Self::parse(s).unwrap()
+    }
+
     pub fn as_float(&self) -> f32 {
         self.factors
             .iter()

@@ -166,6 +166,8 @@ pub struct StateView {
 pub enum TestEvent {
     ResetComplete,
     LayoutSelected,
+    EngineStateChange,
+    HandledNote,
 }
 
 #[derive(Clone, Debug)]

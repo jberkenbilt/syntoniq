@@ -100,9 +100,17 @@ impl TestController {
         Ok(())
     }
 
-    async fn press_and_release_key(&mut self, position: u8) -> anyhow::Result<()> {
-        self.send_key(position, true).await?;
+    async fn press_key(&mut self, position: u8) -> anyhow::Result<()> {
+        self.send_key(position, true).await
+    }
+
+    async fn release_key(&mut self, position: u8) -> anyhow::Result<()> {
         self.send_key(position, false).await
+    }
+
+    async fn press_and_release_key(&mut self, position: u8) -> anyhow::Result<()> {
+        self.press_key(position).await?;
+        self.release_key(position).await
     }
 }
 
@@ -150,5 +158,55 @@ async fn test_layout_selection() -> anyhow::Result<()> {
     let ws = tc.get_web_state().await;
     assert_eq!(ws.selected_layout, "EDO-12-2x1");
     assert_eq!(ws.base_pitch, "220*1\\4");
+    tc.shutdown().await
+}
+
+#[tokio::test]
+async fn test_sustain() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select EDO-12
+    tc.press_and_release_key(101).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+
+    // Press and release middle C. Note is on after press and off after release.
+    tc.press_key(32).await?; // middle C
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
+    let ts = tc.get_engine_state().await;
+    assert!(*ts.notes_on.get(&Pitch::must_parse("220*3\\12")).unwrap() > 0);
+    tc.release_key(32).await?; // middle C
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
+    let ts = tc.get_engine_state().await;
+    assert_eq!(
+        *ts.notes_on.get(&Pitch::must_parse("220*3\\12")).unwrap(),
+        0
+    );
+
+    // Enter sustain mode
+    tc.press_and_release_key(keys::SUSTAIN).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.sustain);
+
+    // Press and release middle C. Note stays on.
+    tc.press_and_release_key(32).await?; // middle C
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
+    let ts = tc.get_engine_state().await;
+    assert!(*ts.notes_on.get(&Pitch::must_parse("220*3\\12")).unwrap() > 0);
+
+    // Press and release middle C. Note turns off.
+    tc.press_and_release_key(32).await?; // middle C
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
+    let ts = tc.get_engine_state().await;
+    assert_eq!(
+        *ts.notes_on.get(&Pitch::must_parse("220*3\\12")).unwrap(),
+        0
+    );
+
+    // Leave sustain mode
+    tc.press_and_release_key(keys::SUSTAIN).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(!ts.sustain);
+
     tc.shutdown().await
 }
