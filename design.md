@@ -52,14 +52,14 @@ Update:
 * rational numerator may have up to three decimal places
 
 * `freq*a/b` = obvious
-* `freq*a\b\c/d` = `c/d^(a/b)`, default for c = 2, default for d = 1
+* `freq*a/b^c|d` = `a/b^(c/d)`, default for a = 2, default for b = 1 (e.g. `^18|31`)
 * Can chain multiplications
 
 Examples:
 - `440*3/5` = 264 = middle C with Just intonation with A 440
-- `220*1\3` = middle C with EDO-12 with A 440 (300 cents above the A below middle C)
-- `220*1\3*4\7` = 4th EDO-7 step starting from EDO-12 middle C
-- `220*1\31\4` = 1 step of the division of two octaves into 31 equal divisions
+- `220*^1|3` = middle C with EDO-12 with A 440 (300 cents above the A below middle C)
+- `220*^1|3*^4|7` = 4th EDO-7 step starting from EDO-12 middle C
+- `220*4^1|31` = 1 step of the division of two octaves into 31 equal divisions
 - `264*9/8*6/5` = Just minor third above Just whole tone above middle C
 
 Enhancements:
@@ -67,19 +67,19 @@ Enhancements:
   * Treat bare number as `a/b` numerator
   * Allow fixed point in `a/b` numerator position; convert to rational
   * This makes a bare ratio/exponent valid, so need for `1*`
-* Recognize that `a/b` is `1/1\a/b`
+* Recognize that `a/b` is `a/b^1|1`
 * Canonicalize:
   * Multiply all terms with exponent 1
   * Add exponents together for each distinct base
   * Sort the (a, b, c, d) tuple numerically
   * Example:
-    - 3/4*5/3*1\12*10\31*1\2/3/2 =
+    - 3/4*5/3*^1|12*^10|31*3/2^1|2 =
     - 3/4 * 5/3 * 2^(1/12) * 2^(10/31) * (3/2)^(1/2) =
     - 15/12 * 2^(1/12 + 10/31) * (3/2)^(1/2) =
     - 5/4 * 2^(1/12 + 10/31) * (3/2)^(1/2) =
     - 5/4 * 2^(151/372) * (3/2)^(1/2)
-    - 1\1/5/4 * 151\372/2/1 * 1\2*3/2 =
-    - 1\1/5/4 * 1\2*3/2 * 151\372/2/1
+    - 5/4 * ^151|372 * 3/2^1|2 =
+    - 5/4 * 3/2*^1|2 * ^151|372
 
 # Idea for Just Intonation layout
 
@@ -115,9 +115,9 @@ Examples:
 EDO-31 scale with middle C based on EDO-12, A 440
 ```yaml
 - scale: EDO-31
-  tonic: 220*1\3
+  tonic: 220*^1|3
   octave: 31
-  step: 1\31
+  step: ^1|31
   names: ["C", "C+", "C#", "D%", "D-", "D", "D+", "D#", "D%", "D-", ...]
 ```
 

@@ -34,11 +34,10 @@ impl Display for Factor {
         if self.exp == Ratio::from_integer(1) {
             write_frac(f, *num, *den)?;
         } else {
-            write!(f, "{}\\{}", *self.exp.numer(), *self.exp.denom())?;
             if self.base != Ratio::from_integer(2) {
-                write!(f, "/")?;
                 write_frac(f, *num, *den)?;
             }
+            write!(f, "^{}|{}", *self.exp.numer(), *self.exp.denom())?;
         }
         Ok(())
     }
@@ -164,19 +163,19 @@ impl Pitch {
                             (?:/(?P<r_den>\d+))?
                         $)
                         |
-                        # Exponent: a\b[c[/d]]
+                        # Exponent: [a[/b]]^c|d
                         (?P<exp>
-                            (?P<e_num>-?\d+)
-                            \\
-                            (?P<e_den>\d+)
                             (?:
-                                /
                                 (?P<e_base_num>\d+)
                                 (?:
                                     /
                                     (?P<e_base_den>\d+)
                                 )?
                             )?
+                            \^
+                            (?P<e_num>-?\d+)
+                            \|
+                            (?P<e_den>\d+)
                         $)
                     )
                 ",
@@ -201,7 +200,7 @@ impl Pitch {
                     factors.push(Factor::new(num, den, 1, 1)?);
                     continue;
                 }
-                // Exponent, eg. 3\12, 4\7/4/3
+                // Exponent, eg. 3|12, 4/3^4|7
                 if cap.name("exp").is_some() {
                     let exp_numerator: i32 = cap["e_num"].parse()?;
                     let exp_denominator: i32 = cap["e_den"].parse()?;
@@ -311,7 +310,7 @@ mod tests {
 
     #[test]
     fn test_parse() {
-        let p = Pitch::parse("440*3\\12*3/2").unwrap();
+        let p = Pitch::parse("440*^3|12*3/2").unwrap();
         assert_eq!(
             p,
             Pitch {
@@ -328,7 +327,7 @@ mod tests {
                 factors: vec![Factor::new(392439, 1000, 1, 1).unwrap(),],
             }
         );
-        let p = Pitch::parse("500*4\\7/4/3").unwrap();
+        let p = Pitch::parse("500*4/3^4|7").unwrap();
         assert_eq!(
             p,
             Pitch {
@@ -357,23 +356,23 @@ mod tests {
         }
 
         check("440", "440*3/4*4/3")?;
-        check("250*5\\31", "100*2\\31*3\\31*5/2")?;
-        check("100*2\\2", "200")?;
-        check("660*-5\\12", "330*7\\12")?;
-        check("500*0\\31", "500")?;
+        check("250*^5|31", "100*^2|31*^3|31*5/2")?;
+        check("100*^2|2", "200")?;
+        check("660*^-5|12", "330*^7|12")?;
+        check("500*^0|31", "500")?;
 
         let p1 = Pitch::parse("440")?;
         let p2 = p1.concat(Pitch::parse("3/2")?);
         assert_eq!(p2, Pitch::parse("660")?);
-        let p3 = p2.concat(Pitch::parse("-5\\12")?);
-        assert_eq!(p3, Pitch::parse("330*7\\12")?);
+        let p3 = p2.concat(Pitch::parse("^-5|12")?);
+        assert_eq!(p3, Pitch::parse("330*^7|12")?);
 
         assert_eq!(p1.to_string(), "440");
         assert_eq!(p2.to_string(), "660");
-        assert_eq!(p3.to_string(), "330*7\\12");
+        assert_eq!(p3.to_string(), "330*^7|12");
         assert_eq!(
-            Pitch::parse("3/4*5/3*1\\12*10\\31*1\\2/3/2")?.to_string(),
-            "151\\372*1\\2/3/2*5/4"
+            Pitch::parse("3/4*5/3*^1|12*^10|31*3/2^1|2")?.to_string(),
+            "^151|372*3/2^1|2*5/4"
         );
 
         Ok(())

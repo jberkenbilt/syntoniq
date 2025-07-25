@@ -173,13 +173,13 @@ mod tests {
     #[test]
     fn test_interval_colors() {
         fn get_color(pitch: &str) -> Color {
-            let (c, _) = Scale::interval_color(Pitch::parse(pitch).unwrap().as_float());
+            let (c, _) = Scale::interval_color(Pitch::must_parse(pitch).as_float());
             c
         }
         assert_eq!(get_color("1*3/2"), Color::FifthOff); // JI 5th
-        assert_eq!(get_color("1*9\\12"), Color::MinorThirdOff); // EDO-12 major sixth
-        assert_eq!(get_color("1*10\\31"), Color::MajorThirdOff); // EDO-31 major third
-        assert_eq!(get_color("1*7\\17"), Color::FifthOff); // EDO-17 fourth
-        assert_eq!(get_color("1*5\\17"), Color::OtherOff); // nope
+        assert_eq!(get_color("1*^9|12"), Color::MinorThirdOff); // EDO-12 major sixth
+        assert_eq!(get_color("1*^10|31"), Color::MajorThirdOff); // EDO-31 major third
+        assert_eq!(get_color("1*^7|17"), Color::FifthOff); // EDO-17 fourth
+        assert_eq!(get_color("1*^5|17"), Color::OtherOff); // nope
     }
 }

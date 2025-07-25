@@ -78,7 +78,7 @@ mod tests {
 name = "EDO-12"
 type = "EqualDivision"
 divisions = [12, 2, 1]
-base_pitch = "220*3\\12" # middle C for A-440 12-TET scale
+base_pitch = "220*^3|12" # middle C for A-440 12-TET scale
 note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"]
 [[layout]]
 name = "5x3"

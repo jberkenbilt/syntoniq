@@ -157,7 +157,7 @@ async fn test_layout_selection() -> anyhow::Result<()> {
     assert_eq!(ts.layout.unwrap().read().await.name, "EDO-12-2x1");
     let ws = tc.get_web_state().await;
     assert_eq!(ws.selected_layout, "EDO-12-2x1");
-    assert_eq!(ws.base_pitch, "220*1\\4");
+    assert_eq!(ws.base_pitch, "220*^1|4");
     tc.shutdown().await
 }
 
@@ -172,12 +172,12 @@ async fn test_sustain() -> anyhow::Result<()> {
     tc.press_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert!(*ts.notes_on.get(&Pitch::must_parse("220*3\\12")).unwrap() > 0);
+    assert!(*ts.notes_on.get(&Pitch::must_parse("220*^3|12")).unwrap() > 0);
     tc.release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
     assert_eq!(
-        *ts.notes_on.get(&Pitch::must_parse("220*3\\12")).unwrap(),
+        *ts.notes_on.get(&Pitch::must_parse("220*^3|12")).unwrap(),
         0
     );
 
@@ -191,14 +191,14 @@ async fn test_sustain() -> anyhow::Result<()> {
     tc.press_and_release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert!(*ts.notes_on.get(&Pitch::must_parse("220*3\\12")).unwrap() > 0);
+    assert!(*ts.notes_on.get(&Pitch::must_parse("220*^3|12")).unwrap() > 0);
 
     // Press and release middle C. Note turns off.
     tc.press_and_release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
     assert_eq!(
-        *ts.notes_on.get(&Pitch::must_parse("220*3\\12")).unwrap(),
+        *ts.notes_on.get(&Pitch::must_parse("220*^3|12")).unwrap(),
         0
     );
 

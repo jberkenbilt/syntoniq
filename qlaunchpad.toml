@@ -2,7 +2,7 @@
 name = "EDO-12"
 type = "EqualDivision"
 divisions = [12, 2, 1]
-base_pitch = "220*3\\12"
+base_pitch = "220*^3|12"
 note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"]
 
 [[layout]]
@@ -16,7 +16,7 @@ steps = [2, 1]
 name = "EDO-19"
 type = "EqualDivision"
 divisions = [19, 2, 1]
-base_pitch = "220*3\\12"
+base_pitch = "220*^3|12"
 note_names = ["C", "C♯", "D♭", "D", "D♯", "E♭", "E", "E♯", "F", "F♯", "G♭",
               "G", "G♯", "A♭", "A", "A♯", "B♭", "B", "B♯"]
 
@@ -34,7 +34,7 @@ type = "EqualDivision"
 # in adjusted MIDI mode. It would would typically be middle C for something used
 # as a diatonic scale.
 divisions = [31, 2, 1]   # 31 divisions of the octave: [a, b, c] = ((b^c)^*(1/a))
-base_pitch = "220*3\\12" # middle C for A-440 12-TET scale
+base_pitch = "220*^3|12" # middle C for A-440 12-TET scale
 note_names = [
   "C",
   "C↑", "C♯", "D♭", "D↓", "D",
@@ -57,7 +57,7 @@ steps = [5, 3]
 name = "EDO-17"
 type = "EqualDivision"
 divisions = [17, 2, 1]
-base_pitch = "220*3\\12"
+base_pitch = "220*^3|12"
 note_names = ["C", "C#-", "C#+", "D+", "E%-", "E-", "E+", "F", "F#-",
               "F#+", "G", "A%-", "A%+", "A+", "B%-", "B-", "B+", "C"]
 
