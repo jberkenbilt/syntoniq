@@ -268,6 +268,28 @@ async fn test_move_cancels() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     assert!(matches!(ts.move_state, MoveState::Off));
 
+    // Select generic layout
+    tc.press_and_release_key(105).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(
+        ts.layout.unwrap().read().await.scale.scale_type,
+        ScaleType::Generic(_)
+    ));
+    // Enter move mode
+    tc.press_and_release_key(keys::MOVE).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+    // Can't move a generic layout
+    tc.press_and_release_key(32).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.press_and_release_key(33).await?;
+    tc.wait_for_test_event(TestEvent::MoveCanceled).await;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.move_state, MoveState::Off));
+
     tc.shutdown().await
 }
 
@@ -395,7 +417,7 @@ async fn test_move() -> anyhow::Result<()> {
     {
         let layout = ts.layout.as_ref().unwrap().read().await;
         assert_eq!(layout.scale.name, "EDO-31");
-        assert_eq!(layout.base, (2, 2));
+        assert_eq!(layout.base, Some((2, 2)));
     }
 
     // Enter move mode
@@ -417,7 +439,7 @@ async fn test_move() -> anyhow::Result<()> {
     {
         let layout = ts.layout.as_ref().unwrap().read().await;
         assert_eq!(layout.scale.name, "EDO-31");
-        assert_eq!(layout.base, (3, 4));
+        assert_eq!(layout.base, Some((3, 4)));
     }
 
     tc.shutdown().await

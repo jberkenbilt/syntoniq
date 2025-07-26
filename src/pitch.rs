@@ -127,12 +127,15 @@ impl Pitch {
                 // The exponent doesn't matter if the base is 1
                 exp = Ratio::from_integer(1);
             }
-
-            result.push(Factor { base, exp });
+            if exp == Ratio::from_integer(1) {
+                exp_1 *= base;
+            } else {
+                result.push(Factor { base, exp });
+            }
         }
 
-        // Add the multiplied factors if we had any
-        if exp_1 != Ratio::from_integer(1) {
+        // Add the exponent-1 factors taking care to avoid needless multiply by 1
+        if result.is_empty() || exp_1 != Ratio::from_integer(1) {
             result.push(Factor {
                 base: exp_1,
                 exp: Ratio::from_integer(1),
@@ -142,13 +145,35 @@ impl Pitch {
         // Sort for predictability
         result.sort_by_key(|f| (f.base, f.exp));
         result.reverse();
-
         Self { factors: result }
     }
 
     pub fn concat(&self, mut other: Self) -> Self {
         other.factors.extend(self.factors.iter().cloned());
         Self::new(other.factors)
+    }
+
+    pub fn invert(&self) -> Self {
+        let factors = self
+            .factors
+            .iter()
+            .map(|f| {
+                let (base_n, base_d, exp_n, exp_d) = if f.exp == Ratio::from_integer(1) {
+                    // Exponent is one; take the reciprocal of base
+                    (*f.base.denom(), *f.base.numer(), 1, 1)
+                } else {
+                    // Exponent is not 1; raise to the negation of the exponent
+                    (
+                        *f.base.numer(),
+                        *f.base.denom(),
+                        -f.exp.numer(),
+                        *f.exp.denom(),
+                    )
+                };
+                Factor::new(base_n, base_d, exp_n, exp_d).unwrap()
+            })
+            .collect();
+        Self::new(factors)
     }
 
     /// Parse a pitch from a string.
@@ -345,6 +370,20 @@ mod tests {
             }
         );
         assert_eq!(p.as_float(), 1.5);
+        let p: Pitch = "2*1/2".parse().unwrap();
+        assert_eq!(
+            p,
+            Pitch {
+                factors: vec![Factor::new(1, 1, 1, 1).unwrap()],
+            }
+        );
+        let p: Pitch = "4*1/2".parse().unwrap();
+        assert_eq!(
+            p,
+            Pitch {
+                factors: vec![Factor::new(2, 1, 1, 1).unwrap()],
+            }
+        );
     }
 
     #[test]
@@ -383,5 +422,14 @@ mod tests {
         let p = Pitch::parse("440*3/2")?;
         assert_eq!(p.as_float(), 660.0);
         Ok(())
+    }
+
+    #[test]
+    fn test_invert() {
+        let p = Pitch::must_parse("1/2");
+        assert_eq!(p.invert().to_string(), "2");
+        let p = Pitch::must_parse("^1|2");
+        assert_eq!(p.invert().to_string(), "^1|2*1/2");
+        assert_eq!(p.invert().invert().to_string(), "^1|2");
     }
 }

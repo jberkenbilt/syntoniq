@@ -1,6 +1,6 @@
 use crate::layout::{Layout, LayoutConfig};
 use crate::scale::{Scale, ScaleType};
-use anyhow::anyhow;
+use anyhow::bail;
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fs;
@@ -25,36 +25,33 @@ impl Config {
         let mut scales_by_name = HashMap::new();
         for scale in c.scale {
             let name = scale.name.clone();
-            match &scale.scale_type {
-                ScaleType::EqualDivision(ed) => {
-                    let (steps, num, den) = ed.divisions;
-                    if den == 0 || num == den || steps < 2 {
-                        return Err(anyhow!(
-                            "scale divisions for {name}: {steps},{num},{den} can't generate a scale"
-                        ));
-                    }
-                }
-                ScaleType::_KeepClippyQuiet => unreachable!(),
-            }
+            scale.validate()?;
             if scales_by_name
                 .insert(name.clone(), Arc::new(scale))
                 .is_some()
             {
-                return Err(anyhow!("duplicated scale {}", name));
+                bail!("duplicated scale {}", name);
             }
         }
         let mut layouts = Vec::new();
         for layout_config in c.layout.into_iter() {
             let Some(scale) = scales_by_name.get(&layout_config.scale_name) else {
-                return Err(anyhow!(
+                bail!(
                     "layout {}: no scale {}",
                     layout_config.name,
                     layout_config.scale_name
-                ));
+                );
             };
+            if matches!(scale.scale_type, ScaleType::EqualDivision(_))
+                && (layout_config.steps.is_none() || layout_config.base.is_none())
+            {
+                bail!(
+                    "layout {}: steps and base must be specified for EDO scale",
+                    layout_config.name
+                );
+            }
             let layout = Layout {
                 name: layout_config.name,
-                bbox: layout_config.bbox,
                 base: layout_config.base,
                 scale: scale.as_ref().to_owned(),
                 steps: layout_config.steps,
@@ -82,7 +79,6 @@ base_pitch = "220*^3|12" # middle C for A-440 12-TET scale
 note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"]
 [[layout]]
 name = "5x3"
-bbox = [1, 1, 8, 8]
 base = [2, 2]
 scale_name = "EDO-12"
 steps = [2, 1]
@@ -106,10 +102,9 @@ steps = [2, 1]
             }],
             layout: vec![LayoutConfig {
                 name: "5x3".to_string(),
-                bbox: (1, 1, 8, 8),
-                base: (2, 2),
                 scale_name: "EDO-12".to_string(),
-                steps: (2, 1),
+                base: Some((2, 2)),
+                steps: Some((2, 1)),
             }],
         };
         let c: ConfigFile = toml::from_str(CONFIG).unwrap();

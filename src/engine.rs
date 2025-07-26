@@ -9,7 +9,7 @@ use crate::layout::Layout;
 use crate::pitch::{Factor, Pitch};
 use crate::scale::{Note, ScaleType};
 use crate::{controller, csound, events, midi_player};
-use anyhow::anyhow;
+use anyhow::{anyhow, bail};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -77,7 +77,6 @@ impl Engine {
 
         // Draw the logo.
         controller::clear_lights(&tx).await?;
-        // TODO: fix these
         for (color, positions) in [
             (
                 Color::FifthOn, // green
@@ -305,16 +304,22 @@ impl Engine {
             self.send_test_event(TestEvent::MoveCanceled);
         } else {
             let mut layout = initial_layout.write().await;
-            let note1_col = note1.position % 10;
-            let note1_row = note1.position / 10;
-            let note2_col = note2.position % 10;
-            let note2_row = note2.position / 10;
-            let dy = note2_row as i8 - note1_row as i8;
-            let dx = note2_col as i8 - note1_col as i8;
-            log::info!("shifting layout {} by dy={dy}, dx={dx}", layout.name);
-            let (old_x, old_y) = layout.base;
-            layout.base = (old_x + dx, old_y + dy);
-            update_layout = true;
+            if let Some(base) = layout.base {
+                let note1_col = note1.position % 10;
+                let note1_row = note1.position / 10;
+                let note2_col = note2.position % 10;
+                let note2_row = note2.position / 10;
+                let dy = note2_row as i8 - note1_row as i8;
+                let dx = note2_col as i8 - note1_col as i8;
+                log::info!("shifting layout {} by dy={dy}, dx={dx}", layout.name);
+                let (old_x, old_y) = base;
+                layout.base = Some((old_x + dx, old_y + dy));
+                update_layout = true;
+            } else {
+                log::info!("move: can't shift non-EDO layout");
+                #[cfg(test)]
+                self.send_test_event(TestEvent::MoveCanceled);
+            };
         }
         if update_layout && let Some(tx) = self.events_tx.upgrade() {
             tx.send(Event::SelectLayout(SelectLayoutEvent {
@@ -335,7 +340,7 @@ impl Engine {
             // This would indicate a bug in which we assigned something to notes
             // without also assigning its position to note positions or otherwise
             // allowed notes and note_positions to get out of sync.
-            return Err(anyhow!("note positions is missing for {pitch}"));
+            bail!("note positions is missing for {pitch}");
         };
         let note_count = self
             .transient_state
@@ -417,52 +422,81 @@ impl Engine {
         Ok(())
     }
 
+    fn send_note(
+        &self,
+        tx: &events::UpgradedSender,
+        row: i8,
+        col: i8,
+        note: Arc<Note>,
+    ) -> anyhow::Result<()> {
+        let velocity = if self
+            .transient_state
+            .notes_on
+            .get(&note.pitch)
+            .copied()
+            .unwrap_or_default()
+            > 0
+        {
+            127
+        } else {
+            0
+        };
+        let played_note = Some(PlayedNote { note, velocity });
+        let position = (10 * row + col) as u8;
+        tx.send(Event::UpdateNote(UpdateNoteEvent {
+            position,
+            played_note,
+        }))?;
+        Ok(())
+    }
+
     async fn draw_edo_layout(&mut self, layout: &mut Layout) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
         let ScaleType::EqualDivision(ed) = &layout.scale.scale_type else {
             // Should not be possible
-            return Err(anyhow!("draw_edo_layout called with non-EDO scale"));
+            bail!("draw_edo_layout called with non-EDO scale");
         };
-        let (llx, lly, urx, ury) = layout.bbox;
-        let (steps_x, steps_y) = layout.steps;
-        let (base_x, base_y) = layout.base;
+        let (steps_x, steps_y) = layout.steps.unwrap(); // checked to be Some in config
+        let (base_x, base_y) = layout.base.unwrap(); // checked to be Some in config
         let (divisions, _, _) = ed.divisions;
         let divisions = divisions as i32;
-        self.transient_state.note_positions.clear();
-        self.transient_state.notes.clear();
         for row in 1..=8 {
             for col in 1..=8 {
-                let played_note = if !(llx..=urx).contains(&col) || !(lly..=ury).contains(&row) {
-                    None
+                let steps = (steps_x * (col - base_x) + steps_y * (row - base_y)) as i32;
+                let cycle = steps / divisions;
+                let step = steps % divisions;
+                let note = layout.scale.edo_note(cycle as i8, step as i8);
+                self.send_note(&tx, row, col, Arc::new(note))?;
+            }
+        }
+        log::info!("layout: {}, scale: {}", layout.name, layout.scale.name);
+        Ok(())
+    }
+
+    async fn draw_generic_layout(&mut self, layout: &mut Layout) -> anyhow::Result<()> {
+        let Some(tx) = self.events_tx.upgrade() else {
+            return Ok(());
+        };
+        let ScaleType::Generic(g) = &layout.scale.scale_type else {
+            // Should not be possible
+            bail!("draw_generic_layout called with non-Generic scale");
+        };
+        let mut cache = HashMap::new();
+        for row in 1..=8 {
+            for col in 1..=8 {
+                if let Some(note) = layout.scale.generic_note(&mut cache, g, row, col)? {
+                    self.send_note(&tx, row, col, note)?;
                 } else {
-                    let steps = (steps_x * (col - base_x) + steps_y * (row - base_y)) as i32;
-                    let cycle = steps / divisions;
-                    let step = steps % divisions;
-                    let note = layout.scale.note(cycle as i8, step as i8);
-                    let velocity = if self
-                        .transient_state
-                        .notes_on
-                        .get(&note.pitch)
-                        .copied()
-                        .unwrap_or_default()
-                        > 0
-                    {
-                        127
-                    } else {
-                        0
-                    };
-                    Some(PlayedNote {
-                        note: Arc::new(note),
-                        velocity,
-                    })
-                };
-                let position = (10 * row + col) as u8;
-                tx.send(Event::UpdateNote(UpdateNoteEvent {
-                    position,
-                    played_note,
-                }))?;
+                    tx.send(Event::Light(LightEvent {
+                        mode: LightMode::Off,
+                        position: (10 * row + col) as u8,
+                        color: Color::Off,
+                        label1: "".to_string(),
+                        label2: "".to_string(),
+                    }))?;
+                }
             }
         }
         log::info!("layout: {}, scale: {}", layout.name, layout.scale.name);
@@ -537,9 +571,11 @@ impl Engine {
         let layout_lock = event.layout;
         self.transient_state.layout = Some(layout_lock.clone());
         let layout = &mut *layout_lock.write().await;
+        self.transient_state.note_positions.clear();
+        self.transient_state.notes.clear();
         match layout.scale.scale_type {
             ScaleType::EqualDivision(_) => self.draw_edo_layout(layout).await?,
-            ScaleType::_KeepClippyQuiet => unreachable!(),
+            ScaleType::Generic(_) => self.draw_generic_layout(layout).await?,
         }
         tx.send(self.sustain_light_event())?;
         tx.send(self.move_light_event())?;
