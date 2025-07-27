@@ -202,7 +202,7 @@ async fn test_sustain() -> anyhow::Result<()> {
 
     // Enter sustain mode
     tc.press_and_release_key(keys::SUSTAIN).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     assert!(ts.sustain);
 
@@ -230,7 +230,7 @@ async fn test_sustain() -> anyhow::Result<()> {
 
     // Leave sustain mode
     tc.press_and_release_key(keys::SUSTAIN).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     assert!(!ts.sustain);
 
@@ -238,57 +238,109 @@ async fn test_sustain() -> anyhow::Result<()> {
 }
 
 #[tokio::test]
-async fn test_move_cancels() -> anyhow::Result<()> {
+async fn test_shift_key() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select a layout.
+    tc.press_and_release_key(102).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    // Press and release shift with no other notes.
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::Off));
+    tc.press_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::Down));
+    tc.release_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::On));
+    // Press and release shift again to toggle.
+    tc.press_and_release_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::Off));
+    // Press shift key without releasing
+    tc.press_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::Down));
+    // Press some other key
+    tc.press_key(11).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::On));
+    // Release other key
+    tc.release_key(11).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::On));
+    // Release shift key
+    tc.release_key(keys::SHIFT).await?;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::Off));
+    Ok(())
+}
+
+#[tokio::test]
+async fn test_transpose_cancels() -> anyhow::Result<()> {
     let mut tc = TestController::new().await;
     // Select EDO-19
     tc.press_and_release_key(102).await?;
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
 
-    // Enter move mode
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    // Enter transpose mode
+    tc.press_and_release_key(keys::TRANSPOSE).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+    assert!(matches!(ts.transpose_state, TransposeState::Pending { .. }));
 
-    // Touch move to end move mode
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    // Touch transpose to cancel
+    tc.press_and_release_key(keys::TRANSPOSE).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Off));
+    assert!(matches!(ts.transpose_state, TransposeState::Off));
 
-    // Enter move mode
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    // Enter transpose mode
+    tc.press_and_release_key(keys::TRANSPOSE).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+    assert!(matches!(ts.transpose_state, TransposeState::Pending { .. }));
     // Touch a note
     tc.press_and_release_key(32).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::FirstSelected { .. }));
-    // Move mode cancels
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    assert!(matches!(
+        ts.transpose_state,
+        TransposeState::FirstSelected { .. }
+    ));
+    // Transpose key cancels
+    tc.press_and_release_key(keys::TRANSPOSE).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Off));
+    assert!(matches!(ts.transpose_state, TransposeState::Off));
 
-    // Enter move mode
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
-    let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
-    // Change layout
-    tc.press_and_release_key(103).await?;
-    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
-    // Touch two different notes -- this cancels because we can't do a shift
-    // after changing layouts.
+    tc.shutdown().await
+}
+
+#[tokio::test]
+async fn test_layout_shift_cancels() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+
+    // Start shift
+    tc.press_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+
+    // Touch a note
     tc.press_and_release_key(32).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
-    tc.press_and_release_key(33).await?;
-    tc.wait_for_test_event(TestEvent::MoveCanceled).await;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+
+    // Release shift; cancels operation
+    tc.release_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Off));
+    assert!(matches!(ts.shift_key_state, ShiftKeyState::Off));
+    assert!(matches!(ts.shift_layout_state, ShiftLayoutState::Off));
 
     // Select generic layout
     tc.press_and_release_key(105).await?;
@@ -298,19 +350,17 @@ async fn test_move_cancels() -> anyhow::Result<()> {
         ts.layout.unwrap().read().await.scale.scale_type,
         ScaleType::Generic(_)
     ));
-    // Enter move mode
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
-    let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
-    // Can't move a generic layout
+    // Enter shift mode
+    tc.press_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    // Can't shift a generic layout
     tc.press_and_release_key(32).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     tc.press_and_release_key(33).await?;
     tc.wait_for_test_event(TestEvent::MoveCanceled).await;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Off));
+    assert!(matches!(ts.shift_layout_state, ShiftLayoutState::Off));
 
     tc.shutdown().await
 }
@@ -360,18 +410,31 @@ async fn test_transpose_same_layout() -> anyhow::Result<()> {
     assert_eq!(ts.layout.unwrap().read().await.scale.name, "EDO-19");
 
     // Enter move mode
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.press_and_release_key(keys::TRANSPOSE).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+    assert!(matches!(ts.transpose_state, TransposeState::Pending { .. }));
 
     // Touch a note twice to transpose
-    tc.press_and_release_key(44).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
-    tc.press_and_release_key(44).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.press_and_release_key(88).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Off));
+    assert!(matches!(
+        ts.transpose_state,
+        TransposeState::FirstSelected { .. }
+    ));
+    // Touch a different note, changing first note
+    tc.press_and_release_key(44).await?;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(
+        ts.transpose_state,
+        TransposeState::FirstSelected { .. }
+    ));
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    tc.press_and_release_key(44).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.transpose_state, TransposeState::Off));
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     let ts = tc.get_engine_state().await;
     // Transpose up 8 EDO-19 steps: 1/4 + 8/19 = 51/76
@@ -392,11 +455,11 @@ async fn test_transpose_different_layout() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     assert_eq!(ts.layout.unwrap().read().await.scale.name, "EDO-12");
 
-    // Enter move mode
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    // Enter transpose mode
+    tc.press_and_release_key(keys::TRANSPOSE).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
+    assert!(matches!(ts.transpose_state, TransposeState::Pending { .. }));
 
     // Select EDO-19
     tc.press_and_release_key(102).await?;
@@ -407,11 +470,11 @@ async fn test_transpose_different_layout() -> anyhow::Result<()> {
 
     // Touch a note twice to transpose
     tc.press_and_release_key(34).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     tc.press_and_release_key(34).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Off));
+    assert!(matches!(ts.transpose_state, TransposeState::Off));
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     let ts = tc.get_engine_state().await;
     // EDO-19 didn't change, but...
@@ -430,7 +493,7 @@ async fn test_transpose_different_layout() -> anyhow::Result<()> {
 }
 
 #[tokio::test]
-async fn test_move() -> anyhow::Result<()> {
+async fn test_shift_layout() -> anyhow::Result<()> {
     let mut tc = TestController::new().await;
     // Select EDO-31
     tc.press_and_release_key(103).await?;
@@ -442,20 +505,22 @@ async fn test_move() -> anyhow::Result<()> {
         assert_eq!(layout.base, Some((2, 2)));
     }
 
-    // Enter move mode
-    tc.press_and_release_key(keys::MOVE).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
-    let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Pending { .. }));
-
+    // Enter shift mode
+    tc.press_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     // Touch a note, then another to shift
     tc.press_and_release_key(34).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(
+        ts.shift_layout_state,
+        ShiftLayoutState::FirstSelected { .. }
+    ));
     // Over 1 column, up 2 rows
     tc.press_and_release_key(55).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.move_state, MoveState::Off));
+    assert!(matches!(ts.shift_layout_state, ShiftLayoutState::Off));
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     let ts = tc.get_engine_state().await;
     {
@@ -463,6 +528,9 @@ async fn test_move() -> anyhow::Result<()> {
         assert_eq!(layout.scale.name, "EDO-31");
         assert_eq!(layout.base, Some((3, 4)));
     }
+    // Release shift
+    tc.release_key(keys::SHIFT).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
 
     tc.shutdown().await
 }
@@ -486,7 +554,8 @@ async fn transpose_non_note_to_note() -> anyhow::Result<()> {
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     assert!(ts.positions_down.is_empty());
-    Ok(())
+
+    tc.shutdown().await
 }
 
 #[tokio::test]
@@ -523,7 +592,8 @@ async fn transpose_note_to_non_note() -> anyhow::Result<()> {
     assert_eq!(ts.pitch_on_count.get(&layout_101_pos_18).unwrap_or(&0), &0);
     assert_eq!(ts.pitch_on_count.get(&layout_102_pos_18).unwrap_or(&0), &0);
     tc.release_key(18).await?;
-    Ok(())
+
+    tc.shutdown().await
 }
 
 #[tokio::test]
@@ -534,7 +604,7 @@ async fn transpose_with_sustain() -> anyhow::Result<()> {
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     // Enter sustain
     tc.press_and_release_key(keys::SUSTAIN).await?;
-    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
     // Press a note key
     tc.press_key(18).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
@@ -560,5 +630,6 @@ async fn transpose_with_sustain() -> anyhow::Result<()> {
     assert!(ts.positions_down.is_empty());
     assert_eq!(ts.pitch_on_count.get(&pos_18a).unwrap_or(&0), &1);
     assert_eq!(ts.pitch_on_count.get(&pos_18b).unwrap_or(&0), &1);
-    Ok(())
+
+    tc.shutdown().await
 }

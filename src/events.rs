@@ -147,7 +147,7 @@ pub struct SpecificNote {
 }
 
 #[derive(Default, Debug, Clone)]
-pub enum MoveState {
+pub enum TransposeState {
     #[default]
     Off,
     Pending {
@@ -157,6 +157,13 @@ pub enum MoveState {
         initial_layout: Arc<RwLock<Layout>>,
         note1: SpecificNote,
     },
+}
+
+#[derive(Default, Debug, Clone)]
+pub enum ShiftLayoutState {
+    #[default]
+    Off,
+    FirstSelected(SpecificNote),
 }
 
 #[derive(Default, Clone, Debug)]
@@ -173,8 +180,9 @@ pub struct EngineState {
     /// Positions that are actually being touched
     pub positions_down: HashMap<u8, Arc<Note>>,
     pub sustain: bool,
-    pub shift_key: ShiftKeyState,
-    pub move_state: MoveState,
+    pub shift_key_state: ShiftKeyState,
+    pub transpose_state: TransposeState,
+    pub shift_layout_state: ShiftLayoutState,
 }
 
 #[derive(Template, Default, Clone)]
@@ -191,7 +199,6 @@ pub struct StateView {
 pub enum TestEvent {
     ResetComplete,
     LayoutSelected,
-    EngineStateChange,
     HandledNote,
     HandledKey,
     MoveCanceled,

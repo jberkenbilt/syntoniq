@@ -2,27 +2,6 @@
 
 # To Do
 
-* Tests to add:
-  * -
-    * Touch and release shift
-    * Verify shift is on
-    * Touch and release shift
-    * Verify shift is off
-    * Touch shift
-    * Verify shift is down
-    * Touch a note
-    * Verify shift is down
-    * Release shift
-    * Verify shift is off
-    * Release note
-
-* Change move UI
-  * shift, note1, note2
-* Change transpose UI
-  * On first touch play the note as if non-sustain
-  * On second touch, if different note, replace
-  * On second touch, if same note, do transpose
-
 Other:
 * Add a button that prints information about all the notes that are currently on. Will need to store last_note_for_pitch in transient state and remove entries when we turn off the pitch.
 * Add a logger. This can subscribe to PlayNote events and use the optional note to log. It can record actual semantic note information as well as non-synthetic key events. We can have a replay mode that will transmit key events at specific times to effectively replay an entire session. This can be an alternate controller.
@@ -37,14 +16,18 @@ See also
 
 * All shifts and transpositions are reset on clear.
 * Up/Down arrows transpose up/down octaves by changing the base pitch of the scale.
-* The `Note` key triggers transpose or shift.
-* `Note`, note1, note2 moves note1 to note2's position
-* `Note`, optional layout change, note1, note1 sets the base pitch of the layout that was selected when `Note` was pressed to the pitch of note1 in whatever layout it appears. After transposition, the transposed (original) layout is selected automatically.
+* The `Note` key transposes.
+* `Note`, optional layout change, note, ..., note1, note1 sets the base pitch of the layout that was selected when `Note` was pressed to the pitch of note1 in whatever layout it appears. After transposition, the transposed (original) layout is selected automatically. Transpose is made final when the same note is pressed twice in a row.
   * Example: to set the tonic of EDO-19 to E from EDO-12
     * Select EDO-19
     * Press `Note`
     * Select EDO-12
     * Press E twice
+* Shift layout
+  * With shift key down, press two different notes. The layout is shifted so that the first note is now in the second note's position.
+  * The shift key is sticky if pressed and released without touching other notes, so the following are equivalent, where "touch" is "press and release":
+    * press shift, touch note 1, touch note 2, release shift
+    * touch shift, touch note 1, touch note 2, touch shift
 
 # Maybe Someday
 

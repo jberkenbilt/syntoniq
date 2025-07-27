@@ -2,8 +2,9 @@ use crate::config::Config;
 #[cfg(test)]
 use crate::events::TestEvent;
 use crate::events::{
-    AssignLayoutEvent, Color, EngineState, Event, KeyEvent, LightEvent, LightMode, MoveState,
-    PlayNoteEvent, SelectLayoutEvent, ShiftKeyState, SpecificNote, UpdateNoteEvent,
+    AssignLayoutEvent, Color, EngineState, Event, KeyEvent, LightEvent, LightMode, PlayNoteEvent,
+    SelectLayoutEvent, ShiftKeyState, ShiftLayoutState, SpecificNote, TransposeState,
+    UpdateNoteEvent,
 };
 use crate::layout::Layout;
 use crate::pitch::{Factor, Pitch};
@@ -21,7 +22,7 @@ mod tests;
 mod keys {
     // Top Row, left to right
     pub const SHIFT: u8 = 90;
-    pub const MOVE: u8 = 94; // Note
+    pub const TRANSPOSE: u8 = 94; // Note
     pub const SUSTAIN: u8 = 95; // Chord
     // Left column, top to bottom
     pub const UP_ARROW: u8 = 80;
@@ -144,7 +145,7 @@ impl Engine {
         let KeyEvent { key, velocity, .. } = key_event;
         let off = velocity == 0;
         let have_layout = self.transient_state.layout.is_some();
-        if !off && matches!(self.transient_state.shift_key, ShiftKeyState::Down) {
+        if !off && matches!(self.transient_state.shift_key_state, ShiftKeyState::Down) {
             // Update shift state -- see below for behavior of shift key.
             self.set_shift(ShiftKeyState::On, &tx)?;
         }
@@ -157,11 +158,11 @@ impl Engine {
                 // - If shift is pressed or released when On, it changes to Off
                 // Effect: pressing and releasing the shift key without touching other keys toggles
                 // its state. Touching another key while holding it makes it act like a modifier.
-                let shift = match (self.transient_state.shift_key, off) {
+                let shift = match (self.transient_state.shift_key_state, off) {
                     (ShiftKeyState::Off, false) => ShiftKeyState::Down,
                     (ShiftKeyState::Down, true) => ShiftKeyState::On,
                     (ShiftKeyState::On, _) => ShiftKeyState::Off,
-                    _ => self.transient_state.shift_key,
+                    _ => self.transient_state.shift_key_state,
                 };
                 self.set_shift(shift, &tx)?;
             }
@@ -176,19 +177,15 @@ impl Engine {
             keys::SUSTAIN if off => {
                 self.transient_state.sustain = !self.transient_state.sustain;
                 tx.send(self.sustain_light_event())?;
-                #[cfg(test)]
-                self.send_test_event(TestEvent::EngineStateChange);
             }
-            keys::MOVE if off && have_layout => {
-                self.transient_state.move_state = match self.transient_state.move_state {
-                    MoveState::Off => MoveState::Pending {
+            keys::TRANSPOSE if off && have_layout => {
+                self.transient_state.transpose_state = match self.transient_state.transpose_state {
+                    TransposeState::Off => TransposeState::Pending {
                         initial_layout: self.transient_state.layout.clone().unwrap(),
                     },
-                    _ => MoveState::Off,
+                    _ => TransposeState::Off,
                 };
-                tx.send(self.move_light_event())?;
-                #[cfg(test)]
-                self.send_test_event(TestEvent::EngineStateChange);
+                tx.send(self.transpose_light_event())?;
             }
             keys::UP_ARROW | keys::DOWN_ARROW if off && self.transient_state.layout.is_some() => {
                 // 2025-07-22, rust 1.88: "if let guards" are experimental. When stable, we can
@@ -232,49 +229,70 @@ impl Engine {
         position: u8,
         off: bool,
     ) -> anyhow::Result<()> {
-        let mut is_move = false;
-        match self.transient_state.move_state.clone() {
-            MoveState::Off => self.handle_note_key_normal(tx, note, position, off)?,
-            MoveState::Pending { initial_layout } => {
-                if off {
-                    is_move = true;
-                    self.transient_state.move_state = MoveState::FirstSelected {
-                        initial_layout,
-                        note1: SpecificNote {
-                            layout,
-                            note,
-                            position,
-                        },
-                    };
+        let is_transpose = !matches!(self.transient_state.transpose_state, TransposeState::Off);
+        let is_shift = !matches!(self.transient_state.shift_key_state, ShiftKeyState::Off);
+        let mut play_note = !is_transpose && !is_shift;
+        if is_transpose {
+            let note = note.clone();
+            match self.transient_state.transpose_state.clone() {
+                TransposeState::Off => unreachable!(),
+                TransposeState::Pending { initial_layout } => {
+                    if !off {
+                        self.transient_state.transpose_state = TransposeState::FirstSelected {
+                            initial_layout,
+                            note1: SpecificNote {
+                                layout,
+                                note,
+                                position,
+                            },
+                        };
+                    }
+                }
+                TransposeState::FirstSelected {
+                    initial_layout,
+                    note1,
+                } => {
+                    if !off {
+                        self.handle_transpose(
+                            initial_layout,
+                            note1,
+                            SpecificNote {
+                                layout,
+                                note,
+                                position,
+                            },
+                        )
+                        .await?;
+                    }
                 }
             }
-            MoveState::FirstSelected {
-                initial_layout,
-                note1,
-            } => {
-                if off {
-                    is_move = true;
-                    self.transient_state.move_state = MoveState::Off;
-                    self.handle_move(
-                        initial_layout,
-                        note1,
-                        SpecificNote {
-                            layout,
-                            note,
-                            position,
-                        },
-                    )
-                    .await?;
-                }
-            }
+        } else if is_shift && !off {
+            self.handle_shift(
+                layout.clone(),
+                SpecificNote {
+                    layout,
+                    note: note.clone(),
+                    position,
+                },
+            )
+            .await?;
+        }
+        if is_transpose
+            && matches!(
+                self.transient_state.transpose_state,
+                TransposeState::FirstSelected { .. }
+            )
+        {
+            play_note = true;
+        }
+        if play_note {
+            self.handle_note_key_normal(tx, note, position, off)?;
         }
 
-        if is_move {
+        if is_transpose {
             if let Some(tx) = self.events_tx.upgrade() {
-                tx.send(self.move_light_event())?;
+                tx.send(self.transpose_light_event())?;
             }
-            #[cfg(test)]
-            self.send_test_event(TestEvent::EngineStateChange);
         }
 
         #[cfg(test)]
@@ -282,20 +300,62 @@ impl Engine {
         Ok(())
     }
 
-    async fn handle_move(
+    async fn handle_shift(
+        &mut self,
+        layout: Arc<RwLock<Layout>>,
+        note: SpecificNote,
+    ) -> anyhow::Result<()> {
+        let Some(tx) = self.events_tx.upgrade() else {
+            return Ok(());
+        };
+        let mut update_layout = false;
+        match self.transient_state.shift_layout_state.clone() {
+            ShiftLayoutState::Off => {
+                self.transient_state.shift_layout_state = ShiftLayoutState::FirstSelected(note);
+            }
+            ShiftLayoutState::FirstSelected(note1) => {
+                self.transient_state.shift_layout_state = ShiftLayoutState::Off;
+                if note1.layout.read().await.name != layout.read().await.name {
+                    log::info!("move: note1 and note2 are from different layouts, so not shifting");
+                    #[cfg(test)]
+                    self.send_test_event(TestEvent::MoveCanceled);
+                } else {
+                    let mut layout = layout.write().await;
+                    if let Some(base) = layout.base {
+                        let note1_col = note1.position % 10;
+                        let note1_row = note1.position / 10;
+                        let note2_col = note.position % 10;
+                        let note2_row = note.position / 10;
+                        let dy = note2_row as i8 - note1_row as i8;
+                        let dx = note2_col as i8 - note1_col as i8;
+                        log::info!("shifting layout {} by dy={dy}, dx={dx}", layout.name);
+                        let (old_x, old_y) = base;
+                        layout.base = Some((old_x + dx, old_y + dy));
+                        update_layout = true;
+                    } else {
+                        log::info!("move: can't shift non-EDO layout");
+                        #[cfg(test)]
+                        self.send_test_event(TestEvent::MoveCanceled);
+                    };
+                }
+            }
+        };
+
+        if update_layout {
+            tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
+        }
+        Ok(())
+    }
+
+    async fn handle_transpose(
         &mut self,
         initial_layout: Arc<RwLock<Layout>>,
         note1: SpecificNote,
         note2: SpecificNote,
     ) -> anyhow::Result<()> {
         let mut update_layout = false;
-        if note1.layout.read().await.name != note2.layout.read().await.name {
-            log::info!("move: note1 and note2 are from different layouts; ignoring");
-            #[cfg(test)]
-            self.send_test_event(TestEvent::MoveCanceled);
-            return Ok(());
-        }
         if note1.note == note2.note {
+            self.transient_state.transpose_state = TransposeState::Off;
             let mut layout = initial_layout.write().await;
             log::info!(
                 "resetting base pitch of {} to {}",
@@ -304,27 +364,11 @@ impl Engine {
             );
             layout.scale.base_pitch = note1.note.pitch.clone();
             update_layout = true;
-        } else if note1.layout.read().await.name != initial_layout.read().await.name {
-            log::info!("move: note1 and note2 are not from the original layout, so not shifting");
-            #[cfg(test)]
-            self.send_test_event(TestEvent::MoveCanceled);
         } else {
-            let mut layout = initial_layout.write().await;
-            if let Some(base) = layout.base {
-                let note1_col = note1.position % 10;
-                let note1_row = note1.position / 10;
-                let note2_col = note2.position % 10;
-                let note2_row = note2.position / 10;
-                let dy = note2_row as i8 - note1_row as i8;
-                let dx = note2_col as i8 - note1_col as i8;
-                log::info!("shifting layout {} by dy={dy}, dx={dx}", layout.name);
-                let (old_x, old_y) = base;
-                layout.base = Some((old_x + dx, old_y + dy));
-                update_layout = true;
-            } else {
-                log::info!("move: can't shift non-EDO layout");
-                #[cfg(test)]
-                self.send_test_event(TestEvent::MoveCanceled);
+            // Reset note1 to current note
+            self.transient_state.transpose_state = TransposeState::FirstSelected {
+                initial_layout: initial_layout.clone(),
+                note1: note2,
             };
         }
         if update_layout && let Some(tx) = self.events_tx.upgrade() {
@@ -537,18 +581,18 @@ impl Engine {
         })
     }
 
-    fn move_light_event(&self) -> Event {
-        let color = match self.transient_state.move_state {
-            MoveState::Off => Color::ToggleOff,
-            MoveState::Pending { .. } => Color::ToggleOn,
-            MoveState::FirstSelected { .. } => Color::NoteSelected,
+    fn transpose_light_event(&self) -> Event {
+        let color = match self.transient_state.transpose_state {
+            TransposeState::Off => Color::ToggleOff,
+            TransposeState::Pending { .. } => Color::ToggleOn,
+            TransposeState::FirstSelected { .. } => Color::NoteSelected,
         };
         Event::Light(LightEvent {
             mode: LightMode::On,
-            position: keys::MOVE,
+            position: keys::TRANSPOSE,
             color,
-            label1: "Move/".to_string(),
-            label2: "Transpose".to_string(),
+            label1: "Transpose".to_string(),
+            label2: String::new(),
         })
     }
 
@@ -561,16 +605,19 @@ impl Engine {
         shift: ShiftKeyState,
         tx: &events::UpgradedSender,
     ) -> anyhow::Result<()> {
-        if shift == self.transient_state.shift_key {
+        if shift == self.transient_state.shift_key_state {
             return Ok(());
         }
-        self.transient_state.shift_key = shift;
+        self.transient_state.shift_key_state = shift;
+        if matches!(shift, ShiftKeyState::Off) {
+            self.transient_state.shift_layout_state = ShiftLayoutState::Off;
+        }
         tx.send(self.shift_light_event())?;
         Ok(())
     }
 
     fn shift_light_event(&self) -> Event {
-        let color = match self.transient_state.shift_key {
+        let color = match self.transient_state.shift_key_state {
             ShiftKeyState::Off => Color::ToggleOff,
             _ => Color::ToggleOn,
         };
@@ -610,7 +657,7 @@ impl Engine {
             layout.scale.name
         );
         tx.send(self.sustain_light_event())?;
-        tx.send(self.move_light_event())?;
+        tx.send(self.transpose_light_event())?;
         tx.send(self.shift_light_event())?;
         // Re-touch all the notes that we previously untouched. We do this with synthetic key
         // events because the positions may or may not still have notes.
