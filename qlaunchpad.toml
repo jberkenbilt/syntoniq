@@ -52,7 +52,7 @@ note_names = [
 
 [[layout]]
 name = "EDO-31-5x3"
-base = [3, 3]
+base = [2, 2]
 scale_name = "EDO-31"
 steps = [5, 3]
 
