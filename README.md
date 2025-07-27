@@ -29,6 +29,7 @@ See also
 # Maybe Someday
 
 * In web, track whether a key "down" or "up" just as a web only extraction. Each click sends the appropriate event and toggles the state which also sends an SSE event. No need to reset state -- click once and hit reset is the same as pressing clear while holding a note, and it prevents two successive on or two successive off events, which can't happen on the actual device. It means double-click for sustain mode, but that's fine.
+* Tuned MIDI output mode: generate a Scala file for a layout that can be loaded into something like Surge-XT, which has tuning awareness. In EDO mode, we can just use notes starting from 60 up to the number of notes in the scale. For generic, we can create a 64-note scale and map each square to a note number in a consistent way, probably 60 to 123.
 
 # Remember
 
