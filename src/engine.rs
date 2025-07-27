@@ -10,7 +10,7 @@ use crate::pitch::{Factor, Pitch};
 use crate::scale::{Note, ScaleType};
 use crate::{controller, csound, events, midi_player};
 use anyhow::{anyhow, bail};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::RwLock;
@@ -64,7 +64,7 @@ impl Engine {
         };
 
         // Turn off all notes
-        for (pitch, count) in &self.transient_state.notes_on {
+        for (pitch, count) in &self.transient_state.pitch_on_count {
             if *count > 0 {
                 tx.send(Event::PlayNote(PlayNoteEvent {
                     pitch: pitch.clone(),
@@ -141,7 +141,7 @@ impl Engine {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        let KeyEvent { key, velocity } = key_event;
+        let KeyEvent { key, velocity, .. } = key_event;
         let off = velocity == 0;
         let have_layout = self.transient_state.layout.is_some();
         if !off && matches!(self.transient_state.shift_key, ShiftKeyState::Down) {
@@ -219,6 +219,8 @@ impl Engine {
             }
             _ => (),
         }
+        #[cfg(test)]
+        self.send_test_event(TestEvent::HandledKey);
         Ok(())
     }
 
@@ -232,7 +234,7 @@ impl Engine {
     ) -> anyhow::Result<()> {
         let mut is_move = false;
         match self.transient_state.move_state.clone() {
-            MoveState::Off => self.handle_note_key_normal(tx, note, off)?,
+            MoveState::Off => self.handle_note_key_normal(tx, note, position, off)?,
             MoveState::Pending { initial_layout } => {
                 if off {
                     is_move = true;
@@ -337,18 +339,33 @@ impl Engine {
         &mut self,
         tx: &events::UpgradedSender,
         note: Arc<Note>,
+        position: u8,
         off: bool,
     ) -> anyhow::Result<()> {
         let pitch = &note.pitch;
-        let Some(others) = self.transient_state.note_positions.get(pitch) else {
+        let Some(others) = self.transient_state.pitch_positions.get(pitch) else {
             // This would indicate a bug in which we assigned something to notes
             // without also assigning its position to note positions or otherwise
             // allowed notes and note_positions to get out of sync.
             bail!("note positions is missing for {pitch}");
         };
-        let note_count = self
+        if off {
+            let old = self.transient_state.positions_down.remove(&position);
+            if old.is_none() {
+                // We got key off event on a note square, but the note was not on. This happens
+                // if you touch a key that has no note, and while continuing to touch the key,
+                // select a new layout where that key does have a note. Just ignore the event.
+                return Ok(());
+            }
+        } else {
+            self.transient_state
+                .positions_down
+                .insert(position, note.clone());
+        }
+
+        let pitch_count = self
             .transient_state
-            .notes_on
+            .pitch_on_count
             .entry(pitch.clone())
             .or_default();
         // When not in sustain mode, touch turns a note on, and release turns it off.
@@ -362,25 +379,25 @@ impl Engine {
             if off {
                 return Ok(());
             }
-            if *note_count > 0 {
-                *note_count = 0;
+            if *pitch_count > 0 {
+                *pitch_count = 0;
             } else {
-                *note_count = 1;
+                *pitch_count = 1;
             }
         } else if off {
-            if *note_count > 0 {
-                *note_count -= 1
+            if *pitch_count > 0 {
+                *pitch_count -= 1
             }
-            if *note_count > 0 {
+            if *pitch_count > 0 {
                 return Ok(());
             }
         } else {
-            *note_count += 1;
-            if *note_count > 1 {
+            *pitch_count += 1;
+            if *pitch_count > 1 {
                 return Ok(());
             }
         }
-        let velocity = if *note_count > 0 { 127 } else { 0 };
+        let velocity = if *pitch_count > 0 { 127 } else { 0 };
         for position in others.iter().copied() {
             tx.send(note.light_event(position, velocity))?;
         }
@@ -407,7 +424,7 @@ impl Engine {
             Some(played_note) => {
                 let note = played_note.note.clone();
                 self.transient_state
-                    .note_positions
+                    .pitch_positions
                     .entry(note.pitch.clone())
                     .or_default()
                     .insert(position);
@@ -435,7 +452,7 @@ impl Engine {
     ) -> anyhow::Result<()> {
         let velocity = if self
             .transient_state
-            .notes_on
+            .pitch_on_count
             .get(&note.pitch)
             .copied()
             .unwrap_or_default()
@@ -570,10 +587,18 @@ impl Engine {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
+        // For any keys that are held down, act like we released them. We will send new key events
+        // at the end. This creates better behavior if you select a new layout (including octave
+        // shift) while holding keys down.
+        let notes_down = self.transient_state.positions_down.clone();
+        let note_positions_before: HashSet<u8> = notes_down.keys().copied().collect();
+        for (position, note) in notes_down {
+            self.handle_note_key_normal(&tx, note, position, true)?;
+        }
         let layout_lock = event.layout;
         self.transient_state.layout = Some(layout_lock.clone());
         let layout = &mut *layout_lock.write().await;
-        self.transient_state.note_positions.clear();
+        self.transient_state.pitch_positions.clear();
         self.transient_state.notes.clear();
         match layout.scale.scale_type {
             ScaleType::EqualDivision(_) => self.draw_edo_layout(layout).await?,
@@ -587,6 +612,15 @@ impl Engine {
         tx.send(self.sustain_light_event())?;
         tx.send(self.move_light_event())?;
         tx.send(self.shift_light_event())?;
+        // Re-touch all the notes that we previously untouched. We do this with synthetic key
+        // events because the positions may or may not still have notes.
+        for key in note_positions_before {
+            tx.send(Event::Key(KeyEvent {
+                key,
+                velocity: 127,
+                synthetic: true,
+            }))?;
+        }
         #[cfg(test)]
         self.send_test_event(TestEvent::LayoutSelected);
         Ok(())

@@ -2,13 +2,33 @@
 
 # To Do
 
+* Tests to add:
+  * -
+    * Touch and release shift
+    * Verify shift is on
+    * Touch and release shift
+    * Verify shift is off
+    * Touch shift
+    * Verify shift is down
+    * Touch a note
+    * Verify shift is down
+    * Release shift
+    * Verify shift is off
+    * Release note
+
+* Change move UI
+  * shift, note1, note2
+* Change transpose UI
+  * On first touch play the note as if non-sustain
+  * On second touch, if different note, replace
+  * On second touch, if same note, do transpose
+
 Other:
-* Add a logger. This can subscribe to PlayNote events and use the optional note to log. It can record actual semantic note information as well as key events. We can have a replay mode that will transmit key events at specific times to effectively replay an entire session. This can be an alternate controller.
-* The logger might want to track note names in addition to pitches. At this moment, note names are not visible to the PlayNote event, so a separate LogEvent might be in order.
+* Add a button that prints information about all the notes that are currently on. Will need to store last_note_for_pitch in transient state and remove entries when we turn off the pitch.
+* Add a logger. This can subscribe to PlayNote events and use the optional note to log. It can record actual semantic note information as well as non-synthetic key events. We can have a replay mode that will transmit key events at specific times to effectively replay an entire session. This can be an alternate controller.
 * Cabbage with wave form with filter, LFO, maybe stereo, detune, pan knobs as basic example
 * Create note-entry CLI that uses HTTP interface; can be a separate tool to not interfere with logs.
-* Alternatives to the MIDI input controller
-  * Replay recorded session
+* Replay session: don't run device controller; instead just synthesize the key events in the right order.
 
 See also
 * [design](./design.md)

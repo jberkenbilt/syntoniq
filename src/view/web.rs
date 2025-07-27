@@ -66,6 +66,7 @@ async fn key(State(lock): State<LockedState>, data: Form<KeyInput>) -> impl Into
     if let Err(e) = tx.send(Event::Key(KeyEvent {
         key: data.key,
         velocity: data.velocity,
+        synthetic: false,
     })) {
         log::error!("web server: error sending key event: {e}");
         return StatusCode::SERVICE_UNAVAILABLE.into_response();

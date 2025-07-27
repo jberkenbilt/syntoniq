@@ -153,7 +153,11 @@ impl Device {
                 MidiMessage::NoteOn { key, vel } => {
                     let key = key.as_int();
                     let velocity = vel.as_int();
-                    Some(Event::Key(KeyEvent { key, velocity }))
+                    Some(Event::Key(KeyEvent {
+                        key,
+                        velocity,
+                        synthetic: false,
+                    }))
                 }
                 MidiMessage::Aftertouch { key, vel } => {
                     // polyphonic after-touch; not supported on MK3 Pro as of 2025-07
@@ -165,7 +169,11 @@ impl Device {
                 MidiMessage::Controller { controller, value } => {
                     let key = controller.as_int();
                     let velocity = value.as_int();
-                    Some(Event::Key(KeyEvent { key, velocity }))
+                    Some(Event::Key(KeyEvent {
+                        key,
+                        velocity,
+                        synthetic: false,
+                    }))
                 }
                 MidiMessage::ChannelAftertouch { vel } => Some(Event::Pressure(PressureEvent {
                     key: None,

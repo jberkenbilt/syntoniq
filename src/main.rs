@@ -220,7 +220,7 @@ async fn colors_main(
     }
     drop(tx);
     while let Some(event) = events::receive_check_lag(&mut events_rx, None).await {
-        let Event::Key(KeyEvent { key, velocity }) = event else {
+        let Event::Key(KeyEvent { key, velocity, .. }) = event else {
             continue;
         };
         let color_map = if velocity == 0 {

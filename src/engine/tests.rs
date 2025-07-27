@@ -94,6 +94,7 @@ impl TestController {
         self.events_tx.send(Event::Key(KeyEvent {
             key: position,
             velocity: if on { 127 } else { 0 },
+            synthetic: false,
         }))?;
         assert!(
             self.wait_for_event(|e| matches!(e, Event::Key(_)))
@@ -183,12 +184,19 @@ async fn test_sustain() -> anyhow::Result<()> {
     tc.press_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert!(*ts.notes_on.get(&Pitch::must_parse("220*^3|12")).unwrap() > 0);
+    assert!(
+        *ts.pitch_on_count
+            .get(&Pitch::must_parse("220*^3|12"))
+            .unwrap()
+            > 0
+    );
     tc.release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
     assert_eq!(
-        *ts.notes_on.get(&Pitch::must_parse("220*^3|12")).unwrap(),
+        *ts.pitch_on_count
+            .get(&Pitch::must_parse("220*^3|12"))
+            .unwrap(),
         0
     );
 
@@ -202,14 +210,21 @@ async fn test_sustain() -> anyhow::Result<()> {
     tc.press_and_release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert!(*ts.notes_on.get(&Pitch::must_parse("220*^3|12")).unwrap() > 0);
+    assert!(
+        *ts.pitch_on_count
+            .get(&Pitch::must_parse("220*^3|12"))
+            .unwrap()
+            > 0
+    );
 
     // Press and release middle C. Note turns off.
     tc.press_and_release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
     assert_eq!(
-        *ts.notes_on.get(&Pitch::must_parse("220*^3|12")).unwrap(),
+        *ts.pitch_on_count
+            .get(&Pitch::must_parse("220*^3|12"))
+            .unwrap(),
         0
     );
 
@@ -450,4 +465,100 @@ async fn test_move() -> anyhow::Result<()> {
     }
 
     tc.shutdown().await
+}
+
+#[tokio::test]
+async fn transpose_non_note_to_note() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Press any key on the start screen.
+    tc.press_key(55).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.positions_down.is_empty());
+    // Select a layout
+    tc.press_and_release_key(101).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    // Still not seen as down.
+    let ts = tc.get_engine_state().await;
+    assert!(ts.positions_down.is_empty());
+    // Release the key
+    tc.release_key(55).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.positions_down.is_empty());
+    Ok(())
+}
+
+#[tokio::test]
+async fn transpose_note_to_non_note() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select a layout
+    tc.press_and_release_key(101).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    // Press a note key
+    tc.press_key(18).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    // Observe that the key is down and the pitch is playing.
+    assert!(ts.positions_down.contains_key(&18));
+    let layout_101_pos_18 = ts.notes.get(&18).unwrap().as_ref().unwrap().pitch.clone();
+    assert_eq!(ts.pitch_on_count.get(&layout_101_pos_18).unwrap_or(&0), &1);
+    // Select a different layout that has the note
+    tc.press_and_release_key(102).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    // The key is still down, and the pitch has changed.
+    let ts = tc.get_engine_state().await;
+    assert!(ts.positions_down.contains_key(&18));
+    let layout_102_pos_18 = ts.notes.get(&18).unwrap().as_ref().unwrap().pitch.clone();
+    assert_ne!(layout_101_pos_18, layout_102_pos_18);
+    assert_eq!(ts.pitch_on_count.get(&layout_101_pos_18).unwrap_or(&0), &0);
+    assert_eq!(ts.pitch_on_count.get(&layout_102_pos_18).unwrap_or(&0), &1);
+    // Select a layout that doesn't have the note
+    tc.press_and_release_key(105).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.positions_down.is_empty());
+    assert_eq!(ts.pitch_on_count.get(&layout_101_pos_18).unwrap_or(&0), &0);
+    assert_eq!(ts.pitch_on_count.get(&layout_102_pos_18).unwrap_or(&0), &0);
+    tc.release_key(18).await?;
+    Ok(())
+}
+
+#[tokio::test]
+async fn transpose_with_sustain() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select a layout
+    tc.press_and_release_key(101).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    // Enter sustain
+    tc.press_and_release_key(keys::SUSTAIN).await?;
+    tc.wait_for_test_event(TestEvent::EngineStateChange).await;
+    // Press a note key
+    tc.press_key(18).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    // Observe that the key is down and the pitch is playing.
+    assert!(ts.positions_down.contains_key(&18));
+    let pos_18a = ts.notes.get(&18).unwrap().as_ref().unwrap().pitch.clone();
+    assert_eq!(ts.pitch_on_count.get(&pos_18a).unwrap_or(&0), &1);
+    // Select a different layout that has the note by shifting down an octave
+    tc.press_and_release_key(keys::DOWN_ARROW).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    // The key is still down, and the new and old pitches are both playing.
+    let ts = tc.get_engine_state().await;
+    assert!(ts.positions_down.contains_key(&18));
+    let pos_18b = ts.notes.get(&18).unwrap().as_ref().unwrap().pitch.clone();
+    assert_ne!(pos_18a, pos_18b);
+    assert_eq!(ts.pitch_on_count.get(&pos_18a).unwrap_or(&0), &1);
+    assert_eq!(ts.pitch_on_count.get(&pos_18b).unwrap_or(&0), &1);
+    // Release the key. The notes are still both on.
+    tc.release_key(18).await?;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.positions_down.is_empty());
+    assert_eq!(ts.pitch_on_count.get(&pos_18a).unwrap_or(&0), &1);
+    assert_eq!(ts.pitch_on_count.get(&pos_18b).unwrap_or(&0), &1);
+    Ok(())
 }
