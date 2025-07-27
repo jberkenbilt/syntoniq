@@ -112,8 +112,12 @@ impl Engine {
         }
         let mut position = keys::LAYOUT_MIN;
         self.assigned_layouts.clear();
-        for layout in config.layouts.into_iter() {
-            tx.send(Event::AssignLayout(AssignLayoutEvent { position, layout }))?;
+        for (idx, layout) in config.layouts.into_iter().enumerate() {
+            tx.send(Event::AssignLayout(AssignLayoutEvent {
+                idx,
+                position,
+                layout,
+            }))?;
             position += 1;
             if position > keys::LAYOUT_MAX {
                 //TODO: deal with scrolling. Key 109 is the scroll key and will assign layouts
@@ -471,7 +475,6 @@ impl Engine {
                 self.send_note(&tx, row, col, Arc::new(note))?;
             }
         }
-        log::info!("layout: {}, scale: {}", layout.name, layout.scale.name);
         Ok(())
     }
 
@@ -499,7 +502,6 @@ impl Engine {
                 }
             }
         }
-        log::info!("layout: {}, scale: {}", layout.name, layout.scale.name);
         Ok(())
     }
 
@@ -577,6 +579,11 @@ impl Engine {
             ScaleType::EqualDivision(_) => self.draw_edo_layout(layout).await?,
             ScaleType::Generic(_) => self.draw_generic_layout(layout).await?,
         }
+        log::info!(
+            "selected layout: {}, scale: {}",
+            layout.name,
+            layout.scale.name
+        );
         tx.send(self.sustain_light_event())?;
         tx.send(self.move_light_event())?;
         tx.send(self.shift_light_event())?;
@@ -590,21 +597,21 @@ impl Engine {
             return Ok(());
         };
         // Activate the light for selecting the layout.
-        let AssignLayoutEvent { position, layout } = layout_event;
+        let AssignLayoutEvent {
+            idx,
+            position,
+            layout,
+        } = layout_event;
         if !(keys::LAYOUT_MIN..=keys::LAYOUT_MAX).contains(&position) {
             return Ok(());
         }
-        let (label1, label2) = {
-            let l = layout.read().await;
-            (l.name.clone(), l.scale.name.clone())
-        };
         self.assigned_layouts.insert(position, layout);
         tx.send(Event::Light(LightEvent {
             mode: LightMode::On,
             position,
             color: Color::Active,
-            label1,
-            label2,
+            label1: (idx + 1).to_string(),
+            label2: String::new(),
         }))?;
         Ok(())
     }

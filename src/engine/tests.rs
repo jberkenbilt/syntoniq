@@ -147,6 +147,14 @@ async fn test_test_controller() -> anyhow::Result<()> {
     assert!(ts.layout.is_none());
     let ws = tc.get_web_state().await;
     assert!(ws.selected_layout.is_empty());
+    loop {
+        let ws = tc.get_web_state().await;
+        if ws.layout_names.is_empty() {
+            continue;
+        }
+        break;
+    }
+    assert_eq!(ws.layout_names[0], "EDO-12-2x1");
     tc.shutdown().await
 }
 

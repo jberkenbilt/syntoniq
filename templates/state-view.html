@@ -1,6 +1,15 @@
 <div sse-swap="side-info" class="side-info">
   <ul>
     <li>Selected Layout: {{selected_layout}}</li>
+    <li>Scale: {{scale_name}}</li>
     <li>Base Pitch: {{base_pitch}}</li>
   </ul>
+  <p>
+    Layouts:
+    <ol>
+      {% for layout in layout_names %}
+      <li>{{layout}}</li>
+      {% endfor %}
+    </ol>
+  </p>
 </div>

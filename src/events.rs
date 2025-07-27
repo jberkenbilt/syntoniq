@@ -105,6 +105,7 @@ pub struct PressureEvent {
 
 #[derive(Clone, Debug)]
 pub struct AssignLayoutEvent {
+    pub idx: usize,
     pub position: u8,
     pub layout: Arc<RwLock<Layout>>,
 }
@@ -170,7 +171,9 @@ pub struct EngineState {
 #[template(path = "state-view.html")]
 pub struct StateView {
     pub selected_layout: String,
+    pub scale_name: String,
     pub base_pitch: String,
+    pub layout_names: Vec<String>,
 }
 
 #[cfg(test)]

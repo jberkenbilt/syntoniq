@@ -46,7 +46,7 @@ note_names = [
 
 [[layout]]
 name = "EDO-31-5x3"
-base = [2, 2]
+base = [3, 3]
 scale_name = "EDO-31"
 steps = [5, 3]
 
@@ -90,13 +90,12 @@ note_names = [
 ]
 
 [[layout]]
-name = "JI-11"
+name = "Just Intonation (11)"
 scale_name = "JI-11"
-
 
 [[scale]]
 # From Fabio Costa minor third etude: https://www.youtube.com/watch?v=U7l7s1Vr6lQ
-name = "Harmonics-1"
+name = "Minor Thirds 1"
 type = "Generic"
 base_pitch = "990.8"
 # In spite of frequencies listed in the video, the lower note of the
@@ -123,5 +122,5 @@ note_names = [
 ]
 
 [[layout]]
-name = "Minor-Thirds-1"
-scale_name = "Harmonics-1"
+name = "Minor Thirds 1"
+scale_name = "Minor Thirds 1"

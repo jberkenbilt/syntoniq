@@ -2,7 +2,7 @@
 //! manages the broadcast channel used for SSE events so it can own the process of updating the
 //! clients when state changes.
 use crate::events;
-use crate::events::{LightEvent, SelectLayoutEvent, StateView};
+use crate::events::{AssignLayoutEvent, LightEvent, SelectLayoutEvent, StateView};
 use crate::view::content::Cell;
 use askama::Template;
 use axum::response::sse::Event;
@@ -111,7 +111,18 @@ impl AppState {
             let layout = e.layout.read().await;
             self.state_view.base_pitch = layout.scale.base_pitch.to_string();
             self.state_view.selected_layout = layout.name.clone();
+            self.state_view.scale_name = layout.scale.name.clone();
         }
+        self.send_state_view().await;
+    }
+
+    pub async fn handle_assign_layout(&mut self, e: AssignLayoutEvent) {
+        if self.state_view.layout_names.len() < e.idx + 1 {
+            self.state_view
+                .layout_names
+                .resize(e.idx + 1, Default::default());
+        }
+        self.state_view.layout_names[e.idx] = e.layout.read().await.name.clone();
         self.send_state_view().await;
     }
 
