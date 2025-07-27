@@ -11,6 +11,12 @@ base = [2, 3]
 scale_name = "EDO-12"
 steps = [2, 1]
 
+[[layout]]
+name = "EDO-12-2x5"
+base = [2, 3]
+scale_name = "EDO-12"
+steps = [2, 5]
+
 [[scale]]
 name = "EDO-19"
 type = "EqualDivision"
