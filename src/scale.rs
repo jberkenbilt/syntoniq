@@ -36,9 +36,12 @@ pub struct GenericScale {
 #[derive(Debug, PartialEq)]
 pub struct Note {
     pub name: String,
+    pub description: String,
     pub pitch: Pitch,
     pub scale_name: String,
-    pub description: String,
+    pub scale_base_pitch: String,
+    /// Factor to multiply by base, useful for transcription
+    pub base_factor: String,
     pub colors: (Color, Color), // note off, note on
 }
 impl Note {
@@ -155,13 +158,14 @@ impl Scale {
             .to_string();
         let colors = Self::interval_color(pitch.as_float() / self.base_pitch.as_float());
         let description = pitch_str.to_string();
-        // Alternative: show ratio to base pitch
-        //let ratio = pitch.concat(self.base_pitch.invert());
+        let (scale_base_pitch, base_factor) = pitch.to_base_and_factor(&self.base_pitch);
         let note = Arc::new(Note {
             name,
             description,
             pitch,
             scale_name: self.name.clone(),
+            scale_base_pitch,
+            base_factor,
             colors,
         });
         cache.insert(position, Some(note.clone()));
@@ -186,11 +190,14 @@ impl Scale {
             Self::interval_color(freq / self.base_pitch.as_float())
         };
         let description = format!("{cycle}.{step}");
+        let (scale_base_pitch, base_factor) = pitch.to_base_and_factor(&self.base_pitch);
         Note {
             name,
             description,
             pitch,
             scale_name: self.name.clone(),
+            scale_base_pitch,
+            base_factor,
             colors,
         }
     }

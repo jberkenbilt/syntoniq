@@ -68,6 +68,16 @@ impl Factor {
             base.powf(exp)
         }
     }
+
+    /// Show as an integer and a decimal iff exponent is one and denominator evenly divides 1000.
+    pub fn to_string_with_decimal(&self) -> String {
+        if self.exp == Ratio::from_integer(1) && (1000 % self.base.denom()) == 0 {
+            let decimal = self.base.numer() * 1000 / *self.base.denom();
+            format!("{:3}", decimal as f32 / 1000.0)
+        } else {
+            self.to_string()
+        }
+    }
 }
 
 impl Display for Pitch {
@@ -115,10 +125,14 @@ impl Pitch {
         // Add all other factors with base other than 1. If the exponent is negative, adjust
         // the exp_1 base and make it positive.
         for (base, mut exp) in by_base {
-            // Skip if exponent reduces to 0 (shouldn't happen with your validation)
+            // Normalize to between 0 and denominator
             while *exp.numer() < 0 {
                 exp += Ratio::from_integer(1);
                 exp_1 /= base;
+            }
+            while *exp.numer() > *exp.denom() {
+                exp -= Ratio::from_integer(1);
+                exp_1 *= base;
             }
             if *exp.numer() == 0 {
                 continue;
@@ -134,17 +148,21 @@ impl Pitch {
             }
         }
 
-        // Add the exponent-1 factors taking care to avoid needless multiply by 1
+        // For consistent results, sort parts with non-1 exponent in decreasing order of exponent.
+        // We'll reverse after attaching the exponent-1 factor.
+        result.sort_by_key(|f| (f.exp, f.base));
+
+        // Append the exponent-1 factor, taking care to avoid needless multiply by 1
         if result.is_empty() || exp_1 != Ratio::from_integer(1) {
             result.push(Factor {
                 base: exp_1,
                 exp: Ratio::from_integer(1),
             });
         }
-
-        // Sort for predictability
-        result.sort_by_key(|f| (f.base, f.exp));
+        // Reverse so the exponent-1 factor is first, followed by the other factors in decreasing
+        // order of exponent.
         result.reverse();
+
         Self { factors: result }
     }
 
@@ -215,7 +233,7 @@ impl Pitch {
                 if cap.name("ratio").is_some() {
                     let (num_frac, scale) = match cap.name("r_num_frac") {
                         None => (0, 1),
-                        Some(x) => (x.as_str().parse()?, 1000),
+                        Some(x) => (x.as_str().parse()?, 10u32.pow(x.len() as u32)),
                     };
                     let num: u32 = cap["r_num"].parse::<u32>()? * scale + num_frac;
                     let den: u32 = match cap.name("r_den") {
@@ -267,6 +285,30 @@ impl Pitch {
         self.factors
             .iter()
             .fold(1.0f32, |accum, factor| accum * factor.as_float())
+    }
+
+    /// If the exponent-1 component is > 32 and can be losslessly expressed as a decimal with
+    /// no more than three decimal places, express it that way.
+    pub fn to_string_with_decimal(&self) -> String {
+        let first_with_decimal = self.factors[0].to_string_with_decimal();
+        if first_with_decimal.contains(".") {
+            let p2 = Self::new(self.factors.clone()[1..].to_vec());
+            let p2_string = p2.to_string();
+            if p2_string == "1" {
+                first_with_decimal
+            } else {
+                format!("{first_with_decimal}*{p2}")
+            }
+        } else {
+            self.to_string()
+        }
+    }
+
+    /// Represent as base*ratio -- more useful for capturing notes for transcription
+    pub fn to_base_and_factor(&self, base_pitch: &Pitch) -> (String, String) {
+        let ratio = self.concat(base_pitch.invert());
+        let base = base_pitch.to_string_with_decimal();
+        (base, ratio.to_string())
     }
 
     /// Compute a frequency to a midi note number and a pitch bend value using ±2 semitones.
@@ -384,6 +426,27 @@ mod tests {
                 factors: vec![Factor::new(2, 1, 1, 1).unwrap()],
             }
         );
+        let p: Pitch = "400.1".parse().unwrap();
+        assert_eq!(
+            p,
+            Pitch {
+                factors: vec![Factor::new(4001, 10, 1, 1).unwrap()],
+            }
+        );
+        let p: Pitch = "400.10".parse().unwrap();
+        assert_eq!(
+            p,
+            Pitch {
+                factors: vec![Factor::new(4001, 10, 1, 1).unwrap()],
+            }
+        );
+        let p: Pitch = "400.123".parse().unwrap();
+        assert_eq!(
+            p,
+            Pitch {
+                factors: vec![Factor::new(400123, 1000, 1, 1).unwrap()],
+            }
+        );
     }
 
     #[test]
@@ -411,7 +474,7 @@ mod tests {
         assert_eq!(p3.to_string(), "330*^7|12");
         assert_eq!(
             Pitch::parse("3/4*5/3*^1|12*^10|31*3/2^1|2")?.to_string(),
-            "^151|372*3/2^1|2*5/4"
+            "5/4*3/2^1|2*^151|372"
         );
 
         Ok(())
@@ -429,7 +492,23 @@ mod tests {
         let p = Pitch::must_parse("1/2");
         assert_eq!(p.invert().to_string(), "2");
         let p = Pitch::must_parse("^1|2");
-        assert_eq!(p.invert().to_string(), "^1|2*1/2");
+        assert_eq!(p.invert().to_string(), "1/2*^1|2");
         assert_eq!(p.invert().invert().to_string(), "^1|2");
+    }
+
+    #[test]
+    fn test_to_base_ratio() {
+        fn check(base_str: &str, pitch_str: &str, out_base: &str, out_factor: &str) {
+            let pitch = Pitch::must_parse(pitch_str);
+            let base_pitch = Pitch::must_parse(base_str);
+            assert_eq!(
+                pitch.to_base_and_factor(&base_pitch),
+                (out_base.to_string(), out_factor.to_string())
+            );
+        }
+        check("440", "440", "440", "1");
+        check("440.1", "880.2", "440.1", "2");
+        check("440.1", "880.2*^2|31", "440.1", "2*^2|31");
+        check("440.1*^-9|12", "440.1*3/2*^5|12", "220.05*^1|4", "3*^1|6");
     }
 }

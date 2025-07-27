@@ -4,7 +4,7 @@
 
 Other:
 * Add a logger. This can subscribe to PlayNote events and use the optional note to log. It can record actual semantic note information as well as key events. We can have a replay mode that will transmit key events at specific times to effectively replay an entire session. This can be an alternate controller.
-* The logger might want to track note names in addition to pitches. At this moment, note names are not visible to the PlayNote event, so a separate LogEvent might be in order. Can/should we add layout to Note?
+* The logger might want to track note names in addition to pitches. At this moment, note names are not visible to the PlayNote event, so a separate LogEvent might be in order.
 * Cabbage with wave form with filter, LFO, maybe stereo, detune, pan knobs as basic example
 * Create note-entry CLI that uses HTTP interface; can be a separate tool to not interfere with logs.
 * Alternatives to the MIDI input controller
