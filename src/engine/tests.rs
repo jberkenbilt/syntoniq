@@ -23,10 +23,9 @@ impl TestController {
         let web_channel = WebChannel::default();
         let tx2 = events_tx_weak.clone();
         let rx2 = events_rx.resubscribe();
-        let engine_handle =
-            tokio::spawn(
-                async move { run("qlaunchpad.toml".into(), SoundType::None, tx2, rx2).await },
-            );
+        let engine_handle = tokio::spawn(async move {
+            run("testdata/conf.toml".into(), SoundType::None, tx2, rx2).await
+        });
         let tx2 = events_tx_weak.clone();
         let rx2 = events_rx.resubscribe();
         let web_handle = tokio::spawn(async move {
