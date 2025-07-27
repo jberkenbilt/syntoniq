@@ -3,6 +3,7 @@ use num_rational::Ratio;
 use regex::Regex;
 use serde::de::Visitor;
 use serde::{Deserialize, Deserializer, de};
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt;
 use std::fmt::{Display, Formatter};
@@ -11,6 +12,33 @@ use std::str::FromStr;
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Pitch {
     factors: Vec<Factor>,
+}
+impl PartialOrd for Pitch {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl Ord for Pitch {
+    fn cmp(&self, other: &Self) -> Ordering {
+        if self == other {
+            Ordering::Equal
+        } else {
+            let freq1 = self.as_float();
+            let freq2 = other.as_float();
+            if freq1 < freq2 {
+                Ordering::Less
+            } else if freq1 > freq2 {
+                Ordering::Greater
+            } else if freq1 == freq2 {
+                // If this is reached, there's a bug in canonicalization
+                log::warn!("{self} and {other} have the same frequency but are not equal");
+                Ordering::Equal
+            } else {
+                // Should not be possible...this would mean infinity or NAN from as_float().
+                panic!("{self} and {other} are not comparable");
+            }
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]

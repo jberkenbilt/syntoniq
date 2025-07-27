@@ -3,11 +3,7 @@
 # To Do
 
 Other:
-* Add a button that prints information about all the notes that are currently on. Will need to store last_note_for_pitch in transient state and remove entries when we turn off the pitch.
-* Add a logger. This can subscribe to PlayNote events and use the optional note to log. It can record actual semantic note information as well as non-synthetic key events. We can have a replay mode that will transmit key events at specific times to effectively replay an entire session. This can be an alternate controller.
 * Cabbage with wave form with filter, LFO, maybe stereo, detune, pan knobs as basic example
-* Create note-entry CLI that uses HTTP interface; can be a separate tool to not interfere with logs.
-* Replay session: don't run device controller; instead just synthesize the key events in the right order.
 
 See also
 * [design](./design.md)
@@ -33,6 +29,8 @@ See also
 
 * In web, track whether a key "down" or "up" just as a web only extraction. Each click sends the appropriate event and toggles the state which also sends an SSE event. No need to reset state -- click once and hit reset is the same as pressing clear while holding a note, and it prevents two successive on or two successive off events, which can't happen on the actual device. It means double-click for sustain mode, but that's fine.
 * Tuned MIDI output mode: generate a Scala file for a layout that can be loaded into something like Surge-XT, which has tuning awareness. In EDO mode, we can just use notes starting from 60 up to the number of notes in the scale. For generic, we can create a 64-note scale and map each square to a note number in a consistent way, probably 60 to 123.
+* Create note-entry CLI that uses HTTP interface; can be a separate tool to not interfere with logs.
+* Session record/replay: record non-synthetic key events with timestamps. We can have a replay mode that will transmit key events at specific times to effectively replay an entire session. This would run instead of the device controller.
 
 # Remember
 

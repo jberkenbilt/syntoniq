@@ -184,21 +184,13 @@ async fn test_sustain() -> anyhow::Result<()> {
     tc.press_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert!(
-        *ts.pitch_on_count
-            .get(&Pitch::must_parse("220*^3|12"))
-            .unwrap()
-            > 0
-    );
+    let middle_c = Pitch::must_parse("220*^3|12");
+    assert!(*ts.pitch_on_count.get(&middle_c).unwrap() > 0);
+    assert_eq!(ts.last_note_for_pitch.get(&middle_c).unwrap().name, "C");
     tc.release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert_eq!(
-        *ts.pitch_on_count
-            .get(&Pitch::must_parse("220*^3|12"))
-            .unwrap(),
-        0
-    );
+    assert!(!ts.pitch_on_count.contains_key(&middle_c));
 
     // Enter sustain mode
     tc.press_and_release_key(keys::SUSTAIN).await?;
@@ -209,24 +201,16 @@ async fn test_sustain() -> anyhow::Result<()> {
     // Press and release middle C. Note stays on.
     tc.press_and_release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert!(
-        *ts.pitch_on_count
-            .get(&Pitch::must_parse("220*^3|12"))
-            .unwrap()
-            > 0
-    );
+    assert!(*ts.pitch_on_count.get(&middle_c).unwrap() > 0);
 
     // Press and release middle C. Note turns off.
     tc.press_and_release_key(32).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert_eq!(
-        *ts.pitch_on_count
-            .get(&Pitch::must_parse("220*^3|12"))
-            .unwrap(),
-        0
-    );
+    assert!(!ts.pitch_on_count.contains_key(&middle_c));
 
     // Leave sustain mode
     tc.press_and_release_key(keys::SUSTAIN).await?;

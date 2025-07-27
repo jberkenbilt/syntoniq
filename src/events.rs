@@ -177,6 +177,8 @@ pub struct EngineState {
     /// Number of times a pitch is on; > 1 if simultaneously touching more than one position
     /// with the same pitch in non-sustain mode
     pub pitch_on_count: HashMap<Pitch, u8>,
+    /// Last note played for a given pitch
+    pub last_note_for_pitch: HashMap<Pitch, Arc<Note>>,
     /// Positions that are actually being touched
     pub positions_down: HashMap<u8, Arc<Note>>,
     pub sustain: bool,

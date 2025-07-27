@@ -11,6 +11,7 @@ use crate::pitch::{Factor, Pitch};
 use crate::scale::{Note, ScaleType};
 use crate::{controller, csound, events, midi_player};
 use anyhow::{anyhow, bail};
+use chrono::SubsecRound;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::sync::Arc;
@@ -28,6 +29,7 @@ mod keys {
     pub const UP_ARROW: u8 = 80;
     pub const DOWN_ARROW: u8 = 70;
     pub const CLEAR: u8 = 60;
+    pub const RECORD: u8 = 10;
     // Right column, top to bottom
     pub const LAYOUT_SCROLL: u8 = 19;
     // Upper bottom controls
@@ -98,17 +100,18 @@ impl Engine {
                 }))?;
             }
         }
-        for (position, label1) in [
-            (keys::CLEAR, "Reset"),
-            (keys::UP_ARROW, "▲"),
-            (keys::DOWN_ARROW, "▼"),
+        for (position, label1, label2) in [
+            (keys::UP_ARROW, "▲", ""),
+            (keys::DOWN_ARROW, "▼", ""),
+            (keys::CLEAR, "Reset", ""),
+            (keys::RECORD, "Show", "Notes"),
         ] {
             tx.send(Event::Light(LightEvent {
                 mode: LightMode::On,
                 position,
                 color: Color::Active,
                 label1: label1.to_string(),
-                label2: String::new(),
+                label2: label2.to_string(),
             }))?;
         }
         let mut position = keys::LAYOUT_MIN;
@@ -187,7 +190,7 @@ impl Engine {
                 };
                 tx.send(self.transpose_light_event())?;
             }
-            keys::UP_ARROW | keys::DOWN_ARROW if off && self.transient_state.layout.is_some() => {
+            keys::UP_ARROW | keys::DOWN_ARROW if off && have_layout => {
                 // 2025-07-22, rust 1.88: "if let guards" are experimental. When stable, we can
                 // use one instead of is_some above and get rid of this unwrap.
                 let layout = self.transient_state.layout.take().unwrap();
@@ -201,6 +204,9 @@ impl Engine {
                     locked.scale.transpose(transposition);
                 }
                 tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
+            }
+            keys::RECORD if off && have_layout => {
+                self.print_notes();
             }
             position if have_layout && self.transient_state.notes.contains_key(&position) => {
                 if let Some(note) = self.transient_state.notes.get(&position).unwrap() {
@@ -219,6 +225,46 @@ impl Engine {
         #[cfg(test)]
         self.send_test_event(TestEvent::HandledKey);
         Ok(())
+    }
+
+    fn print_notes(&self) {
+        // Scale name -> notes in the scale
+        let mut scale_to_notes: HashMap<String, Vec<&Arc<Note>>> = HashMap::new();
+        for note in self.transient_state.last_note_for_pitch.values() {
+            scale_to_notes
+                .entry(note.scale_name.clone())
+                .or_default()
+                .push(note);
+        }
+        let mut keys: Vec<String> = scale_to_notes.keys().cloned().collect();
+        keys.sort();
+        println!(
+            "----- Current Notes ({}) -----",
+            chrono::offset::Local::now().trunc_subsecs(0)
+        );
+        for scale in keys {
+            let mut first = true;
+            let mut notes = scale_to_notes.remove(&scale).unwrap();
+            notes.sort_by_key(|note| note.pitch.clone());
+            for note in notes {
+                let Note {
+                    name,
+                    description,
+                    pitch,
+                    scale_name,
+                    scale_base_pitch,
+                    base_factor,
+                    colors: _,
+                } = note.as_ref();
+                if first {
+                    first = false;
+                    println!("Scale: {scale_name}, base={scale_base_pitch}");
+                }
+                println!(
+                    "  Note: {name} ({description}), pitch={pitch}, base_factor={base_factor}"
+                );
+            }
+        }
     }
 
     async fn handle_note_key(
@@ -419,37 +465,43 @@ impl Engine {
         // it's on or off. Changing scales, transposing, shifting, etc. doesn't affect
         // which notes are on or off, making it possible to play a note in one scale,
         // switch scales, and play a note in another scale.
+        let was_on = *pitch_count > 0;
         if self.transient_state.sustain {
-            if off {
-                return Ok(());
-            }
-            if *pitch_count > 0 {
-                *pitch_count = 0;
-            } else {
-                *pitch_count = 1;
+            if !off {
+                if *pitch_count > 0 {
+                    *pitch_count = 0;
+                } else {
+                    *pitch_count = 1;
+                }
             }
         } else if off {
             if *pitch_count > 0 {
                 *pitch_count -= 1
             }
-            if *pitch_count > 0 {
-                return Ok(());
-            }
         } else {
             *pitch_count += 1;
-            if *pitch_count > 1 {
-                return Ok(());
+        }
+        let pitch_count = *pitch_count;
+        if pitch_count == 0 {
+            self.transient_state.pitch_on_count.remove(pitch);
+            self.transient_state.last_note_for_pitch.remove(pitch);
+        } else {
+            self.transient_state
+                .last_note_for_pitch
+                .insert(pitch.clone(), note.clone());
+        }
+        let is_on = pitch_count > 0;
+        if is_on != was_on {
+            let velocity = if is_on { 127 } else { 0 };
+            for position in others.iter().copied() {
+                tx.send(note.light_event(position, velocity))?;
             }
+            tx.send(Event::PlayNote(PlayNoteEvent {
+                pitch: pitch.clone(),
+                velocity,
+                note: Some(note.clone()),
+            }))?;
         }
-        let velocity = if *pitch_count > 0 { 127 } else { 0 };
-        for position in others.iter().copied() {
-            tx.send(note.light_event(position, velocity))?;
-        }
-        tx.send(Event::PlayNote(PlayNoteEvent {
-            pitch: pitch.clone(),
-            velocity,
-            note: Some(note.clone()),
-        }))?;
         Ok(())
     }
 
@@ -483,6 +535,15 @@ impl Engine {
                     label2: String::new(),
                 }))?;
             }
+        }
+        Ok(())
+    }
+
+    async fn handle_play_note(&mut self, e: PlayNoteEvent) -> anyhow::Result<()> {
+        if let Some(note) = e.note
+            && e.velocity > 0
+        {
+            println!("note: {} ({})", note.name, note.scale_name);
         }
         Ok(())
     }
@@ -755,7 +816,7 @@ pub async fn run(
             Event::AssignLayout(e) => engine.assign_layout(e).await?,
             Event::SelectLayout(e) => engine.select_layout(e).await?,
             Event::UpdateNote(e) => engine.update_note(e).await?,
-            Event::PlayNote(_) => {}
+            Event::PlayNote(e) => engine.handle_play_note(e).await?,
             #[cfg(test)]
             Event::TestEngine(test_tx) => test_tx.send(engine.transient_state.clone()).await?,
             #[cfg(test)]

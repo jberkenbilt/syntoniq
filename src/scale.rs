@@ -4,6 +4,7 @@ use crate::pitch::{Factor, Pitch};
 use anyhow::{anyhow, bail};
 use serde::Deserialize;
 use std::collections::HashMap;
+use std::fmt::{Display, Formatter};
 use std::sync::Arc;
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
@@ -58,6 +59,25 @@ impl Note {
             label1: self.name.clone(),
             label2: self.description.clone(),
         })
+    }
+}
+
+impl Display for Note {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let Note {
+            name,
+            description,
+            pitch,
+            scale_name,
+            scale_base_pitch,
+            base_factor,
+            colors: _,
+        } = self;
+        write!(f, "Note: {name} ({description}), pitch={pitch}")?;
+        write!(
+            f,
+            "  scale: {scale_name}, base={scale_base_pitch}, factor={base_factor}"
+        )
     }
 }
 
@@ -172,8 +192,12 @@ impl Scale {
         Ok(Some(note))
     }
 
-    pub fn note_equal_division(&self, data: &EqualDivision, cycle: i8, step: i8) -> Note {
+    pub fn note_equal_division(&self, data: &EqualDivision, mut cycle: i8, mut step: i8) -> Note {
         let (divisions, num, den) = data.divisions;
+        while step < 0 {
+            step += divisions as i8;
+            cycle -= 1
+        }
         let steps = divisions as i32 * cycle as i32 + step as i32;
         let pitch = self.base_pitch.concat(Pitch::new(vec![
             Factor::new(num, den, steps, divisions as i32).unwrap(),
