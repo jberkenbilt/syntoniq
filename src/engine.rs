@@ -231,10 +231,8 @@ impl Engine {
         // Scale name -> notes in the scale
         let mut scale_to_notes: HashMap<String, Vec<&Arc<Note>>> = HashMap::new();
         for note in self.transient_state.last_note_for_pitch.values() {
-            scale_to_notes
-                .entry(note.scale_name.clone())
-                .or_default()
-                .push(note);
+            let key = format!("Scale: {}, base={}", note.scale_name, note.scale_base_pitch);
+            scale_to_notes.entry(key).or_default().push(note);
         }
         let mut keys: Vec<String> = scale_to_notes.keys().cloned().collect();
         keys.sort();
@@ -243,7 +241,7 @@ impl Engine {
             chrono::offset::Local::now().trunc_subsecs(0)
         );
         for scale in keys {
-            let mut first = true;
+            println!("{scale}");
             let mut notes = scale_to_notes.remove(&scale).unwrap();
             notes.sort_by_key(|note| note.pitch.clone());
             for note in notes {
@@ -251,15 +249,11 @@ impl Engine {
                     name,
                     description,
                     pitch,
-                    scale_name,
-                    scale_base_pitch,
+                    scale_name: _,
+                    scale_base_pitch: _,
                     base_factor,
                     colors: _,
                 } = note.as_ref();
-                if first {
-                    first = false;
-                    println!("Scale: {scale_name}, base={scale_base_pitch}");
-                }
                 println!(
                     "  Note: {name} ({description}), pitch={pitch}, base_factor={base_factor}"
                 );

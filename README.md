@@ -19,6 +19,7 @@ See also
     * Press `Note`
     * Select EDO-12
     * Press E twice
+  * Note: if in sustain mode, touching the note behaves as usual, so if you transpose by double touching a note that is on, you will turn it off. It's not clear what the best behavior would be, but a good policy would be that if you touch a note in sustain mode to transpose to and it's the wrong one, touch `Note` to cancel transpose and then turn the note off before proceeding. If you touch a note to transpose that it is already on, it will turn off. Either cancel and try again, or turn the note back on by touching the tonic of the transposed scale.
 * Shift layout
   * With shift key down, press two different notes. The layout is shifted so that the first note is now in the second note's position.
   * The shift key is sticky if pressed and released without touching other notes, so the following are equivalent, where "touch" is "press and release":
