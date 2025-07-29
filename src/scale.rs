@@ -7,13 +7,34 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use std::sync::Arc;
 
-#[derive(Deserialize, Clone, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Scale {
     pub name: String,
-    #[serde(flatten)]
     pub scale_type: ScaleType,
     pub base_pitch: Pitch,
+    pub orig_base_pitch: Pitch,
     pub note_names: Vec<String>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, PartialOrd, Ord)]
+pub struct ScaleDescription {
+    // Keep fields in order for sorting
+    pub name: String,
+    pub orig_base_pitch: Pitch,
+    pub base_pitch: Pitch,
+}
+impl Display for ScaleDescription {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let name = &self.name;
+        let base_pitch = &self.base_pitch;
+        let orig_base_pitch = &self.orig_base_pitch;
+        write!(f, "{name}, base={base_pitch}")?;
+        if base_pitch != orig_base_pitch {
+            let factor = base_pitch / orig_base_pitch;
+            write!(f, " (transposition: {orig_base_pitch} × {factor})")?;
+        }
+        Ok(())
+    }
 }
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
@@ -39,10 +60,9 @@ pub struct Note {
     pub name: String,
     pub description: String,
     pub pitch: Pitch,
-    pub scale_name: String,
-    pub scale_base_pitch: String,
+    pub scale_description: ScaleDescription,
     /// Factor to multiply by base, useful for transcription
-    pub base_factor: String,
+    pub base_factor: Pitch,
     pub colors: (Color, Color), // note off, note on
 }
 impl Note {
@@ -68,15 +88,13 @@ impl Display for Note {
             name,
             description,
             pitch,
-            scale_name,
-            scale_base_pitch,
-            base_factor,
+            scale_description,
+            base_factor: _,
             colors: _,
         } = self;
-        write!(f, "Note: {name} ({description}), pitch={pitch}")?;
         write!(
             f,
-            "  scale: {scale_name}, base={scale_base_pitch}, factor={base_factor}"
+            "Note: {name} ({description}), pitch={pitch}, scale={scale_description}"
         )
     }
 }
@@ -103,6 +121,14 @@ impl Scale {
             }
         }
         Ok(())
+    }
+
+    pub fn description(&self) -> ScaleDescription {
+        ScaleDescription {
+            name: self.name.clone(),
+            base_pitch: self.base_pitch.clone(),
+            orig_base_pitch: self.orig_base_pitch.clone(),
+        }
     }
 
     /// Return the frequency of the scale tone `cycle` cycles and `step` steps above the base pitch.
@@ -170,7 +196,7 @@ impl Scale {
             (self.base_pitch.clone(), pitch_str.clone())
         };
         let factor_pitch = Pitch::parse(&factor)?;
-        let pitch = base_pitch.concat(factor_pitch.clone());
+        let pitch = &base_pitch * &factor_pitch;
         let name = self
             .note_names
             .get(idx as usize)
@@ -178,14 +204,12 @@ impl Scale {
             .to_string();
         let colors = Self::interval_color(pitch.as_float() / self.base_pitch.as_float());
         let description = pitch_str.to_string();
-        let (scale_base_pitch, base_factor) = pitch.to_base_and_factor(&self.base_pitch);
         let note = Arc::new(Note {
             name,
             description,
+            base_factor: &pitch / &self.base_pitch,
             pitch,
-            scale_name: self.name.clone(),
-            scale_base_pitch,
-            base_factor,
+            scale_description: self.description(),
             colors,
         });
         cache.insert(position, Some(note.clone()));
@@ -199,7 +223,7 @@ impl Scale {
             cycle -= 1
         }
         let steps = divisions as i32 * cycle as i32 + step as i32;
-        let pitch = self.base_pitch.concat(Pitch::new(vec![
+        let pitch = self.base_pitch.concat(&Pitch::new(vec![
             Factor::new(num, den, steps, divisions as i32).unwrap(),
         ]));
         let freq = pitch.as_float();
@@ -214,14 +238,12 @@ impl Scale {
             Self::interval_color(freq / self.base_pitch.as_float())
         };
         let description = format!("{cycle}.{step}");
-        let (scale_base_pitch, base_factor) = pitch.to_base_and_factor(&self.base_pitch);
         Note {
             name,
             description,
+            base_factor: &pitch / &self.base_pitch,
             pitch,
-            scale_name: self.name.clone(),
-            scale_base_pitch,
-            base_factor,
+            scale_description: self.description(),
             colors,
         }
     }
@@ -259,8 +281,8 @@ impl Scale {
         (Color::OtherOff, Color::OtherOn)
     }
 
-    pub fn transpose(&mut self, amount: Pitch) {
-        self.base_pitch = self.base_pitch.concat(amount);
+    pub fn transpose(&mut self, amount: &Pitch) {
+        self.base_pitch *= amount;
     }
 }
 
@@ -271,12 +293,14 @@ mod tests {
 
     #[test]
     pub fn test_notes() -> anyhow::Result<()> {
+        let base_pitch = Pitch::new(vec![Factor::new(261626, 1000, 1, 1)?]);
         let edo12 = Scale {
             name: "edo-12".to_string(),
             scale_type: ScaleType::EqualDivision(EqualDivision {
                 divisions: (12, 2, 1),
             }),
-            base_pitch: Pitch::new(vec![Factor::new(261626, 1000, 1, 1)?]),
+            orig_base_pitch: base_pitch.clone(),
+            base_pitch,
             note_names: vec![],
         };
         let note = edo12.edo_note(0, 9);
@@ -286,12 +310,14 @@ mod tests {
         assert_eq!(note.description, "0.9");
         assert_eq!(note.colors, (Color::MinorThirdOff, Color::MinorThirdOn));
 
+        let base_pitch = Pitch::new(vec![Factor::new(440, 1, 1, 1)?, Factor::new(3, 5, 1, 1)?]);
         let edo6 = Scale {
             name: "edo-6".to_string(),
             scale_type: ScaleType::EqualDivision(EqualDivision {
                 divisions: (6, 2, 1),
             }),
-            base_pitch: Pitch::new(vec![Factor::new(440, 1, 1, 1)?, Factor::new(3, 5, 1, 1)?]),
+            orig_base_pitch: base_pitch.clone(),
+            base_pitch,
             note_names: ["C", "D", "E", "F#", "G#", "A#"]
                 .into_iter()
                 .map(str::to_string)

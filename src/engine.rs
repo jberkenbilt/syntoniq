@@ -201,7 +201,7 @@ impl Engine {
                     } else {
                         Pitch::new(vec![Factor::new(1, 2, 1, 1)?])
                     };
-                    locked.scale.transpose(transposition);
+                    locked.scale.transpose(&transposition);
                 }
                 tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
             }
@@ -228,36 +228,12 @@ impl Engine {
     }
 
     fn print_notes(&self) {
-        // Scale name -> notes in the scale
-        let mut scale_to_notes: HashMap<String, Vec<&Arc<Note>>> = HashMap::new();
-        for note in self.transient_state.last_note_for_pitch.values() {
-            let key = format!("Scale: {}, base={}", note.scale_name, note.scale_base_pitch);
-            scale_to_notes.entry(key).or_default().push(note);
-        }
-        let mut keys: Vec<String> = scale_to_notes.keys().cloned().collect();
-        keys.sort();
         println!(
             "----- Current Notes ({}) -----",
             chrono::offset::Local::now().trunc_subsecs(0)
         );
-        for scale in keys {
-            println!("{scale}");
-            let mut notes = scale_to_notes.remove(&scale).unwrap();
-            notes.sort_by_key(|note| note.pitch.clone());
-            for note in notes {
-                let Note {
-                    name,
-                    description,
-                    pitch,
-                    scale_name: _,
-                    scale_base_pitch: _,
-                    base_factor,
-                    colors: _,
-                } = note.as_ref();
-                println!(
-                    "  Note: {name} ({description}), pitch={pitch}, base_factor={base_factor}"
-                );
-            }
+        for s in self.transient_state.current_played_notes() {
+            println!("{s}");
         }
     }
 
@@ -537,7 +513,7 @@ impl Engine {
         if let Some(note) = e.note
             && e.velocity > 0
         {
-            println!("note: {} ({})", note.name, note.scale_name);
+            println!("{note}");
         }
         Ok(())
     }
@@ -817,6 +793,8 @@ pub async fn run(
             Event::TestWeb(_) => {}
             #[cfg(test)]
             Event::TestEvent(_) => {}
+            #[cfg(test)]
+            Event::TestSync => engine.send_test_event(TestEvent::Sync),
         }
     }
     Ok(())

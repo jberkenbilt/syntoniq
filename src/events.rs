@@ -1,7 +1,7 @@
 use crate::engine::PlayedNote;
 use crate::layout::Layout;
 use crate::pitch::Pitch;
-use crate::scale::Note;
+use crate::scale::{Note, ScaleDescription};
 use askama::Template;
 use std::collections::{HashMap, HashSet};
 use std::fmt::{Display, Formatter};
@@ -186,6 +186,41 @@ pub struct EngineState {
     pub transpose_state: TransposeState,
     pub shift_layout_state: ShiftLayoutState,
 }
+impl EngineState {
+    pub fn current_played_notes(&self) -> Vec<String> {
+        // It would more efficient to directly print, but this is not performance-critical,
+        // and generating a Vec makes testing easier.
+        let mut result = Vec::new();
+        // Scale name -> notes in the scale
+        let mut scale_to_notes: HashMap<ScaleDescription, Vec<&Arc<Note>>> = HashMap::new();
+        for note in self.last_note_for_pitch.values() {
+            let key = note.scale_description.clone();
+            scale_to_notes.entry(key).or_default().push(note);
+        }
+        let mut keys: Vec<ScaleDescription> = scale_to_notes.keys().cloned().collect();
+        keys.sort();
+        for scale in keys {
+            result.push(format!("Scale: {scale}"));
+            let mut notes = scale_to_notes.remove(&scale).unwrap();
+            notes.sort_by_key(|note| note.pitch.clone());
+            for note in notes {
+                let Note {
+                    name,
+                    description,
+                    pitch,
+                    scale_description,
+                    base_factor,
+                    colors: _,
+                } = note.as_ref();
+                let scale_base_pitch = &scale_description.base_pitch;
+                result.push(format!(
+                    "  Note: {name} ({description}), pitch={pitch} ({scale_base_pitch} × {base_factor})"
+                ));
+            }
+        }
+        result
+    }
+}
 
 #[derive(Template, Default, Clone)]
 #[template(path = "state-view.html")]
@@ -204,6 +239,7 @@ pub enum TestEvent {
     HandledNote,
     HandledKey,
     MoveCanceled,
+    Sync,
 }
 
 #[derive(Clone, Debug)]
@@ -223,6 +259,8 @@ pub enum Event {
     TestWeb(mpsc::Sender<StateView>),
     #[cfg(test)]
     TestEvent(TestEvent),
+    #[cfg(test)]
+    TestSync,
 }
 
 impl Display for Event {

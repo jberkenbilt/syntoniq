@@ -116,6 +116,12 @@ impl TestController {
         self.press_key(position).await?;
         self.release_key(position).await
     }
+
+    async fn sync(&mut self) -> anyhow::Result<()> {
+        self.events_tx.send(Event::TestSync)?;
+        self.wait_for_test_event(TestEvent::Sync).await;
+        Ok(())
+    }
 }
 
 pub struct EngineChannel {
@@ -614,6 +620,55 @@ async fn transpose_with_sustain() -> anyhow::Result<()> {
     assert!(ts.positions_down.is_empty());
     assert_eq!(ts.pitch_on_count.get(&pos_18a).unwrap_or(&0), &1);
     assert_eq!(ts.pitch_on_count.get(&pos_18b).unwrap_or(&0), &1);
+
+    tc.shutdown().await
+}
+
+#[tokio::test]
+async fn transpose_print_notes() -> anyhow::Result<()> {
+    let mut tc = TestController::new().await;
+    // Select Just Intonation
+    tc.press_and_release_key(105).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    // Enter sustain
+    tc.press_and_release_key(keys::SUSTAIN).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    // Play some notes
+    tc.press_and_release_key(51).await?;
+    tc.press_and_release_key(53).await?;
+    tc.press_and_release_key(55).await?;
+    // Transpose and play
+    tc.press_and_release_key(keys::TRANSPOSE).await?;
+    // Since this is sustain, we have to turn the note on ahead so it won't be on after selecting
+    tc.press_and_release_key(13).await?;
+    tc.press_and_release_key(13).await?;
+    tc.press_and_release_key(13).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    // More notes
+    tc.press_and_release_key(53).await?;
+    tc.press_and_release_key(55).await?;
+    // New layout
+    tc.press_and_release_key(101).await?;
+    tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+    tc.press_and_release_key(33).await?;
+    // Let all events be handled
+    tc.sync().await?;
+    let ts = tc.get_engine_state().await;
+    let exp: Vec<String> = [
+        "Scale: EDO-12, base=220*^1|4",
+        "  Note: D (0.2), pitch=220*^5|12 (220*^1|4 × ^1|6)",
+        "Scale: JI-11, base=55*^1|4",
+        "  Note: C ([31]*2), pitch=220*^1|4 (55*^1|4 × 4)",
+        "  Note: E ([33]*2), pitch=275*^1|4 (55*^1|4 × 5)",
+        "  Note: G ([35]*2), pitch=330*^1|4 (55*^1|4 × 6)",
+        "Scale: JI-11, base=68.75*^1|4 (transposition: 55*^1|4 × 5/4)",
+        "  Note: E ([33]*2), pitch=343.75*^1|4 (68.75*^1|4 × 5)",
+        "  Note: G ([35]*2), pitch=412.5*^1|4 (68.75*^1|4 × 6)",
+    ]
+    .into_iter()
+    .map(String::from)
+    .collect();
+    assert_eq!(ts.current_played_notes(), exp);
 
     tc.shutdown().await
 }

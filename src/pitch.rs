@@ -57,13 +57,21 @@ impl Display for Factor {
             Ok(())
         }
 
-        let num = self.base.numer();
-        let den = self.base.denom();
+        let num = *self.base.numer();
+        let den = *self.base.denom();
         if self.exp == Ratio::from_integer(1) {
-            write_frac(f, *num, *den)?;
+            // If this is a large enough number to be likely to be a frequency and has a fractional
+            // part that can be losslessly represented with no more than three decimal places,
+            // represent as a decimal.
+            if self.base > Ratio::from_integer(32) && 1000 % den == 0 {
+                let decimal = num * 1000 / den;
+                write!(f, "{}", decimal as f32 / 1000.0)?;
+            } else {
+                write_frac(f, num, den)?;
+            }
         } else {
             if self.base != Ratio::from_integer(2) {
-                write_frac(f, *num, *den)?;
+                write_frac(f, num, den)?;
             }
             write!(f, "^{}|{}", *self.exp.numer(), *self.exp.denom())?;
         }
@@ -94,16 +102,6 @@ impl Factor {
             let base = *self.base.numer() as f32 / *self.base.denom() as f32;
             let exp = *self.exp.numer() as f32 / *self.exp.denom() as f32;
             base.powf(exp)
-        }
-    }
-
-    /// Show as an integer and a decimal iff exponent is one and denominator evenly divides 1000.
-    pub fn to_string_with_decimal(&self) -> String {
-        if self.exp == Ratio::from_integer(1) && (1000 % self.base.denom()) == 0 {
-            let decimal = self.base.numer() * 1000 / *self.base.denom();
-            format!("{:3}", decimal as f32 / 1000.0)
-        } else {
-            self.to_string()
         }
     }
 }
@@ -194,9 +192,8 @@ impl Pitch {
         Self { factors: result }
     }
 
-    pub fn concat(&self, mut other: Self) -> Self {
-        other.factors.extend(self.factors.iter().cloned());
-        Self::new(other.factors)
+    pub fn concat(&self, other: &Self) -> Self {
+        Self::new(self.factors.iter().chain(&other.factors).cloned().collect())
     }
 
     pub fn invert(&self) -> Self {
@@ -315,30 +312,6 @@ impl Pitch {
             .fold(1.0f32, |accum, factor| accum * factor.as_float())
     }
 
-    /// If the exponent-1 component is > 32 and can be losslessly expressed as a decimal with
-    /// no more than three decimal places, express it that way.
-    pub fn to_string_with_decimal(&self) -> String {
-        let first_with_decimal = self.factors[0].to_string_with_decimal();
-        if first_with_decimal.contains(".") {
-            let p2 = Self::new(self.factors.clone()[1..].to_vec());
-            let p2_string = p2.to_string();
-            if p2_string == "1" {
-                first_with_decimal
-            } else {
-                format!("{first_with_decimal}*{p2}")
-            }
-        } else {
-            self.to_string()
-        }
-    }
-
-    /// Represent as base*ratio -- more useful for capturing notes for transcription
-    pub fn to_base_and_factor(&self, base_pitch: &Pitch) -> (String, String) {
-        let ratio = self.concat(base_pitch.invert());
-        let base = base_pitch.to_string_with_decimal();
-        (base, ratio.to_string())
-    }
-
     /// Compute a frequency to a midi note number and a pitch bend value using ±2 semitones.
     /// Panics if the frequency is out of range.
     pub fn midi(&self) -> (u8, u16) {
@@ -361,6 +334,27 @@ impl FromStr for Pitch {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Self::parse(s)
+    }
+}
+
+impl std::ops::Mul for &Pitch {
+    type Output = Pitch;
+    fn mul(self, rhs: Self) -> Self::Output {
+        self.concat(rhs)
+    }
+}
+
+impl std::ops::MulAssign<&Pitch> for Pitch {
+    fn mul_assign(&mut self, rhs: &Pitch) {
+        let x = self.concat(rhs);
+        self.factors = x.factors;
+    }
+}
+
+impl std::ops::Div<&Pitch> for &Pitch {
+    type Output = Pitch;
+    fn div(self, rhs: &Pitch) -> Self::Output {
+        self.concat(&rhs.invert())
     }
 }
 
@@ -492,9 +486,9 @@ mod tests {
         check("500*^0|31", "500")?;
 
         let p1 = Pitch::parse("440")?;
-        let p2 = p1.concat(Pitch::parse("3/2")?);
+        let p2 = &p1 * &Pitch::parse("3/2")?;
         assert_eq!(p2, Pitch::parse("660")?);
-        let p3 = p2.concat(Pitch::parse("^-5|12")?);
+        let p3 = &p2 * &Pitch::parse("^-5|12")?;
         assert_eq!(p3, Pitch::parse("330*^7|12")?);
 
         assert_eq!(p1.to_string(), "440");
@@ -522,21 +516,5 @@ mod tests {
         let p = Pitch::must_parse("^1|2");
         assert_eq!(p.invert().to_string(), "1/2*^1|2");
         assert_eq!(p.invert().invert().to_string(), "^1|2");
-    }
-
-    #[test]
-    fn test_to_base_ratio() {
-        fn check(base_str: &str, pitch_str: &str, out_base: &str, out_factor: &str) {
-            let pitch = Pitch::must_parse(pitch_str);
-            let base_pitch = Pitch::must_parse(base_str);
-            assert_eq!(
-                pitch.to_base_and_factor(&base_pitch),
-                (out_base.to_string(), out_factor.to_string())
-            );
-        }
-        check("440", "440", "440", "1");
-        check("440.1", "880.2", "440.1", "2");
-        check("440.1", "880.2*^2|31", "440.1", "2*^2|31");
-        check("440.1*^-9|12", "440.1*3/2*^5|12", "220.05*^1|4", "3*^1|6");
     }
 }

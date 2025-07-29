@@ -1,4 +1,5 @@
-use crate::layout::{Layout, LayoutConfig};
+use crate::layout::Layout;
+use crate::pitch::Pitch;
 use crate::scale::{Scale, ScaleType};
 use anyhow::bail;
 use serde::Deserialize;
@@ -8,9 +9,39 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use tokio::sync::RwLock;
 
+#[derive(Deserialize, Clone, Debug, PartialEq)]
+pub struct ScaleConfig {
+    pub name: String,
+    #[serde(flatten)]
+    pub scale_type: ScaleType,
+    pub base_pitch: Pitch,
+    pub note_names: Vec<String>,
+}
+impl From<ScaleConfig> for Scale {
+    fn from(value: ScaleConfig) -> Self {
+        Self {
+            name: value.name,
+            scale_type: value.scale_type,
+            orig_base_pitch: value.base_pitch.clone(),
+            base_pitch: value.base_pitch,
+            note_names: value.note_names,
+        }
+    }
+}
+
+#[derive(Deserialize, Debug, PartialEq)]
+pub struct LayoutConfig {
+    pub name: String,
+    pub scale_name: String,
+    /// row, column of base pitch (EDO only)
+    pub base: Option<(i8, i8)>,
+    /// horizontal, vertical steps (EDO only)
+    pub steps: Option<(i8, i8)>,
+}
+
 #[derive(Deserialize, Debug, PartialEq)]
 struct ConfigFile {
-    scale: Vec<Scale>,
+    scale: Vec<ScaleConfig>,
     layout: Vec<LayoutConfig>,
 }
 
@@ -23,7 +54,8 @@ impl Config {
         let data = fs::read(file)?;
         let c: ConfigFile = toml::from_slice(&data)?;
         let mut scales_by_name = HashMap::new();
-        for scale in c.scale {
+        for scale_config in c.scale {
+            let scale: Scale = scale_config.into();
             let name = scale.name.clone();
             scale.validate()?;
             if scales_by_name
@@ -84,7 +116,7 @@ scale_name = "EDO-12"
 steps = [2, 1]
 "#;
         let exp = ConfigFile {
-            scale: vec![Scale {
+            scale: vec![ScaleConfig {
                 name: "EDO-12".to_string(),
                 base_pitch: Pitch::new(vec![
                     Factor::new(220, 1, 1, 1).unwrap(),
