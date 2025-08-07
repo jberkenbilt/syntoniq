@@ -87,14 +87,14 @@ impl Display for Note {
         let Note {
             name,
             description,
-            pitch,
+            pitch: _,
             scale_description,
-            base_factor: _,
+            base_factor,
             colors: _,
         } = self;
         write!(
             f,
-            "Note: {name} ({description}), pitch={pitch}, scale={scale_description}"
+            "Note: {name} ({description}), pitch=base*{base_factor}, scale={scale_description}"
         )
     }
 }
