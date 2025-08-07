@@ -68,10 +68,10 @@ impl Controller {
         });
         tokio::spawn(async move {
             while let Ok(msg) = from_device_rx.recv_async().await {
-                if let Some(tx) = events_tx.upgrade() {
-                    if let Err(e) = tx.send(msg) {
-                        log::error!("failed to relay message from device: {e}");
-                    }
+                if let Some(tx) = events_tx.upgrade()
+                    && let Err(e) = tx.send(msg)
+                {
+                    log::error!("failed to relay message from device: {e}");
                 }
             }
         });
@@ -98,10 +98,10 @@ impl Device {
                 &in_port,
                 "device-input",
                 move |stamp_ms, message, _| {
-                    if let Some(event) = Self::on_midi(stamp_ms, message) {
-                        if let Err(e) = from_device_tx.send(event) {
-                            log::error!("error notifying of device event: {e}")
-                        }
+                    if let Some(event) = Self::on_midi(stamp_ms, message)
+                        && let Err(e) = from_device_tx.send(event)
+                    {
+                        log::error!("error notifying of device event: {e}")
                     }
                 },
                 (),

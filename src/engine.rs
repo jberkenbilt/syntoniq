@@ -305,10 +305,8 @@ impl Engine {
             self.handle_note_key_normal(tx, note, position, off)?;
         }
 
-        if is_transpose {
-            if let Some(tx) = self.events_tx.upgrade() {
-                tx.send(self.transpose_light_event())?;
-            }
+        if is_transpose && let Some(tx) = self.events_tx.upgrade() {
+            tx.send(self.transpose_light_event())?;
         }
 
         #[cfg(test)]
