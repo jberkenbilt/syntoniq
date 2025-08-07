@@ -100,7 +100,8 @@ name = "Just Intonation (11)"
 scale_name = "JI-11"
 
 [[scale]]
-# From Fabio Costa minor third etude: https://www.youtube.com/watch?v=U7l7s1Vr6lQ
+# From Fabio Costa's Etude on Minor Thirds: https://www.youtube.com/watch?v=U7l7s1Vr6lQ
+# See also minor-thirds.toml
 name = "Minor Thirds 1"
 type = "Generic"
 base_pitch = "990.8"
