@@ -22,7 +22,8 @@ instr 1
 
   ; Amplitude is controlled by the channel now
   aTone oscil3 kAmp, iFreq, 1
-  out aTone
+  aVoc moogladder aTone, 2000, 0.1
+  out aVoc
 endin
 
 </CsInstruments>
