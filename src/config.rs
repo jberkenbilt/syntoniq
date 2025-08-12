@@ -104,7 +104,7 @@ mod tests {
     fn test_toml() {
         const CONFIG: &str = r#"
 [[scale]]
-name = "EDO-12"
+name = "12-EDO"
 type = "EqualDivision"
 divisions = [12, 2, 1]
 base_pitch = "220*^3|12" # middle C for A-440 12-TET scale
@@ -112,12 +112,12 @@ note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B�
 [[layout]]
 name = "5x3"
 base = [2, 2]
-scale_name = "EDO-12"
+scale_name = "12-EDO"
 steps = [2, 1]
 "#;
         let exp = ConfigFile {
             scale: vec![ScaleConfig {
-                name: "EDO-12".to_string(),
+                name: "12-EDO".to_string(),
                 base_pitch: Pitch::new(vec![
                     Factor::new(220, 1, 1, 1).unwrap(),
                     Factor::new(2, 1, 3, 12).unwrap(),
@@ -134,7 +134,7 @@ steps = [2, 1]
             }],
             layout: vec![LayoutConfig {
                 name: "5x3".to_string(),
-                scale_name: "EDO-12".to_string(),
+                scale_name: "12-EDO".to_string(),
                 base: Some((2, 2)),
                 steps: Some((2, 1)),
             }],

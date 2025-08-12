@@ -40,7 +40,7 @@ Use these ratios only:
 * Minor third: 6/5
 * Major sixth: 5/3
 
-With the scheme, EDO-{12,19,31} will show all the intervals. EDO-17 will only show fourths and fifths. You will be able to tell at a glance which intervals are good in a given tuning system. I don't think it's worth trying to distinguish "okay" (like 12 cents) with "excellent" (like < 3 cents) with color, but it would be useful to provide that in some other fashion.
+With the scheme, EDO-{12,19,31} will show all the intervals. 17-EDO will only show fourths and fifths. You will be able to tell at a glance which intervals are good in a given tuning system. I don't think it's worth trying to distinguish "okay" (like 12 cents) with "excellent" (like < 3 cents) with color, but it would be useful to provide that in some other fashion.
 
 We also use a special highlight color for the single step is it's immediately clear where it is.
 
@@ -57,8 +57,8 @@ Update:
 
 Examples:
 - `440*3/5` = 264 = middle C with Just intonation with A 440
-- `220*^1|3` = middle C with EDO-12 with A 440 (300 cents above the A below middle C)
-- `220*^1|3*^4|7` = 4th EDO-7 step starting from EDO-12 middle C
+- `220*^1|3` = middle C with 12-EDO with A 440 (300 cents above the A below middle C)
+- `220*^1|3*^4|7` = 4th EDO-7 step starting from 12-EDO middle C
 - `220*4^1|31` = 1 step of the division of two octaves into 31 equal divisions
 - `264*9/8*6/5` = Just minor third above Just whole tone above middle C
 
@@ -112,9 +112,9 @@ Scale:
 
 Examples:
 
-EDO-31 scale with middle C based on EDO-12, A 440
+31-EDO scale with middle C based on 12-EDO, A 440
 ```yaml
-- scale: EDO-31
+- scale: 31-EDO
   tonic: 220*^1|3
   octave: 31
   step: ^1|31
@@ -173,16 +173,16 @@ Layout:
 
 Examples:
 
-EDO-31 isomorphic with middle C at 5,5; 5 steps horizontal, 3 steps vertical covering entire grid
+31-EDO isomorphic with middle C at 5,5; 5 steps horizontal, 3 steps vertical covering entire grid
 - layout: edo-31-functional
   ll: 1,1
   ur: 8,8
   base: 5, 5
-  scale: EDO-31
+  scale: 31-EDO
   x-steps: 5
   y-steps: 3
 
-This would let us divide up the keyboard any way we want, e.g., we could have stacks of just Intonation intervals like the minor third etude, an EDO-31 scale over six rows and an EDO-7 scale over two rows, etc. When we shift, it can just be within the grid. For octave shift, it's probably everything.
+This would let us divide up the keyboard any way we want, e.g., we could have stacks of just Intonation intervals like the minor third etude, an 31-EDO scale over six rows and an EDO-7 scale over two rows, etc. When we shift, it can just be within the grid. For octave shift, it's probably everything.
 
 It might be useful to have an automatic layout for EDO. The only parameter would octave divisions, which we could get from the scale. The x-steps and y-steps parameters can always be computed as follows:
 * x-steps = closest integer to octave steps/6
@@ -225,7 +225,7 @@ Other abstractions:
   * EDO
     * horizontal, vertical step size
     * divisions
-    * set pitch of tonic as frequency or relative to a chain of tunings, e.g. EDO-7, tonic = 10th step of EDO-31 whose tonic is E in a 12-tone scale with A 440.
+    * set pitch of tonic as frequency or relative to a chain of tunings, e.g. EDO-7, tonic = 10th step of 31-EDO whose tonic is E in a 12-tone scale with A 440.
     * color based on metadata, e.g., diatonic scale for Key of G+ should be white with one color for relative steps in different directions; this makes it easier to play in a key but still get notes reported properly for notation. So if I want to play in D major, I can shift the colors to be for D major. Might also want completely other coloring schemes. Probably need to know steps relative to octave, steps relative to nearest diatonic with specified tonic, ...? Could also want "black keys" colored differently, e.g., in D, D♯ is in the chromatic scale while E♭ isn't, and it may be useful to indicate beyond just that they are both two steps away from a diatonic. Not sure how much of this is really useful once I get used to the layout.
     * above implies we should be able to transpose everything but also not transpose and just shift colors as if transposed. These solve different problems.
   * Just, arbitrary

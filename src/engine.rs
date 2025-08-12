@@ -1,8 +1,8 @@
 use crate::config::Config;
 #[cfg(test)]
-use crate::events::TestEvent;
+use crate::events::{AugmentedEngineState, TestEvent};
 use crate::events::{
-    AssignLayoutEvent, Color, EngineState, Event, KeyEvent, LightEvent, LightMode, PlayNoteEvent,
+    Color, EngineState, Event, KeyEvent, LayoutNamesEvent, LightEvent, LightMode, PlayNoteEvent,
     SelectLayoutEvent, ShiftKeyState, ShiftLayoutState, SpecificNote, TransposeState,
     UpdateNoteEvent,
 };
@@ -53,18 +53,35 @@ pub struct PlayedNote {
 struct Engine {
     config_file: PathBuf,
     events_tx: events::WeakSender,
-    /// control key position -> selected layout
-    assigned_layouts: HashMap<u8, Arc<RwLock<Layout>>>,
+    layouts: Vec<Arc<RwLock<Layout>>>,
     transient_state: EngineState,
 }
 
 impl Engine {
+    fn layout_at_position(&self, position: u8) -> Option<(usize, Arc<RwLock<Layout>>)> {
+        let idx = (position - keys::LAYOUT_MIN) as usize + self.transient_state.layout_offset;
+        let layout = self.layouts.get(idx).cloned();
+        layout.map(|x| (idx, x))
+    }
+
+    fn current_layout(&self) -> Option<Arc<RwLock<Layout>>> {
+        self.transient_state
+            .layout
+            .and_then(|x| self.layouts.get(x).cloned())
+    }
+
     async fn reset(&mut self) -> anyhow::Result<()> {
         let config =
             Config::load(&self.config_file).map_err(|e| anyhow!("error reloading config: {e}"))?;
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
+        self.layouts = config.layouts;
+        let mut names = Vec::new();
+        for layout in &self.layouts {
+            names.push(layout.read().await.name.clone());
+        }
+        tx.send(Event::SetLayoutNames(LayoutNamesEvent { names }))?;
 
         // Turn off all notes
         for (pitch, count) in &self.transient_state.pitch_on_count {
@@ -114,30 +131,54 @@ impl Engine {
                 label2: label2.to_string(),
             }))?;
         }
-        let mut position = keys::LAYOUT_MIN;
-        self.assigned_layouts.clear();
-        for (idx, layout) in config.layouts.into_iter().enumerate() {
-            tx.send(Event::AssignLayout(AssignLayoutEvent {
-                idx,
-                position,
-                layout,
-            }))?;
-            position += 1;
-            if position > keys::LAYOUT_MAX {
-                //TODO: deal with scrolling. Key 109 is the scroll key and will assign layouts
-                // starting from an offset to the lower numbered keys.
-                tx.send(Event::Light(LightEvent {
-                    mode: LightMode::On,
-                    position: keys::LAYOUT_SCROLL,
-                    color: Color::Active,
-                    label1: "Scroll".to_string(),
-                    label2: "layouts".to_string(),
-                }))?;
-                break;
-            }
-        }
+        self.fix_layout_lights(&tx).await?;
         #[cfg(test)]
         self.send_test_event(TestEvent::ResetComplete);
+        log::info!("QLaunchPad is initialized");
+        Ok(())
+    }
+
+    async fn fix_layout_lights(&mut self, tx: &events::UpgradedSender) -> anyhow::Result<()> {
+        for i in 0..=8 {
+            let position = keys::LAYOUT_MIN + i;
+            let idx = i as usize + self.transient_state.layout_offset;
+            let event = if idx < self.layouts.len() {
+                let is_cur = self
+                    .transient_state
+                    .layout
+                    .map(|x| x == idx)
+                    .unwrap_or(false);
+                LightEvent {
+                    mode: LightMode::On,
+                    position,
+                    color: if is_cur {
+                        Color::ToggleOn
+                    } else {
+                        Color::Active
+                    },
+                    label1: (idx + 1).to_string(),
+                    label2: String::new(),
+                }
+            } else {
+                LightEvent {
+                    mode: LightMode::Off,
+                    position,
+                    color: Color::Off,
+                    label1: String::new(),
+                    label2: String::new(),
+                }
+            };
+            tx.send(Event::Light(event))?;
+        }
+        if self.layouts.len() > 8 {
+            tx.send(Event::Light(LightEvent {
+                mode: LightMode::On,
+                position: keys::LAYOUT_SCROLL,
+                color: Color::Active,
+                label1: "Scroll".to_string(),
+                label2: "layouts".to_string(),
+            }))?;
+        }
         Ok(())
     }
 
@@ -170,9 +211,12 @@ impl Engine {
                 self.set_shift(shift, &tx)?;
             }
             keys::LAYOUT_MIN..=keys::LAYOUT_MAX if off => {
-                if let Some(layout) = self.assigned_layouts.get(&key).cloned() {
-                    tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
+                if let Some((idx, layout)) = self.layout_at_position(key) {
+                    tx.send(Event::SelectLayout(SelectLayoutEvent { idx, layout }))?;
                 }
+            }
+            keys::LAYOUT_SCROLL if off => {
+                tx.send(Event::ScrollLayouts)?;
             }
             keys::CLEAR if off => {
                 tx.send(Event::Reset)?;
@@ -184,7 +228,7 @@ impl Engine {
             keys::TRANSPOSE if off && have_layout => {
                 self.transient_state.transpose_state = match self.transient_state.transpose_state {
                     TransposeState::Off => TransposeState::Pending {
-                        initial_layout: self.transient_state.layout.clone().unwrap(),
+                        initial_layout: self.transient_state.layout.unwrap(),
                     },
                     _ => TransposeState::Off,
                 };
@@ -193,7 +237,7 @@ impl Engine {
             keys::UP_ARROW | keys::DOWN_ARROW if off && have_layout => {
                 // 2025-07-22, rust 1.88: "if let guards" are experimental. When stable, we can
                 // use one instead of is_some above and get rid of this unwrap.
-                let layout = self.transient_state.layout.take().unwrap();
+                let layout = self.current_layout().unwrap();
                 {
                     let locked = &mut *layout.write().await;
                     let transposition = if key == keys::UP_ARROW {
@@ -203,21 +247,18 @@ impl Engine {
                     };
                     locked.scale.transpose(&transposition);
                 }
-                tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
+                tx.send(Event::SelectLayout(SelectLayoutEvent {
+                    idx: self.transient_state.layout.unwrap(),
+                    layout,
+                }))?;
             }
             keys::RECORD if off && have_layout => {
                 self.print_notes();
             }
             position if have_layout && self.transient_state.notes.contains_key(&position) => {
                 if let Some(note) = self.transient_state.notes.get(&position).unwrap() {
-                    self.handle_note_key(
-                        &tx,
-                        self.transient_state.layout.clone().unwrap(),
-                        note.clone(),
-                        position,
-                        off,
-                    )
-                    .await?;
+                    self.handle_note_key(&tx, note.clone(), position, off)
+                        .await?;
                 };
             }
             _ => (),
@@ -240,7 +281,6 @@ impl Engine {
     async fn handle_note_key(
         &mut self,
         tx: &events::UpgradedSender,
-        layout: Arc<RwLock<Layout>>,
         note: Arc<Note>,
         position: u8,
         off: bool,
@@ -248,6 +288,10 @@ impl Engine {
         let is_transpose = !matches!(self.transient_state.transpose_state, TransposeState::Off);
         let is_shift = !matches!(self.transient_state.shift_key_state, ShiftKeyState::Off);
         let mut play_note = !is_transpose && !is_shift;
+        let layout = self
+            .transient_state
+            .layout
+            .expect("handle_note_key called without current layout");
         if is_transpose {
             let note = note.clone();
             match self.transient_state.transpose_state.clone() {
@@ -257,7 +301,7 @@ impl Engine {
                         self.transient_state.transpose_state = TransposeState::FirstSelected {
                             initial_layout,
                             note1: SpecificNote {
-                                layout,
+                                layout_idx: layout,
                                 note,
                                 position,
                             },
@@ -273,7 +317,7 @@ impl Engine {
                             initial_layout,
                             note1,
                             SpecificNote {
-                                layout,
+                                layout_idx: layout,
                                 note,
                                 position,
                             },
@@ -284,9 +328,9 @@ impl Engine {
             }
         } else if is_shift && !off {
             self.handle_shift(
-                layout.clone(),
+                layout,
                 SpecificNote {
-                    layout,
+                    layout_idx: layout,
                     note: note.clone(),
                     position,
                 },
@@ -314,11 +358,7 @@ impl Engine {
         Ok(())
     }
 
-    async fn handle_shift(
-        &mut self,
-        layout: Arc<RwLock<Layout>>,
-        note: SpecificNote,
-    ) -> anyhow::Result<()> {
+    async fn handle_shift(&mut self, layout_idx: usize, note: SpecificNote) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -329,12 +369,12 @@ impl Engine {
             }
             ShiftLayoutState::FirstSelected(note1) => {
                 self.transient_state.shift_layout_state = ShiftLayoutState::Off;
-                if note1.layout.read().await.name != layout.read().await.name {
+                if note1.layout_idx != layout_idx {
                     log::info!("move: note1 and note2 are from different layouts, so not shifting");
                     #[cfg(test)]
                     self.send_test_event(TestEvent::MoveCanceled);
                 } else {
-                    let mut layout = layout.write().await;
+                    let mut layout = self.layouts[layout_idx].write().await;
                     if let Some(base) = layout.base {
                         let note1_col = note1.position % 10;
                         let note1_row = note1.position / 10;
@@ -356,21 +396,24 @@ impl Engine {
         };
 
         if update_layout {
-            tx.send(Event::SelectLayout(SelectLayoutEvent { layout }))?;
+            tx.send(Event::SelectLayout(SelectLayoutEvent {
+                idx: layout_idx,
+                layout: self.layouts[layout_idx].clone(),
+            }))?;
         }
         Ok(())
     }
 
     async fn handle_transpose(
         &mut self,
-        initial_layout: Arc<RwLock<Layout>>,
+        initial_layout: usize,
         note1: SpecificNote,
         note2: SpecificNote,
     ) -> anyhow::Result<()> {
         let mut update_layout = false;
         if note1.note == note2.note {
             self.transient_state.transpose_state = TransposeState::Off;
-            let mut layout = initial_layout.write().await;
+            let mut layout = self.layouts[initial_layout].write().await;
             log::info!(
                 "resetting base pitch of {} to {}",
                 layout.scale.name,
@@ -381,13 +424,14 @@ impl Engine {
         } else {
             // Reset note1 to current note
             self.transient_state.transpose_state = TransposeState::FirstSelected {
-                initial_layout: initial_layout.clone(),
+                initial_layout,
                 note1: note2,
             };
         }
         if update_layout && let Some(tx) = self.events_tx.upgrade() {
             tx.send(Event::SelectLayout(SelectLayoutEvent {
-                layout: initial_layout,
+                idx: initial_layout,
+                layout: self.layouts[initial_layout].clone(),
             }))?;
         }
         Ok(())
@@ -672,7 +716,7 @@ impl Engine {
             self.handle_note_key_normal(&tx, note, position, true)?;
         }
         let layout_lock = event.layout;
-        self.transient_state.layout = Some(layout_lock.clone());
+        self.transient_state.layout = Some(event.idx);
         let layout = &mut *layout_lock.write().await;
         self.transient_state.pitch_positions.clear();
         self.transient_state.notes.clear();
@@ -685,6 +729,7 @@ impl Engine {
             layout.name,
             layout.scale.name
         );
+        self.fix_layout_lights(&tx).await?;
         tx.send(self.sustain_light_event())?;
         tx.send(self.transpose_light_event())?;
         tx.send(self.shift_light_event())?;
@@ -702,28 +747,49 @@ impl Engine {
         Ok(())
     }
 
-    async fn assign_layout(&mut self, layout_event: AssignLayoutEvent) -> anyhow::Result<()> {
+    async fn scroll_layouts(&mut self) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        // Activate the light for selecting the layout.
-        let AssignLayoutEvent {
-            idx,
-            position,
-            layout,
-        } = layout_event;
-        if !(keys::LAYOUT_MIN..=keys::LAYOUT_MAX).contains(&position) {
-            return Ok(());
+        self.transient_state.layout_offset += 8;
+        if self.transient_state.layout_offset >= self.layouts.len() {
+            self.transient_state.layout_offset = 0;
         }
-        self.assigned_layouts.insert(position, layout);
-        tx.send(Event::Light(LightEvent {
-            mode: LightMode::On,
-            position,
-            color: Color::Active,
-            label1: (idx + 1).to_string(),
-            label2: String::new(),
-        }))?;
+        self.fix_layout_lights(&tx).await?;
+        #[cfg(test)]
+        self.send_test_event(TestEvent::LayoutsScrolled);
         Ok(())
+    }
+
+    async fn handle_event(&mut self, event: Event) -> anyhow::Result<bool> {
+        match event {
+            Event::Shutdown => return Ok(true),
+            Event::Light(_) => {}
+            Event::Key(e) => self.handle_key(e).await?,
+            Event::Pressure(_) => {}
+            Event::Reset => self.reset().await?,
+            Event::SelectLayout(e) => self.select_layout(e).await?,
+            Event::ScrollLayouts => self.scroll_layouts().await?,
+            Event::SetLayoutNames(_) => {}
+            Event::UpdateNote(e) => self.update_note(e).await?,
+            Event::PlayNote(e) => self.handle_play_note(e).await?,
+            #[cfg(test)]
+            Event::TestEngine(test_tx) => {
+                test_tx
+                    .send(AugmentedEngineState {
+                        engine_state: self.transient_state.clone(),
+                        layout: self.current_layout(),
+                    })
+                    .await?
+            }
+            #[cfg(test)]
+            Event::TestWeb(_) => {}
+            #[cfg(test)]
+            Event::TestEvent(_) => {}
+            #[cfg(test)]
+            Event::TestSync => self.send_test_event(TestEvent::Sync),
+        };
+        Ok(false)
     }
 
     #[cfg(test)]
@@ -743,7 +809,7 @@ pub async fn run(
     let mut engine = Engine {
         config_file,
         events_tx: events_tx.clone(),
-        assigned_layouts: Default::default(),
+        layouts: Default::default(),
         transient_state: Default::default(),
     };
     let rx2 = events_rx.resubscribe();
@@ -775,25 +841,13 @@ pub async fn run(
         // care about missing some messages, we should be fine. In practice, the messages we would
         // be most likely to miss our the ones we just sent, but we could also miss other people's
         // responses to those. We are not as likely to miss user events.
-        match event {
-            Event::Shutdown => break,
-            Event::Light(_) => {}
-            Event::Key(e) => engine.handle_key(e).await?,
-            Event::Pressure(_) => {}
-            Event::Reset => engine.reset().await?,
-            Event::AssignLayout(e) => engine.assign_layout(e).await?,
-            Event::SelectLayout(e) => engine.select_layout(e).await?,
-            Event::UpdateNote(e) => engine.update_note(e).await?,
-            Event::PlayNote(e) => engine.handle_play_note(e).await?,
-            #[cfg(test)]
-            Event::TestEngine(test_tx) => test_tx.send(engine.transient_state.clone()).await?,
-            #[cfg(test)]
-            Event::TestWeb(_) => {}
-            #[cfg(test)]
-            Event::TestEvent(_) => {}
-            #[cfg(test)]
-            Event::TestSync => engine.send_test_event(TestEvent::Sync),
-        }
+        match engine.handle_event(event).await {
+            Ok(true) => return Ok(()),
+            Ok(false) => {}
+            Err(e) => {
+                log::error!("error handling event: {e}");
+            }
+        };
     }
     Ok(())
 }

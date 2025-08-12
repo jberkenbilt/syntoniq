@@ -107,14 +107,13 @@ pub struct PressureEvent {
 }
 
 #[derive(Clone, Debug)]
-pub struct AssignLayoutEvent {
-    pub idx: usize,
-    pub position: u8,
-    pub layout: Arc<RwLock<Layout>>,
+pub struct LayoutNamesEvent {
+    pub names: Vec<String>,
 }
 
 #[derive(Clone, Debug)]
 pub struct SelectLayoutEvent {
+    pub idx: usize,
     pub layout: Arc<RwLock<Layout>>,
 }
 
@@ -141,7 +140,7 @@ pub enum ShiftKeyState {
 
 #[derive(Debug, Clone)]
 pub struct SpecificNote {
-    pub layout: Arc<RwLock<Layout>>,
+    pub layout_idx: usize,
     pub note: Arc<Note>,
     pub position: u8,
 }
@@ -151,10 +150,10 @@ pub enum TransposeState {
     #[default]
     Off,
     Pending {
-        initial_layout: Arc<RwLock<Layout>>,
+        initial_layout: usize,
     },
     FirstSelected {
-        initial_layout: Arc<RwLock<Layout>>,
+        initial_layout: usize,
         note1: SpecificNote,
     },
 }
@@ -169,7 +168,9 @@ pub enum ShiftLayoutState {
 #[derive(Default, Clone, Debug)]
 pub struct EngineState {
     /// Currently selected layout
-    pub layout: Option<Arc<RwLock<Layout>>>,
+    pub layout: Option<usize>,
+    /// Offset from 1 of layout on first position
+    pub layout_offset: usize,
     /// Mapping from position to note in the current layout
     pub notes: HashMap<u8, Option<Arc<Note>>>,
     /// Mapping from pitch to all positions with that pitch in the current layout
@@ -222,6 +223,12 @@ impl EngineState {
     }
 }
 
+#[derive(Default, Clone, Debug)]
+pub struct AugmentedEngineState {
+    pub engine_state: EngineState,
+    pub layout: Option<Arc<RwLock<Layout>>>,
+}
+
 #[derive(Template, Default, Clone)]
 #[template(path = "state-view.html")]
 pub struct StateView {
@@ -236,6 +243,7 @@ pub struct StateView {
 pub enum TestEvent {
     ResetComplete,
     LayoutSelected,
+    LayoutsScrolled,
     HandledNote,
     HandledKey,
     MoveCanceled,
@@ -249,12 +257,13 @@ pub enum Event {
     Key(KeyEvent),
     Pressure(PressureEvent),
     Reset,
-    AssignLayout(AssignLayoutEvent),
+    SetLayoutNames(LayoutNamesEvent),
     SelectLayout(SelectLayoutEvent),
+    ScrollLayouts,
     UpdateNote(UpdateNoteEvent),
     PlayNote(PlayNoteEvent),
     #[cfg(test)]
-    TestEngine(mpsc::Sender<EngineState>),
+    TestEngine(mpsc::Sender<AugmentedEngineState>),
     #[cfg(test)]
     TestWeb(mpsc::Sender<StateView>),
     #[cfg(test)]

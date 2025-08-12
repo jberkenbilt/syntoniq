@@ -1,24 +1,24 @@
 [[scale]]
-name = "EDO-12"
+name = "12-EDO"
 type = "EqualDivision"
 divisions = [12, 2, 1]
 base_pitch = "220*^3|12"
 note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯", "A", "B♭", "B"]
 
 [[layout]]
-name = "EDO-12-2x1"
+name = "12-EDO-2x1"
 base = [2, 3]
-scale_name = "EDO-12"
+scale_name = "12-EDO"
 steps = [2, 1]
 
 [[layout]]
-name = "EDO-12-2x5"
+name = "12-EDO-2x5"
 base = [2, 3]
-scale_name = "EDO-12"
+scale_name = "12-EDO"
 steps = [2, 5]
 
 [[scale]]
-name = "EDO-19"
+name = "19-EDO"
 type = "EqualDivision"
 divisions = [19, 2, 1]
 base_pitch = "220*^3|12"
@@ -26,13 +26,13 @@ note_names = ["C", "C♯", "D♭", "D", "D♯", "E♭", "E", "E♯", "F", "F♯"
               "G", "G♯", "A♭", "A", "A♯", "B♭", "B", "B♯"]
 
 [[layout]]
-name = "EDO-19-2x1"
+name = "19-EDO-2x1"
 base = [2, 3]
-scale_name = "EDO-19"
+scale_name = "19-EDO"
 steps = [3, 2]
 
 [[scale]]
-name = "EDO-31"
+name = "31-EDO"
 type = "EqualDivision"
 # reference_freq is the pitch of the base of the scale and assigned MIDI note 60
 # in adjusted MIDI mode. It would would typically be middle C for something used
@@ -51,13 +51,13 @@ note_names = [
 ]
 
 [[layout]]
-name = "EDO-31-5x3"
+name = "31-EDO-5x3"
 base = [2, 2]
-scale_name = "EDO-31"
+scale_name = "31-EDO"
 steps = [5, 3]
 
 [[scale]]
-name = "EDO-17"
+name = "17-EDO"
 type = "EqualDivision"
 divisions = [17, 2, 1]
 base_pitch = "220*^3|12"
@@ -65,9 +65,9 @@ note_names = ["C", "C#-", "C#+", "D+", "E%-", "E-", "E+", "F", "F#-",
               "F#+", "G", "A%-", "A%+", "A+", "B%-", "B-", "B+", "C"]
 
 [[layout]]
-name = "EDO-17-2x1"
+name = "17-EDO-2x1"
 base = [2, 3]
-scale_name = "EDO-17"
+scale_name = "17-EDO"
 steps = [3, 2]
 
 [[scale]]

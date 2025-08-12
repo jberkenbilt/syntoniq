@@ -14,10 +14,10 @@ See also
 * Up/Down arrows transpose up/down octaves by changing the base pitch of the scale.
 * The `Note` key transposes.
 * `Note`, optional layout change, note, ..., note1, note1 sets the base pitch of the layout that was selected when `Note` was pressed to the pitch of note1 in whatever layout it appears. After transposition, the transposed (original) layout is selected automatically. Transpose is made final when the same note is pressed twice in a row.
-  * Example: to set the tonic of EDO-19 to E from EDO-12
-    * Select EDO-19
+  * Example: to set the tonic of 19-EDO to E from 12-EDO
+    * Select 19-EDO
     * Press `Note`
-    * Select EDO-12
+    * Select 12-EDO
     * Press E twice
   * Note: if in sustain mode, touching the note behaves as usual, so if you transpose by double touching a note that is on, you will turn it off. It's not clear what the best behavior would be, but a good policy would be that if you touch a note in sustain mode to transpose to and it's the wrong one, touch `Note` to cancel transpose and then turn the note off before proceeding. If you touch a note to transpose that it is already on, it will turn off. Either cancel and try again, or turn the note back on by touching the tonic of the transposed scale.
 * Shift layout

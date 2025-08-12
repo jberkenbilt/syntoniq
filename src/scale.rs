@@ -46,7 +46,7 @@ pub enum ScaleType {
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
 pub struct EqualDivision {
-    /// divisions, interval numerator, interval denominator, e.g. (31, 2, 1) for EDO-31
+    /// divisions, interval numerator, interval denominator, e.g. (31, 2, 1) for 31-EDO
     pub divisions: (u32, u32, u32),
 }
 
@@ -257,7 +257,7 @@ impl Scale {
         }
         // If the color is very close to of the 5-limit Just Intonation ratios below or their
         // reciprocals, assign a color. Otherwise, assign a default.
-        // Note: EDO-12 minor third is by 15.64 cents.
+        // Note: 12-EDO minor third is by 15.64 cents.
         let tolerance_cents = 2.0f32.powf(16.0 / 1200.0);
         for (ratio, colors) in [
             (1.0, (Color::TonicOff, Color::TonicOn)),
@@ -338,9 +338,9 @@ mod tests {
             c
         }
         assert_eq!(get_color("1*3/2"), Color::FifthOff); // JI 5th
-        assert_eq!(get_color("1*^9|12"), Color::MinorThirdOff); // EDO-12 major sixth
-        assert_eq!(get_color("1*^10|31"), Color::MajorThirdOff); // EDO-31 major third
-        assert_eq!(get_color("1*^7|17"), Color::FifthOff); // EDO-17 fourth
+        assert_eq!(get_color("1*^9|12"), Color::MinorThirdOff); // 12-EDO major sixth
+        assert_eq!(get_color("1*^10|31"), Color::MajorThirdOff); // 31-EDO major third
+        assert_eq!(get_color("1*^7|17"), Color::FifthOff); // 17-EDO fourth
         assert_eq!(get_color("1*^5|17"), Color::OtherOff); // nope
     }
 }
