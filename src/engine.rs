@@ -1,10 +1,10 @@
 use crate::config::Config;
 #[cfg(test)]
-use crate::events::{AugmentedEngineState, TestEvent};
+use crate::events::TestEvent;
 use crate::events::{
     Color, EngineState, Event, KeyEvent, LayoutNamesEvent, LightEvent, LightMode, PlayNoteEvent,
     SelectLayoutEvent, ShiftKeyState, ShiftLayoutState, SpecificNote, TransposeState,
-    UpdateNoteEvent,
+    UpdateNoteEvent, keys,
 };
 use crate::layout::Layout;
 use crate::pitch::{Factor, Pitch};
@@ -15,27 +15,9 @@ use chrono::SubsecRound;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::sync::Arc;
-use tokio::sync::RwLock;
 
 #[cfg(test)]
 mod tests;
-
-mod keys {
-    // Top Row, left to right
-    pub const SHIFT: u8 = 90;
-    pub const TRANSPOSE: u8 = 94; // Note
-    pub const SUSTAIN: u8 = 95; // Chord
-    // Left column, top to bottom
-    pub const UP_ARROW: u8 = 80;
-    pub const DOWN_ARROW: u8 = 70;
-    pub const CLEAR: u8 = 60;
-    pub const RECORD: u8 = 10;
-    // Right column, top to bottom
-    pub const LAYOUT_SCROLL: u8 = 19;
-    // Upper bottom controls
-    pub const LAYOUT_MIN: u8 = 101;
-    pub const LAYOUT_MAX: u8 = 109;
-}
 
 #[derive(Debug)]
 pub enum SoundType {
@@ -53,32 +35,18 @@ pub struct PlayedNote {
 struct Engine {
     config_file: PathBuf,
     events_tx: events::WeakSender,
-    layouts: Vec<Arc<RwLock<Layout>>>,
     transient_state: EngineState,
 }
 
 impl Engine {
-    fn layout_at_position(&self, position: u8) -> Option<(usize, Arc<RwLock<Layout>>)> {
-        let idx = (position - keys::LAYOUT_MIN) as usize + self.transient_state.layout_offset;
-        let layout = self.layouts.get(idx).cloned();
-        layout.map(|x| (idx, x))
-    }
-
-    fn current_layout(&self) -> Option<Arc<RwLock<Layout>>> {
-        self.transient_state
-            .layout
-            .and_then(|x| self.layouts.get(x).cloned())
-    }
-
     async fn reset(&mut self) -> anyhow::Result<()> {
         let config =
             Config::load(&self.config_file).map_err(|e| anyhow!("error reloading config: {e}"))?;
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        self.layouts = config.layouts;
         let mut names = Vec::new();
-        for layout in &self.layouts {
+        for layout in &config.layouts {
             names.push(layout.read().await.name.clone());
         }
         tx.send(Event::SetLayoutNames(LayoutNamesEvent { names }))?;
@@ -94,6 +62,7 @@ impl Engine {
             }
         }
         self.transient_state = Default::default();
+        self.transient_state.layouts = config.layouts;
 
         // Draw the logo.
         controller::clear_lights(&tx).await?;
@@ -142,7 +111,7 @@ impl Engine {
         for i in 0..=8 {
             let position = keys::LAYOUT_MIN + i;
             let idx = i as usize + self.transient_state.layout_offset;
-            let event = if idx < self.layouts.len() {
+            let event = if idx < self.transient_state.layouts.len() {
                 let is_cur = self
                     .transient_state
                     .layout
@@ -170,7 +139,7 @@ impl Engine {
             };
             tx.send(Event::Light(event))?;
         }
-        if self.layouts.len() > 8 {
+        if self.transient_state.layouts.len() > 8 {
             tx.send(Event::Light(LightEvent {
                 mode: LightMode::On,
                 position: keys::LAYOUT_SCROLL,
@@ -211,7 +180,7 @@ impl Engine {
                 self.set_shift(shift, &tx)?;
             }
             keys::LAYOUT_MIN..=keys::LAYOUT_MAX if off => {
-                if let Some((idx, layout)) = self.layout_at_position(key) {
+                if let Some((idx, layout)) = self.transient_state.layout_at_position(key) {
                     tx.send(Event::SelectLayout(SelectLayoutEvent { idx, layout }))?;
                 }
             }
@@ -237,7 +206,7 @@ impl Engine {
             keys::UP_ARROW | keys::DOWN_ARROW if off && have_layout => {
                 // 2025-07-22, rust 1.88: "if let guards" are experimental. When stable, we can
                 // use one instead of is_some above and get rid of this unwrap.
-                let layout = self.current_layout().unwrap();
+                let layout = self.transient_state.current_layout().unwrap();
                 {
                     let locked = &mut *layout.write().await;
                     let transposition = if key == keys::UP_ARROW {
@@ -374,7 +343,7 @@ impl Engine {
                     #[cfg(test)]
                     self.send_test_event(TestEvent::MoveCanceled);
                 } else {
-                    let mut layout = self.layouts[layout_idx].write().await;
+                    let mut layout = self.transient_state.layouts[layout_idx].write().await;
                     if let Some(base) = layout.base {
                         let note1_col = note1.position % 10;
                         let note1_row = note1.position / 10;
@@ -398,7 +367,7 @@ impl Engine {
         if update_layout {
             tx.send(Event::SelectLayout(SelectLayoutEvent {
                 idx: layout_idx,
-                layout: self.layouts[layout_idx].clone(),
+                layout: self.transient_state.layouts[layout_idx].clone(),
             }))?;
         }
         Ok(())
@@ -413,7 +382,7 @@ impl Engine {
         let mut update_layout = false;
         if note1.note == note2.note {
             self.transient_state.transpose_state = TransposeState::Off;
-            let mut layout = self.layouts[initial_layout].write().await;
+            let mut layout = self.transient_state.layouts[initial_layout].write().await;
             log::info!(
                 "resetting base pitch of {} to {}",
                 layout.scale.name,
@@ -431,7 +400,7 @@ impl Engine {
         if update_layout && let Some(tx) = self.events_tx.upgrade() {
             tx.send(Event::SelectLayout(SelectLayoutEvent {
                 idx: initial_layout,
-                layout: self.layouts[initial_layout].clone(),
+                layout: self.transient_state.layouts[initial_layout].clone(),
             }))?;
         }
         Ok(())
@@ -752,7 +721,7 @@ impl Engine {
             return Ok(());
         };
         self.transient_state.layout_offset += 8;
-        if self.transient_state.layout_offset >= self.layouts.len() {
+        if self.transient_state.layout_offset >= self.transient_state.layouts.len() {
             self.transient_state.layout_offset = 0;
         }
         self.fix_layout_lights(&tx).await?;
@@ -774,14 +743,7 @@ impl Engine {
             Event::UpdateNote(e) => self.update_note(e).await?,
             Event::PlayNote(e) => self.handle_play_note(e).await?,
             #[cfg(test)]
-            Event::TestEngine(test_tx) => {
-                test_tx
-                    .send(AugmentedEngineState {
-                        engine_state: self.transient_state.clone(),
-                        layout: self.current_layout(),
-                    })
-                    .await?
-            }
+            Event::TestEngine(test_tx) => test_tx.send(self.transient_state.clone()).await?,
             #[cfg(test)]
             Event::TestWeb(_) => {}
             #[cfg(test)]
@@ -809,7 +771,6 @@ pub async fn run(
     let mut engine = Engine {
         config_file,
         events_tx: events_tx.clone(),
-        layouts: Default::default(),
         transient_state: Default::default(),
     };
     let rx2 = events_rx.resubscribe();

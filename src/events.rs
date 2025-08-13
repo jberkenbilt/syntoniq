@@ -26,6 +26,23 @@ const COLOR_DULL_GRAY: u8 = 0x47;
 const COLOR_HIGHLIGHT_GRAY: u8 = 0x01;
 const COLOR_MAGENTA: u8 = 0x5e;
 
+pub mod keys {
+    // Top Row, left to right
+    pub const SHIFT: u8 = 90;
+    pub const TRANSPOSE: u8 = 94; // Note
+    pub const SUSTAIN: u8 = 95; // Chord
+    // Left column, top to bottom
+    pub const UP_ARROW: u8 = 80;
+    pub const DOWN_ARROW: u8 = 70;
+    pub const CLEAR: u8 = 60;
+    pub const RECORD: u8 = 10;
+    // Right column, top to bottom
+    pub const LAYOUT_SCROLL: u8 = 19;
+    // Upper bottom controls
+    pub const LAYOUT_MIN: u8 = 101;
+    pub const LAYOUT_MAX: u8 = 109;
+}
+
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
     Off,
@@ -171,6 +188,8 @@ pub struct EngineState {
     pub layout: Option<usize>,
     /// Offset from 1 of layout on first position
     pub layout_offset: usize,
+    /// All available layouts
+    pub layouts: Vec<Arc<RwLock<Layout>>>,
     /// Mapping from position to note in the current layout
     pub notes: HashMap<u8, Option<Arc<Note>>>,
     /// Mapping from pitch to all positions with that pitch in the current layout
@@ -188,6 +207,16 @@ pub struct EngineState {
     pub shift_layout_state: ShiftLayoutState,
 }
 impl EngineState {
+    pub fn layout_at_position(&self, position: u8) -> Option<(usize, Arc<RwLock<Layout>>)> {
+        let idx = (position - keys::LAYOUT_MIN) as usize + self.layout_offset;
+        let layout = self.layouts.get(idx).cloned();
+        layout.map(|x| (idx, x))
+    }
+
+    pub fn current_layout(&self) -> Option<Arc<RwLock<Layout>>> {
+        self.layout.and_then(|x| self.layouts.get(x).cloned())
+    }
+
     pub fn current_played_notes(&self) -> Vec<String> {
         // It would more efficient to directly print, but this is not performance-critical,
         // and generating a Vec makes testing easier.
@@ -221,12 +250,6 @@ impl EngineState {
         }
         result
     }
-}
-
-#[derive(Default, Clone, Debug)]
-pub struct AugmentedEngineState {
-    pub engine_state: EngineState,
-    pub layout: Option<Arc<RwLock<Layout>>>,
 }
 
 #[derive(Template, Default, Clone)]
@@ -263,7 +286,7 @@ pub enum Event {
     UpdateNote(UpdateNoteEvent),
     PlayNote(PlayNoteEvent),
     #[cfg(test)]
-    TestEngine(mpsc::Sender<AugmentedEngineState>),
+    TestEngine(mpsc::Sender<EngineState>),
     #[cfg(test)]
     TestWeb(mpsc::Sender<StateView>),
     #[cfg(test)]
