@@ -1,6 +1,6 @@
+use crate::to_anyhow;
 use anyhow::bail;
 use num_rational::Ratio;
-use regex::Regex;
 use serde::de::Visitor;
 use serde::{Deserialize, Deserializer, de};
 use std::cmp::Ordering;
@@ -8,6 +8,9 @@ use std::collections::HashMap;
 use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
+use winnow::Parser;
+
+mod parser;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Pitch {
@@ -87,7 +90,7 @@ impl Factor {
         exp_denominator: i32,
     ) -> anyhow::Result<Self> {
         if base_numerator == 0 || base_denominator == 0 || exp_denominator == 0 {
-            bail!("zero may not appear in pitch specification denominator");
+            bail!("zero may not appear anywhere in base or in exponent denominator");
         }
         Ok(Self {
             base: Ratio::new(base_numerator, base_denominator),
@@ -221,85 +224,7 @@ impl Pitch {
 
     /// Parse a pitch from a string.
     pub fn parse(s: &str) -> anyhow::Result<Self> {
-        // This function and its tests were originally AI-generated, then substantially modified.
-        let multiplier_re = Regex::new(
-            r"(?x)
-                    (?:
-                        # Ratio: a/b
-                        (?P<ratio>
-                            (?P<r_num>\d+)(?:\.(?P<r_num_frac>\d{1,3}))?
-                            (?:/(?P<r_den>\d+))?
-                        $)
-                        |
-                        # Exponent: [a[/b]]^c|d
-                        (?P<exp>
-                            (?:
-                                (?P<e_base_num>\d+)
-                                (?:
-                                    /
-                                    (?P<e_base_den>\d+)
-                                )?
-                            )?
-                            \^
-                            (?P<e_num>-?\d+)
-                            \|
-                            (?P<e_den>\d+)
-                        $)
-                    )
-                ",
-        )?;
-
-        let factors_str = s.split('*');
-        let mut factors = Vec::new();
-        for factor in factors_str {
-            // Regex for individual multiplier (either ratio or equal division)
-            for cap in multiplier_re.captures_iter(factor) {
-                // Ratio, eg. 3/2
-                if cap.name("ratio").is_some() {
-                    let (num_frac, scale) = match cap.name("r_num_frac") {
-                        None => (0, 1),
-                        Some(x) => (x.as_str().parse()?, 10u32.pow(x.len() as u32)),
-                    };
-                    let num: u32 = cap["r_num"].parse::<u32>()? * scale + num_frac;
-                    let den: u32 = match cap.name("r_den") {
-                        None => 1,
-                        Some(x) => x.as_str().parse()?,
-                    } * scale;
-                    factors.push(Factor::new(num, den, 1, 1)?);
-                    continue;
-                }
-                // Exponent, eg. 3|12, 4/3^4|7
-                if cap.name("exp").is_some() {
-                    let exp_numerator: i32 = cap["e_num"].parse()?;
-                    let exp_denominator: i32 = cap["e_den"].parse()?;
-
-                    let base_numerator: u32 = if let Some(num) = cap.name("e_base_num") {
-                        num.as_str().parse()?
-                    } else {
-                        2 // default base numerator
-                    };
-                    let base_denominator: u32 = if let Some(den) = cap.name("e_base_den") {
-                        den.as_str().parse()?
-                    } else {
-                        1 // default base denominator
-                    };
-
-                    factors.push(Factor::new(
-                        base_numerator,
-                        base_denominator,
-                        exp_numerator,
-                        exp_denominator,
-                    )?);
-                    continue;
-                }
-                bail!("unparsed multiplier: {}", &cap[0]);
-            }
-        }
-        if factors.is_empty() {
-            bail!("pitch may not be empty");
-        }
-
-        Ok(Self::new(factors))
+        parser::pitch().parse(s).map_err(to_anyhow)
     }
 
     pub fn must_parse(s: &str) -> Self {
@@ -472,6 +397,23 @@ mod tests {
     }
 
     #[test]
+    fn test_parse_errors() {
+        assert!(Pitch::parse("").is_err());
+        assert!(Pitch::parse("*").is_err());
+        assert!(Pitch::parse("2**2").is_err());
+        assert!(Pitch::parse("0/4").is_err());
+        assert!(Pitch::parse("^3/0").is_err());
+        assert!(Pitch::parse("^3|-5").is_err());
+        assert!(Pitch::parse("quack").is_err());
+        assert!(Pitch::parse("2*").is_err());
+        assert!(Pitch::parse("2x").is_err());
+        assert!(Pitch::parse("2.").is_err());
+        assert!(Pitch::parse(".5").is_err());
+        assert!(Pitch::parse("^|12").is_err());
+        assert!(Pitch::parse("2^").is_err());
+    }
+
+    #[test]
     fn test_equality() -> anyhow::Result<()> {
         // This exercises that pitches are properly canonicalized
         fn check(p1: &str, p2: &str) -> anyhow::Result<()> {
@@ -480,6 +422,7 @@ mod tests {
         }
 
         check("440", "440*3/4*4/3")?;
+        check("440", "*440")?;
         check("250*^5|31", "100*^2|31*^3|31*5/2")?;
         check("100*^2|2", "200")?;
         check("660*^-5|12", "330*^7|12")?;
