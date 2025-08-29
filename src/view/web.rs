@@ -32,7 +32,7 @@ struct Assets;
 async fn static_asset(Path(path): Path<String>) -> impl IntoResponse {
     match Assets::get(&path) {
         Some(content) => {
-            // We only server js assets, so hard-code the content type. There is a `mime_guess`
+            // We only serve js assets, so hard-code the content type. There is a `mime_guess`
             // crate that could help.
             (
                 [(header::CONTENT_TYPE, "application/javascript")],
