@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/qlaunchpad.iml" filepath="$PROJECT_DIR$/.idea/qlaunchpad.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/syntoniq.iml" filepath="$PROJECT_DIR$/.idea/syntoniq.iml" />
     </modules>
   </component>
 </project>

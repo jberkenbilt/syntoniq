@@ -40,7 +40,7 @@ fn with_c_str<T>(s: &str, f: impl FnOnce(*const c_char) -> T) -> T {
 
 extern "C" fn csound_message_callback(_: *mut cs::CSOUND, attr: c_int, msg: *const c_char) {
     let s = unsafe { CStr::from_ptr(msg) }.to_string_lossy();
-    // Set RUST_LOG=qlaunchpad::csound::wrapper to see these messages.
+    // Set RUST_LOG=syntoniq::csound::wrapper to see these messages.
     log::debug!("csound: {attr} {s}");
 }
 

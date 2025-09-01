@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(qlaunchpad LANGUAGES C)
+project(syntoniq LANGUAGES C)
 
 list(APPEND CMAKE_MODULE_PATH "/usr/share/cmake/Csound" "/opt/homebrew/share/cmake/Csound")
 set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1)

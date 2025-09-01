@@ -28,7 +28,7 @@ off/off interval colors
 
 color.py is a Python script for manually iterating with colors. To use it, first put the device in programmer mode with `./scripts/progmode`. You can then use it to set the colors based on the values by number to match the image on page 10 (also in `./colors.png`), a manual table, or a failed attempt at HSV. See above for the choices.
 
-You can run `qlaunchpad colors` to see the colors in action. Along the bottom row, all the colors are displayed. Above, there is a scale. Touch any note to turn it and the other of the same pitch from the off to the on color.
+You can run `syntoniq-kbd colors` to see the colors in action. Along the bottom row, all the colors are displayed. Above, there is a scale. Touch any note to turn it and the other of the same pitch from the off to the on color.
 
 With real scales, colors are determined by closeness to Just intervals. We tolerate a specific range, initially ±15 cents.
 
@@ -216,7 +216,7 @@ In `output` mode, create a virtual midi port, receive events, and translate them
 
 See [programmer's reference](~/Q/instruction-manuals/launchpad_pro_mk3.pdf)
 
-See source/qlaunchpad. Written in rust with midly and midir. Uses programmer mode.
+See source/syntoniq. Written in rust with midly and midir. Uses programmer mode.
 
 Rather than having separate tools, have a single tool that can be run with different subcommands for isolation.
 

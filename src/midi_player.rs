@@ -97,8 +97,8 @@ pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
     // - This almost works if you do things in the right order, but there seem to be issues with
     //   Surge-XT
     //   - Start in midi mode so the output port exists
-    //   - Start Surge-XT and ensure only QLaunchpad is input
-    //   - Exit surge before exiting qlaunchpad.
+    //   - Start Surge-XT and ensure only Syntoniq input
+    //   - Exit surge before exiting syntoniq.
     let (tx, rx) = flume::unbounded();
     let h = tokio::spawn(async move {
         while let Some(event) = events::receive_check_lag(&mut events_rx, Some("midi player")).await
@@ -114,7 +114,7 @@ pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
 
     tokio::task::spawn_blocking(move || -> anyhow::Result<()> {
         let midi_out = MidiOutput::new("q-launchpad")?;
-        let output_connection = midi_out.create_virtual("QLaunchPad").map_err(to_anyhow)?;
+        let output_connection = midi_out.create_virtual("Syntoniq").map_err(to_anyhow)?;
         let mut p = Player {
             output_connection,
             bend_to_notes: Default::default(),

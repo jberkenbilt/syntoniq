@@ -37,7 +37,7 @@ See also
 
 * Up and Down arrows transpose by octaves, regardless of cycle size.
 * You can send key events with `curl http://localhost:8440/key -d key=k -d velocity=v`
-* Find QLaunchPad MIDI output port
+* Find Syntoniq MIDI output port
   ```
   aconnect -l
   aseqdump -p 128:0

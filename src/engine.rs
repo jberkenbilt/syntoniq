@@ -103,7 +103,7 @@ impl Engine {
         self.fix_layout_lights(&tx).await?;
         #[cfg(test)]
         self.send_test_event(TestEvent::ResetComplete);
-        log::info!("QLaunchPad is initialized");
+        log::info!("Syntoniq Keyboard is initialized");
         Ok(())
     }
 

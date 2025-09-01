@@ -2,21 +2,21 @@ use clap::{Command, CommandFactory};
 use clap::{Parser, Subcommand};
 use clap_complete::{Generator, Shell, aot};
 use log::LevelFilter;
-use qlaunchpad::controller::Controller;
-use qlaunchpad::engine::SoundType;
-use qlaunchpad::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
-use qlaunchpad::view::web;
-use qlaunchpad::{controller, engine, events};
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::{env, io};
+use syntoniq::controller::Controller;
+use syntoniq::engine::SoundType;
+use syntoniq::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
+use syntoniq::view::web;
+use syntoniq::{controller, engine, events};
 // TODO: format or wrap help text
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
 /// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
 /// If RUST_LOG is not set, the log level defaults to Info.
-/// Set RUST_LOG=qlaunchpad::module::path=level to see messages for a given module.
-/// Set RUST_LOG=qlaunchpad to see all messages.
+/// Set RUST_LOG=syntoniq::module::path=level to see messages for a given module.
+/// Set RUST_LOG=syntoniq to see all messages.
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 struct Cli {
@@ -38,7 +38,7 @@ enum Commands {
         /// toml-format config file
         #[arg(long)]
         config_file: PathBuf,
-        /// Send notes to a virtual output port named QLaunchPad
+        /// Send notes to a virtual output port named Syntoniq
         #[arg(long)]
         midi: bool,
     },
