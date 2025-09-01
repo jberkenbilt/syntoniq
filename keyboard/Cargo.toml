@@ -1,0 +1,26 @@
+[package]
+name = "syntoniq-kbd"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+syntoniq-common = { path = "../common" }
+clap.workspace = true
+clap_complete.workspace = true
+midir.workspace = true
+midly.workspace = true
+log.workspace = true
+env_logger.workspace = true
+toml.workspace = true
+serde.workspace = true
+anyhow.workspace = true
+askama.workspace = true
+chrono.workspace = true
+flume = "0.11.1"
+tokio = { version = "1.46.1", features = ["full"] }
+axum = { version = "0.8.4", features = ["macros", "json"] }
+tokio-stream = { version = "0.1.17", features = ["sync"] }
+rust-embed = "8.7.2"
+
+[build-dependencies]
+bindgen = "0.72.0"

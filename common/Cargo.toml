@@ -1,0 +1,11 @@
+[package]
+name = "syntoniq-common"
+version = "0.1.0"
+edition.workspace = true
+
+[dependencies]
+log.workspace = true
+serde.workspace = true
+anyhow.workspace = true
+num-rational.workspace = true
+winnow.workspace = true

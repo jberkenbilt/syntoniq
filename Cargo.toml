@@ -1,27 +1,24 @@
-[package]
-name = "syntoniq"
-version = "0.1.0"
+[workspace]
+resolver = "3"
+members = [
+  "common",
+  "keyboard",
+]
+
+[workspace.package]
 edition = "2024"
 
-[dependencies]
+[workspace.dependencies]
 clap = { version = "4.5.41", features = ["derive"] }
 clap_complete = "4.5.55"
 midir = "0.10.1"
 midly = "0.5.3"
 log = "0.4.27"
-flume = "0.11.1"
 env_logger = "0.11.8"
-tokio = { version = "1.46.1", features = ["full"] }
 toml = "0.9.2"
 serde = { version = "1.0.219", features = ["derive"] }
 anyhow = "1.0.98"
 num-rational = "0.4.2"
-axum = { version = "0.8.4", features = ["macros", "json"] }
 askama = "0.14.0"
-tokio-stream = { version = "0.1.17", features = ["sync"] }
-rust-embed = "8.7.2"
 chrono = "0.4.41"
 winnow = "0.7.12"
-
-[build-dependencies]
-bindgen = "0.72.0"

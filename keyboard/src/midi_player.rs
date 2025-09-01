@@ -1,9 +1,10 @@
+use crate::events;
 use crate::events::Event;
-use crate::pitch::Pitch;
-use crate::{events, to_anyhow};
 use midir::os::unix::VirtualOutput;
 use midir::{MidiOutput, MidiOutputConnection};
 use std::collections::HashMap;
+use syntoniq_common::pitch::Pitch;
+use syntoniq_common::to_anyhow;
 
 struct Player {
     output_connection: MidiOutputConnection,

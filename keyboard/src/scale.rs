@@ -1,11 +1,11 @@
 use crate::events::{Color, Event, LightEvent, LightMode};
 use crate::layout;
-use crate::pitch::{Factor, Pitch};
 use anyhow::{anyhow, bail};
 use serde::Deserialize;
 use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use std::sync::Arc;
+use syntoniq_common::pitch::{Factor, Pitch};
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Scale {
@@ -289,7 +289,7 @@ impl Scale {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::pitch::Factor;
+    use syntoniq_common::pitch::Factor;
 
     #[test]
     pub fn test_notes() -> anyhow::Result<()> {

@@ -1,8 +1,8 @@
 use crate::csound::wrapper::CsoundApi;
 use crate::events;
 use crate::events::Event;
-use crate::pitch::Pitch;
 use std::collections::HashMap;
+use syntoniq_common::pitch::Pitch;
 
 mod wrapper;
 

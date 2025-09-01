@@ -1,11 +1,11 @@
 use crate::engine::PlayedNote;
 use crate::layout::Layout;
-use crate::pitch::Pitch;
 use crate::scale::{Note, ScaleDescription};
 use askama::Template;
 use std::collections::{HashMap, HashSet};
 use std::fmt::{Display, Formatter};
 use std::sync::Arc;
+use syntoniq_common::pitch::Pitch;
 use tokio::sync::broadcast::error::RecvError;
 #[cfg(test)]
 use tokio::sync::mpsc;

@@ -1,5 +1,4 @@
 use crate::layout::{HorizVert, Layout, RowCol};
-use crate::pitch::Pitch;
 use crate::scale::{Scale, ScaleType};
 use anyhow::bail;
 use serde::Deserialize;
@@ -7,6 +6,7 @@ use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 use std::sync::Arc;
+use syntoniq_common::pitch::Pitch;
 use tokio::sync::RwLock;
 
 #[derive(Deserialize, Clone, Debug, PartialEq)]
@@ -97,8 +97,8 @@ impl Config {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::pitch::{Factor, Pitch};
     use crate::scale::{EqualDivision, ScaleType};
+    use syntoniq_common::pitch::{Factor, Pitch};
 
     #[test]
     fn test_toml() {

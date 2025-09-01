@@ -1,7 +1,8 @@
-use crate::{events, to_anyhow};
+use crate::events;
 use anyhow::anyhow;
 use std::ffi::{CStr, CString, c_char, c_int};
 use std::ptr;
+use syntoniq_common::to_anyhow;
 use tokio::task;
 use tokio::task::JoinHandle;
 
@@ -40,7 +41,7 @@ fn with_c_str<T>(s: &str, f: impl FnOnce(*const c_char) -> T) -> T {
 
 extern "C" fn csound_message_callback(_: *mut cs::CSOUND, attr: c_int, msg: *const c_char) {
     let s = unsafe { CStr::from_ptr(msg) }.to_string_lossy();
-    // Set RUST_LOG=syntoniq::csound::wrapper to see these messages.
+    // Set RUST_LOG=syntoniq_kbd::csound::wrapper to see these messages.
     log::debug!("csound: {attr} {s}");
 }
 

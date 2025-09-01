@@ -1,9 +1,10 @@
+use crate::events;
 use crate::events::{Color, Event, KeyEvent, LightEvent, LightMode, PressureEvent, UpgradedSender};
-use crate::{events, to_anyhow};
 use anyhow::anyhow;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
 use midly::MidiMessage;
 use midly::live::LiveEvent;
+use syntoniq_common::to_anyhow;
 use tokio::task::JoinHandle;
 
 mod message;

@@ -7,7 +7,6 @@ use crate::events::{
     UpdateNoteEvent, keys,
 };
 use crate::layout::{HorizVert, Layout, RowCol};
-use crate::pitch::{Factor, Pitch};
 use crate::scale::{Note, ScaleType};
 use crate::{controller, csound, events, midi_player};
 use anyhow::{anyhow, bail};
@@ -15,6 +14,7 @@ use chrono::SubsecRound;
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
 use std::sync::Arc;
+use syntoniq_common::pitch::{Factor, Pitch};
 
 #[cfg(test)]
 mod tests;

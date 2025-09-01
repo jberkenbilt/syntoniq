@@ -5,11 +5,11 @@ use log::LevelFilter;
 use std::collections::HashMap;
 use std::path::PathBuf;
 use std::{env, io};
-use syntoniq::controller::Controller;
-use syntoniq::engine::SoundType;
-use syntoniq::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
-use syntoniq::view::web;
-use syntoniq::{controller, engine, events};
+use syntoniq_kbd::controller::Controller;
+use syntoniq_kbd::engine::SoundType;
+use syntoniq_kbd::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
+use syntoniq_kbd::view::web;
+use syntoniq_kbd::{controller, engine, events};
 // TODO: format or wrap help text
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
