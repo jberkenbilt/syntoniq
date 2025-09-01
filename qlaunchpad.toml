@@ -7,15 +7,15 @@ note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "G♯", "A", "B�
 
 [[layout]]
 name = "12-EDO-2x1"
-base = [2, 3]
+base = {row = 3, col = 2}
 scale_name = "12-EDO"
-steps = [2, 1]
+steps = {h = 2, v = 1}
 
 [[layout]]
 name = "12-EDO-2x5"
-base = [2, 3]
+base = {row = 3, col = 2}
 scale_name = "12-EDO"
-steps = [2, 5]
+steps = {h = 2, v = 5}
 
 [[scale]]
 name = "19-EDO"
@@ -27,9 +27,9 @@ note_names = ["C", "C♯", "D♭", "D", "D♯", "E♭", "E", "E♯", "F", "F♯"
 
 [[layout]]
 name = "19-EDO-2x1"
-base = [2, 3]
+base = {row = 3, col = 2}
 scale_name = "19-EDO"
-steps = [3, 2]
+steps = {h = 3, v = 2}
 
 [[scale]]
 name = "31-EDO"
@@ -52,15 +52,15 @@ note_names = [
 
 [[layout]]
 name = "31-EDO-5x3"
-base = [2, 2]
+base = {row = 2, col = 2}
 scale_name = "31-EDO"
-steps = [5, 3]
+steps = {h = 5, v = 3}
 
 [[layout]]
 name = "31-EDO-9x5"
-base = [2, 4]
+base = {row = 4, col = 2}
 scale_name = "31-EDO"
-steps = [5, 9]
+steps = {h = 5, v = 9}
 
 [[scale]]
 name = "17-EDO"
@@ -72,9 +72,9 @@ note_names = ["C", "C#-", "C#+", "D+", "E%-", "E-", "E+", "F", "F#-",
 
 [[layout]]
 name = "17-EDO-2x1"
-base = [2, 3]
+base = {row = 3, col = 2}
 scale_name = "17-EDO"
-steps = [3, 2]
+steps = {h = 3, v = 2}
 
 [[scale]]
 name = "JI-11"

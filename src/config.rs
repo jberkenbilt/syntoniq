@@ -1,4 +1,4 @@
-use crate::layout::Layout;
+use crate::layout::{HorizVert, Layout, RowCol};
 use crate::pitch::Pitch;
 use crate::scale::{Scale, ScaleType};
 use anyhow::bail;
@@ -34,9 +34,9 @@ pub struct LayoutConfig {
     pub name: String,
     pub scale_name: String,
     /// row, column of base pitch (EDO only)
-    pub base: Option<(i8, i8)>,
+    pub base: Option<RowCol>,
     /// horizontal, vertical steps (EDO only)
-    pub steps: Option<(i8, i8)>,
+    pub steps: Option<HorizVert>,
 }
 
 #[derive(Deserialize, Debug, PartialEq)]
@@ -111,9 +111,9 @@ base_pitch = "220*^3|12" # middle C for A-440 12-TET scale
 note_names = ["C", "C♯", "D", "E♭", "E", "F", "F♯", "G", "A♭", "A", "B♭", "B"]
 [[layout]]
 name = "5x3"
-base = [2, 2]
+base = {row = 2, col = 2}
 scale_name = "12-EDO"
-steps = [2, 1]
+steps = {h = 2, v = 1}
 "#;
         let exp = ConfigFile {
             scale: vec![ScaleConfig {
@@ -135,8 +135,8 @@ steps = [2, 1]
             layout: vec![LayoutConfig {
                 name: "5x3".to_string(),
                 scale_name: "12-EDO".to_string(),
-                base: Some((2, 2)),
-                steps: Some((2, 1)),
+                base: Some(RowCol { row: 2, col: 2 }),
+                steps: Some(HorizVert { h: 2, v: 1 }),
             }],
         };
         let c: ConfigFile = toml::from_str(CONFIG).unwrap();

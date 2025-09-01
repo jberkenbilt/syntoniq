@@ -6,7 +6,7 @@ use crate::events::{
     SelectLayoutEvent, ShiftKeyState, ShiftLayoutState, SpecificNote, TransposeState,
     UpdateNoteEvent, keys,
 };
-use crate::layout::Layout;
+use crate::layout::{HorizVert, Layout, RowCol};
 use crate::pitch::{Factor, Pitch};
 use crate::scale::{Note, ScaleType};
 use crate::{controller, csound, events, midi_player};
@@ -352,8 +352,14 @@ impl Engine {
                         let dy = note2_row as i8 - note1_row as i8;
                         let dx = note2_col as i8 - note1_col as i8;
                         log::info!("shifting layout {} by dy={dy}, dx={dx}", layout.name);
-                        let (old_x, old_y) = base;
-                        layout.base = Some((old_x + dx, old_y + dy));
+                        let RowCol {
+                            col: old_x,
+                            row: old_y,
+                        } = base;
+                        layout.base = Some(RowCol {
+                            col: old_x + dx,
+                            row: old_y + dy,
+                        });
                         update_layout = true;
                     } else {
                         log::info!("move: can't shift non-EDO layout");
@@ -565,8 +571,14 @@ impl Engine {
             // Should not be possible
             bail!("draw_edo_layout called with non-EDO scale");
         };
-        let (steps_x, steps_y) = layout.steps.unwrap(); // checked to be Some in config
-        let (base_x, base_y) = layout.base.unwrap(); // checked to be Some in config
+        let HorizVert {
+            h: steps_x,
+            v: steps_y,
+        } = layout.steps.unwrap(); // checked to be Some in config
+        let RowCol {
+            col: base_x,
+            row: base_y,
+        } = layout.base.unwrap(); // checked to be Some in config
         let (divisions, _, _) = ed.divisions;
         let divisions = divisions as i32;
         for row in 1..=8 {

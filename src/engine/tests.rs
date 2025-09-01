@@ -1,5 +1,6 @@
 use super::*;
 use crate::events::{Events, StateView};
+use crate::layout::RowCol;
 use crate::view::web;
 use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
@@ -527,7 +528,7 @@ async fn test_shift_layout() -> anyhow::Result<()> {
         let lock = ts.current_layout();
         let layout = lock.as_ref().unwrap().read().await;
         assert_eq!(layout.scale.name, "31-EDO");
-        assert_eq!(layout.base, Some((2, 2)));
+        assert_eq!(layout.base, Some(RowCol { row: 2, col: 2 }));
     }
 
     // Enter shift mode
@@ -552,7 +553,7 @@ async fn test_shift_layout() -> anyhow::Result<()> {
         let lock = ts.current_layout();
         let layout = lock.as_ref().unwrap().read().await;
         assert_eq!(layout.scale.name, "31-EDO");
-        assert_eq!(layout.base, Some((3, 4)));
+        assert_eq!(layout.base, Some(RowCol { row: 4, col: 3 }));
     }
     // Release shift
     tc.release_key(keys::SHIFT).await?;
