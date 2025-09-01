@@ -71,10 +71,16 @@ note_names = ["C", "C#-", "C#+", "D+", "E%-", "E-", "E+", "F", "F#-",
               "F#+", "G", "A%-", "A%+", "A+", "B%-", "B-", "B+", "C"]
 
 [[layout]]
-name = "17-EDO-2x1"
+name = "17-EDO-3x2"
 base = {row = 3, col = 2}
 scale_name = "17-EDO"
 steps = {h = 3, v = 2}
+
+[[layout]]
+name = "17-EDO-2x7"
+base = {row = 3, col = 5}
+scale_name = "17-EDO"
+steps = {h = 2, v = 7}
 
 [[scale]]
 name = "JI-11"
