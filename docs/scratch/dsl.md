@@ -1,8 +1,46 @@
-dsl notes:
+# Syntoniq DSL
 
-Working project name: Syntoniq. This could cover the keyboard as well...so I might rename qlaunchpad.
+The goal is to create an ASCII/UTF-8 file format for describing music with arbitrary tuning systems.
 
-In addition to targeting csound, be able to generate MIDI files with tuning tables for MTS-ESP, supported by Reaper/many VST plugins and also timidity and probably fluidsynth. Be able to generate midi files that play individually or can be loaded into a DAW. Reaper seems to be the best choice for DAW.
+Goals:
+* Use a score-like layout with the ability to automatically align notes and check for voice synchronization
+* Represent any scale, pitch, or tuning using my pitch representation with support for chaining
+* Represent notes, chords, rhythms, and dynamics with good granularity
+* Support strumming and morphing
+* Support multiple voices
+* Generate
+  * Live csound playback including with selected regions or voices
+  * csound files
+  * some kind of MIDI; research required; see below.
+* Represent time signatures or bar numbers as optional
+
+Possible goals:
+* Use scala files
+
+Non-goals:
+* Generate printed scores
+* Be opinionated about any particular system of notation
+* Produce fully nuanced, performance-ready files -- if you want that, use a MIDI target and do further work in a DAW
+* Drums, at least for now
+
+# MIDI thoughts
+
+See ~/Q/tasks/reference/midi.md
+
+General strategy:
+* Generate a separate track per voice
+* Bulk load MTS non-real-time at time 0 in the track for the initial scale; send real-time bulk reload if the scale changes. If morphing, use pitch bend before switching, then clear pitch bend. Note that morphing from one tuning to another can be supported by the synth, so whether or not to try to morph manually might be a configuration option.
+* Assume separate routing per track
+  * If we use non-overlapping channels AND all tracks using the same tuning for the whole time, then our output would work with all tracks routed to the same output; maybe make this an option? This would also make it possible to use timidity. Perhaps the option would be to generate a separate MIDI file for each group of tracks that have to be routed separately. In that case, if all tracks had the same tuning and didn't require a total of more than 15 channels (excluding 10 for percussion -- no reason to avoid channel 0), the whole thing could go to a single MIDI file which could be played with timidity.
+
+DAW usage:
+* If > 16 separate tracks, generate multiple MIDI files
+* Within each MIDI file, assume each track has to be routed separately (but see above)
+* Load MIDI file, route tracks, edit as needed
+
+Project: write/find something for working with MIDI files and figure out what works well as input for timidity and also Reaper. See whether other things like Ardour or Surge can work with these. Validate all of the above assumptions.
+
+# Syntax
 
 Work in progress; all syntax is subject to change.
 
