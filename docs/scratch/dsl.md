@@ -44,28 +44,60 @@ Project: write/find something for working with MIDI files and figure out what wo
 
 Work in progress; all syntax is subject to change.
 
-A line may contain a global operation, e.g.
+## Basic Syntactic Rules
+
+Leading whitespace is stripped. Any remark about what a line starts with refers to after any leading whitespace.
+
+The comment character is `;`. Everything from `;` to the end of the is removed.
+
+Blank lines are ignored except when they terminate score blocks.
+
+A file consists of a sequence of the following, excluding comments and non-functional blank lines:
+
+* Global directives: lines consisting of operations, which look like function calls, and have global scope
+* Score blocks: a sequence of one or more lines, each starting with [voice.note], both preceded by and followed by a blank line
+* A macro definition
+* Possibly an escape hatch if needed, but hopefully not
+
+## Operations
+
+* `name(k=v, k=v, ...)`
+* must be contained within a single line
+* multiple may occur on one line
+* If not in a score block, scope is global; otherwise, scope is for the voice
+
+## Score Blocks
+
+Each line starts with `[voice]` or `[voice.n]`, where `n` is a note number. `n` may be omitted if there is only a single note, in which case the note number is `0`. If `n` is omitted, whatever is present refers to all notes on the line. Some operations, such as tuning, are only allowed to apply to the entire voice.
+
+A score block must be both preceded and followed by a blank line, the beginning of the file, or the end of the file.
+
+See examples below.
+
+## Notes
 
 ```
-base_pitch=220*^1|3
-tempo=60
-```
-
-If a line starts with `[voice]`, it pertains to that voice. A group of contiguous voice lines are treated as simultaneous. Use a blank line to move forward. This is similar to how a score is. If the same voice line appears more than once a score line, the effect is to concatenate.
-
-Note format:
-```
-$note = [$beats:](`<`($single_note( $single_note)*)`>` | $single_note)
-single-note ::= note-name octave
+note ::= [$beats:]$note_name[$octave][~]
+note_name ::= <see below>
 octave ::= `'`[n] | `,`[n]
-beats ::= rational
+beats ::= rational-or-decimal
 ```
+
+If `beats` is omitted, take from the previous note on the same line. It is mandatory for the first note on the line. Note that these are beats as in with csound, not LilyPond-style note durations. 2:c is twice as long as 1:c, and quarter-note triplets would have 2/3 beats each.
+
+Beats may be `a`, `a/b`, or `a.b`.
+
+If a note ends with `~`, it is not turned off at the end of its duration. This can be used to implement ties when a pitch is held for a long time.
+
+The note `~` by itself does nothing, making useful as a rest, continuation of a tied note, or way to position a dynamic.
+
+The `|` symbol by itself may be used as an alignment check. It doesn't have to match a bar line in the traditional sense as there is no enforced time signature. (TODO: consider whether there should be a time signature that forces bar checks to align with bar lines.)
 
 Pitches are absolute (possibly transposed). No relative octaves.
 
-If `beats` is omitted, take from the previous note of the same voice. If omitted for first note, it is `1`. Note that these are beats as in with csound, not LilyPond-style note durations. 2:c is twice as long as 1:c, and quarter-note triplets would have 2/3 beats each.
+TODO: work out valid characters in note names. Note names should avoid any of `~:=<>@,';` but can contain numbers other special characters, including `^`, `*`, `/`, `|`, and `.`, making it possible to use pitches as note names.
 
-In addition to constructing chords with `<notes...>`, I want to support "strumming" and also the ability to morph smoothly from one note to another. Ideally, it should be possible to notate Fabio Costa's Etude on Minor Thirds as well as Elegy Waltz in EDO-17. I plan to use parts of these for demonstration purposes if I can get permission.
+I would like to be able to morph smoothly from one pitch to another, e.g., to implement a glissando. Ideally, it should be possible to notate Fabio Costa's Etude on Minor Thirds as well as Elegy Waltz in EDO-17. I plan to use parts of these for demonstration purposes if I can get permission.
 
 By convention, these ASCII symbols are used for accidentals.
 
@@ -74,135 +106,185 @@ By convention, these ASCII symbols are used for accidentals.
 * + = ↑ (single scale step up)
 * - = ↓ (single scale step down)
 
-The default scale is EDO-12 with note names c, c#|d%, d, d#|e%, ...
+The default scale is 12-EDO with note names c, c#|d%, d, d#|e%, ...
 
 I need some mechanism for defining custom scales (similar to the launchpad controller) but with support for enharmonics.
 
 Examples:
-* `c` -- play middle C for a single beat
-* `3:<c, c g c' e' g' c'2>` -- play a chord for three beats from the C below middle C to the C two octaves above middle C
+* `c` -- play middle C (C4) for a single beat
+* `3:e'~` -- play E5 for 3 beats and then leave the note on
+* `2:~ g` -- wait 2 beats, resting or sustaining as appropriate, then play G4 for two beats.
 
-Note names should avoid any of `!@:=,'<>;` but can contain numbers other special characters, including `^`, `*`, `/`, `|`, and `.`, making it possible to use pitches as note names.
+## Dynamics
 
-Use `!` for a rest.
+* Expressed as a numerical value from 0 to 127 (for consistency with MIDI)
+* `dynamic@beat`
+* `=n` -- set the volume immediately to `n`
+* `m<` -- start a crescendo; the next dynamic must be `<n`. Volume is linearly interpolated by m and n, with m < n
+* `m>` -- start a decrescendo; the next dynamic must be `>n`. Volume is linearly interpolated by m and n, with m > n
 
-The comment character is `;`
+## Macros
 
-Voice names can be arbitrary except not contain `[]`.
+Tentative. Not sure if this is a good idea.
 
-Voice commands:
-* `reset_base` -- sets the base pitch of the voice to the global base pitch
-* `scale=...` -- sets the scale; base stays the same
-* `base=note@` -- transposes to set the base of the voice to the pitch of another note in the same scale
-* `base=note@scale` -- transposes to set the base of the voice to the pitch of another note in a different scale
-* `base=pitch` -- transposes to set the base of the voice to a specific pitch
-* These are approximate. Other commands can be used for strumming, volume, instrument selection, etc.
-
-Examples:
-
-Using an EDO-19 scale transposed so written `c` is `e`, play some notes:
+Single-line macro. `n` is the number of parameters and `,` is the separator. Within the macro, `$n` is replaced by the argument.
 ```
-base_pitch=220*^1|3 ; set base pitch to middle C relative to A 440
-[v1] scale=edo-12   ; set scale to edo-12
-[v1] base=e@        ; transpose so E becomes the new tonic, e.g., written C sounds like E
-[v1] scale=edo-19   ; reset the scale to edo-19, retaining the base pitch
-[v1] c e 2:<g b%> <c, c'>  ; play some notes
+$name(n,) { .... }
 ```
 
-You can create a local scale. Leading whitespace continues the line.
-
+Example:
 ```
-new_scale=e19 scale=edo-12 base=e scale=edo-19
-```
-
-Then the previous example could be written as
-```
-[v1] scale=e19 c e 2:<g b%> <c, c'>
+; define
+$transpose(1,) { tune(base_note=$1) }
+; invoke
+$transpose(e)
 ```
 
-Setting a scale without a voice sets it globally. `reset_scale` for a voice resets the scale for that voice to the global scale.
+Multi-line macros are the same but are defined as
+```
+$name(n,) {
+...
+}
+```
+and the invocation of a multi-line macro must be on a line by itself.
 
-Example score:
+Macros may call other macros and are lexically expanded from top down. They can only reference previously defined macros. Macros may not define macros.
+
+## Voices
+
+A voice maps to a track for midi and an instrument for csound.
+
+# Tuning
+
+Tuning
+```
+tune(base_pitch=..., base_note=..., scale=...)
+reset_tuning()
+```
+* Default tuning is 12-EDO with the base pitch of `220*1|4`
+* At most one of `base_pitch` or `base_note` is allowed
+* `base_pitch` sets the base pitch of the scale to an absolute pitch
+* `base_note` sets the base pitch to a specified note in the *current* scale
+* `scale` sets the new scale
+* In global scope, this sets the default tuning. In a voice scope, it sets the tuning for the voice.
+* `reset_tuning`: in global scope, resets the default to 12-EDO with `220*1|4`. In voice scope, it resets the voice's tuning to use the default tuning
+
+# Tempo
+
+Tempo changes are global and can be delayed relative to the current beat wherever they appear in the score.
+
+Set the tempo to 60 beats per minute starting 2.5 beats after the current moment:
+```
+tempo(bpm=60, when=2.5)
+```
+
+Accelerate linearly, starting immediately from 60 to 90 beats per minute over the next 8 beats:
+```
+accel(start=60, end=90, for=8)
+```
+
+Decelerate linearly, starting in two beats from 90 to 60 beats per minute over 4 beats:
+```
+decel(start=90, end=60, when=2, for=4)
+```
+
+# Examples
+
+The opening two bars of my rainbow medley with each part as a separate voice. Note the use of the bar check and the alignment, which is optional and can be automated. There is an implicit bar check at the end of each line. If a bar check appears on any line, it must appear on all lines. For dynamics, the bar check just serves as the anchor point for beat offsets.
 
 ```
-[v1] 1/2:e g e g e g e  g
-[v2]   1:d   c   b   b%
-
-[v1] 1/2:f g f g   f g     f g
-[v2]   2:a       1:g   1/2:f e
+[v1] 1/2:e g e g e g e   g |   f g     f g   f g    f  g
+[v2]   1:d   c   d   c     |   e   1/2:d e   d e    d  e
+[v3]   2:~     1:b,  b%,   | 2:c             b,
+[v4]   4:~                 | 2:~             a,
+[v5]   4:~                 | 2:a,          1:g, 1/2:f, e,
 ```
 
-In lieu of bar checks, at the beginning of each score line, the timing has to line up.
-
-Alignment is visual only. You can continue a voice line within one score line. These are the same:
+The same thing but with a single voice containing more than one note per voice, a dynamic swell affecting all but note 0, and a fixed dynamic for note 0:
 
 ```
-[v1] 1/8:c d e f g a b c' c' b a g f e d c
-[v2]   1:f                e
-```
-```
-[v1] 1/8:c d e f g a b c'
-[v1] c' b a g f e d c
-[v2] 1:f e
+[v1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g
+[v1.1]    1:d   c   d   c     |      e   1/2:d e   d e    d  e
+[v1.2]    2:~     1:b,  b%,   |    2:c             b,
+[v1.3]    4:~                 |    2:~             a,
+[v1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
+[v1.0] =112@0                 |
+  [v1]  =64@0   64>@2         | >96>@0         >64@2
 ```
 
-It would be nice to have tool support for alignment. Within a score line, align notes so the beginning of the pitch part of notes are aligned rhythmically after any beat markers as in the above examples. See below for an algorithm.
 
-```
-[v1] 1:<c e g> <c f a>   <c e g> <b, d g> 4:<c e g>
-[v2] 2:c,              1:f,      g,       4:c,
-```
+It would be nice to have tool support for alignment. Within a score block, align notes so the beginning of the pitch part of notes or the location part of dynamics are aligned rhythmically after any beat markers as in the above examples. See below for an algorithm.
 
 The DSL interpreter should have some commands to check and align. I could run C-c C-f on a score line, and it could either reformat or generate output with embedded comments containing any error messages. No reason to integrate with flycheck, etc.
 
 Other notes:
-* Allow non-breaking space for additional visual alignment
-* To align, calculate total number of discrete events (GCD)
-* For each note, get number of characters before and after alignment point; : counts as before
+* If there are bar checks, this algorithm can be applied to each "bar" and spaces can be added before the bar checks to force the bar checks to align.
+* To align, calculate total number of discrete ticks (GCD of duration denominators * total beats)
+* For each note, get number of characters before and after alignment point; `:`, `@` count as before since some notes won't have an explicit mark
 * prepend/append space so all notes are the same width and have the alignment point in the same spot
 * prepend each note with one extra space
 * place notes based on numerator of n/GCD
-* join all notes with spaces; keep any non-breaking spaces between notes; place immediately before following note
 * shrink vertical columns of spaces to width of 1
-* align `]` of voice names
+* align `]` of voice names, prepending leading space
 
 Example:
 
 ```
-[treble] 1:<c e g> <c f a> 2/3:g f d
+[treble] 1:e a 2/3:g f d
 [bass] 2:c, 1:f, g,
 ```
-* max before alignment = 4 (`2/3:`)
-* max after alignment = 7 (`<c e g>`)
-* total width = 12
-* gcd: 3, so notes go at (zero-numbered beat position * 3 * 12)
-* each note width is 12 (1+4+7)
+* max characters before alignment marker = 4 (`2/3:`)
+* max after alignment marker = 2 (`c,`)
+* combined width = 4 + 2 = 6
+* total beats = 4
+* gcd of denominators = 3
+* discrete ticks = 12. Each beat is 3 ticks.
+* each note width, including leading space, is 7 (1+2+6)
+* beat marker goes at position 4 (from 0)
+* spaces except separator space shown below as `_`
+
+Step 1: place each padded note based on its start position
+
 ```
-|0          |1          |2          |3          |4          |5          |6          |7          |8          |9          |10         |11
- _1:<c e g>                          ____<c f a>                         2/3:g______             ____f______             ____d______
-__2:c,_____                                                              __1:f,_____                         ____g,_____
-```
-```
- 1:<c e g> <c f a> 2/3:g  f    d
- 2:c,                1:f,   g,
-```
-```
-[treble] 1:<c e g> <c f a> 2/3:g  f    d
-  [bass] 2:c,                1:f,   g,
+|0     |1     |2     |3     |4     |5     |6     |7     |8     |9     |10    |11
+ __1:e_               ____a_               2/3:g_        ____f_        ____d_
+ __2:c,                                    __1:f_               ____g,
 ```
 
-It's not clear what to do when a voice spans across multiple lines.
-
-It's possible that we may want bar checks within a single line for compact enough lines.
-
-For strumming morphing, consider something like `<(strum) ...>` or `<(morph> ...>`, or maybe we can have some compact way that can be specified, like `<1: ... >`. When morphing, you can only morph from one chord to another if they have the same number of notes. Notes will be aligned in order of appearance. You can use `!` or repeated notes. When morphing to or from `!`, treat `!` as silent. Possible example:
+Step 2: shrink space columns
 ```
-[v1] <c d f a> <2: c e e g> <2: d ! ! f>
+ 1:e  a 2/3:g f   d
+ 2:c,     1:f  g,
 ```
-would start with `<c d f a>`, then `c` stay the same, `d` and `f` would both slide to `e`, and `a` would slide to `g`. Then `c` would slide to `d` and `g` to `f` while `e` faded out. Duplicating the note should not cause its amplitude to increase.
 
-Unresolved:
-* How do you specify the timing for strum and morph, including how long to spend morphing, when to start, and when to end?
-* I have not done anything about dynamics. There probably needs to be a command for it.
-* There may need to be instrument-specific escape hatches for communicating with the orchestra parts of the file or allowing hand-coded sections.
+Step 3: prepend `]`-aligned voice names:
+```
+[treble] 1:e  a 2/3:g f   d
+  [bass] 2:c,     1:f  g,
+```
 
+# Morphing
+
+One way to support morphing might be to allow a note to start or end with `>`, e.g.
+```
+[v1] 1:c> >e
+```
+If this is done, we probably need a morph directive, like `morph(before=1/8, after=0, when=2)`, indicating to start the morph 1/8 of a beat before the note change and end exactly at the new note, effective 2 beats after the current moment. This makes it similar to accel/decel.
+
+# Strumming
+
+To indicate strumming, we can use something like `strum(gap=beats, on_beat=n)` where `n` is a note number, and notes are strummed in order. For example:
+```
+  [v1] strum(gap=1/12, on_beat=0)
+[v1.0] 1:c
+[v1.1] 1:e
+[v1.2] 1:g
+```
+would strum a C major chord with the `c` on the beat and the `e` and `g` following 1/12 and 2/12 of a beat later.
+```
+  [v1] strum(gap=1/12, on_beat=2)
+[v1.0] 1:c
+[v1.1] 1:e
+[v1.2] 1:g
+```
+would be similar but the strumming would start before the beat with the `g` on the beat.
