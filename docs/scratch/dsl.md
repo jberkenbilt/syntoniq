@@ -59,6 +59,11 @@ A file consists of a sequence of the following, excluding comments and non-funct
 * A macro definition
 * Possibly an escape hatch if needed, but hopefully not
 
+Parameters can have one of these types:
+* Pitch: the pitch notation with a leading `*`
+* Number: an integer, rational, or fixed-point decimal
+* String: a double-quoted string with `\` as a quoting character only for `\"` and `\\`
+
 ## Operations
 
 * `name(k=v, k=v, ...)`
@@ -162,16 +167,31 @@ The first directive must be `version(n)`. This is a file format version, not a s
 
 Tuning
 ```
-tune(base_pitch=..., base_note=..., scale=...)
+tune(base_pitch=..., base_note=..., base_factor=..., scale=...)
 reset_tuning()
 ```
 * Default tuning is 12-EDO with the base pitch of `220*1|4`
-* At most one of `base_pitch` or `base_note` is allowed
+* At most one of `base_pitch`, `base_note`, or `base_factor` is allowed
 * `base_pitch` sets the base pitch of the scale to an absolute pitch
 * `base_note` sets the base pitch to a specified note in the *current* scale
 * `scale` sets the new scale
 * In global scope, this sets the default tuning. In a voice scope, it sets the tuning for the voice.
 * `reset_tuning`: in global scope, resets the default to 12-EDO with `220*1|4`. In voice scope, it resets the voice's tuning to use the default tuning
+
+
+Also, for EDO-based scales:
+```
+note_shift(up=..., down=...)
+```
+to just generate a different note without retuning. This is like an isomorphic notation, useful where 12-tone intervals aren't portable. For example, transposing up a step in 17-EDO, the C..E interval is 6 steps, but the D..F# interval is only 5 steps. Using `note_shift(up=3)` and then using `c` and `e` would generate `d` and `g%`, for the correct interval step size without requiring a retuning.
+
+Examples:
+```
+tune(scale="17-EDO", base_note="e")
+tune(base_factor="*2|17")
+tune(scale="17-EDO", base_pitch=264)
+note_shift(up=1)
+```
 
 # Tempo
 
@@ -318,8 +338,8 @@ use_instrument(name=...) ; global or within a voice
 # Marks, Regions, and Repeats
 
 ```
-mark(name=x)
-repeat(from=mark1, to=mark2)
+mark(name="x")
+repeat(from="mark1", to="mark2")
 skip_repeats()
 ```
 
@@ -328,6 +348,8 @@ It would be useful to be able to play from a mark to another mark, probably just
 It would be useful to be able to generate data about time and/or beat offsets for lines and marks.
 
 # Software Design
+
+The software needs to be self-documenting.
 
 We should be able to parse linearly in one pass to generate a time-ordered sequence of events consisting of instrument change, volume change, note on, and note off.
 
@@ -360,6 +382,69 @@ Defaults:
 * tempo: 60 bpm
 * instrument: csound instrument 1, MIDI program 0
 * tuning: 12-EDO (from C), base pitch = `220*1|4`
+
+## Directives
+
+Generate directive code from a JSON or TOML file that can also generate documentation.
+
+For example, this TOML:
+
+```toml
+[tuning]
+doc = """
+Change the tuning. May be used globally or in a voice scope.
+See also `note_shift`.
+"""
+[tuning.scale.optional]
+type = "string"
+doc = "name of scale"
+[[tuning.base.at-most-one-of]]
+[[tuning.base.at-most-one-of.base_note]]
+type = "string"
+doc = "set scale base to the pitch of the named note in the current scale"
+[[tuning.base.at-most-one-of.base_pitch]]
+type = "pitch"
+doc = "set scale base pitch to absolute pitch"
+[[tuning.base.at-most-one-of.base_factor]]
+type = "pitch"
+doc = "scale base to a factor of the current base pitch"
+```
+
+could generate this rust:
+
+```rust
+pub enum Directive {
+    /// Change the tuning. May be used globally or in a voice scope.
+    /// See also `note_shift`.
+    Tuning(TuningArgs),
+}
+pub struct TuningArgs {
+    /// set scale base to the pitch of the named note in the current scale
+    pub scale: Option<String>,
+    pub base: Option<TuningBase>,
+}
+pub enum TuningBase {
+    /// set scale base to the pitch of the named note in the current scale
+    BaseNote(String),
+    /// set scale base pitch to absolute pitch
+    BasePitch(Pitch),
+    /// scale base to a factor of the current base pitch
+    BaseFactor(Pitch),
+}
+```
+
+and could also generate documentation/built-in help.
+
+Write a tree-sitter grammar and an LSP server. See this chat: https://gemini.google.com/app/665ad5eb23ae0417
+
+Summary:
+* LSP Server crates:
+  * lsp-server: This is the core engine. It handles the low-level JSON-RPC communication protocol over stdin/stdout and provides a simple event loop for receiving messages from the editor.
+  * lsp-types: This crate contains all the Rust structs and enums that correspond directly to the Language Server Protocol specification (e.g., Diagnostic, CompletionItem, Position). It saves you from defining these data structures yourself.
+* Tree-sitter Grammar Reference
+  * Tree-sitter uses a static grammar definition; it is a library that editors use directly, not a server with a protocol.
+  * The core of your work will be creating a grammar.js file. This single file defines your language's syntax using a JavaScript DSL. The Tree-sitter CLI tool then uses this file to generate a C parser (parser.c), which gets compiled into a shared library that editors can load.
+  * The best reference for getting started is the official Tree-sitter documentation: [Creating Parsers](https://tree-sitter.github.io/tree-sitter/creating-parsers)
 
 ## Considerations
 
