@@ -1,5 +1,8 @@
 # Syntoniq DSL
 
+**TODO**: replace the term `voice` with `part`. The term `voice` should be used to represent a single pitch.
+
+
 The goal is to create an ASCII/UTF-8 file format for describing music with arbitrary tuning systems.
 
 Goals:
@@ -37,6 +40,19 @@ DAW usage:
 * If > 16 separate tracks, generate multiple MIDI files
 * Within each MIDI file, assume each track has to be routed separately (but see above)
 * Load MIDI file, route tracks, edit as needed
+
+
+MIDI volume: CC#7 is channel volume, CC#11 is channel expressiveness, often interpreted as a percentage of volume, and then there's note-level velocity and channel and polyphonic (note-level) after-touch. Polyphonic after-touch is often unsupported. The list below is a summary from an AI chat of how I could represent dynamics in MIDI:
+
+* Encode part-level dynamics as CC#7 (Channel Volume) on every MIDI channel used by that part (send before first note and on changes). This gives DAW users a clear, editable track-level automation lane.
+* Use a neutral baseline note velocity for every note (configurable default). 72 (decimal) is a fine sensible default.
+* Encode accents by increasing per-note velocity above the baseline. Reasonable defaults: baseline = 72, simple accent = 96, strong accent (marcato/sfz) = 108. Make these configurable.
+* Optionally also emit CC#11 Expression if you want a finer control layer (but it’s optional and not universally honored).
+* To make files immediately playable in sample-based synths (fluidsynth, timidity), you may want to map major written dynamics to both CC#7 (for DAW automation) and scaled velocities (for sample-layer selection), or at least ensure velocity accents are present. Many SF2 instruments rely on velocity for sample selection/attack.
+
+I will probably want configurable defaults for
+* Whether to use CC7, velocity, or both for dynamics
+* How to map accents to velocity
 
 Project: write/find something for working with MIDI files and figure out what works well as input for timidity and also Reaper. See whether other things like Ardour or Surge can work with these. Validate all of the above assumptions.
 
@@ -82,7 +98,7 @@ See examples below.
 ## Notes
 
 ```
-note ::= [$beats:]$note_name[$octave][~]
+note ::= [$beats:]$note_name[$octave][(mods)][~|>]
 note_name ::= <see below>
 octave ::= `'`[n] | `,`[n]
 beats ::= rational-or-decimal
@@ -92,17 +108,19 @@ If `beats` is omitted, take from the previous note on the same line. It is manda
 
 Beats may be `a`, `a/b`, or `a.b`.
 
-If a note ends with `~`, it is not turned off at the end of its duration. This can be used to implement ties when a pitch is held for a long time.
+If a note ends with `~`, it is not turned off at the end of its duration. This can be used to implement ties when a pitch is held for a long time. If a note ends with `>`, it means its pitch should slide to the next pitch; see morphing below.
 
 The note `~` by itself does nothing, making useful as a rest, continuation of a tied note, or way to position a dynamic.
+
+Modifiers can potentially be used for accents or length modifiers. We could support `>` and `^` for accents and `.` and `_` for legato, though it's not entirely clear what these would do. Maybe I can have a parameter that sets space between notes that can be locally modified with `.` and `_`. Probably not in the first iteration.
 
 The `|` symbol by itself may be used as an alignment check. It doesn't have to match a bar line in the traditional sense as there is no enforced time signature. (TODO: consider whether there should be a time signature that forces bar checks to align with bar lines.)
 
 Pitches are absolute (possibly transposed). No relative octaves.
 
-TODO: work out valid characters in note names. Note names should avoid any of `~:=<>@,';` but can contain numbers other special characters, including `^`, `*`, `/`, `|`, and `.`, making it possible to use pitches as note names.
+TODO: work out valid characters in note names. Note names should avoid any of `()~:=<>@,';` but can contain numbers other special characters, including `^`, `*`, `/`, `|`, and `.`, making it possible to use pitches as note names. It would useful to also allow `!` since that is used in ASCII sagittal notation sometimes, and all of `+-#%` are critical. It probably makes sense t disallow `[]{}$`. Whatever I decide, there needs to be a fully defined alphabet for note names for forward compatibility.
 
-I would like to be able to morph smoothly from one pitch to another, e.g., to implement a glissando. Ideally, it should be possible to notate Fabio Costa's Etude on Minor Thirds as well as Elegy Waltz in EDO-17. I plan to use parts of these for demonstration purposes if I can get permission.
+I would like to be able to morph smoothly from one pitch to another, e.g., to implement a glissando. Ideally, it should be possible to notate Fabio Costa's Etude on Minor Thirds as well as Elegy Waltz in EDO-17. I plan to use parts of these for demonstration purposes if I can get permission. See morhping and strumming below.
 
 By convention, these ASCII symbols are used for accidentals.
 
@@ -127,6 +145,10 @@ Examples:
 * `=n` -- set the volume immediately to `n`
 * `m<` -- start a crescendo; the next dynamic must be `<n`. Volume is linearly interpolated by m and n, with m < n
 * `m>` -- start a decrescendo; the next dynamic must be `>n`. Volume is linearly interpolated by m and n, with m > n
+
+Can only be expressed at the voice level.
+
+Considerations: do we want a character before? Do we want to distinguish cresendo and decrescendo? I'm not sure whether the extra checks are helpful or annoying. We could just make the dynamic be `n@beat` or `n@beat>` to indicate a fixed or changing dynamic. The `@` syntactically disambiguates.
 
 ## Macros
 
@@ -228,7 +250,7 @@ The opening two bars of my rainbow medley with each part as a separate voice. No
 [v5]   4:~                 | 2:a,          1:g, 1/2:f, e,
 ```
 
-The same thing but with a single voice containing more than one note per voice, a dynamic swell affecting all but note 0, and a fixed dynamic for note 0:
+The same thing but with a single voice containing more than one note per voice with a dynamic swell:
 
 ```
 [v1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g
@@ -236,9 +258,9 @@ The same thing but with a single voice containing more than one note per voice, 
 [v1.2]    2:~     1:b,  b%,   |    2:c             b,
 [v1.3]    4:~                 |    2:~             a,
 [v1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
-[v1.0] =112@0                 |
   [v1]  =64@0   64>@2         | >96>@0         >64@2
 ```
+
 
 
 It would be nice to have tool support for alignment. Within a score block, align notes so the beginning of the pitch part of notes or the location part of dynamics are aligned rhythmically after any beat markers as in the above examples. See below for an algorithm.
@@ -448,4 +470,4 @@ Summary:
 
 ## Considerations
 
-* A scale like 31-EDO will overflow 128 notes. It doesn't matter for csound. For MIDI, can we should automatically split the tracks.
+A scale like 31-EDO will overflow 128 notes. It doesn't matter for csound. For MIDI, can we should automatically split the tracks.
