@@ -1,16 +1,13 @@
 # Syntoniq DSL
 
-**TODO**: replace the term `voice` with `part`. The term `voice` should be used to represent a single pitch.
-
-
 The goal is to create an ASCII/UTF-8 file format for describing music with arbitrary tuning systems.
 
 Goals:
-* Use a score-like layout with the ability to automatically align notes and check for voice synchronization
+* Use a score-like layout with the ability to automatically align notes and check for synchronization across parts and monophonic voices ("notes") within a part
 * Represent any scale, pitch, or tuning using my pitch representation with support for chaining
 * Represent notes, chords, rhythms, and dynamics with good granularity
 * Support strumming and morphing
-* Support multiple voices
+* Support multiple parts and multiple voices per part
 * Generate
   * Live csound playback including with selected regions or voices
   * csound files
@@ -26,12 +23,19 @@ Non-goals:
 * Produce fully nuanced, performance-ready files -- if you want that, use a MIDI target and do further work in a DAW
 * Drums, at least for now
 
+# Broad Terminology
+
+* *Part*: something akin to a score line, e.g., an instrument, one staff of a piano score, etc. At a any given time, a part may be assigned a single tuning, instrument, and dynamic, and there are other part-specific properties like strum rate. These can be inherited from global properties but may not be overridden at the note level.
+* *Note*: a single rendered pitch. Chords are represented as multiple notes within a part. You can think of a note as a single, monophonic sound within a part.
+
+A note about the word *voice*: I previously used *voice* to refer to what I now call *part*, but I abandoned this terminology because a part may be polyphonic, and it is useful to be able to use the word "voice" to refer to a single monophonic voice within a part. The word "voice" no longer refers to a semantic or syntactic element within the DSL.
+
 # MIDI thoughts
 
 See ~/Q/tasks/reference/midi.md
 
 General strategy:
-* Generate a separate track per voice
+* Generate a separate track per part
 * Bulk load MTS non-real-time at time 0 in the track for the initial scale; send real-time bulk reload if the scale changes. If morphing, use pitch bend before switching, then clear pitch bend. Note that morphing from one tuning to another can be supported by the synth, so whether or not to try to morph manually might be a configuration option.
 * Assume separate routing per track
   * If we use non-overlapping channels AND all tracks using the same tuning for the whole time, then our output would work with all tracks routed to the same output; maybe make this an option? This would also make it possible to use timidity. Perhaps the option would be to generate a separate MIDI file for each group of tracks that have to be routed separately. In that case, if all tracks had the same tuning and didn't require a total of more than 15 channels (excluding 10 for percussion -- no reason to avoid channel 0), the whole thing could go to a single MIDI file which could be played with timidity.
@@ -71,7 +75,7 @@ Blank lines are ignored except when they terminate score blocks.
 A file consists of a sequence of the following, excluding comments and non-functional blank lines:
 
 * Global directives: lines consisting of operations, which look like function calls, and have global scope
-* Score blocks: a sequence of one or more lines, each starting with [voice.note], both preceded by and followed by a blank line
+* Score blocks: a sequence of one or more lines, each starting with [part.note], both preceded by and followed by a blank line
 * A macro definition
 * Possibly an escape hatch if needed, but hopefully not
 
@@ -85,11 +89,11 @@ Parameters can have one of these types:
 * `name(k=v, k=v, ...)`
 * must be contained within a single line
 * multiple may occur on one line
-* If not in a score block, scope is global; otherwise, scope is for the voice
+* If not in a score block, scope is global; otherwise, scope is for the part.
 
 ## Score Blocks
 
-Each line starts with `[voice]` or `[voice.n]`, where `n` is a note number. `n` may be omitted if there is only a single note, in which case the note number is `0`. If `n` is omitted, whatever is present refers to all notes on the line. Some operations, such as tuning, are only allowed to apply to the entire voice.
+Each line starts with `[part]` or `[part.n]`, where `n` is a note number. `n` may be omitted if there is only a single note, in which case the note number is `0`. If `n` is omitted, whatever is present refers to all notes on the line. Some operations, such as tuning, are only allowed to apply to the entire part.
 
 A score block must be both preceded and followed by a blank line, the beginning of the file, or the end of the file.
 
@@ -146,7 +150,7 @@ Examples:
 * `m<` -- start a crescendo; the next dynamic must be `<n`. Volume is linearly interpolated by m and n, with m < n
 * `m>` -- start a decrescendo; the next dynamic must be `>n`. Volume is linearly interpolated by m and n, with m > n
 
-Can only be expressed at the voice level.
+Can only be expressed at the part level.
 
 Considerations: do we want a character before? Do we want to distinguish cresendo and decrescendo? I'm not sure whether the extra checks are helpful or annoying. We could just make the dynamic be `n@beat` or `n@beat>` to indicate a fixed or changing dynamic. The `@` syntactically disambiguates.
 
@@ -177,9 +181,9 @@ and the invocation of a multi-line macro must be on a line by itself.
 
 Macros may call other macros and are lexically expanded from top down. They can only reference previously defined macros. Macros may not define macros.
 
-## Voices
+## Parts
 
-A voice maps to a track for midi and an instrument for csound.
+A part maps (approximately) to a track for MIDI and an instrument for csound. In some cases, a part may have to be represented by more than one MIDI track, and it may often be possible to use the same csound instrument for more than one part.
 
 # Version
 
@@ -197,8 +201,8 @@ reset_tuning()
 * `base_pitch` sets the base pitch of the scale to an absolute pitch
 * `base_note` sets the base pitch to a specified note in the *current* scale
 * `scale` sets the new scale
-* In global scope, this sets the default tuning. In a voice scope, it sets the tuning for the voice.
-* `reset_tuning`: in global scope, resets the default to 12-EDO with `220*1|4`. In voice scope, it resets the voice's tuning to use the default tuning
+* In global scope, this sets the default tuning. In part scope, it sets the tuning for the part.
+* `reset_tuning`: in global scope, resets the default to 12-EDO with `220*1|4`. In part scope, it resets the part's tuning to use the default tuning
 
 
 Also, for EDO-based scales:
@@ -236,29 +240,29 @@ decel(start=90, end=60, when=2, for=4)
 
 # Row repeat
 
-The content of a voice line may be just `^` to indicate to replicate the previous line. This can be useful especially for applying dynamics or other parameters to multiple voices without having repeat them or use macros.
+The content of a part line may be just `^` to indicate to replicate the previous line. This can be useful especially for applying dynamics or other parameters to multiple parts without having repeat them or use macros.
 
 # Examples
 
-The opening two bars of my rainbow medley with each part as a separate voice. Note the use of the bar check and the alignment, which is optional and can be automated. There is an implicit bar check at the end of each line. If a bar check appears on any line, it must appear on all lines. For dynamics, the bar check just serves as the anchor point for beat offsets.
+The opening two bars of my rainbow medley with each part as a separate part. Note the use of the bar check and the alignment, which is optional and can be automated. There is an implicit bar check at the end of each line. If a bar check appears on any line, it must appear on all lines. For dynamics, the bar check just serves as the anchor point for beat offsets.
 
 ```
-[v1] 1/2:e g e g e g e   g |   f g     f g   f g    f  g
-[v2]   1:d   c   d   c     |   e   1/2:d e   d e    d  e
-[v3]   2:~     1:b,  b%,   | 2:c             b,
-[v4]   4:~                 | 2:~             a,
-[v5]   4:~                 | 2:a,          1:g, 1/2:f, e,
+[p1] 1/2:e g e g e g e   g |   f g     f g   f g    f  g
+[p2]   1:d   c   d   c     |   e   1/2:d e   d e    d  e
+[p3]   2:~     1:b,  b%,   | 2:c             b,
+[p4]   4:~                 | 2:~             a,
+[p5]   4:~                 | 2:a,          1:g, 1/2:f, e,
 ```
 
-The same thing but with a single voice containing more than one note per voice with a dynamic swell:
+The same thing but with a single part containing more than one note per part with a dynamic swell:
 
 ```
-[v1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g
-[v1.1]    1:d   c   d   c     |      e   1/2:d e   d e    d  e
-[v1.2]    2:~     1:b,  b%,   |    2:c             b,
-[v1.3]    4:~                 |    2:~             a,
-[v1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
-  [v1]  =64@0   64>@2         | >96>@0         >64@2
+[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g
+[p1.1]    1:d   c   d   c     |      e   1/2:d e   d e    d  e
+[p1.2]    2:~     1:b,  b%,   |    2:c             b,
+[p1.3]    4:~                 |    2:~             a,
+[p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
+  [p1]  =64@0   64>@2         | >96>@0         >64@2
 ```
 
 
@@ -275,7 +279,7 @@ Other notes:
 * prepend each note with one extra space
 * place notes based on numerator of n/GCD
 * shrink vertical columns of spaces to width of 1
-* align `]` of voice names, prepending leading space
+* align `]` of part names, prepending leading space
 
 Example:
 
@@ -307,7 +311,7 @@ Step 2: shrink space columns
  2:c,     1:f  g,
 ```
 
-Step 3: prepend `]`-aligned voice names:
+Step 3: prepend `]`-aligned part names:
 ```
 [treble] 1:e  a 2/3:g f   d
   [bass] 2:c,     1:f  g,
@@ -317,7 +321,7 @@ Step 3: prepend `]`-aligned voice names:
 
 One way to support morphing might be to allow a note to start or end with `>`, e.g.
 ```
-[v1] 1:c> >e
+[p1] 1:c> >e
 ```
 If this is done, we probably need a morph directive, like `morph(before=1/8, after=0, when=2)`, indicating to start the morph 1/8 of a beat before the note change and end exactly at the new note, effective 2 beats after the current moment. This makes it similar to accel/decel.
 
@@ -325,17 +329,17 @@ If this is done, we probably need a morph directive, like `morph(before=1/8, aft
 
 To indicate strumming, we can use something like `strum(gap=beats, on_beat=n)` where `n` is a note number, and notes are strummed in order. For example:
 ```
-  [v1] strum(gap=1/12, on_beat=0)
-[v1.0] 1:c
-[v1.1] 1:e
-[v1.2] 1:g
+  [p1] strum(gap=1/12, on_beat=0)
+[p1.0] 1:c
+[p1.1] 1:e
+[p1.2] 1:g
 ```
 would strum a C major chord with the `c` on the beat and the `e` and `g` following 1/12 and 2/12 of a beat later.
 ```
-  [v1] strum(gap=1/12, on_beat=2)
-[v1.0] 1:c
-[v1.1] 1:e
-[v1.2] 1:g
+  [p1] strum(gap=1/12, on_beat=2)
+[p1.0] 1:c
+[p1.1] 1:e
+[p1.2] 1:g
 ```
 would be similar but the strumming would start before the beat with the `g` on the beat.
 
@@ -351,7 +355,7 @@ If we support midi and csound, we need different ways to represent instruments. 
 
 ```
 define_instrument(name=..., midi=..., csound=...)
-use_instrument(name=...) ; global or within a voice
+use_instrument(name=...) ; global or within a part
 ```
 * name: generic
 * midi: program/instrument number
@@ -390,14 +394,14 @@ It would be nice for an error to contain a trace. Example:
   * https://github.com/zesterer/ariadne
   * https://github.com/brendanzab/codespan
 
-Final parse tree should look like a list of global operations, which may be global or tied to voices (or maybe just a voice), notes, and dynamics. Once fully parsed, just walk through this to generate output.
+Final parse tree should look like a list of global operations, which may be global or tied to parts (or maybe just a part), notes, and dynamics. Once fully parsed, just walk through this to generate output.
 
-For csound, we should design some kind of instrument template that allows dynamic volume change, but changes to instruments can just be a voice to instrument mapping change in the software. For MIDI, we will have to maintain some kind of track/channel mappings, but it shouldn't be very hard. Probably the rule should be to put as many notes as possible in one channel, moving out to additional channels if we have differences in channel-specific settings like volume or pitch bend.
+For csound, we should design some kind of instrument template that allows dynamic volume change, but changes to instruments can just be a part to instrument mapping change in the software. For MIDI, we will have to maintain some kind of track/channel mappings, but it shouldn't be very hard. Probably the rule should be to put as many notes as possible in one channel, moving out to additional channels if we have differences in channel-specific settings like volume or pitch bend.
 
 Everything should have simple defaults. The following should be a valid file:
 ```
 version(1)
-[v1] 1:c
+[p1] 1:c
 ```
 
 Defaults:
@@ -414,7 +418,7 @@ For example, this TOML:
 ```toml
 [tuning]
 doc = """
-Change the tuning. May be used globally or in a voice scope.
+Change the tuning. May be used globally or in a part scope.
 See also `note_shift`.
 """
 [tuning.scale.optional]
@@ -436,7 +440,7 @@ could generate this rust:
 
 ```rust
 pub enum Directive {
-    /// Change the tuning. May be used globally or in a voice scope.
+    /// Change the tuning. May be used globally or in a part scope.
     /// See also `note_shift`.
     Tuning(TuningArgs),
 }
