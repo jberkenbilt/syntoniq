@@ -50,6 +50,15 @@ pub struct Factor {
     exp: Ratio<i32>,
 }
 
+impl From<Ratio<u32>> for Factor {
+    fn from(base: Ratio<u32>) -> Self {
+        Self {
+            base,
+            exp: Ratio::from_integer(1),
+        }
+    }
+}
+
 impl Display for Factor {
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         fn write_frac(f: &mut Formatter<'_>, num: u32, den: u32) -> fmt::Result {

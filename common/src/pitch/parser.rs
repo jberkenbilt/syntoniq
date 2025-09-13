@@ -1,4 +1,5 @@
 use crate::pitch::{Factor, Pitch};
+use num_rational::Ratio;
 use std::fmt::{Display, Formatter};
 use winnow::ascii::dec_int;
 use winnow::combinator::{alt, cut_err, opt, preceded, separated};
@@ -10,6 +11,11 @@ use winnow::{ModalParser, Parser};
 #[derive(Debug)]
 struct DetailedError {
     msg: String,
+}
+impl DetailedError {
+    pub fn new(s: impl Into<String>) -> Self {
+        Self { msg: s.into() }
+    }
 }
 impl Display for DetailedError {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -31,9 +37,9 @@ fn at_most_n_digits<'s>(
                 if max_digits == 0 || s.len() <= max_digits {
                     Ok(s)
                 } else {
-                    Err(DetailedError {
-                        msg: format!("maximum allowed digits is {max_digits}"),
-                    })
+                    Err(DetailedError::new(format!(
+                        "maximum allowed digits is {max_digits}"
+                    )))
                 }
             })
             .context(StrContext::Label("number digit length check"))
@@ -44,7 +50,7 @@ fn at_most_n_digits<'s>(
 }
 
 /// Recognize a ratio: `a[.nnn]/b`
-fn ratio<'s>() -> impl ModalParser<&'s str, Factor, ContextError<StrContext>> {
+pub(crate) fn ratio<'s>() -> impl ModalParser<&'s str, Ratio<u32>, ContextError<StrContext>> {
     const MAX_DECIMALS: usize = 3;
     (
         digits().context(StrContext::Label("ratio numerator")),
@@ -69,8 +75,12 @@ fn ratio<'s>() -> impl ModalParser<&'s str, Factor, ContextError<StrContext>> {
             };
             let numerator = num_dec * scale + num_frac;
             let denominator = denominator.unwrap_or(1) * scale;
-            Factor::new(numerator, denominator, 1, 1)
-                .map_err(|e| DetailedError { msg: e.to_string() })
+            if numerator == 0 || denominator == 0 {
+                return Err(DetailedError::new(
+                    "zero may not appear in a rational number",
+                ));
+            }
+            Result::<_, DetailedError>::Ok(Ratio::new(numerator, denominator))
         })
 }
 
@@ -107,12 +117,12 @@ fn exponent<'s>() -> impl ModalParser<&'s str, Factor, ContextError<StrContext>>
                 None => (2, 1),
             };
             Factor::new(base_num, base_den, exp_num, exp_den)
-                .map_err(|e| DetailedError { msg: e.to_string() })
+                .map_err(|e| DetailedError::new(e.to_string()))
         })
 }
 
 fn factor<'s>() -> impl ModalParser<&'s str, Factor, ContextError<StrContext>> {
-    alt((exponent(), ratio())).context(StrContext::Label("factor"))
+    alt((exponent(), ratio().map(Factor::from))).context(StrContext::Label("factor"))
 }
 
 pub(super) fn pitch<'s>() -> impl ModalParser<&'s str, Pitch, ContextError<StrContext>> {
@@ -155,28 +165,28 @@ mod tests {
             .parse_next(&mut input)
             .map_err(|e| anyhow!("{e:?}"))?;
         assert_eq!(input, "*2.1/3*");
-        assert_eq!(f, Factor::new(2, 3, 1, 1)?);
+        assert_eq!(f, Ratio::new(2, 3));
 
         let mut input = "264";
         let f = ratio()
             .parse_next(&mut input)
             .map_err(|e| anyhow!("{e:?}"))?;
         assert!(input.is_empty());
-        assert_eq!(f, Factor::new(264, 1, 1, 1)?);
+        assert_eq!(f, Ratio::new(264, 1));
 
         let mut input = "2.1/3";
         let f = ratio()
             .parse_next(&mut input)
             .map_err(|e| anyhow!("{e:?}"))?;
         assert!(input.is_empty());
-        assert_eq!(f, Factor::new(7, 10, 1, 1)?);
+        assert_eq!(f, Ratio::new(7, 10));
 
         let mut input = "2.001/3";
         let f = ratio()
             .parse_next(&mut input)
             .map_err(|e| anyhow!("{e:?}"))?;
         assert!(input.is_empty());
-        assert_eq!(f, Factor::new(667, 1000, 1, 1)?);
+        assert_eq!(f, Ratio::new(667, 1000));
 
         let mut input = "2.0001/3";
         let e = ratio().parse_next(&mut input).unwrap_err();
