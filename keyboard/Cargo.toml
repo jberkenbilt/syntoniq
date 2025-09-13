@@ -17,10 +17,10 @@ anyhow.workspace = true
 askama.workspace = true
 chrono.workspace = true
 flume = "0.11.1"
-tokio = { version = "1.46.1", features = ["full"] }
+tokio = { version = "1.47.1", features = ["full"] }
 axum = { version = "0.8.4", features = ["macros", "json"] }
 tokio-stream = { version = "0.1.17", features = ["sync"] }
 rust-embed = "8.7.2"
 
 [build-dependencies]
-bindgen = "0.72.0"
+bindgen = "0.72.1"
