@@ -224,11 +224,11 @@ impl Pitch {
 
     /// Parse a pitch from a string.
     pub fn parse(s: &str) -> anyhow::Result<Self> {
-        parser::pitch().parse(s).map_err(to_anyhow)
+        s.parse::<Self>()
     }
 
     pub fn must_parse(s: &str) -> Self {
-        Self::parse(s).unwrap()
+        s.parse::<Self>().unwrap()
     }
 
     pub fn as_float(&self) -> f32 {
@@ -258,7 +258,7 @@ impl FromStr for Pitch {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Self::parse(s)
+        parser::pitch().parse(s).map_err(to_anyhow)
     }
 }
 
@@ -302,7 +302,7 @@ impl<'de> Deserialize<'de> for Pitch {
             where
                 E: de::Error,
             {
-                Pitch::parse(v).map_err(E::custom)
+                v.parse().map_err(E::custom)
             }
 
             // Accept borrowed Cow<str> as well
@@ -310,7 +310,7 @@ impl<'de> Deserialize<'de> for Pitch {
             where
                 E: de::Error,
             {
-                Pitch::parse(v).map_err(E::custom)
+                v.parse().map_err(E::custom)
             }
         }
 
@@ -324,7 +324,7 @@ mod tests {
 
     #[test]
     fn test_parse() {
-        let p = Pitch::parse("440*^3|12*3/2").unwrap();
+        let p = Pitch::must_parse("440*^3|12*3/2");
         assert_eq!(
             p,
             Pitch {
@@ -334,14 +334,14 @@ mod tests {
                 ],
             }
         );
-        let p = Pitch::parse("261.626*3/2").unwrap();
+        let p = Pitch::must_parse("261.626*3/2");
         assert_eq!(
             p,
             Pitch {
                 factors: vec![Factor::new(392439, 1000, 1, 1).unwrap(),],
             }
         );
-        let p = Pitch::parse("500*4/3^4|7").unwrap();
+        let p = Pitch::must_parse("500*4/3^4|7");
         assert_eq!(
             p,
             Pitch {
