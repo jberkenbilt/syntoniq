@@ -26,10 +26,16 @@ note_names = ["C", "C♯", "D♭", "D", "D♯", "E♭", "E", "E♯", "F", "F♯"
               "G", "G♯", "A♭", "A", "A♯", "B♭", "B", "B♯"]
 
 [[layout]]
-name = "19-EDO-2x1"
+name = "19-EDO-3x2"
 base = {row = 3, col = 2}
 scale_name = "19-EDO"
 steps = {h = 3, v = 2}
+
+[[layout]]
+name = "19-EDO-3x2"
+base = {row = 3, col = 2}
+scale_name = "19-EDO"
+steps = {h = 3, v = 8}
 
 [[scale]]
 name = "31-EDO"
