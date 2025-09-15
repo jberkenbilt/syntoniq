@@ -1,6 +1,7 @@
 use super::*;
+use winnow::combinator::{delimited, terminated};
 
-pub(super) fn identifier<'s>() -> impl Parser<Inp<'s>, &'s str, CErr> {
+pub(super) fn raw_identifier<'s>() -> impl Parser<Inp<'s>, &'s str, CErr> {
     (
         take_while(1, |c: char| AsChar::is_alpha(c)),
         take_while(0.., |c: char| AsChar::is_alphanum(c) || c == '_'),
@@ -78,6 +79,35 @@ pub(super) fn string_literal<'s>(
     }
 }
 
+fn optional_space(input: &mut &[Spanned<LowToken>]) -> winnow::Result<()> {
+    opt(one_of(|x: Spanned<LowToken>| {
+        matches!(x.t, LowToken::Space)
+    }))
+    .parse_next(input)
+    .map(|_| ())
+}
+
+fn optional_space_or_newline(input: &mut &[Spanned<LowToken>]) -> winnow::Result<()> {
+    take_while(0.., |x: Spanned<LowToken>| {
+        matches!(x.t, LowToken::Space | LowToken::Newline | LowToken::Comment)
+    })
+    .parse_next(input)
+    .map(|_| ())
+}
+
+fn param_separator(input: &mut &[Spanned<LowToken>]) -> winnow::Result<()> {
+    (optional_space, character(','), optional_space_or_newline)
+        .parse_next(input)
+        .map(|_| ())
+}
+
+fn character(ch: char) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<(char, usize)> {
+    move |input| {
+        one_of(|x: Spanned<LowToken>| x.data.len() == 1 && x.data.starts_with(ch))
+            .parse_next(input)
+            .map(|x| (ch, x.span.start))
+    }
+}
 fn ratio(
     diags: &Diagnostics,
 ) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<(Ratio<u32>, Span)> {
@@ -87,11 +117,11 @@ fn ratio(
         (
             one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
             opt(preceded(
-                one_of(|x: Spanned<LowToken>| x.data == "."),
+                character('.'),
                 one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
             )),
             opt(preceded(
-                one_of(|x: Spanned<LowToken>| x.data == "/"),
+                character('/'),
                 one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
             )),
         )
@@ -175,17 +205,17 @@ fn exponent(
             opt((
                 one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
                 opt(preceded(
-                    one_of(|x: Spanned<LowToken>| x.data == "/"),
+                    character('/'),
                     one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
                 )),
             )),
             preceded(
-                one_of(|x: Spanned<LowToken>| x.data == "^"),
+                character('^'),
                 (
-                    opt(one_of(|x: Spanned<LowToken>| x.data == "-")),
+                    opt(character('-')),
                     one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
                     preceded(
-                        one_of(|x: Spanned<LowToken>| x.data == "|"),
+                        character('|'),
                         one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
                     ),
                 ),
@@ -213,8 +243,8 @@ fn exponent(
                 };
                 let mut exp_num: i32 = exp_num_t.data.parse().unwrap();
                 let exp_den = exp_den_t.data.parse().unwrap();
-                if let Some(sign) = sign_t {
-                    span_start = sign.span.start;
+                if let Some((_, offset)) = sign_t {
+                    span_start = offset;
                     exp_num = -exp_num;
                 };
                 match Factor::new(base_num, base_den, exp_num, exp_den) {
@@ -238,12 +268,8 @@ pub(super) fn pitch_or_ratio(
     move |input| {
         let as_ratio = peek(ratio(diags)).parse_next(input);
         preceded(
-            opt(one_of(|x: Spanned<LowToken>| x.data == "*")),
-            separated(
-                1..,
-                factor(diags),
-                one_of(|x: Spanned<LowToken>| x.data == "*"),
-            ),
+            opt(character('*')),
+            separated(1.., factor(diags), character('*')),
         )
         .with_taken()
         .parse_next(input)
@@ -262,6 +288,88 @@ pub(super) fn pitch_or_ratio(
                 PitchOrRatio::Pitch(p)
             }
         })
+    }
+}
+
+pub(super) fn identifier<'s>(
+    input: &mut &[Spanned<'s, LowToken>],
+) -> winnow::Result<Spanned<'s, LowToken>> {
+    one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::Identifier)).parse_next(input)
+}
+
+pub(super) fn string(
+    _diags: &Diagnostics,
+) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<String> {
+    move |input| {
+        one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawString))
+            .parse_next(input)
+            .map(|tok| {
+                if tok.data.len() < 2 {
+                    unreachable!("length of raw string token < 2");
+                }
+                // We already know this string starts and ends with `"`.
+                let data = &tok.data[1..tok.data.len() - 1];
+                data.chars().filter(|c| *c != '\\').collect()
+            })
+    }
+}
+
+pub(super) fn param_value(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<ParamValue> {
+    move |input| {
+        alt((
+            string(diags).map(ParamValue::String),
+            pitch_or_ratio(diags).map(ParamValue::PitchOrRatio),
+        ))
+        .parse_next(input)
+    }
+}
+
+pub(super) fn param(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<Param> {
+    move |input| {
+        (
+            terminated(
+                identifier,
+                delimited(optional_space, character('='), optional_space),
+            ),
+            param_value(diags),
+        )
+            .parse_next(input)
+            .map(|(key_t, value)| Param {
+                key: key_t.data.to_string(),
+                value,
+            })
+    }
+}
+
+pub(super) fn directive(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<Directive> {
+    move |input| {
+        (
+            terminated(
+                identifier,
+                (optional_space, character('('), optional_space_or_newline),
+            ),
+            terminated(
+                separated(0.., param(diags), param_separator),
+                (
+                    opt(param_separator),
+                    optional_space_or_newline,
+                    character(')'),
+                ),
+            ),
+        )
+            .parse_next(input)
+            .map(
+                |(name_t, params): (Spanned<LowToken>, Vec<Param>)| Directive {
+                    name: name_t.data.to_string(),
+                    params,
+                },
+            )
     }
 }
 

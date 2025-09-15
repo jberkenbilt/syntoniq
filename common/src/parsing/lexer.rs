@@ -2,6 +2,7 @@
 #![allow(clippy::needless_lifetimes)]
 
 use crate::parsing::diagnostics::{Diagnostics, Span, code};
+use crate::parsing::lexer::parsers::pitch_or_ratio;
 use crate::pitch::{Factor, Pitch};
 use crate::to_anyhow;
 use anyhow::anyhow;
@@ -43,7 +44,7 @@ pub enum LowToken {
     RawString,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 /// Represents a pitch. All ratios also parse into pitches. If something that parsed into
 /// a pitch was originally specified as a ratio, you can get the value as a ratio. During the
 /// lexical phase, we never know whether a ratio is supposed to be a ratio or a pitch. During the
@@ -69,19 +70,53 @@ impl PitchOrRatio {
     }
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub enum ParamValue {
+    PitchOrRatio(PitchOrRatio),
+    String(String),
+}
+impl ParamValue {
+    pub fn try_into_pitch(self) -> Option<Pitch> {
+        match self {
+            ParamValue::PitchOrRatio(pr) => Some(pr.into_pitch()),
+            ParamValue::String(_) => None,
+        }
+    }
+
+    pub fn try_into_ratio(self) -> Option<Ratio<u32>> {
+        match self {
+            ParamValue::PitchOrRatio(pr) => pr.try_into_ratio(),
+            ParamValue::String(_) => None,
+        }
+    }
+
+    pub fn try_into_string(self) -> Option<String> {
+        match self {
+            ParamValue::PitchOrRatio(_r) => None,
+            ParamValue::String(s) => Some(s),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Param {
+    pub key: String,
+    pub value: ParamValue,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Directive {
+    pub name: String,
+    pub params: Vec<Param>,
+}
+
 #[derive(Debug, Clone)]
 pub enum Token {
     // Space, comments
     Space,
     Newline,
     Comment,
-    // Punctuation
-    Punctuation(char),
-    // Things that literally map to the input
-    Identifier,
-    // Higher-level
-    String(String),
-    PitchOrRatio(PitchOrRatio),
+    Directive(Directive),
 }
 
 fn is_space(x: char) -> bool {
@@ -141,7 +176,7 @@ pub fn lex_pass1<'s>(src: &'s str) -> Result<Vec<Spanned<'s, LowToken>>, Diagnos
                 parse_as!(parsers::raw_number(&diags), LowToken::RawNumber)
             }
             x if x.is_ascii_punctuation() => grab_char_as!(LowToken::Punctuation),
-            x if AsChar::is_alpha(x) => parse_as!(parsers::identifier(), LowToken::Identifier),
+            x if AsChar::is_alpha(x) => parse_as!(parsers::raw_identifier(), LowToken::Identifier),
             _ => {
                 // discard token
                 _ = any::<_, CErr>.parse_next(&mut input);
@@ -221,13 +256,6 @@ fn consume_one<T>(items: &mut &[T]) {
     }
 }
 
-// TODO: needed?
-fn _consume_until<T: Debug, F: Fn(&T) -> bool>(items: &mut &[T], pred: F) {
-    while !items.is_empty() && !pred(&items[0]) {
-        consume_one(items)
-    }
-}
-
 fn promote<'s>(lt: &Spanned<'s, LowToken>, t: Token) -> Spanned<'s, Token> {
     Spanned {
         span: lt.span,
@@ -263,43 +291,20 @@ fn handle_top_token<'s>(
 ) {
     // Look at the token. Some tokens can be immediately handled. Others indicate a branch
     // for further processing.
-    let mut parse_pitch = false;
+    let mut parse_directive = false;
     let tok = &input[0];
     // At the top level, all we're allowed to have is directives, which consist of identifiers,
     // numbers, pitches, strings, and the syntactic punctation for identifiers. Anything else
     // (other than spaces and comments) is an error.
     let out_tok = match &tok.t {
-        LowToken::RawString => {
-            // Convert to an owned without delimiters and with quoted characters resolved.
-            if tok.data.len() < 2 {
-                // We already know this string starts and ends with `"`.
-                unreachable!("length of raw string token < 2");
-            }
-            let data = &tok.data[1..tok.data.len() - 1];
-            let s: String = data.chars().filter(|c| *c != '\\').collect();
-            // We can just manually copy the token and advance input rather than using a parser.
-            Some(promote_and_consume_first(input, Token::String(s)))
-        }
-        LowToken::RawNumber => {
-            parse_pitch = true;
-            None
-        }
         LowToken::Space => Some(promote_and_consume_first(input, Token::Space)),
         LowToken::Newline => Some(promote_and_consume_first(input, Token::Newline)),
         LowToken::Comment => Some(promote_and_consume_first(input, Token::Comment)),
-        LowToken::Punctuation => {
-            let ch = tok.data.chars().next().expect("empty punctuation token");
-            if "*-^".contains(ch) {
-                parse_pitch = true;
-                None
-            } else if "(),=".contains(ch) {
-                // This character part of calling a directive or valid in a pitch or number.
-                Some(promote_and_consume_first(input, Token::Punctuation(ch)))
-            } else {
-                None
-            }
+        LowToken::Identifier => {
+            parse_directive = true;
+            None
         }
-        LowToken::Identifier => Some(promote_and_consume_first(input, Token::Identifier)),
+        _ => None,
     };
     if let Some(tok) = out_tok {
         trace(format!("lex pass 2: {tok:?}"));
@@ -307,18 +312,15 @@ fn handle_top_token<'s>(
         return;
     }
     let offset = tok.span.start;
-    if !parse_pitch {
-        diags.err(code::SYNTAX, offset..offset + 1, "unexpected character");
+    if !parse_directive {
+        diags.err(code::SYNTAX, tok.span, "unexpected item");
         consume_one(input);
         return;
     }
 
-    if let Ok((pr, tokens)) = parsers::pitch_or_ratio(diags)
-        .with_taken()
-        .parse_next(input)
-    {
+    if let Ok((d, tokens)) = parsers::directive(diags).with_taken().parse_next(input) {
         let span = merge_span(tokens);
-        let t = Token::PitchOrRatio(pr);
+        let t = Token::Directive(d);
         let data = &src[span];
         out.push(Spanned { span, data, t })
     } else {
@@ -331,14 +333,21 @@ fn handle_top_token<'s>(
 pub fn parse_pitch(s: &str) -> anyhow::Result<Pitch> {
     let mut p: Option<Pitch> = None;
     let mut diags: Option<Diagnostics> = None;
-    match lex(s) {
+    match lex_pass1(s) {
         Ok(tokens) => {
-            if tokens.len() == 1 {
-                p = match tokens.into_iter().next().unwrap().t {
-                    Token::PitchOrRatio(pr) => Some(pr.into_pitch()),
-                    _ => None,
-                };
-            }
+            let input = tokens.as_slice();
+            let d = Diagnostics::new();
+            let pr = pitch_or_ratio(&d).parse(input);
+            match pr {
+                Ok(pr) => {
+                    if d.has_errors() {
+                        diags = Some(d);
+                    } else {
+                        p = Some(pr.into_pitch());
+                    }
+                }
+                Err(_) => diags = Some(d),
+            };
         }
         Err(d) => diags = Some(d),
     };

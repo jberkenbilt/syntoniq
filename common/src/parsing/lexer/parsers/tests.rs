@@ -49,6 +49,9 @@ make_parser1!(parse_string_literal, string_literal);
 make_parser2!(parse_ratio, ratio, (Ratio<u32>, Span));
 make_parser2!(parse_exponent, exponent, Factor);
 make_parser2!(parse_pitch, pitch_or_ratio, PitchOrRatio);
+make_parser2!(parse_string, string, String);
+make_parser2!(parse_param, param, Param);
+make_parser2!(parse_directive, directive, Directive);
 
 #[test]
 fn test_raw_number() -> anyhow::Result<()> {
@@ -236,6 +239,109 @@ fn test_pitch() -> anyhow::Result<()> {
     assert_eq!(rest, "z");
     assert_eq!(p.clone().try_into_ratio().unwrap(), Ratio::new(22, 7));
     assert_eq!(p.into_pitch().to_string(), "22/7");
+
+    Ok(())
+}
+
+#[test]
+fn test_string() -> anyhow::Result<()> {
+    let (s, rest) = parse_string(r#""π are \"◼\""1"#).map_err(to_anyhow)?;
+    assert_eq!(s, r#"π are "◼""#);
+    assert_eq!(rest, "1");
+    Ok(())
+}
+
+#[test]
+fn test_param() -> anyhow::Result<()> {
+    let (s, rest) = parse_param("a=^2|19").map_err(to_anyhow)?;
+    assert_eq!(
+        s,
+        Param {
+            key: "a".to_string(),
+            value: ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse("^2|19"))),
+        }
+    );
+    assert!(rest.is_empty());
+
+    let (s, rest) = parse_param("potato = \"salad\"!").map_err(to_anyhow)?;
+    assert_eq!(
+        s,
+        Param {
+            key: "potato".to_string(),
+            value: ParamValue::String("salad".to_string()),
+        }
+    );
+    assert_eq!(rest, "!");
+
+    Ok(())
+}
+
+#[test]
+fn test_directive() -> anyhow::Result<()> {
+    let (d, rest) =
+        parse_directive("tune(base_pitch=^2|19, scale=\"17-EDO\")").map_err(to_anyhow)?;
+    assert_eq!(
+        d,
+        Directive {
+            name: "tune".to_string(),
+            params: vec![
+                Param {
+                    key: "base_pitch".to_string(),
+                    value: ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
+                        "^2|19"
+                    ))),
+                },
+                Param {
+                    key: "scale".to_string(),
+                    value: ParamValue::String("17-EDO".to_string()),
+                }
+            ],
+        }
+    );
+    assert!(rest.is_empty());
+
+    let (d, rest) = parse_directive(
+        r#"function (
+            one   = 1 ,
+            two   = 22/7 ,
+            three = *3^-2|31*3/2 ,  ; comment
+            four  = "π+🥔" ,
+        )"#,
+    )
+    .map_err(to_anyhow)?;
+    assert_eq!(
+        d,
+        Directive {
+            name: "function".to_string(),
+            params: vec![
+                Param {
+                    key: "one".to_string(),
+                    value: ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
+                        Ratio::new(1, 1),
+                        Pitch::must_parse("1")
+                    ))),
+                },
+                Param {
+                    key: "two".to_string(),
+                    value: ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
+                        Ratio::new(22, 7),
+                        Pitch::must_parse("22/7")
+                    ))),
+                },
+                Param {
+                    key: "three".to_string(),
+                    value: ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
+                        "0.5*3^29|31"
+                    ))),
+                },
+                Param {
+                    key: "four".to_string(),
+                    value: ParamValue::String("π+🥔".to_string()),
+                }
+            ],
+        }
+    );
+    assert!(rest.is_empty());
 
     Ok(())
 }
