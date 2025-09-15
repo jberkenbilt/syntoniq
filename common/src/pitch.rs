@@ -1,4 +1,4 @@
-use crate::to_anyhow;
+use crate::parsing::lexer;
 use anyhow::bail;
 use num_rational::Ratio;
 use serde::de::Visitor;
@@ -8,9 +8,6 @@ use std::collections::HashMap;
 use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
-use winnow::Parser;
-
-mod parser;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Pitch {
@@ -267,7 +264,7 @@ impl FromStr for Pitch {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        parser::pitch().parse(s).map_err(to_anyhow)
+        lexer::parse_pitch(s)
     }
 }
 
