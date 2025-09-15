@@ -257,8 +257,11 @@ fn test_param() -> anyhow::Result<()> {
     assert_eq!(
         s,
         Param {
-            key: "a".to_string(),
-            value: ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse("^2|19"))),
+            key: Spanned::new(0..1, "a"),
+            value: Spanned::new(
+                2..7,
+                ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse("^2|19")))
+            ),
         }
     );
     assert!(rest.is_empty());
@@ -267,8 +270,8 @@ fn test_param() -> anyhow::Result<()> {
     assert_eq!(
         s,
         Param {
-            key: "potato".to_string(),
-            value: ParamValue::String("salad".to_string()),
+            key: Spanned::new(0..6, "potato"),
+            value: Spanned::new(9..16, ParamValue::String("salad".to_string())),
         }
     );
     assert_eq!(rest, "!");
@@ -283,17 +286,18 @@ fn test_directive() -> anyhow::Result<()> {
     assert_eq!(
         d,
         Directive {
-            name: "tune".to_string(),
+            name: Spanned::new(0..4, "tune"),
             params: vec![
                 Param {
-                    key: "base_pitch".to_string(),
-                    value: ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
-                        "^2|19"
-                    ))),
+                    key: Spanned::new(5..15, "base_pitch"),
+                    value: Spanned::new(
+                        16..21,
+                        ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse("^2|19")))
+                    ),
                 },
                 Param {
-                    key: "scale".to_string(),
-                    value: ParamValue::String("17-EDO".to_string()),
+                    key: Spanned::new(23..28, "scale"),
+                    value: Spanned::new(29..37, ParamValue::String("17-EDO".to_string())),
                 }
             ],
         }
@@ -304,39 +308,48 @@ fn test_directive() -> anyhow::Result<()> {
         r#"function (
             one   = 1 ,
             two   = 22/7 ,
-            three = *3^-2|31*3/2 ,  ; comment
-            four  = "π+🥔" ,
+            three = "π+🥔" ,
+            four  = *3^-2|31*3/2 ,  ; comment
         )"#,
     )
     .map_err(to_anyhow)?;
     assert_eq!(
         d,
         Directive {
-            name: "function".to_string(),
+            name: Spanned::new(0..8, "function"),
             params: vec![
                 Param {
-                    key: "one".to_string(),
-                    value: ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
-                        Ratio::new(1, 1),
-                        Pitch::must_parse("1")
-                    ))),
+                    key: Spanned::new(23..26, "one"),
+                    value: Spanned::new(
+                        31..32,
+                        ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
+                            Ratio::new(1, 1),
+                            Pitch::must_parse("1")
+                        )))
+                    ),
                 },
                 Param {
-                    key: "two".to_string(),
-                    value: ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
-                        Ratio::new(22, 7),
-                        Pitch::must_parse("22/7")
-                    ))),
+                    key: Spanned::new(47..50, "two"),
+                    value: Spanned::new(
+                        55..59,
+                        ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
+                            Ratio::new(22, 7),
+                            Pitch::must_parse("22/7")
+                        )))
+                    ),
                 },
                 Param {
-                    key: "three".to_string(),
-                    value: ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
-                        "0.5*3^29|31"
-                    ))),
+                    key: Spanned::new(74..79, "three"),
+                    value: Spanned::new(82..91, ParamValue::String("π+🥔".to_string())),
                 },
                 Param {
-                    key: "four".to_string(),
-                    value: ParamValue::String("π+🥔".to_string()),
+                    key: Spanned::new(106..110, "four"),
+                    value: Spanned::new(
+                        114..126,
+                        ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
+                            "0.5*3^29|31"
+                        )))
+                    ),
                 }
             ],
         }

@@ -79,50 +79,52 @@ pub(super) fn string_literal<'s>(
     }
 }
 
-fn optional_space(input: &mut &[Spanned<LowToken>]) -> winnow::Result<()> {
-    opt(one_of(|x: Spanned<LowToken>| {
+fn optional_space(input: &mut &[SpannedToken<LowToken>]) -> winnow::Result<()> {
+    opt(one_of(|x: SpannedToken<LowToken>| {
         matches!(x.t, LowToken::Space)
     }))
     .parse_next(input)
     .map(|_| ())
 }
 
-fn optional_space_or_newline(input: &mut &[Spanned<LowToken>]) -> winnow::Result<()> {
-    take_while(0.., |x: Spanned<LowToken>| {
+fn optional_space_or_newline(input: &mut &[SpannedToken<LowToken>]) -> winnow::Result<()> {
+    take_while(0.., |x: SpannedToken<LowToken>| {
         matches!(x.t, LowToken::Space | LowToken::Newline | LowToken::Comment)
     })
     .parse_next(input)
     .map(|_| ())
 }
 
-fn param_separator(input: &mut &[Spanned<LowToken>]) -> winnow::Result<()> {
+fn param_separator(input: &mut &[SpannedToken<LowToken>]) -> winnow::Result<()> {
     (optional_space, character(','), optional_space_or_newline)
         .parse_next(input)
         .map(|_| ())
 }
 
-fn character(ch: char) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<(char, usize)> {
+fn character(
+    ch: char,
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<(char, usize)> {
     move |input| {
-        one_of(|x: Spanned<LowToken>| x.data.len() == 1 && x.data.starts_with(ch))
+        one_of(|x: SpannedToken<LowToken>| x.data.len() == 1 && x.data.starts_with(ch))
             .parse_next(input)
             .map(|x| (ch, x.span.start))
     }
 }
 fn ratio(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<(Ratio<u32>, Span)> {
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<(Ratio<u32>, Span)> {
     // Accept this as a ratio and consume the tokens as long as it is syntactically valid. If
     // there are problems report the errors.
     move |input| {
         (
-            one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
+            one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
             opt(preceded(
                 character('.'),
-                one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
             )),
             opt(preceded(
                 character('/'),
-                one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
             )),
         )
             .with_taken()
@@ -197,26 +199,26 @@ fn ratio(
 
 fn exponent(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<Factor> {
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Factor> {
     // Accept this as an exponent and consume the tokens as long as it is syntactically valid. If
     // there are problems report the errors.
     move |input| {
         (
             opt((
-                one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
                 opt(preceded(
                     character('/'),
-                    one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                    one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
                 )),
             )),
             preceded(
                 character('^'),
                 (
                     opt(character('-')),
-                    one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                    one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
                     preceded(
                         character('|'),
-                        one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                        one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
                     ),
                 ),
             ),
@@ -258,13 +260,15 @@ fn exponent(
     }
 }
 
-fn factor(diags: &Diagnostics) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<Factor> {
+fn factor(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Factor> {
     move |input| alt((exponent(diags), ratio(diags).map(|x| Factor::from(x.0)))).parse_next(input)
 }
 
 pub(super) fn pitch_or_ratio(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<PitchOrRatio> {
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<PitchOrRatio> {
     move |input| {
         let as_ratio = peek(ratio(diags)).parse_next(input);
         preceded(
@@ -292,16 +296,18 @@ pub(super) fn pitch_or_ratio(
 }
 
 pub(super) fn identifier<'s>(
-    input: &mut &[Spanned<'s, LowToken>],
-) -> winnow::Result<Spanned<'s, LowToken>> {
-    one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::Identifier)).parse_next(input)
+    input: &mut &[SpannedToken<'s, LowToken>],
+) -> winnow::Result<Spanned<String>> {
+    one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::Identifier))
+        .parse_next(input)
+        .map(|t| Spanned::new(t.span, t.data))
 }
 
 pub(super) fn string(
     _diags: &Diagnostics,
-) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<String> {
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<String> {
     move |input| {
-        one_of(|x: Spanned<LowToken>| matches!(x.t, LowToken::RawString))
+        one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawString))
             .parse_next(input)
             .map(|tok| {
                 if tok.data.len() < 2 {
@@ -316,19 +322,21 @@ pub(super) fn string(
 
 pub(super) fn param_value(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<ParamValue> {
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Spanned<ParamValue>> {
     move |input| {
         alt((
             string(diags).map(ParamValue::String),
             pitch_or_ratio(diags).map(ParamValue::PitchOrRatio),
         ))
+        .with_taken()
         .parse_next(input)
+        .map(|(value, tokens)| Spanned::new(merge_span(tokens), value))
     }
 }
 
 pub(super) fn param(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<Param> {
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Param> {
     move |input| {
         (
             terminated(
@@ -338,16 +346,13 @@ pub(super) fn param(
             param_value(diags),
         )
             .parse_next(input)
-            .map(|(key_t, value)| Param {
-                key: key_t.data.to_string(),
-                value,
-            })
+            .map(|(key, value)| Param { key, value })
     }
 }
 
 pub(super) fn directive(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[Spanned<LowToken>]) -> winnow::Result<Directive> {
+) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Directive> {
     move |input| {
         (
             terminated(
@@ -364,12 +369,7 @@ pub(super) fn directive(
             ),
         )
             .parse_next(input)
-            .map(
-                |(name_t, params): (Spanned<LowToken>, Vec<Param>)| Directive {
-                    name: name_t.data.to_string(),
-                    params,
-                },
-            )
+            .map(|(name, params): (Spanned<String>, Vec<Param>)| Directive { name, params })
     }
 }
 

@@ -23,10 +23,24 @@ type CErr = ContextError<StrContext>;
 type Inp<'s> = LocatingSlice<&'s str>;
 
 #[derive(Debug, Clone)]
-pub struct Spanned<'s, T: Debug> {
+pub struct SpannedToken<'s, T: Debug> {
     span: Span,
     data: &'s str,
     t: T,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Spanned<T: Debug> {
+    span: Span,
+    value: T,
+}
+impl<T: Debug> Spanned<T> {
+    pub fn new(span: impl Into<Span>, value: impl Into<T>) -> Self {
+        Self {
+            span: span.into(),
+            value: value.into(),
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
@@ -100,13 +114,13 @@ impl ParamValue {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Param {
-    pub key: String,
-    pub value: ParamValue,
+    pub key: Spanned<String>,
+    pub value: Spanned<ParamValue>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Directive {
-    pub name: String,
+    pub name: Spanned<String>,
     pub params: Vec<Param>,
 }
 
@@ -126,8 +140,8 @@ fn is_space(x: char) -> bool {
 fn make_spanned<'s, I, T: Debug>(
     input: &'s str,
     t: T,
-) -> impl FnOnce((I, Range<usize>)) -> Spanned<'s, T> {
-    move |(_, span)| Spanned {
+) -> impl FnOnce((I, Range<usize>)) -> SpannedToken<'s, T> {
+    move |(_, span)| SpannedToken {
         data: &input[span.clone()],
         span: span.into(),
         t,
@@ -141,11 +155,11 @@ fn trace(msg: impl Display) {
     }
 }
 
-pub fn lex_pass1<'s>(src: &'s str) -> Result<Vec<Spanned<'s, LowToken>>, Diagnostics> {
+pub fn lex_pass1<'s>(src: &'s str) -> Result<Vec<SpannedToken<'s, LowToken>>, Diagnostics> {
     let diags = Diagnostics::new();
     let mut input = LocatingSlice::new(src);
     let start = input;
-    let mut out: Vec<Spanned<LowToken>> = Vec::new();
+    let mut out: Vec<SpannedToken<LowToken>> = Vec::new();
 
     macro_rules! parse_as {
         ($parser: expr, $tok: expr) => {
@@ -165,7 +179,7 @@ pub fn lex_pass1<'s>(src: &'s str) -> Result<Vec<Spanned<'s, LowToken>>, Diagnos
     while !input.is_empty() {
         let ch = input.chars().next().unwrap();
         let offset = input.offset_from(&start);
-        let tok: Result<Spanned<LowToken>, CErr> = match ch {
+        let tok: Result<SpannedToken<LowToken>, CErr> = match ch {
             // Keep in same order as Token if possible, except when parsing order is significant.
             // That means check specific characters before character classes.
             '\n' => grab_char_as!(LowToken::Newline),
@@ -207,7 +221,7 @@ pub fn lex_pass1<'s>(src: &'s str) -> Result<Vec<Spanned<'s, LowToken>>, Diagnos
     }
 }
 
-pub fn lex<'s>(src: &'s str) -> Result<Vec<Spanned<'s, Token>>, Diagnostics> {
+pub fn lex<'s>(src: &'s str) -> Result<Vec<SpannedToken<'s, Token>>, Diagnostics> {
     enum LexState {
         Top,
         _PartLine,
@@ -218,7 +232,7 @@ pub fn lex<'s>(src: &'s str) -> Result<Vec<Spanned<'s, Token>>, Diagnostics> {
     let low_tokens = lex_pass1(src)?;
     let diags = Diagnostics::new();
     let mut input = low_tokens.as_slice();
-    let mut out: Vec<Spanned<Token>> = Vec::new();
+    let mut out: Vec<SpannedToken<Token>> = Vec::new();
 
     let mut next_at_bol = true; // whether next token as at beginning of line
     while !input.is_empty() {
@@ -256,8 +270,8 @@ fn consume_one<T>(items: &mut &[T]) {
     }
 }
 
-fn promote<'s>(lt: &Spanned<'s, LowToken>, t: Token) -> Spanned<'s, Token> {
-    Spanned {
+fn promote<'s>(lt: &SpannedToken<'s, LowToken>, t: Token) -> SpannedToken<'s, Token> {
+    SpannedToken {
         span: lt.span,
         data: lt.data,
         t,
@@ -265,15 +279,15 @@ fn promote<'s>(lt: &Spanned<'s, LowToken>, t: Token) -> Spanned<'s, Token> {
 }
 
 fn promote_and_consume_first<'s>(
-    input: &mut &[Spanned<'s, LowToken>],
+    input: &mut &[SpannedToken<'s, LowToken>],
     t: Token,
-) -> Spanned<'s, Token> {
+) -> SpannedToken<'s, Token> {
     let tok = promote(&input[0], t);
     consume_one(input);
     tok
 }
 
-fn merge_span<T: Debug>(tokens: &[Spanned<T>]) -> Span {
+fn merge_span<T: Debug>(tokens: &[SpannedToken<T>]) -> Span {
     if tokens.is_empty() {
         0..1
     } else {
@@ -285,9 +299,9 @@ fn merge_span<T: Debug>(tokens: &[Spanned<T>]) -> Span {
 /// Handle the current token, advancing input and appending to out as needed.
 fn handle_top_token<'s>(
     src: &'s str,
-    input: &mut &[Spanned<'s, LowToken>],
+    input: &mut &[SpannedToken<'s, LowToken>],
     diags: &Diagnostics,
-    out: &mut Vec<Spanned<'s, Token>>,
+    out: &mut Vec<SpannedToken<'s, Token>>,
 ) {
     // Look at the token. Some tokens can be immediately handled. Others indicate a branch
     // for further processing.
@@ -322,7 +336,7 @@ fn handle_top_token<'s>(
         let span = merge_span(tokens);
         let t = Token::Directive(d);
         let data = &src[span];
-        out.push(Spanned { span, data, t })
+        out.push(SpannedToken { span, data, t })
     } else {
         diags.err(code::SYNTAX, offset..offset + 1, "unable to parse as pitch");
         consume_one(input);
