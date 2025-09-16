@@ -1,10 +1,11 @@
 use crate::pitch::Pitch;
 use num_rational::Ratio;
-use std::env;
+use std::cell::RefCell;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Index;
 use std::ops::Range;
-use std::sync::{LazyLock, Mutex};
+use std::sync::LazyLock;
+use std::{env, mem};
 
 pub mod code {
     pub const LEXICAL: &str = "E1001 lexical error";
@@ -65,7 +66,7 @@ pub struct Diagnostic {
 
 #[derive(Default, Debug)]
 pub struct Diagnostics {
-    pub list: Mutex<Vec<Diagnostic>>,
+    pub list: RefCell<Vec<Diagnostic>>,
 }
 impl Diagnostics {
     pub fn new() -> Self {
@@ -74,12 +75,12 @@ impl Diagnostics {
 }
 impl Display for Diagnostics {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let guard = self.list.lock().unwrap();
-        if guard.is_empty() {
+        let list = self.list.borrow_mut();
+        if list.is_empty() {
             return writeln!(f, "no errors");
         }
         write!(f, "ERRORS:")?;
-        for i in &*guard {
+        for i in &*list {
             write!(
                 f,
                 "\n  {}..{}: {}: {}",
@@ -91,7 +92,7 @@ impl Display for Diagnostics {
 }
 impl Diagnostics {
     pub fn err(&self, code: &'static str, span: impl Into<Span>, msg: impl Into<String>) {
-        self.list.lock().unwrap().push(Diagnostic {
+        self.list.borrow_mut().push(Diagnostic {
             code,
             span: span.into(),
             message: msg.into(),
@@ -99,11 +100,11 @@ impl Diagnostics {
     }
 
     pub fn has_errors(&self) -> bool {
-        !self.list.lock().unwrap().is_empty()
+        !self.list.borrow_mut().is_empty()
     }
 
     pub fn get_all(&self) -> Vec<Diagnostic> {
-        self.list.lock().unwrap().clone()
+        mem::take(&mut self.list.borrow_mut())
     }
 }
 
