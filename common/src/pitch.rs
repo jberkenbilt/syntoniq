@@ -1,4 +1,4 @@
-use crate::parsing::lexer;
+use crate::parsing::pass2;
 use anyhow::bail;
 use num_rational::Ratio;
 use serde::de::Visitor;
@@ -264,7 +264,7 @@ impl FromStr for Pitch {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        lexer::parse_pitch(s)
+        pass2::parse_pitch(s)
     }
 }
 

@@ -1,6 +1,6 @@
 use anyhow::bail;
 use std::{env, fs};
-use syntoniq_common::parsing::lexer;
+use syntoniq_common::parsing::pass2;
 
 fn main() -> anyhow::Result<()> {
     let args: Vec<String> = env::args().collect();
@@ -9,7 +9,7 @@ fn main() -> anyhow::Result<()> {
     };
     let data = fs::read(filename)?;
     let input = str::from_utf8(&data)?;
-    match lexer::lex(input) {
+    match pass2::parse2(input) {
         Err(diags) => {
             println!("{diags}");
         }

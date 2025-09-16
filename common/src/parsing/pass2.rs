@@ -1,101 +1,43 @@
-use super::*;
-use winnow::combinator::{delimited, terminated};
+use crate::parsing::model::{
+    Diagnostics, Directive, Param, ParamValue, PitchOrRatio, Span, Spanned, SpannedToken, code,
+};
+use crate::parsing::pass1::Token1;
+use crate::parsing::{model, pass1};
+use crate::pitch::{Factor, Pitch};
+use crate::to_anyhow;
+use anyhow::anyhow;
+use num_rational::Ratio;
+use std::fmt::Debug;
+use winnow::Parser;
+use winnow::combinator::{alt, delimited, opt, peek, preceded, separated, terminated};
+use winnow::token::{one_of, take_while};
 
-pub(super) fn raw_identifier<'s>() -> impl Parser<Inp<'s>, &'s str, CErr> {
-    (
-        take_while(1, |c: char| AsChar::is_alpha(c)),
-        take_while(0.., |c: char| AsChar::is_alphanum(c) || c == '_'),
-    )
-        .take()
-        .context(StrContext::Label("identifier"))
+#[derive(Debug, Clone)]
+pub enum Token2 {
+    // Space, comments
+    Space,
+    Newline,
+    Comment,
+    Directive(Directive),
 }
 
-pub(super) fn raw_number<'s>(
-    diags: &Diagnostics,
-) -> impl FnMut(&mut Inp<'s>) -> winnow::Result<&'s str> {
-    move |input| {
-        take_while(1.., AsChar::is_dec_digit)
-            .with_span()
-            .parse_next(input)
-            .map(|(s, span)| {
-                // Report error after consuming all the digits. Make sure this can parse to
-                // an i32. We know it's positive, so that means it will also parse to a u32.
-                // Other code unwraps parse calls on this data.
-                if let Err(e) = s.parse::<i32>() {
-                    diags.err(code::LEXICAL, span, format!("while parsing number: {e}"));
-                }
-                s
-            })
-    }
-}
-
-pub(super) fn string_literal<'s>(
-    diags: &Diagnostics,
-) -> impl FnMut(&mut Inp<'s>) -> winnow::Result<&'s str> {
-    fn inner<'s>(input: &mut Inp<'s>) -> winnow::Result<&'s str> {
-        let start = *input;
-        "\"".parse_next(input)?;
-        loop {
-            if input.starts_with('\\') {
-                take(2usize).parse_next(input)?;
-            } else if input.starts_with('"') {
-                any.parse_next(input)?;
-                break Ok(&start[..input.offset_from(&start)]);
-            } else {
-                any.parse_next(input)?;
-            }
-        }
-    }
-    move |input| {
-        inner.with_span().parse_next(input).map(|(s, span)| {
-            let mut chars = s.chars();
-            let mut offset = span.start;
-            while let Some(ch) = chars.next() {
-                if ch == '\\'
-                    && let Some(next) = chars.next()
-                {
-                    let char_len = next.len_utf8();
-                    if !['\\', '"'].contains(&next) {
-                        // Span is character after the backslash
-                        diags.err(
-                            code::LEXICAL,
-                            offset + 1..offset + 1 + char_len,
-                            "invalid quoted character",
-                        );
-                    }
-                    // Skip the character after the backslash; below will skip the backslash
-                    offset += char_len;
-                } else if ['\r', '\n'].contains(&ch) {
-                    diags.err(
-                        code::LEXICAL,
-                        offset..offset + 1,
-                        "string may not contain newline characters",
-                    );
-                }
-                offset += ch.len_utf8();
-            }
-            s
-        })
-    }
-}
-
-fn optional_space(input: &mut &[SpannedToken<LowToken>]) -> winnow::Result<()> {
-    opt(one_of(|x: SpannedToken<LowToken>| {
-        matches!(x.t, LowToken::Space)
+fn optional_space(input: &mut &[SpannedToken<Token1>]) -> winnow::Result<()> {
+    opt(one_of(|x: SpannedToken<Token1>| {
+        matches!(x.t, Token1::Space)
     }))
     .parse_next(input)
     .map(|_| ())
 }
 
-fn optional_space_or_newline(input: &mut &[SpannedToken<LowToken>]) -> winnow::Result<()> {
-    take_while(0.., |x: SpannedToken<LowToken>| {
-        matches!(x.t, LowToken::Space | LowToken::Newline | LowToken::Comment)
+fn optional_space_or_newline(input: &mut &[SpannedToken<Token1>]) -> winnow::Result<()> {
+    take_while(0.., |x: SpannedToken<Token1>| {
+        matches!(x.t, Token1::Space | Token1::Newline | Token1::Comment)
     })
     .parse_next(input)
     .map(|_| ())
 }
 
-fn param_separator(input: &mut &[SpannedToken<LowToken>]) -> winnow::Result<()> {
+fn param_separator(input: &mut &[SpannedToken<Token1>]) -> winnow::Result<()> {
     (optional_space, character(','), optional_space_or_newline)
         .parse_next(input)
         .map(|_| ())
@@ -103,35 +45,35 @@ fn param_separator(input: &mut &[SpannedToken<LowToken>]) -> winnow::Result<()> 
 
 fn character(
     ch: char,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<(char, usize)> {
+) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<(char, usize)> {
     move |input| {
-        one_of(|x: SpannedToken<LowToken>| x.data.len() == 1 && x.data.starts_with(ch))
+        one_of(|x: SpannedToken<Token1>| x.data.len() == 1 && x.data.starts_with(ch))
             .parse_next(input)
             .map(|x| (ch, x.span.start))
     }
 }
 fn ratio(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<(Ratio<u32>, Span)> {
+) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<(Ratio<u32>, Span)> {
     // Accept this as a ratio and consume the tokens as long as it is syntactically valid. If
     // there are problems report the errors.
     move |input| {
         (
-            one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
+            one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::RawNumber)),
             opt(preceded(
                 character('.'),
-                one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::RawNumber)),
             )),
             opt(preceded(
                 character('/'),
-                one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::RawNumber)),
             )),
         )
             .with_taken()
             .parse_next(input)
             .map(|((num_dec_t, num_frac_t, den_t), tokens)| {
                 // We already know the numbers can be parsed into u32 from the first lexing pass.
-                let span = merge_span(tokens);
+                let span = model::merge_span(tokens);
                 let num_dec: u32 = num_dec_t.data.parse().unwrap();
                 let (num_frac, scale) = match num_frac_t {
                     None => (0, 1),
@@ -199,26 +141,26 @@ fn ratio(
 
 fn exponent(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Factor> {
+) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<Factor> {
     // Accept this as an exponent and consume the tokens as long as it is syntactically valid. If
     // there are problems report the errors.
     move |input| {
         (
             opt((
-                one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::RawNumber)),
                 opt(preceded(
                     character('/'),
-                    one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                    one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::RawNumber)),
                 )),
             )),
             preceded(
                 character('^'),
                 (
                     opt(character('-')),
-                    one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                    one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::RawNumber)),
                     preceded(
                         character('|'),
-                        one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawNumber)),
+                        one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::RawNumber)),
                     ),
                 ),
             ),
@@ -262,13 +204,13 @@ fn exponent(
 
 fn factor(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Factor> {
+) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<Factor> {
     move |input| alt((exponent(diags), ratio(diags).map(|x| Factor::from(x.0)))).parse_next(input)
 }
 
-pub(super) fn pitch_or_ratio(
+fn pitch_or_ratio(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<PitchOrRatio> {
+) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<PitchOrRatio> {
     move |input| {
         let as_ratio = peek(ratio(diags)).parse_next(input);
         preceded(
@@ -278,7 +220,7 @@ pub(super) fn pitch_or_ratio(
         .with_taken()
         .parse_next(input)
         .map(|(factors, tokens)| {
-            let span = merge_span(tokens);
+            let span = model::merge_span(tokens);
             let p = Pitch::new(factors);
             if let Ok((r, r_span)) = as_ratio {
                 if r_span == span {
@@ -295,19 +237,17 @@ pub(super) fn pitch_or_ratio(
     }
 }
 
-pub(super) fn identifier<'s>(
-    input: &mut &[SpannedToken<'s, LowToken>],
-) -> winnow::Result<Spanned<String>> {
-    one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::Identifier))
+fn identifier<'s>(input: &mut &[SpannedToken<'s, Token1>]) -> winnow::Result<Spanned<String>> {
+    one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::Identifier))
         .parse_next(input)
         .map(|t| Spanned::new(t.span, t.data))
 }
 
-pub(super) fn string(
+fn string(
     _diags: &Diagnostics,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<String> {
+) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<String> {
     move |input| {
-        one_of(|x: SpannedToken<LowToken>| matches!(x.t, LowToken::RawString))
+        one_of(|x: SpannedToken<Token1>| matches!(x.t, Token1::RawString))
             .parse_next(input)
             .map(|tok| {
                 if tok.data.len() < 2 {
@@ -320,9 +260,9 @@ pub(super) fn string(
     }
 }
 
-pub(super) fn param_value(
+fn param_value(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Spanned<ParamValue>> {
+) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<Spanned<ParamValue>> {
     move |input| {
         alt((
             string(diags).map(ParamValue::String),
@@ -330,13 +270,11 @@ pub(super) fn param_value(
         ))
         .with_taken()
         .parse_next(input)
-        .map(|(value, tokens)| Spanned::new(merge_span(tokens), value))
+        .map(|(value, tokens)| Spanned::new(model::merge_span(tokens), value))
     }
 }
 
-pub(super) fn param(
-    diags: &Diagnostics,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Param> {
+fn param(diags: &Diagnostics) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<Param> {
     move |input| {
         (
             terminated(
@@ -350,9 +288,9 @@ pub(super) fn param(
     }
 }
 
-pub(super) fn directive(
+fn directive(
     diags: &Diagnostics,
-) -> impl FnMut(&mut &[SpannedToken<LowToken>]) -> winnow::Result<Directive> {
+) -> impl FnMut(&mut &[SpannedToken<Token1>]) -> winnow::Result<Directive> {
     move |input| {
         (
             terminated(
@@ -370,6 +308,154 @@ pub(super) fn directive(
         )
             .parse_next(input)
             .map(|(name, params): (Spanned<String>, Vec<Param>)| Directive { name, params })
+    }
+}
+
+fn consume_one<T>(items: &mut &[T]) {
+    if !items.is_empty() {
+        *items = &items[1..]
+    }
+}
+
+fn promote<'s>(lt: &SpannedToken<'s, Token1>, t: Token2) -> SpannedToken<'s, Token2> {
+    SpannedToken {
+        span: lt.span,
+        data: lt.data,
+        t,
+    }
+}
+
+fn promote_and_consume_first<'s>(
+    input: &mut &[SpannedToken<'s, Token1>],
+    t: Token2,
+) -> SpannedToken<'s, Token2> {
+    let tok = promote(&input[0], t);
+    consume_one(input);
+    tok
+}
+
+/// Handle the current token, advancing input and appending to out as needed.
+fn handle_top_token<'s>(
+    src: &'s str,
+    input: &mut &[SpannedToken<'s, Token1>],
+    diags: &Diagnostics,
+    out: &mut Vec<SpannedToken<'s, Token2>>,
+) {
+    // Look at the token. Some tokens can be immediately handled. Others indicate a branch
+    // for further processing.
+    let mut parse_directive = false;
+    let tok = &input[0];
+    // At the top level, all we're allowed to have is directives, which consist of identifiers,
+    // numbers, pitches, strings, and the syntactic punctation for identifiers. Anything else
+    // (other than spaces and comments) is an error.
+    let out_tok = match &tok.t {
+        Token1::Space => Some(promote_and_consume_first(input, Token2::Space)),
+        Token1::Newline => Some(promote_and_consume_first(input, Token2::Newline)),
+        Token1::Comment => Some(promote_and_consume_first(input, Token2::Comment)),
+        Token1::Identifier => {
+            parse_directive = true;
+            None
+        }
+        _ => None,
+    };
+    if let Some(tok) = out_tok {
+        model::trace(format!("lex pass 2: {tok:?}"));
+        out.push(tok);
+        return;
+    }
+    let offset = tok.span.start;
+    if !parse_directive {
+        diags.err(code::SYNTAX, tok.span, "unexpected item");
+        consume_one(input);
+        return;
+    }
+
+    if let Ok((d, tokens)) = directive(diags).with_taken().parse_next(input) {
+        let span = model::merge_span(tokens);
+        let t = Token2::Directive(d);
+        let data = &src[span];
+        out.push(SpannedToken { span, data, t })
+    } else {
+        diags.err(code::SYNTAX, offset..offset + 1, "unable to parse as pitch");
+        consume_one(input);
+    }
+}
+
+/// Helper function for the Pitch struct
+pub fn parse_pitch(s: &str) -> anyhow::Result<Pitch> {
+    let mut p: Option<Pitch> = None;
+    let mut diags: Option<Diagnostics> = None;
+    match pass1::parse1(s) {
+        Ok(tokens) => {
+            let input = tokens.as_slice();
+            let d = Diagnostics::new();
+            let pr = pitch_or_ratio(&d).parse(input);
+            match pr {
+                Ok(pr) => {
+                    if d.has_errors() {
+                        diags = Some(d);
+                    } else {
+                        p = Some(pr.into_pitch());
+                    }
+                }
+                Err(_) => diags = Some(d),
+            };
+        }
+        Err(d) => diags = Some(d),
+    };
+    if let Some(p) = p {
+        return Ok(p);
+    }
+    let err = if let Some(diags) = diags
+        && diags.has_errors()
+    {
+        to_anyhow(diags)
+    } else {
+        anyhow!("unable to parse pitch")
+    };
+    Err(anyhow!("{s}: {err}"))
+}
+
+pub fn parse2<'s>(src: &'s str) -> Result<Vec<SpannedToken<'s, Token2>>, Diagnostics> {
+    enum LexState {
+        Top,
+        _PartLine,
+        _NoteLine,
+    }
+    let mut state = LexState::Top;
+
+    let low_tokens = pass1::parse1(src)?;
+    let diags = Diagnostics::new();
+    let mut input = low_tokens.as_slice();
+    let mut out: Vec<SpannedToken<Token2>> = Vec::new();
+
+    let mut next_at_bol = true; // whether next token as at beginning of line
+    while !input.is_empty() {
+        let tok = &input[0];
+        let at_bol = next_at_bol;
+        // See if the next token will still be at the beginning of a line.
+        next_at_bol =
+            matches!(&tok.t, Token1::Newline) || (next_at_bol && matches!(&tok.t, Token1::Space));
+        if at_bol && !next_at_bol {
+            // This is the first non-blank token of the line. Determine state.
+            let input_str = &src[tok.span.start..];
+            state = if input_str.starts_with('[') {
+                // TODO: commit to part or note
+                LexState::_PartLine
+            } else {
+                LexState::Top
+            }
+        }
+        match state {
+            LexState::Top => handle_top_token(src, &mut input, &diags, &mut out),
+            LexState::_PartLine => todo!(),
+            LexState::_NoteLine => todo!(),
+        }
+    }
+    if diags.has_errors() {
+        Err(diags)
+    } else {
+        Ok(out)
     }
 }
 
