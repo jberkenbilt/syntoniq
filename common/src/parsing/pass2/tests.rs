@@ -2,8 +2,6 @@ use super::*;
 use crate::parsing::model::Diagnostic;
 use crate::parsing::pass1::parse1;
 
-// Trying to make this general is very hard because of all the different lifetime bounds on
-// parsers, so use macros since this is test code.
 macro_rules! make_parser2 {
     ($f:ident, $p:ident, $r:ty) => {
         fn $f(s: &str) -> Result<($r, &str), Diagnostics> {
@@ -17,7 +15,7 @@ macro_rules! make_parser2 {
             let rest = if input.is_empty() {
                 ""
             } else {
-                let span = model::merge_span(input);
+                let span = input.get_span().unwrap();
                 &s[span]
             };
             r.map(|r| (r, rest)).map_err(|_| diags)
@@ -25,12 +23,14 @@ macro_rules! make_parser2 {
     };
 }
 
-make_parser2!(parse_ratio, ratio, (Ratio<u32>, Span));
+make_parser2!(parse_ratio, ratio, Spanned<Ratio<u32>>);
 make_parser2!(parse_exponent, exponent, Factor);
 make_parser2!(parse_pitch, pitch_or_ratio, PitchOrRatio);
-make_parser2!(parse_string, string, String);
+make_parser2!(parse_string, string, Spanned<String>);
 make_parser2!(parse_param, param, Param);
-make_parser2!(parse_directive, directive, Directive);
+make_parser2!(parse_directive, directive, Spanned<Directive>);
+make_parser2!(parse_octave, octave, Spanned<i8>);
+make_parser2!(parse_note_line, note_line, Spanned<NoteLine>);
 
 #[test]
 fn test_ratio() -> anyhow::Result<()> {
@@ -39,27 +39,27 @@ fn test_ratio() -> anyhow::Result<()> {
 
     let (f, rest) = parse_ratio("2/3*2.1/3*").map_err(to_anyhow)?;
     assert_eq!(rest, "*2.1/3*");
-    assert_eq!(f.0, Ratio::new(2, 3));
+    assert_eq!(f.value, Ratio::new(2, 3));
 
     let (f, rest) = parse_ratio("264").map_err(to_anyhow)?;
     assert!(rest.is_empty());
-    assert_eq!(f.0, Ratio::new(264, 1));
+    assert_eq!(f.value, Ratio::new(264, 1));
 
     let (f, rest) = parse_ratio("2.1/3").map_err(to_anyhow)?;
     assert!(rest.is_empty());
-    assert_eq!(f.0, Ratio::new(7, 10));
+    assert_eq!(f.value, Ratio::new(7, 10));
 
     let (f, rest) = parse_ratio("3.14").map_err(to_anyhow)?;
     assert!(rest.is_empty());
-    assert_eq!(f.0, Ratio::new(157, 50));
+    assert_eq!(f.value, Ratio::new(157, 50));
 
     let (f, rest) = parse_ratio("2.001/3").map_err(to_anyhow)?;
     assert!(rest.is_empty());
-    assert_eq!(f.0, Ratio::new(667, 1000));
+    assert_eq!(f.value, Ratio::new(667, 1000));
 
     let (f, rest) = parse_ratio("22/7").map_err(to_anyhow)?;
     assert!(rest.is_empty());
-    assert_eq!(f.0, Ratio::new(22, 7));
+    assert_eq!(f.value, Ratio::new(22, 7));
 
     let e = parse_ratio("2.0001/3").unwrap_err().get_all();
     assert_eq!(
@@ -164,7 +164,7 @@ fn test_pitch() -> anyhow::Result<()> {
 #[test]
 fn test_string() -> anyhow::Result<()> {
     let (s, rest) = parse_string(r#""π are \"◼\""1"#).map_err(to_anyhow)?;
-    assert_eq!(s, r#"π are "◼""#);
+    assert_eq!(s.value, r#"π are "◼""#);
     assert_eq!(rest, "1");
     Ok(())
 }
@@ -202,7 +202,7 @@ fn test_directive() -> anyhow::Result<()> {
     let (d, rest) =
         parse_directive("tune(base_pitch=^2|19, scale=\"17-EDO\")").map_err(to_anyhow)?;
     assert_eq!(
-        d,
+        d.value,
         Directive {
             name: Spanned::new(0..4, "tune"),
             params: vec![
@@ -232,7 +232,7 @@ fn test_directive() -> anyhow::Result<()> {
     )
     .map_err(to_anyhow)?;
     assert_eq!(
-        d,
+        d.value,
         Directive {
             name: Spanned::new(0..8, "function"),
             params: vec![
@@ -274,5 +274,49 @@ fn test_directive() -> anyhow::Result<()> {
     );
     assert!(rest.is_empty());
 
+    Ok(())
+}
+
+#[test]
+fn test_octave() -> anyhow::Result<()> {
+    let (o, _) = parse_octave("'2").map_err(to_anyhow)?;
+    assert_eq!(o.span, (0..2).into());
+    assert_eq!(o.value, 2);
+    let (o, _) = parse_octave("'1").map_err(to_anyhow)?;
+    assert_eq!(o.value, 1);
+    let (o, _) = parse_octave("'").map_err(to_anyhow)?;
+    assert_eq!(o.value, 1);
+    let (o, _) = parse_octave(",2").map_err(to_anyhow)?;
+    assert_eq!(o.value, -2);
+    let (o, _) = parse_octave(",1").map_err(to_anyhow)?;
+    assert_eq!(o.value, -1);
+    let (o, _) = parse_octave(",").map_err(to_anyhow)?;
+    assert_eq!(o.value, -1);
+    let e = parse_octave(",128").unwrap_err().get_all();
+    assert_eq!(
+        e,
+        vec![Diagnostic {
+            code: code::SYNTAX,
+            span: (1..4).into(),
+            message: "octave count is too large".to_string(),
+        }]
+    );
+    let e = parse_octave("'0").unwrap_err().get_all();
+    assert_eq!(
+        e,
+        vec![Diagnostic {
+            code: code::SYNTAX,
+            span: (1..2).into(),
+            message: "octave count may not be zero".to_string(),
+        }]
+    );
+    Ok(())
+}
+
+#[test]
+fn test_note_line() -> anyhow::Result<()> {
+    let x = parse_note_line("[p1.0]  1/2:e g,3(>)~   | 2:~  2:c#+ f  g\n");
+    // TODO: HERE
+    assert!(x.is_ok());
     Ok(())
 }

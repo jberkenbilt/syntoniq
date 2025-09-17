@@ -34,19 +34,33 @@ impl From<Range<usize>> for Span {
         }
     }
 }
+impl Span {
+    pub fn relative_to(&self, other: Span) -> Span {
+        Span {
+            start: self.start - other.start,
+            end: self.end - other.start,
+        }
+    }
+}
 
 #[derive(Debug, Clone)]
-pub struct SpannedToken<'s, T: Debug> {
-    pub(crate) span: Span,
-    pub(crate) data: &'s str,
+pub struct Token<'s, T: Debug> {
+    pub(crate) raw: &'s str,
     pub(crate) t: T,
 }
+impl<'s, T: Debug> Token<'s, T> {
+    pub fn new_spanned(raw: &'s str, span: impl Into<Span>, t: T) -> Spanned<Self> {
+        Spanned::new(span, Self { raw, t })
+    }
+}
+impl<'s, T: Debug + Copy> Copy for Token<'s, T> {}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Spanned<T: Debug> {
-    span: Span,
-    value: T,
+    pub span: Span,
+    pub value: T,
 }
+impl<T: Debug + Copy> Copy for Spanned<T> {}
 
 impl<T: Debug> Spanned<T> {
     pub fn new(span: impl Into<Span>, value: impl Into<T>) -> Self {
@@ -176,6 +190,75 @@ pub struct Directive {
     pub params: Vec<Param>,
 }
 
+#[derive(Debug, Clone, PartialEq)]
+pub struct DynamicLeader {
+    pub name: Spanned<String>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NoteLeader {
+    pub name: Spanned<String>,
+    pub note: Spanned<u32>,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum NoteOption {
+    Accent,
+    Marcato,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum NoteBehavior {
+    Sustain,
+    Slide,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct RegularNote {
+    pub duration: Option<Spanned<Ratio<u32>>>,
+    pub name: Spanned<String>,
+    pub octave: Option<Spanned<i8>>,
+    pub options: Vec<Spanned<NoteOption>>,
+    pub behavior: Option<Spanned<NoteBehavior>>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Hold {
+    pub duration: Option<Spanned<Ratio<u32>>>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum Note {
+    Regular(RegularNote),
+    Hold(Hold),
+    BarCheck(Span),
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum DynamicChange {
+    Crescendo,
+    Diminuendo,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Dynamic {
+    pub level: Spanned<u8>,
+    pub change: Option<Spanned<DynamicChange>>,
+    pub position: Spanned<Ratio<u32>>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct DynamicLine {
+    pub leader: DynamicLeader,
+    pub dynamics: Vec<Spanned<Dynamic>>,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct NoteLine {
+    pub leader: NoteLeader,
+    pub notes: Vec<Spanned<Note>>,
+}
+
 pub fn trace(msg: impl Display) {
     static TRACING: LazyLock<bool> = LazyLock::new(|| env::var("SYNTONIQ_TRACE_LEXER").is_ok());
     if *TRACING {
@@ -183,24 +266,44 @@ pub fn trace(msg: impl Display) {
     }
 }
 
-pub(crate) fn make_spanned<'s, I, T: Debug>(
-    input: &'s str,
-    t: T,
-) -> impl FnOnce((I, Range<usize>)) -> SpannedToken<'s, T> {
-    move |(_, span)| SpannedToken {
-        data: &input[span.clone()],
-        span: span.into(),
-        t,
+/// Helper for merge_option_spans
+pub trait GetSpan {
+    fn get_span(&self) -> Option<Span>;
+}
+
+impl<T: Debug> GetSpan for Spanned<T> {
+    fn get_span(&self) -> Option<Span> {
+        Some(self.span)
     }
 }
 
-pub(crate) fn merge_span<T: Debug>(tokens: &[SpannedToken<T>]) -> Span {
-    if tokens.is_empty() {
-        0..1
-    } else {
-        tokens[0].span.start..tokens[tokens.len() - 1].span.end
+impl<T: Debug> GetSpan for Option<Spanned<T>> {
+    fn get_span(&self) -> Option<Span> {
+        self.as_ref().map(|x| x.span)
     }
-    .into()
+}
+
+impl<T: Debug> GetSpan for &[Spanned<T>] {
+    fn get_span(&self) -> Option<Span> {
+        if self.is_empty() {
+            return None;
+        }
+        Some((self[0].span.start..self[self.len() - 1].span.end).into())
+    }
+}
+
+impl<T: Debug> GetSpan for Option<Vec<Spanned<T>>> {
+    fn get_span(&self) -> Option<Span> {
+        let s = self.as_ref()?.as_slice();
+        s.get_span()
+    }
+}
+
+/// Return a span that covers the range of all these spans assuming they are sorted.
+pub(crate) fn merge_spans(spans: &[Option<Span>]) -> Option<Span> {
+    let first = spans.iter().find(|x| x.is_some())?.as_ref()?;
+    let last = spans.iter().rfind(|x| x.is_some())?.as_ref()?;
+    Some((first.start..last.end).into())
 }
 
 // TODO: used?
@@ -208,4 +311,27 @@ pub(crate) fn _line_starts(src: &str) -> Vec<usize> {
     std::iter::once(0)
         .chain(src.match_indices('\n').map(|(i, _)| i + 1))
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_merge_spans() {
+        assert_eq!(
+            GetSpan::get_span(&Some(vec![
+                Spanned::<i32>::new(0..4, 3),
+                Spanned::new(5..8, 6),
+            ]))
+            .unwrap(),
+            (0..8).into()
+        );
+        assert!(merge_spans(&[]).is_none());
+        assert!(merge_spans(&[None]).is_none());
+        assert_eq!(
+            merge_spans(&[None, Some((1..2).into()), None, Some((3..4).into()), None]).unwrap(),
+            (1..4).into()
+        );
+    }
 }

@@ -1,3 +1,10 @@
+# TODO
+
+Things to document:
+* inner spans relative to outer spans
+* phased parsing approach
+* really all aspects of how the parsers work since this could would be very hard to understand after some time away
+
 # Syntoniq DSL
 
 The goal is to create an ASCII/UTF-8 file format for describing music with arbitrary tuning systems.
@@ -144,15 +151,14 @@ Examples:
 
 ## Dynamics
 
-* Expressed as a numerical value from 0 to 127 (for consistency with MIDI)
+* Expressed as a numerical value from 0 to 127 (for consistency with MIDI), where `0` is silent.
 * `dynamic@beat`
-* `=n` -- set the volume immediately to `n`
-* `m<` -- start a crescendo; the next dynamic must be `<n`. Volume is linearly interpolated by m and n, with m < n
-* `m>` -- start a decrescendo; the next dynamic must be `>n`. Volume is linearly interpolated by m and n, with m > n
+* `n` -- set the volume immediately to `n`
+* `n<` -- start a crescendo; the next dynamic must be more than `n`. Volume is linearly interpolated.with m < n
+* `n>` -- start a decrescendo; treated like a crescendo, but the next dynamic must be lower.
+* Default volume is 72.
 
 Can only be expressed at the part level.
-
-Considerations: do we want a character before? Do we want to distinguish cresendo and decrescendo? I'm not sure whether the extra checks are helpful or annoying. We could just make the dynamic be `n@beat` or `n@beat>` to indicate a fixed or changing dynamic. The `@` syntactically disambiguates.
 
 ## Macros
 
@@ -262,10 +268,8 @@ The same thing but with a single part containing more than one note per part wit
 [p1.2]    2:~     1:b,  b%,   |    2:c             b,
 [p1.3]    4:~                 |    2:~             a,
 [p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
-  [p1]  =64@0   64>@2         | >96>@0         >64@2
+  [p1]   64@0   64<@2         |  96>@0          64@2
 ```
-
-
 
 It would be nice to have tool support for alignment. Within a score block, align notes so the beginning of the pitch part of notes or the location part of dynamics are aligned rhythmically after any beat markers as in the above examples. See below for an algorithm.
 

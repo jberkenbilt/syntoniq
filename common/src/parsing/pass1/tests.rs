@@ -5,7 +5,7 @@ use crate::to_anyhow;
 /// Test first stage parsers that work with strings
 macro_rules! make_parser1 {
     ($f:ident, $p:ident) => {
-        fn $f<'s>(src: &'s str) -> Result<(&'s str, &'s str), Diagnostics> {
+        fn $f<'s>(src: &'s str) -> Result<(Token1<'s>, &'s str), Diagnostics> {
             let mut input = LocatingSlice::new(src);
             let diags = Diagnostics::new();
             let r = $p(&diags).parse_next(&mut input);
@@ -18,7 +18,7 @@ macro_rules! make_parser1 {
     };
 }
 
-make_parser1!(parse_raw_number, raw_number);
+make_parser1!(parse_raw_number, number);
 make_parser1!(parse_string_literal, string_literal);
 
 #[test]
@@ -26,7 +26,7 @@ fn test_raw_number() -> anyhow::Result<()> {
     assert!(!parse_raw_number("potato").unwrap_err().has_errors());
 
     let (s, rest) = parse_raw_number("16059q").map_err(to_anyhow)?;
-    assert_eq!(s, "16059");
+    assert_eq!(s.value.raw, "16059");
     assert_eq!(rest, "q");
 
     let e = parse_raw_number("14159265358979323846264w")
@@ -52,8 +52,10 @@ fn test_string_literal() -> anyhow::Result<()> {
     assert!(!x.unwrap_err().has_errors());
 
     let (s, rest) = parse_string_literal(r#""string with \"π\" and \\"w"#).map_err(to_anyhow)?;
-    assert_eq!(s, r#""string with \"π\" and \\""#);
+    assert_eq!(s.value.raw, r#""string with \"π\" and \\""#);
     assert_eq!(rest, "w");
+    let s = Pass1::get_string(&s).unwrap();
+    assert_eq!(s, Spanned::new(1..26, r#"string with "π" and \"#));
 
     let e = parse_string_literal("\"invalid π \\quoted and\\🥔\n in the middle\"")
         .unwrap_err()
