@@ -1,5 +1,6 @@
 use crate::pitch::Pitch;
 use num_rational::Ratio;
+use serde::{Serialize, Serializer};
 use std::cell::RefCell;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Index;
@@ -18,6 +19,14 @@ pub mod code {
 pub struct Span {
     pub start: usize,
     pub end: usize,
+}
+impl Serialize for Span {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        [self.start, self.end].serialize(serializer)
+    }
 }
 impl Display for Span {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -63,12 +72,12 @@ macro_rules! color {
     };
 }
 
-#[derive(Debug, Clone)]
-pub struct Token<'s, T: Debug> {
+#[derive(Serialize, Debug, Clone)]
+pub struct Token<'s, T: Debug + Serialize> {
     pub(crate) raw: &'s str,
     pub(crate) t: T,
 }
-impl<'s, T: Debug + Display> Display for Token<'s, T> {
+impl<'s, T: Debug + Display + Serialize> Display for Token<'s, T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let raw: String = self
             .raw
@@ -85,27 +94,27 @@ impl<'s, T: Debug + Display> Display for Token<'s, T> {
         color!(f, 248, "raw=|{raw}|")
     }
 }
-impl<'s, T: Debug> Token<'s, T> {
+impl<'s, T: Debug + Serialize> Token<'s, T> {
     pub fn new_spanned(raw: &'s str, span: impl Into<Span>, t: T) -> Spanned<Self> {
         Spanned::new(span, Self { raw, t })
     }
 }
-impl<'s, T: Debug + Copy> Copy for Token<'s, T> {}
+impl<'s, T: Debug + Serialize + Copy> Copy for Token<'s, T> {}
 
-#[derive(Debug, Clone, PartialEq)]
-pub struct Spanned<T: Debug> {
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct Spanned<T: Debug + Serialize> {
     pub span: Span,
     pub value: T,
 }
-impl<T: Debug + Display> Display for Spanned<T> {
+impl<T: Debug + Display + Serialize> Display for Spanned<T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 5, "{}:", self.span)?;
         write!(f, "{}", self.value)
     }
 }
-impl<T: Debug + Copy> Copy for Spanned<T> {}
+impl<T: Debug + Copy + Serialize> Copy for Spanned<T> {}
 
-impl<T: Debug> Spanned<T> {
+impl<T: Debug + Serialize> Spanned<T> {
     pub fn new(span: impl Into<Span>, value: impl Into<T>) -> Self {
         Self {
             span: span.into(),
@@ -165,7 +174,7 @@ impl Diagnostics {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 /// Represents a pitch. All ratios also parse into pitches. If something that parsed into
 /// a pitch was originally specified as a ratio, you can get the value as a ratio. During the
 /// lexical phase, we never know whether a ratio is supposed to be a ratio or a pitch. During the
@@ -199,7 +208,7 @@ impl PitchOrRatio {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum ParamValue {
     PitchOrRatio(PitchOrRatio),
     String(String),
@@ -236,7 +245,7 @@ impl ParamValue {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Param {
     pub key: Spanned<String>,
     pub value: Spanned<ParamValue>,
@@ -249,7 +258,7 @@ impl Display for Param {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Directive {
     pub name: Spanned<String>,
     pub params: Vec<Param>,
@@ -270,7 +279,7 @@ impl Display for Directive {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct DynamicLeader {
     pub name: Spanned<String>,
 }
@@ -282,7 +291,7 @@ impl Display for DynamicLeader {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct NoteLeader {
     pub name: Spanned<String>,
     pub note: Spanned<u32>,
@@ -295,7 +304,7 @@ impl Display for NoteLeader {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Serialize, Debug, Clone, Copy, PartialEq)]
 pub enum NoteOption {
     Accent,
     Marcato,
@@ -309,7 +318,7 @@ impl Display for NoteOption {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Serialize, Debug, Clone, Copy, PartialEq)]
 pub enum NoteBehavior {
     Sustain,
     Slide,
@@ -323,7 +332,7 @@ impl Display for NoteBehavior {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct RegularNote {
     pub duration: Option<Spanned<Ratio<u32>>>,
     pub name: Spanned<String>,
@@ -359,7 +368,7 @@ impl Display for RegularNote {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Hold {
     pub duration: Option<Spanned<Ratio<u32>>>,
 }
@@ -376,7 +385,7 @@ impl Display for Hold {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum Note {
     Regular(RegularNote),
     Hold(Hold),
@@ -392,13 +401,13 @@ impl Display for Note {
     }
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Serialize, Debug, Clone, Copy, PartialEq)]
 pub enum DynamicChange {
     Crescendo,
     Diminuendo,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct RegularDynamic {
     pub level: Spanned<u8>,
     pub change: Option<Spanned<DynamicChange>>,
@@ -424,7 +433,7 @@ impl Display for RegularDynamic {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum Dynamic {
     Regular(RegularDynamic),
     BarCheck(Span),
@@ -438,7 +447,7 @@ impl Display for Dynamic {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct DynamicLine {
     pub leader: Spanned<DynamicLeader>,
     pub dynamics: Vec<Spanned<Dynamic>>,
@@ -453,7 +462,7 @@ impl Display for DynamicLine {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct NoteLine {
     pub leader: Spanned<NoteLeader>,
     pub notes: Vec<Spanned<Note>>,
@@ -480,19 +489,19 @@ pub trait GetSpan {
     fn get_span(&self) -> Option<Span>;
 }
 
-impl<T: Debug> GetSpan for Spanned<T> {
+impl<T: Debug + Serialize> GetSpan for Spanned<T> {
     fn get_span(&self) -> Option<Span> {
         Some(self.span)
     }
 }
 
-impl<T: Debug> GetSpan for Option<Spanned<T>> {
+impl<T: Debug + Serialize> GetSpan for Option<Spanned<T>> {
     fn get_span(&self) -> Option<Span> {
         self.as_ref().map(|x| x.span)
     }
 }
 
-impl<T: Debug> GetSpan for &[Spanned<T>] {
+impl<T: Debug + Serialize> GetSpan for &[Spanned<T>] {
     fn get_span(&self) -> Option<Span> {
         if self.is_empty() {
             return None;
@@ -501,7 +510,7 @@ impl<T: Debug> GetSpan for &[Spanned<T>] {
     }
 }
 
-impl<T: Debug> GetSpan for Option<Vec<Spanned<T>>> {
+impl<T: Debug + Serialize> GetSpan for Option<Vec<Spanned<T>>> {
     fn get_span(&self) -> Option<Span> {
         let s = self.as_ref()?.as_slice();
         s.get_span()

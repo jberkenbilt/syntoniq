@@ -9,6 +9,7 @@ use crate::pitch::{Factor, Pitch};
 use crate::to_anyhow;
 use anyhow::anyhow;
 use num_rational::Ratio;
+use serde::Serialize;
 use std::fmt::{Debug, Display, Formatter};
 use winnow::combinator::{alt, delimited, eof, fail, opt, peek, preceded, separated, terminated};
 use winnow::token::{one_of, take_while};
@@ -17,7 +18,7 @@ use winnow::{Parser, combinator};
 type Input2<'a, 's> = &'a [Token1<'s>];
 pub type Token2<'s> = Spanned<Token<'s, Pass2>>;
 
-#[derive(Debug, Clone)]
+#[derive(Serialize, Debug, Clone)]
 pub enum Pass2 {
     // Space, comments
     Space,
@@ -506,7 +507,7 @@ fn note_leader() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<NoteLeader
     }
 }
 
-fn require_spaces<T: Debug>(
+fn require_spaces<T: Debug + Serialize>(
     diags: &Diagnostics,
     v: Vec<(Option<()>, Spanned<T>)>,
 ) -> Vec<Spanned<T>> {

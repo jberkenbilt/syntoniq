@@ -2,7 +2,7 @@ use crate::parsing::pass2;
 use anyhow::bail;
 use num_rational::Ratio;
 use serde::de::Visitor;
-use serde::{Deserialize, Deserializer, de};
+use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::fmt;
@@ -321,6 +321,15 @@ impl<'de> Deserialize<'de> for Pitch {
         }
 
         deserializer.deserialize_str(PitchVisitor)
+    }
+}
+
+impl Serialize for Pitch {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        self.to_string().serialize(serializer)
     }
 }
 

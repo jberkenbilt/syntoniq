@@ -3,6 +3,7 @@
 
 use crate::parsing::model;
 use crate::parsing::model::{Diagnostics, Span, Spanned, Token, code};
+use serde::Serialize;
 use std::fmt::{Display, Formatter};
 use winnow::combinator::{alt, delimited, fail, preceded};
 use winnow::error::{ContextError, StrContext};
@@ -34,7 +35,7 @@ static NOTE_NAME_CHARACTERS: &str = "_*^/|+-!#%&";
 /// Characters allowed in dynamics
 static DYNAMIC_PUNCTUATION: &str = "|<>@";
 
-#[derive(Debug, Clone, Copy)]
+#[derive(Serialize, Debug, Clone, Copy)]
 pub enum Pass1 {
     Unknown,
     Space,
