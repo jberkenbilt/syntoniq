@@ -9,4 +9,6 @@ serde.workspace = true
 anyhow.workspace = true
 num-rational.workspace = true
 winnow.workspace = true
+clap.workspace = true
 anstream = "0.6.20"
+serde_json = "1.0.145"

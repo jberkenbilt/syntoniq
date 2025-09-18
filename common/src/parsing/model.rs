@@ -123,14 +123,14 @@ impl<T: Debug + Serialize> Spanned<T> {
     }
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Diagnostic {
     pub code: &'static str,
     pub span: Span,
     pub message: String,
 }
 
-#[derive(Default, Debug)]
+#[derive(Serialize, Default, Debug)]
 pub struct Diagnostics {
     pub list: RefCell<Vec<Diagnostic>>,
 }
