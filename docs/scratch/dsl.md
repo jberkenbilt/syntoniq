@@ -12,6 +12,10 @@ Error handling:
   * don't repeat any error messages
   * degraded mode: just try to recognize things until we reach an end token
 
+Testing:
+* Have a directory with files. Parse to JSON and compare. One file should contain files with outputs. Another should just check that they succeed. That can be used for fuzz testing.
+
+CURRENT: test_pass2
 
 # Syntoniq DSL
 

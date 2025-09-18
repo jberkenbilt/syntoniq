@@ -1,0 +1,1584 @@
+{
+  "Ok": [
+    {
+      "span": [
+        0,
+        7
+      ],
+      "value": {
+        "raw": "; hello",
+        "t": "Comment"
+      }
+    },
+    {
+      "span": [
+        7,
+        8
+      ],
+      "value": {
+        "raw": "\n",
+        "t": "Newline"
+      }
+    },
+    {
+      "span": [
+        8,
+        63
+      ],
+      "value": {
+        "raw": "onceThere(quack=\"moo π\", a=3.14, b = *^-2|17, d = 1/5)",
+        "t": {
+          "Directive": {
+            "name": {
+              "span": [
+                8,
+                17
+              ],
+              "value": "onceThere"
+            },
+            "params": [
+              {
+                "key": {
+                  "span": [
+                    18,
+                    23
+                  ],
+                  "value": "quack"
+                },
+                "value": {
+                  "span": [
+                    24,
+                    32
+                  ],
+                  "value": {
+                    "String": "moo π"
+                  }
+                }
+              },
+              {
+                "key": {
+                  "span": [
+                    34,
+                    35
+                  ],
+                  "value": "a"
+                },
+                "value": {
+                  "span": [
+                    36,
+                    40
+                  ],
+                  "value": {
+                    "PitchOrRatio": {
+                      "Ratio": [
+                        [
+                          157,
+                          50
+                        ],
+                        "157/50"
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "key": {
+                  "span": [
+                    42,
+                    43
+                  ],
+                  "value": "b"
+                },
+                "value": {
+                  "span": [
+                    46,
+                    53
+                  ],
+                  "value": {
+                    "PitchOrRatio": {
+                      "Pitch": "1/2*^15|17"
+                    }
+                  }
+                }
+              },
+              {
+                "key": {
+                  "span": [
+                    55,
+                    56
+                  ],
+                  "value": "d"
+                },
+                "value": {
+                  "span": [
+                    59,
+                    62
+                  ],
+                  "value": {
+                    "PitchOrRatio": {
+                      "Ratio": [
+                        [
+                          1,
+                          5
+                        ],
+                        "1/5"
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "span": [
+        63,
+        64
+      ],
+      "value": {
+        "raw": "\n",
+        "t": "Newline"
+      }
+    },
+    {
+      "span": [
+        64,
+        67
+      ],
+      "value": {
+        "raw": "f()",
+        "t": {
+          "Directive": {
+            "name": {
+              "span": [
+                64,
+                65
+              ],
+              "value": "f"
+            },
+            "params": []
+          }
+        }
+      }
+    },
+    {
+      "span": [
+        67,
+        68
+      ],
+      "value": {
+        "raw": "\n",
+        "t": "Newline"
+      }
+    },
+    {
+      "span": [
+        68,
+        69
+      ],
+      "value": {
+        "raw": "\n",
+        "t": "Newline"
+      }
+    },
+    {
+      "span": [
+        69,
+        135
+      ],
+      "value": {
+        "raw": "[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g(>)\n",
+        "t": {
+          "NoteLine": {
+            "leader": {
+              "span": [
+                69,
+                75
+              ],
+              "value": {
+                "name": {
+                  "span": [
+                    70,
+                    72
+                  ],
+                  "value": "p1"
+                },
+                "note": {
+                  "span": [
+                    73,
+                    74
+                  ],
+                  "value": 0
+                }
+              }
+            },
+            "notes": [
+              {
+                "span": [
+                  77,
+                  82
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": {
+                      "span": [
+                        77,
+                        80
+                      ],
+                      "value": [
+                        1,
+                        2
+                      ]
+                    },
+                    "name": {
+                      "span": [
+                        81,
+                        82
+                      ],
+                      "value": "e"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  83,
+                  84
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        83,
+                        84
+                      ],
+                      "value": "g"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  85,
+                  86
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        85,
+                        86
+                      ],
+                      "value": "e"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  87,
+                  88
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        87,
+                        88
+                      ],
+                      "value": "g"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  89,
+                  90
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        89,
+                        90
+                      ],
+                      "value": "e"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  91,
+                  92
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        91,
+                        92
+                      ],
+                      "value": "g"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  93,
+                  94
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        93,
+                        94
+                      ],
+                      "value": "e"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  97,
+                  98
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        97,
+                        98
+                      ],
+                      "value": "g"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  99,
+                  100
+                ],
+                "value": {
+                  "BarCheck": [
+                    99,
+                    100
+                  ]
+                }
+              },
+              {
+                "span": [
+                  106,
+                  107
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        106,
+                        107
+                      ],
+                      "value": "f"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  108,
+                  109
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        108,
+                        109
+                      ],
+                      "value": "g"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  114,
+                  115
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        114,
+                        115
+                      ],
+                      "value": "f"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  116,
+                  117
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        116,
+                        117
+                      ],
+                      "value": "g"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  120,
+                  121
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        120,
+                        121
+                      ],
+                      "value": "f"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  122,
+                  123
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        122,
+                        123
+                      ],
+                      "value": "g"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  127,
+                  128
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        127,
+                        128
+                      ],
+                      "value": "f"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  130,
+                  133
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        130,
+                        131
+                      ],
+                      "value": "g"
+                    },
+                    "octave": null,
+                    "options": [
+                      {
+                        "span": [
+                          132,
+                          133
+                        ],
+                        "value": "Accent"
+                      }
+                    ],
+                    "behavior": null
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "span": [
+        135,
+        198
+      ],
+      "value": {
+        "raw": "[p1.1]    1:d   c   d   c     |      e   1/2:d e   d e>   d~ e\n",
+        "t": {
+          "NoteLine": {
+            "leader": {
+              "span": [
+                135,
+                141
+              ],
+              "value": {
+                "name": {
+                  "span": [
+                    136,
+                    138
+                  ],
+                  "value": "p1"
+                },
+                "note": {
+                  "span": [
+                    139,
+                    140
+                  ],
+                  "value": 1
+                }
+              }
+            },
+            "notes": [
+              {
+                "span": [
+                  145,
+                  148
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": {
+                      "span": [
+                        145,
+                        146
+                      ],
+                      "value": [
+                        1,
+                        1
+                      ]
+                    },
+                    "name": {
+                      "span": [
+                        147,
+                        148
+                      ],
+                      "value": "d"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  151,
+                  152
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        151,
+                        152
+                      ],
+                      "value": "c"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  155,
+                  156
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        155,
+                        156
+                      ],
+                      "value": "d"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  159,
+                  160
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        159,
+                        160
+                      ],
+                      "value": "c"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  165,
+                  166
+                ],
+                "value": {
+                  "BarCheck": [
+                    165,
+                    166
+                  ]
+                }
+              },
+              {
+                "span": [
+                  172,
+                  173
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        172,
+                        173
+                      ],
+                      "value": "e"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  176,
+                  181
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": {
+                      "span": [
+                        176,
+                        179
+                      ],
+                      "value": [
+                        1,
+                        2
+                      ]
+                    },
+                    "name": {
+                      "span": [
+                        180,
+                        181
+                      ],
+                      "value": "d"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  182,
+                  183
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        182,
+                        183
+                      ],
+                      "value": "e"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  186,
+                  187
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        186,
+                        187
+                      ],
+                      "value": "d"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  188,
+                  190
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        188,
+                        189
+                      ],
+                      "value": "e"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": {
+                      "span": [
+                        189,
+                        190
+                      ],
+                      "value": "Slide"
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  193,
+                  195
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        193,
+                        194
+                      ],
+                      "value": "d"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": {
+                      "span": [
+                        194,
+                        195
+                      ],
+                      "value": "Sustain"
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  196,
+                  197
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        196,
+                        197
+                      ],
+                      "value": "e"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "span": [
+        198,
+        252
+      ],
+      "value": {
+        "raw": "[p1.2]    2:~     1:b,  b%,   |    2:c             b,\n",
+        "t": {
+          "NoteLine": {
+            "leader": {
+              "span": [
+                198,
+                204
+              ],
+              "value": {
+                "name": {
+                  "span": [
+                    199,
+                    201
+                  ],
+                  "value": "p1"
+                },
+                "note": {
+                  "span": [
+                    202,
+                    203
+                  ],
+                  "value": 2
+                }
+              }
+            },
+            "notes": [
+              {
+                "span": [
+                  208,
+                  211
+                ],
+                "value": {
+                  "Hold": {
+                    "duration": {
+                      "span": [
+                        208,
+                        209
+                      ],
+                      "value": [
+                        2,
+                        1
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  216,
+                  220
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": {
+                      "span": [
+                        216,
+                        217
+                      ],
+                      "value": [
+                        1,
+                        1
+                      ]
+                    },
+                    "name": {
+                      "span": [
+                        218,
+                        219
+                      ],
+                      "value": "b"
+                    },
+                    "octave": {
+                      "span": [
+                        219,
+                        220
+                      ],
+                      "value": -1
+                    },
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  222,
+                  225
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        222,
+                        224
+                      ],
+                      "value": "b%"
+                    },
+                    "octave": {
+                      "span": [
+                        224,
+                        225
+                      ],
+                      "value": -1
+                    },
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  228,
+                  229
+                ],
+                "value": {
+                  "BarCheck": [
+                    228,
+                    229
+                  ]
+                }
+              },
+              {
+                "span": [
+                  233,
+                  236
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": {
+                      "span": [
+                        233,
+                        234
+                      ],
+                      "value": [
+                        2,
+                        1
+                      ]
+                    },
+                    "name": {
+                      "span": [
+                        235,
+                        236
+                      ],
+                      "value": "c"
+                    },
+                    "octave": null,
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  249,
+                  251
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        249,
+                        250
+                      ],
+                      "value": "b"
+                    },
+                    "octave": {
+                      "span": [
+                        250,
+                        251
+                      ],
+                      "value": -1
+                    },
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "span": [
+        252,
+        306
+      ],
+      "value": {
+        "raw": "[p1.3]    4:~                 |    2:~             a,\n",
+        "t": {
+          "NoteLine": {
+            "leader": {
+              "span": [
+                252,
+                258
+              ],
+              "value": {
+                "name": {
+                  "span": [
+                    253,
+                    255
+                  ],
+                  "value": "p1"
+                },
+                "note": {
+                  "span": [
+                    256,
+                    257
+                  ],
+                  "value": 3
+                }
+              }
+            },
+            "notes": [
+              {
+                "span": [
+                  262,
+                  265
+                ],
+                "value": {
+                  "Hold": {
+                    "duration": {
+                      "span": [
+                        262,
+                        263
+                      ],
+                      "value": [
+                        4,
+                        1
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  282,
+                  283
+                ],
+                "value": {
+                  "BarCheck": [
+                    282,
+                    283
+                  ]
+                }
+              },
+              {
+                "span": [
+                  287,
+                  290
+                ],
+                "value": {
+                  "Hold": {
+                    "duration": {
+                      "span": [
+                        287,
+                        288
+                      ],
+                      "value": [
+                        2,
+                        1
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  303,
+                  305
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        303,
+                        304
+                      ],
+                      "value": "a"
+                    },
+                    "octave": {
+                      "span": [
+                        304,
+                        305
+                      ],
+                      "value": -1
+                    },
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "span": [
+        306,
+        370
+      ],
+      "value": {
+        "raw": "[p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,\n",
+        "t": {
+          "NoteLine": {
+            "leader": {
+              "span": [
+                306,
+                312
+              ],
+              "value": {
+                "name": {
+                  "span": [
+                    307,
+                    309
+                  ],
+                  "value": "p1"
+                },
+                "note": {
+                  "span": [
+                    310,
+                    311
+                  ],
+                  "value": 4
+                }
+              }
+            },
+            "notes": [
+              {
+                "span": [
+                  316,
+                  319
+                ],
+                "value": {
+                  "Hold": {
+                    "duration": {
+                      "span": [
+                        316,
+                        317
+                      ],
+                      "value": [
+                        4,
+                        1
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  336,
+                  337
+                ],
+                "value": {
+                  "BarCheck": [
+                    336,
+                    337
+                  ]
+                }
+              },
+              {
+                "span": [
+                  341,
+                  345
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": {
+                      "span": [
+                        341,
+                        342
+                      ],
+                      "value": [
+                        2,
+                        1
+                      ]
+                    },
+                    "name": {
+                      "span": [
+                        343,
+                        344
+                      ],
+                      "value": "a"
+                    },
+                    "octave": {
+                      "span": [
+                        344,
+                        345
+                      ],
+                      "value": -1
+                    },
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  355,
+                  359
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": {
+                      "span": [
+                        355,
+                        356
+                      ],
+                      "value": [
+                        1,
+                        1
+                      ]
+                    },
+                    "name": {
+                      "span": [
+                        357,
+                        358
+                      ],
+                      "value": "g"
+                    },
+                    "octave": {
+                      "span": [
+                        358,
+                        359
+                      ],
+                      "value": -1
+                    },
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  360,
+                  366
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": {
+                      "span": [
+                        360,
+                        363
+                      ],
+                      "value": [
+                        1,
+                        2
+                      ]
+                    },
+                    "name": {
+                      "span": [
+                        364,
+                        365
+                      ],
+                      "value": "f"
+                    },
+                    "octave": {
+                      "span": [
+                        365,
+                        366
+                      ],
+                      "value": -1
+                    },
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              },
+              {
+                "span": [
+                  367,
+                  369
+                ],
+                "value": {
+                  "Regular": {
+                    "duration": null,
+                    "name": {
+                      "span": [
+                        367,
+                        368
+                      ],
+                      "value": "e"
+                    },
+                    "octave": {
+                      "span": [
+                        368,
+                        369
+                      ],
+                      "value": -1
+                    },
+                    "options": [],
+                    "behavior": null
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "span": [
+        370,
+        372
+      ],
+      "value": {
+        "raw": "  ",
+        "t": "Space"
+      }
+    },
+    {
+      "span": [
+        372,
+        424
+      ],
+      "value": {
+        "raw": "[p1]   64@0    64@2<        |   96@0>          64@2\n",
+        "t": {
+          "DynamicLine": {
+            "leader": {
+              "span": [
+                372,
+                376
+              ],
+              "value": {
+                "name": {
+                  "span": [
+                    373,
+                    375
+                  ],
+                  "value": "p1"
+                }
+              }
+            },
+            "dynamics": [
+              {
+                "span": [
+                  379,
+                  383
+                ],
+                "value": {
+                  "Regular": {
+                    "level": {
+                      "span": [
+                        379,
+                        381
+                      ],
+                      "value": 64
+                    },
+                    "change": null,
+                    "position": {
+                      "span": [
+                        382,
+                        383
+                      ],
+                      "value": [
+                        0,
+                        1
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  387,
+                  392
+                ],
+                "value": {
+                  "Regular": {
+                    "level": {
+                      "span": [
+                        387,
+                        389
+                      ],
+                      "value": 64
+                    },
+                    "change": {
+                      "span": [
+                        391,
+                        392
+                      ],
+                      "value": "Diminuendo"
+                    },
+                    "position": {
+                      "span": [
+                        390,
+                        391
+                      ],
+                      "value": [
+                        2,
+                        1
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  400,
+                  401
+                ],
+                "value": {
+                  "BarCheck": [
+                    400,
+                    401
+                  ]
+                }
+              },
+              {
+                "span": [
+                  404,
+                  409
+                ],
+                "value": {
+                  "Regular": {
+                    "level": {
+                      "span": [
+                        404,
+                        406
+                      ],
+                      "value": 96
+                    },
+                    "change": {
+                      "span": [
+                        408,
+                        409
+                      ],
+                      "value": "Crescendo"
+                    },
+                    "position": {
+                      "span": [
+                        407,
+                        408
+                      ],
+                      "value": [
+                        0,
+                        1
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "span": [
+                  419,
+                  423
+                ],
+                "value": {
+                  "Regular": {
+                    "level": {
+                      "span": [
+                        419,
+                        421
+                      ],
+                      "value": 64
+                    },
+                    "change": null,
+                    "position": {
+                      "span": [
+                        422,
+                        423
+                      ],
+                      "value": [
+                        2,
+                        1
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

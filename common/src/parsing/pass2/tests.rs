@@ -1,6 +1,9 @@
 use super::*;
 use crate::parsing::model::Diagnostic;
 use crate::parsing::pass1::parse1;
+use std::fs::File;
+use std::path::{Path, PathBuf};
+use std::{fs, io};
 
 macro_rules! make_parser2 {
     ($f:ident, $p:ident, $r:ty) => {
@@ -31,7 +34,6 @@ make_parser2!(parse_string, string, Spanned<String>);
 make_parser2!(parse_param, param, Param);
 make_parser2!(parse_directive, directive, Spanned<Directive>);
 make_parser2!(parse_octave, octave, Spanned<i8>);
-make_parser2!(parse_note_line, note_line, Spanned<NoteLine>);
 
 #[test]
 fn test_ratio() -> anyhow::Result<()> {
@@ -346,10 +348,52 @@ fn test_octave() -> anyhow::Result<()> {
     Ok(())
 }
 
+fn get_stq_files(dir: impl AsRef<Path>) -> anyhow::Result<Vec<PathBuf>> {
+    let paths = fs::read_dir(dir)?
+        .filter_map(|entry| {
+            let path = entry.ok()?.path();
+            if path.display().to_string().ends_with(".stq") {
+                Some(path)
+            } else {
+                None
+            }
+        })
+        .collect();
+    Ok(paths)
+}
+
 #[test]
-fn test_note_line() -> anyhow::Result<()> {
-    let x = parse_note_line("[p1.0]  1/2:e g,3(>)~   | 2:~  2:c#+ f  g ; comment no newline");
-    // TODO: HERE
-    assert!(x.is_ok());
+fn test_pass2() -> anyhow::Result<()> {
+    // TODO: HERE: generate tests and carefully validate or hand-generate output and errors.
+
+    // This is designed to fail if anything failed but to run all the tests and produce useful
+    // output for analysis.
+    let paths = get_stq_files("parsing-tests/pass2")?;
+    let mut errors = Vec::<anyhow::Error>::new();
+    for p in paths {
+        let out = p.to_str().unwrap().replace(".stq", ".json");
+        let in_data = String::from_utf8(fs::read(&p)?)?;
+        let out_value: serde_json::Value = serde_json::from_reader(File::open(&out)?)?;
+        let r = parse2(&in_data);
+        let in_as_value = serde_json::to_string(&r)?;
+        let in_value: serde_json::Value = serde_json::from_str(&in_as_value)?;
+        if in_value == out_value {
+            eprintln!("{}: PASS", p.display());
+        } else {
+            // Generate output with ./target/debug/tokenize --json
+            eprintln!("------ {} ------", p.display());
+            eprintln!("------ ACTUAL ------");
+            serde_json::to_writer_pretty(io::stderr(), &r)?;
+            eprintln!("------ EXPECTED ------");
+            serde_json::to_writer_pretty(io::stderr(), &out_value)?;
+            errors.push(anyhow!("{}: FAIL", p.display()));
+        }
+    }
+    if !errors.is_empty() {
+        for e in errors {
+            eprintln!("ERROR: {e}");
+        }
+        panic!("there were errors");
+    }
     Ok(())
 }
