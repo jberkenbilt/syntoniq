@@ -3,6 +3,7 @@
 
 use crate::parsing::model;
 use crate::parsing::model::{Diagnostics, Span, Spanned, Token, code};
+use std::fmt::{Display, Formatter};
 use winnow::combinator::{alt, delimited, fail, preceded};
 use winnow::error::{ContextError, StrContext};
 use winnow::stream::{AsChar, Offset};
@@ -47,6 +48,18 @@ pub enum Pass1 {
     DynamicLeader { name_span: Span },
     NoteOptions { inner_span: Span },
     NoteName,
+}
+impl Display for Pass1 {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Pass1::Number { n } => write!(f, "Number:{n}"),
+            Pass1::String { inner_span } => write!(f, "String:{inner_span}"),
+            Pass1::NoteLeader { name_span, note } => write!(f, "NoteLeader:{name_span}/{note}"),
+            Pass1::DynamicLeader { name_span } => write!(f, "DynamicLeader:{name_span}"),
+            Pass1::NoteOptions { inner_span } => write!(f, "NoteOptions:{inner_span}"),
+            _ => write!(f, "{self:?}"),
+        }
+    }
 }
 impl Pass1 {
     pub fn is_number(t: Token1) -> bool {
@@ -325,7 +338,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
             .parse_next(&mut input)
             {
                 state = new_state;
-                model::trace(format!("lex pass 1: {tok:?} -> {state:?}"));
+                model::trace(format!("lex pass 1: {tok} -> {state:?}"));
                 out.push(tok);
                 continue;
             } else {
@@ -377,7 +390,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
                     // discard token
                     diags.err(code::LEXICAL, t.span, "unknown character");
                 } else {
-                    model::trace(format!("lex pass 1: {t:?}"));
+                    model::trace(format!("lex pass 1: {t}"));
                     out.push(t)
                 }
             }

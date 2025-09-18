@@ -19,6 +19,11 @@ pub struct Span {
     pub start: usize,
     pub end: usize,
 }
+impl Display for Span {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[{},{})", self.start, self.end)
+    }
+}
 impl Index<Span> for str {
     type Output = str;
 
@@ -43,10 +48,42 @@ impl Span {
     }
 }
 
+macro_rules! color {
+    ($f:expr, $color:literal, $( $rest:tt )* ) => {
+        {
+            if *crate::USE_COLOR {
+                write!($f, "\x1b[38;5;{}m", $color)?;
+            }
+            write!($f, $($rest)*)?;
+            if *crate::USE_COLOR {
+                write!($f, "\x1b[0m")?;
+            }
+            Ok(())
+        }
+    };
+}
+
 #[derive(Debug, Clone)]
 pub struct Token<'s, T: Debug> {
     pub(crate) raw: &'s str,
     pub(crate) t: T,
+}
+impl<'s, T: Debug + Display> Display for Token<'s, T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let raw: String = self
+            .raw
+            .chars()
+            .map(|c| {
+                match c {
+                    '\n' => '⏎', // also ␊
+                    '\r' => '␍',
+                    _ => c,
+                }
+            })
+            .collect();
+        write!(f, "{} ", self.t)?;
+        color!(f, 248, "raw=|{raw}|")
+    }
 }
 impl<'s, T: Debug> Token<'s, T> {
     pub fn new_spanned(raw: &'s str, span: impl Into<Span>, t: T) -> Spanned<Self> {
@@ -59,6 +96,12 @@ impl<'s, T: Debug + Copy> Copy for Token<'s, T> {}
 pub struct Spanned<T: Debug> {
     pub span: Span,
     pub value: T,
+}
+impl<T: Debug + Display> Display for Spanned<T> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        color!(f, 5, "{}:", self.span)?;
+        write!(f, "{}", self.value)
+    }
 }
 impl<T: Debug + Copy> Copy for Spanned<T> {}
 
@@ -134,6 +177,13 @@ pub enum PitchOrRatio {
 }
 
 impl PitchOrRatio {
+    pub fn as_pitch(&self) -> &Pitch {
+        match self {
+            PitchOrRatio::Ratio((_, p)) => p,
+            PitchOrRatio::Pitch(p) => p,
+        }
+    }
+
     pub fn into_pitch(self) -> Pitch {
         match self {
             PitchOrRatio::Ratio((_, p)) => p,
@@ -153,6 +203,14 @@ impl PitchOrRatio {
 pub enum ParamValue {
     PitchOrRatio(PitchOrRatio),
     String(String),
+}
+impl Display for ParamValue {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ParamValue::PitchOrRatio(pr) => color!(f, 6, "{}", pr.as_pitch()),
+            ParamValue::String(s) => color!(f, 166, "\"{s}\""),
+        }
+    }
 }
 
 impl ParamValue {
@@ -183,16 +241,45 @@ pub struct Param {
     pub key: Spanned<String>,
     pub value: Spanned<ParamValue>,
 }
+impl Display for Param {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        color!(f, 88, "{}", self.key.value,)?;
+        color!(f, 55, "=")?;
+        write!(f, "{}", self.value.value)
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Directive {
     pub name: Spanned<String>,
     pub params: Vec<Param>,
 }
+impl Display for Directive {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        color!(f, 39, "{}(", self.name.value)?;
+        let mut first = true;
+        for p in &self.params {
+            if first {
+                first = false;
+            } else {
+                write!(f, ", ")?;
+            }
+            write!(f, "{p}")?;
+        }
+        color!(f, 39, ")")
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct DynamicLeader {
     pub name: Spanned<String>,
+}
+impl Display for DynamicLeader {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        color!(f, 98, "{}", self.name.value)?;
+        write!(f, "]")
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -200,17 +287,40 @@ pub struct NoteLeader {
     pub name: Spanned<String>,
     pub note: Spanned<u32>,
 }
+impl Display for NoteLeader {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "[")?;
+        color!(f, 98, "{}.{}", self.name.value, self.note.value)?;
+        write!(f, "]")
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum NoteOption {
     Accent,
     Marcato,
 }
+impl Display for NoteOption {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            NoteOption::Accent => write!(f, ">"),
+            NoteOption::Marcato => write!(f, "^"),
+        }
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum NoteBehavior {
     Sustain,
     Slide,
+}
+impl Display for NoteBehavior {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            NoteBehavior::Sustain => write!(f, "~"),
+            NoteBehavior::Slide => write!(f, ">"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -221,10 +331,49 @@ pub struct RegularNote {
     pub options: Vec<Spanned<NoteOption>>,
     pub behavior: Option<Spanned<NoteBehavior>>,
 }
+impl Display for RegularNote {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        if let Some(x) = self.duration {
+            color!(f, 3, "{}", x.value)?;
+            color!(f, 55, ":")?;
+        }
+        color!(f, 2, "{}", self.name.value)?;
+        if let Some(x) = self.octave {
+            match x.value {
+                x if x > 0 => color!(f, 4, "'{x}")?,
+                x if x < 0 => color!(f, 4, ",{}", -x)?,
+                _ => (),
+            }
+        }
+        if !self.options.is_empty() {
+            color!(f, 55, "(")?;
+            for i in &self.options {
+                color!(f, 4, "{}", i.value)?;
+            }
+            color!(f, 55, ")")?;
+        }
+        if let Some(x) = self.behavior {
+            color!(f, 4, "{}", x.value)?;
+        }
+        Ok(())
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Hold {
     pub duration: Option<Spanned<Ratio<u32>>>,
+}
+impl Display for Hold {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "~{}",
+            match self.duration {
+                None => "".to_string(),
+                Some(d) => d.value.to_string(),
+            }
+        )
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -232,6 +381,15 @@ pub enum Note {
     Regular(RegularNote),
     Hold(Hold),
     BarCheck(Span),
+}
+impl Display for Note {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Note::Regular(x) => write!(f, "{x}"),
+            Note::Hold(x) => write!(f, "{x}"),
+            Note::BarCheck(_) => write!(f, "|"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -246,11 +404,38 @@ pub struct RegularDynamic {
     pub change: Option<Spanned<DynamicChange>>,
     pub position: Spanned<Ratio<u32>>,
 }
+impl Display for RegularDynamic {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        color!(f, 2, "{}", self.level.value)?;
+        color!(f, 55, "@")?;
+        color!(f, 3, "{}", self.position.value)?;
+        color!(
+            f,
+            4,
+            "{}",
+            match self.change {
+                None => "",
+                Some(d) => match d.value {
+                    DynamicChange::Crescendo => "<",
+                    DynamicChange::Diminuendo => ">",
+                },
+            }
+        )
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Dynamic {
     Regular(RegularDynamic),
     BarCheck(Span),
+}
+impl Display for Dynamic {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Dynamic::Regular(d) => write!(f, "{d}"),
+            Dynamic::BarCheck(_) => write!(f, "|"),
+        }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -258,11 +443,29 @@ pub struct DynamicLine {
     pub leader: Spanned<DynamicLeader>,
     pub dynamics: Vec<Spanned<Dynamic>>,
 }
+impl Display for DynamicLine {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.leader.value)?;
+        for i in &self.dynamics {
+            write!(f, " {}", i.value)?;
+        }
+        Ok(())
+    }
+}
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct NoteLine {
     pub leader: Spanned<NoteLeader>,
     pub notes: Vec<Spanned<Note>>,
+}
+impl Display for NoteLine {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.leader.value)?;
+        for i in &self.notes {
+            write!(f, " {}", i.value)?;
+        }
+        Ok(())
+    }
 }
 
 pub fn trace(msg: impl Display) {

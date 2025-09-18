@@ -15,7 +15,7 @@ fn main() -> anyhow::Result<()> {
         }
         Ok(tokens) => {
             for t in tokens {
-                println!("{t:?}")
+                println!("{t}")
             }
         }
     }

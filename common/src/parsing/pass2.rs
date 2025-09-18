@@ -9,7 +9,7 @@ use crate::pitch::{Factor, Pitch};
 use crate::to_anyhow;
 use anyhow::anyhow;
 use num_rational::Ratio;
-use std::fmt::Debug;
+use std::fmt::{Debug, Display, Formatter};
 use winnow::combinator::{alt, delimited, eof, fail, opt, peek, preceded, separated, terminated};
 use winnow::token::{one_of, take_while};
 use winnow::{Parser, combinator};
@@ -26,6 +26,16 @@ pub enum Pass2 {
     Directive(Directive),
     NoteLine(NoteLine),
     DynamicLine(DynamicLine),
+}
+impl Display for Pass2 {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Pass2::Directive(x) => write!(f, "Directive{{{x}}}"),
+            Pass2::NoteLine(x) => write!(f, "NoteLine{{{x}}}"),
+            Pass2::DynamicLine(x) => write!(f, "DynamicLine:{{{x}}}"),
+            _ => write!(f, "{self:?}"),
+        }
+    }
 }
 
 pub enum Degraded {
@@ -870,7 +880,7 @@ pub fn parse2<'s>(src: &'s str) -> Result<Vec<Token2<'s>>, Diagnostics> {
     while !input.is_empty() {
         match handle_token(src, &mut input, &diags) {
             Ok(tok) => {
-                model::trace(format!("lex pass 2: {tok:?}"));
+                model::trace(format!("lex pass 2: {tok}"));
                 out.push(tok);
             }
             Err(mode) => {

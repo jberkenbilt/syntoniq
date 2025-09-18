@@ -9,3 +9,4 @@ serde.workspace = true
 anyhow.workspace = true
 num-rational.workspace = true
 winnow.workspace = true
+anstream = "0.6.20"
