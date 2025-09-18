@@ -1,7 +1,8 @@
 use crate::parsing::model::{
-    Diagnostics, Directive, GetSpan, Hold, Note, NoteBehavior, NoteLeader, NoteLine, NoteOption,
-    Param, ParamValue, PitchOrRatio, RegularNote, Span, Spanned, Token, code,
+    Diagnostics, Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader,
+    NoteLine, NoteOption, Param, ParamValue, PitchOrRatio, RegularNote, Span, Spanned, Token, code,
 };
+use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
 use crate::parsing::{model, pass1};
 use crate::pitch::{Factor, Pitch};
@@ -9,7 +10,7 @@ use crate::to_anyhow;
 use anyhow::anyhow;
 use num_rational::Ratio;
 use std::fmt::Debug;
-use winnow::combinator::{alt, delimited, fail, opt, peek, preceded, separated, terminated};
+use winnow::combinator::{alt, delimited, eof, fail, opt, peek, preceded, separated, terminated};
 use winnow::token::{one_of, take_while};
 use winnow::{Parser, combinator};
 
@@ -24,12 +25,14 @@ pub enum Pass2 {
     Comment,
     Directive(Directive),
     NoteLine(NoteLine),
+    DynamicLine(DynamicLine),
 }
 
-fn optional_space(input: &mut Input2) -> winnow::Result<()> {
-    opt(one_of(|x: Token1| matches!(x.value.t, Pass1::Space)))
-        .parse_next(input)
-        .map(|_| ())
+pub enum Degraded {
+    Directive,
+    Dynamic,
+    Note,
+    Misc,
 }
 
 fn space(input: &mut Input2) -> winnow::Result<()> {
@@ -38,9 +41,21 @@ fn space(input: &mut Input2) -> winnow::Result<()> {
         .map(|_| ())
 }
 
+fn space_or_comment(input: &mut Input2) -> winnow::Result<()> {
+    one_of(|x: Token1| matches!(x.value.t, Pass1::Space | Pass1::Comment))
+        .parse_next(input)
+        .map(|_| ())
+}
+
+fn optional_space(input: &mut Input2) -> winnow::Result<()> {
+    opt(one_of(|x: Token1| matches!(x.value.t, Pass1::Space)))
+        .parse_next(input)
+        .map(|_| ())
+}
+
 fn optional_space_or_newline(input: &mut Input2) -> winnow::Result<()> {
     take_while(0.., |x: Token1| {
-        matches!(x.value.t, Pass1::Space | Pass1::Newline | Pass1::Comment)
+        matches!(x.value.t, Pass1::Space | Pass1::Comment | Pass1::Newline)
     })
     .parse_next(input)
     .map(|_| ())
@@ -52,11 +67,21 @@ fn param_separator(input: &mut Input2) -> winnow::Result<()> {
         .map(|_| ())
 }
 
-fn newline() -> impl FnMut(&mut Input2) -> winnow::Result<()> {
+fn newline_or_eof() -> impl FnMut(&mut Input2) -> winnow::Result<()> {
     move |input| {
-        one_of(|x: Token1| matches!(x.value.t, Pass1::Newline))
-            .parse_next(input)
-            .map(|_| ())
+        preceded(
+            combinator::repeat(
+                0..,
+                one_of(|x: Token1| matches!(x.value.t, Pass1::Space | Pass1::Comment)),
+            )
+            .map(|_: Vec<_>| ()),
+            alt((
+                eof.map(|_| ()),
+                one_of(|x: Token1| matches!(x.value.t, Pass1::Newline)).map(|_| ()),
+            )),
+        )
+        .parse_next(input)
+        .map(|_| ())
     }
 }
 
@@ -76,7 +101,10 @@ fn number() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<u32>> {
     }
 }
 
-fn ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Ratio<u32>>> {
+fn ratio_inner(
+    allow_zero: bool,
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Ratio<u32>>> {
     // Accept this as a ratio and consume the tokens as long as it is syntactically valid. If
     // there are problems report the errors.
     move |input| {
@@ -121,7 +149,7 @@ fn ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spann
                             1
                         }
                     };
-                if numerator == 0 {
+                if (!allow_zero || den_t.is_some()) && numerator == 0 {
                     diags.err(
                         code::NUMBER,
                         num_dec_t.span,
@@ -154,6 +182,16 @@ fn ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spann
                 Spanned::new(span, Ratio::new(numerator, denominator))
             })
     }
+}
+
+fn ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Ratio<u32>>> {
+    ratio_inner(false, diags)
+}
+
+fn ratio_or_zero(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Ratio<u32>>> {
+    ratio_inner(true, diags)
 }
 
 fn exponent(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Factor> {
@@ -390,12 +428,8 @@ fn hold(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanne
     }
 }
 
-fn bar_check() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Note>> {
-    |input| {
-        character('|')
-            .parse_next(input)
-            .map(|c| Spanned::new(c.span, Note::BarCheck(c.span)))
-    }
+fn bar_check() -> impl FnMut(&mut Input2) -> winnow::Result<Span> {
+    |input| character('|').parse_next(input).map(|c| c.span)
 }
 
 fn regular_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Note>> {
@@ -436,7 +470,15 @@ fn regular_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resul
 }
 
 fn note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Note>> {
-    move |input| alt((regular_note(diags), hold(diags), bar_check(), fail)).parse_next(input)
+    move |input| {
+        alt((
+            regular_note(diags),
+            hold(diags),
+            bar_check().map(|span| Spanned::new(span, Note::BarCheck(span))),
+            fail,
+        ))
+        .parse_next(input)
+    }
 }
 
 fn note_leader() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<NoteLeader>> {
@@ -454,33 +496,252 @@ fn note_leader() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<NoteLeader
     }
 }
 
+fn require_spaces<T: Debug>(
+    diags: &Diagnostics,
+    v: Vec<(Option<()>, Spanned<T>)>,
+) -> Vec<Spanned<T>> {
+    // Space is required, but don't want omission to prevent the line from being
+    // recognized, causing spurious errors or preventing other parsing.
+    v.into_iter()
+        .map(|(spc, item)| {
+            if spc.is_none() {
+                diags.err(
+                    code::SYNTAX,
+                    item.span,
+                    "this item must be preceded by a space",
+                );
+            }
+            item
+        })
+        .collect()
+}
+
 fn note_line(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<NoteLine>> {
     move |input| {
         (
-            preceded(optional_space, note_leader()),
+            note_leader(),
             terminated(
-                combinator::repeat(1.., preceded(space, note(diags))),
-                newline(),
+                combinator::repeat(1.., (opt(space), note(diags))),
+                newline_or_eof(),
             ),
         )
             .with_taken()
             .parse_next(input)
-            .map(
-                |((leader, notes), tokens): ((Spanned<NoteLeader>, Vec<Spanned<Note>>), Input2)| {
-                    let span = tokens.get_span().unwrap();
-                    Spanned::new(
-                        span,
-                        NoteLine {
-                            leader: leader.value,
-                            notes,
-                        },
-                    )
-                },
-            )
+            .map(|((leader, notes), tokens): ((_, Vec<_>), Input2)| {
+                let span = tokens.get_span().unwrap();
+                // Space is required, but don't want omission to prevent the line from being
+                // recognized, causing spurious errors or preventing other parsing.
+                let notes = require_spaces(diags, notes);
+                Spanned::new(span, NoteLine { leader, notes })
+            })
     }
 }
 
-// TODO: dynamics, dynamic lines
+fn regular_dynamic(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Dynamic>> {
+    |input| {
+        (
+            one_of(|x: Token1| matches!(x.value.t, Pass1::Number { .. })),
+            character('@'),
+            ratio_or_zero(diags),
+            opt(alt((character('>'), character('<')))),
+        )
+            .parse_next(input)
+            .map(|items| {
+                let (level_t, _, position, change_t) = items;
+                let level: u8 = match Pass1::get_number(&level_t).unwrap() {
+                    x if x > 127 => {
+                        diags.err(code::SYNTAX, level_t.span, "dynamic value must be <= 127");
+                        127
+                    }
+                    x => x as u8,
+                };
+                let change = change_t.map(|t| {
+                    Spanned::new(
+                        t.span,
+                        if t.value == '<' {
+                            DynamicChange::Diminuendo
+                        } else {
+                            DynamicChange::Crescendo
+                        },
+                    )
+                });
+                // This merges these spans. We can safely unwrap since some values are definitely
+                // set.
+                let span = model::merge_spans(&[
+                    level_t.get_span(),
+                    position.get_span(),
+                    change_t.get_span(),
+                ])
+                .unwrap();
+                Spanned::new(
+                    span,
+                    Dynamic::Regular(RegularDynamic {
+                        level: Spanned::new(level_t.span, level),
+                        change,
+                        position,
+                    }),
+                )
+            })
+    }
+}
+
+fn dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Dynamic>> {
+    move |input| {
+        alt((
+            regular_dynamic(diags),
+            bar_check().map(|span| Spanned::new(span, Dynamic::BarCheck(span))),
+            fail,
+        ))
+        .parse_next(input)
+    }
+}
+
+fn dynamic_leader() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<DynamicLeader>> {
+    move |input| {
+        one_of(Pass1::is_dynamic_leader)
+            .parse_next(input)
+            .map(|tok| {
+                let name_span = Pass1::get_dynamic_leader(&tok).unwrap();
+                Spanned::new(
+                    tok.span,
+                    DynamicLeader {
+                        name: Spanned::new(
+                            name_span,
+                            &tok.value.raw[name_span.relative_to(tok.span)],
+                        ),
+                    },
+                )
+            })
+    }
+}
+
+fn dynamic_line(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<DynamicLine>> {
+    move |input| {
+        (
+            dynamic_leader(),
+            terminated(
+                combinator::repeat(1.., (opt(space), dynamic(diags))),
+                newline_or_eof(),
+            ),
+        )
+            .with_taken()
+            .parse_next(input)
+            .map(|((leader, dynamics), tokens): ((_, Vec<_>), Input2)| {
+                let span = tokens.get_span().unwrap();
+                let dynamics = require_spaces(diags, dynamics);
+                Spanned::new(span, DynamicLine { leader, dynamics })
+            })
+    }
+}
+
+fn degraded_top_level(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
+    // These are things that can appear at the top level with higher-level things before lower-level
+    // things. This is useful for scanning through tokens in degraded mode.
+    move |input| {
+        alt((
+            space_or_comment,
+            param(diags).map(|_| ()),
+            character('=').map(|_| ()),
+            character(',').map(|_| ()),
+            identifier.map(|_| ()),
+            string(diags).map(|_| ()),
+            pitch_or_ratio(diags).map(|_| ()),
+        ))
+        .parse_next(input)
+    }
+}
+
+fn degraded_directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
+    // Match on things that may appear in a directive, stopping when we hit a closed parenthesis,
+    // and reporting errors for surprises.
+    move |input| {
+        terminated(
+            combinator::repeat(
+                1..,
+                alt((
+                    newline_or_eof(),
+                    degraded_top_level(diags),
+                    one_of(|x: Token1| x.value.raw != ")").map(|tok: Token1| {
+                        diags.err(code::SYNTAX, tok.span, "unexpected item");
+                    }),
+                )),
+            )
+            .map(|_: Vec<_>| ()),
+            character(')'),
+        )
+        .parse_next(input)
+        .map(|_| ())
+    }
+}
+
+fn degraded_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
+    move |input| {
+        terminated(
+            combinator::repeat(
+                1..,
+                alt((
+                    space_or_comment,
+                    note(diags).map(|_| ()),
+                    one_of(|x: Token1| !matches!(x.value.t, Pass1::Newline)).map(|tok: Token1| {
+                        diags.err(code::SYNTAX, tok.span, "unexpected item in note line");
+                    }),
+                )),
+            )
+            .map(|_: Vec<_>| ()),
+            newline_or_eof(),
+        )
+        .parse_next(input)
+        .map(|_| ())
+    }
+}
+
+fn degraded_dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
+    move |input| {
+        terminated(
+            combinator::repeat(
+                1..,
+                alt((
+                    space_or_comment,
+                    dynamic(diags).map(|_| ()),
+                    one_of(|x: Token1| !matches!(x.value.t, Pass1::Newline)).map(|tok: Token1| {
+                        diags.err(code::SYNTAX, tok.span, "unexpected item in dynamic line");
+                    }),
+                )),
+            )
+            .map(|_: Vec<_>| ()),
+            newline_or_eof(),
+        )
+        .parse_next(input)
+        .map(|_| ())
+    }
+}
+
+fn degraded_misc(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
+    move |input| {
+        terminated(
+            combinator::repeat(
+                1..,
+                alt((
+                    space_or_comment,
+                    degraded_top_level(diags),
+                    character('(').map(|_| ()),
+                    character(')').map(|_| ()),
+                    one_of(|x: Token1| !matches!(x.value.t, Pass1::Newline)).map(|tok: Token1| {
+                        diags.err(code::SYNTAX, tok.span, "unexpected item");
+                    }),
+                )),
+            )
+            .map(|_: Vec<_>| ()),
+            character(')'),
+        )
+        .parse_next(input)
+        .map(|_| ())
+    }
+}
 
 fn consume_one<T>(items: &mut &[T]) {
     if !items.is_empty() {
@@ -503,45 +764,64 @@ fn handle_token<'s>(
     src: &'s str,
     input: &mut Input2<'_, 's>,
     diags: &Diagnostics,
-) -> Option<Token2<'s>> {
+) -> Result<Token2<'s>, Degraded> {
     let tok = &input[0];
     match &tok.value.t {
-        Pass1::Space => Some(promote_and_consume_first(input, Pass2::Space)),
-        Pass1::Newline => Some(promote_and_consume_first(input, Pass2::Newline)),
-        Pass1::Comment => Some(promote_and_consume_first(input, Pass2::Comment)),
+        Pass1::Space => Ok(promote_and_consume_first(input, Pass2::Space)),
+        Pass1::Newline => Ok(promote_and_consume_first(input, Pass2::Newline)),
+        Pass1::Comment => Ok(promote_and_consume_first(input, Pass2::Comment)),
         Pass1::Identifier => {
-            // Try to parse as a directive.
-            if let Ok(d) = directive(diags).parse_next(input) {
-                Some(Token::new_spanned(
-                    &src[d.span],
-                    d.span,
-                    Pass2::Directive(d.value),
-                ))
+            if peek((identifier, optional_space, character('(')))
+                .parse_next(input)
+                .is_ok()
+            {
+                // Try to parse as a directive.
+                if let Ok(d) = directive(diags).parse_next(input) {
+                    Ok(Token::new_spanned(
+                        &src[d.span],
+                        d.span,
+                        Pass2::Directive(d.value),
+                    ))
+                } else {
+                    diags.err(code::SYNTAX, tok.span, "unable to parse as directive");
+                    Err(Degraded::Directive)
+                }
             } else {
-                diags.err(code::SYNTAX, tok.span, "unable to parse as directive");
-                None
+                diags.err(code::SYNTAX, tok.span, "expected a directive");
+                Err(Degraded::Misc)
             }
         }
         Pass1::NoteLeader { .. } => {
             if let Ok(x) = note_line(diags).parse_next(input) {
-                Some(Token::new_spanned(
+                Ok(Token::new_spanned(
                     &src[x.span],
                     x.span,
                     Pass2::NoteLine(x.value),
                 ))
             } else {
                 diags.err(code::SYNTAX, tok.span, "unable to parse as note line");
-                None
+                Err(Degraded::Note)
             }
         }
-        Pass1::DynamicLeader { .. } => None, // TODO
+        Pass1::DynamicLeader { .. } => {
+            if let Ok(x) = dynamic_line(diags).parse_next(input) {
+                Ok(Token::new_spanned(
+                    &src[x.span],
+                    x.span,
+                    Pass2::DynamicLine(x.value),
+                ))
+            } else {
+                diags.err(code::SYNTAX, tok.span, "unable to parse as dynamic line");
+                Err(Degraded::Dynamic)
+            }
+        }
         _ => {
             diags.err(
                 code::SYNTAX,
                 tok.span,
                 format!("unexpected item ({:?})", tok.value.t),
             );
-            None
+            Err(Degraded::Misc)
         }
     }
 }
@@ -588,13 +868,23 @@ pub fn parse2<'s>(src: &'s str) -> Result<Vec<Token2<'s>>, Diagnostics> {
     let mut out: Vec<Token2> = Vec::new();
 
     while !input.is_empty() {
-        if let Some(tok) = handle_token(src, &mut input, &diags) {
-            model::trace(format!("lex pass 2: {tok:?}"));
-            out.push(tok);
-        } else {
-            // TODO: Implement more robust error recovery.
-            // Discard the next token and continue.
-            consume_one(&mut input);
+        match handle_token(src, &mut input, &diags) {
+            Ok(tok) => {
+                model::trace(format!("lex pass 2: {tok:?}"));
+                out.push(tok);
+            }
+            Err(mode) => {
+                let tok = match mode {
+                    Degraded::Directive => degraded_directive(&diags).parse_next(&mut input),
+                    Degraded::Dynamic => degraded_dynamic(&diags).parse_next(&mut input),
+                    Degraded::Note => degraded_note(&diags).parse_next(&mut input),
+                    Degraded::Misc => degraded_misc(&diags).parse_next(&mut input),
+                };
+                if tok.is_err() {
+                    // Discard the next token and continue.
+                    consume_one(&mut input);
+                }
+            }
         }
     }
     if diags.has_errors() {

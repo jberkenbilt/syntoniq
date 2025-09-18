@@ -241,21 +241,27 @@ pub enum DynamicChange {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct Dynamic {
+pub struct RegularDynamic {
     pub level: Spanned<u8>,
     pub change: Option<Spanned<DynamicChange>>,
     pub position: Spanned<Ratio<u32>>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum Dynamic {
+    Regular(RegularDynamic),
+    BarCheck(Span),
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct DynamicLine {
-    pub leader: DynamicLeader,
+    pub leader: Spanned<DynamicLeader>,
     pub dynamics: Vec<Spanned<Dynamic>>,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct NoteLine {
-    pub leader: NoteLeader,
+    pub leader: Spanned<NoteLeader>,
     pub notes: Vec<Spanned<Note>>,
 }
 

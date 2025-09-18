@@ -4,6 +4,14 @@ Things to document:
 * inner spans relative to outer spans
 * phased parsing approach
 * really all aspects of how the parsers work since this could would be very hard to understand after some time away
+* alt -- all branches have to return the same type
+* repeat must always consume, so never repeat with an alt that has an optional
+
+Error handling:
+* diagnostics
+  * don't repeat any error messages
+  * degraded mode: just try to recognize things until we reach an end token
+
 
 # Syntoniq DSL
 
@@ -157,6 +165,7 @@ Examples:
 * `n<` -- start a crescendo; the next dynamic must be more than `n`. Volume is linearly interpolated.with m < n
 * `n>` -- start a decrescendo; treated like a crescendo, but the next dynamic must be lower.
 * Default volume is 72.
+* The `<` or `>` is the last character.
 
 Can only be expressed at the part level.
 
@@ -268,7 +277,7 @@ The same thing but with a single part containing more than one note per part wit
 [p1.2]    2:~     1:b,  b%,   |    2:c             b,
 [p1.3]    4:~                 |    2:~             a,
 [p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
-  [p1]   64@0   64<@2         |  96>@0          64@2
+  [p1]   64@0    64@2<        |   96@0>         64@2
 ```
 
 It would be nice to have tool support for alignment. Within a score block, align notes so the beginning of the pitch part of notes or the location part of dynamics are aligned rhythmically after any beat markers as in the above examples. See below for an algorithm.

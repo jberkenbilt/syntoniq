@@ -162,9 +162,12 @@ where
 }
 
 fn comment<'s>() -> impl Parser1<'s> {
-    parse1_token(preceded(';', take_until(0.., '\n')), |_raw, _span, _out| {
-        Pass1::Comment
-    })
+    parse1_token(
+        // Use take_while rather than take_until so a comment can appear at the end of a file with
+        // no trailing newline.
+        preceded(';', take_while(0.., |ch| ch != '\n')),
+        |_raw, _span, _out| Pass1::Comment,
+    )
 }
 
 fn space<'s>() -> impl Parser1<'s> {
@@ -339,6 +342,14 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
         let tok = match ch {
             '\n' => parse_next!(newline()),
             ';' => parse_next!(comment()),
+            '[' if at_bol => {
+                diags.err(
+                    code::LEXICAL,
+                    offset..offset + 1,
+                    "encountered '[' but didn't recognize note or dynamic line leader",
+                );
+                parse_next!(punctuation())
+            }
             x if is_space(x) => parse_next!(space()),
             x if AsChar::is_dec_digit(x) => parse_next!(number(&diags)),
             _ => match state {
@@ -380,6 +391,9 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
             // Consume a single character to prevent infinite loop
             _ = any::<_, CErr>(&mut input);
         }
+    }
+    if out.is_empty() {
+        diags.err(code::LEXICAL, 0..1, "empty file");
     }
     if diags.has_errors() {
         Err(diags)

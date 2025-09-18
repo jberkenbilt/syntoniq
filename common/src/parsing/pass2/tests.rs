@@ -24,6 +24,7 @@ macro_rules! make_parser2 {
 }
 
 make_parser2!(parse_ratio, ratio, Spanned<Ratio<u32>>);
+make_parser2!(parse_ratio_or_zero, ratio_or_zero, Spanned<Ratio<u32>>);
 make_parser2!(parse_exponent, exponent, Factor);
 make_parser2!(parse_pitch, pitch_or_ratio, PitchOrRatio);
 make_parser2!(parse_string, string, Spanned<String>);
@@ -60,6 +61,10 @@ fn test_ratio() -> anyhow::Result<()> {
     let (f, rest) = parse_ratio("22/7").map_err(to_anyhow)?;
     assert!(rest.is_empty());
     assert_eq!(f.value, Ratio::new(22, 7));
+
+    let (f, rest) = parse_ratio_or_zero("00").map_err(to_anyhow)?;
+    assert!(rest.is_empty());
+    assert_eq!(f.value, Ratio::new(0, 1));
 
     let e = parse_ratio("2.0001/3").unwrap_err().get_all();
     assert_eq!(
@@ -107,6 +112,34 @@ fn test_ratio() -> anyhow::Result<()> {
             }
         ]
     );
+
+    let e = parse_ratio("0").unwrap_err().get_all();
+    assert_eq!(
+        e,
+        [Diagnostic {
+            code: code::NUMBER,
+            span: (0..1).into(),
+            message: "zero not allowed as numerator".to_string(),
+        },]
+    );
+
+    let e = parse_ratio_or_zero("0/0").unwrap_err().get_all();
+    assert_eq!(
+        e,
+        [
+            Diagnostic {
+                code: code::NUMBER,
+                span: (0..1).into(),
+                message: "zero not allowed as numerator".to_string(),
+            },
+            Diagnostic {
+                code: code::NUMBER,
+                span: (2..3).into(),
+                message: "zero not allowed as denominator".to_string(),
+            }
+        ]
+    );
+
     Ok(())
 }
 
@@ -315,7 +348,7 @@ fn test_octave() -> anyhow::Result<()> {
 
 #[test]
 fn test_note_line() -> anyhow::Result<()> {
-    let x = parse_note_line("[p1.0]  1/2:e g,3(>)~   | 2:~  2:c#+ f  g\n");
+    let x = parse_note_line("[p1.0]  1/2:e g,3(>)~   | 2:~  2:c#+ f  g ; comment no newline");
     // TODO: HERE
     assert!(x.is_ok());
     Ok(())
