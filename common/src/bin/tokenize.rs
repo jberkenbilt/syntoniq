@@ -1,7 +1,7 @@
 use clap::Parser;
+use serde_json::json;
 use std::io::Write;
 use std::{fs, io};
-use serde_json::json;
 use syntoniq_common::parsing::{pass1, pass2};
 
 #[derive(Parser)]

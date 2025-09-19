@@ -67,7 +67,7 @@ fn test_string_literal() -> anyhow::Result<()> {
             Diagnostic::new(
                 code::STRING,
                 28..29,
-                "string may not contain newline characters"
+                "string may not contain newline characters; check for missing closed quote"
             ),
         ]
     );

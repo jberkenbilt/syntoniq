@@ -1,21 +1,3 @@
-# TODO
-
-Things to document:
-* inner spans relative to outer spans
-* phased parsing approach
-* really all aspects of how the parsers work since this could would be very hard to understand after some time away
-* alt -- all branches have to return the same type
-* repeat must always consume, so never repeat with an alt that has an optional
-
-Test notes:
-
-Eval this:
-```elisp
-(defalias 'highlight-next-span
-   (kmacro "C-x o M-x c l e a r - r e g i o n - h i g h l i g h t s RET C-x o C-s \" s p a n \" : SPC [ RET C-M-f C-M-b C-SPC C-M-f C-x r s s C-M-f C-M-b C-SPC C-M-f C-x r s e C-x o M-: ( h i g h l i g h t - r e g i o n - b y - o f f s e t SPC C-x r i s C-e SPC C-x r i e ) RET C-x o"))
-```
-Then load a testing .stq file and .json file in two windows in the same frame. Inside the json buffer, run the above. You can put this in a keyboard macro and then use it to step through all the spans. This implements the logic described in parsing/tests.rs.
-
 # Syntoniq DSL
 
 The goal is to create an ASCII/UTF-8 file format for describing music with arbitrary tuning systems.

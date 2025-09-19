@@ -10,23 +10,63 @@
 // where these were automatically generated, there was high confidence of correctness. By having
 // these, we can ensure that we don't regress on the current state or any future fixes.
 //
-// For a quick way to check all spans, load the json and sqt files into emacs and use a keyboard
-// macro to search for the span in the json file and highlight the selected region in the stq
-// file. My custom elisp functions highlight-region-by-offset and clear-region-highlights make
-// this easy. With this approach, you can just repeat the keyboard macro and see every span in
-// the JSON file to make sure all the spans are correct. This works equally well for errors
-// and correctly tokenized files.
+// For a quick way to check all spans, load the json and sqt files into emacs in two windows of the
+// same frame, position the point at the beginning of the JSON file, and repeatedly run the emacs
+// lisp function below. This highlights each span in turn.. This works equally well for errors and
+// correctly tokenized files.
+
+/*
+```elisp
+(defun highlight-next-span()
+  "Highlight next span. Run with test output json in one window
+and the source file in the next window."
+  (interactive)
+  (require 'hi-lock)
+  (if (search-forward "\"span\": [" nil t)
+      (progn
+        ;; Find the beginning and end of the span start and end markers.
+        ;; This parses JSON lexically by assuming that jumping forward and
+        ;; backward by expressions will skip over the numbers. This should
+        ;; be a safe assumption.
+        (let* ((start-end (progn (forward-sexp) (point)))
+               (end-end (progn (forward-sexp) (point)))
+               (end-start (progn (backward-sexp) (point)))
+               (start-start (progn (backward-sexp) (point)))
+               ;; Read the numbers from the buffer
+               (span-start (string-to-number (buffer-substring start-start start-end)))
+               (span-end (string-to-number (buffer-substring end-start end-end)))
+              )
+          (save-excursion
+            (other-window 1)
+            (let* ((start (1+ (or (byte-to-position span-start) 0)))
+                   (end (1+ (or (byte-to-position span-end) 0)))
+                   (ov (make-overlay start end)))
+              (remove-overlays (point-min) (point-max) 'syntoniq-next-span t)
+              (overlay-put ov 'face 'hi-pink)
+              (overlay-put ov 'syntoniq-next-span t)
+            )
+            (other-window -1)
+          )
+        )
+      )
+    (other-window 1)
+    (remove-overlays (point-min) (point-max) 'syntoniq-next-span t)
+    (other-window -1)
+  )
+)
+```
+*/
 
 use crate::parsing::diagnostics::Diagnostics;
 use crate::parsing::model::Spanned;
 use crate::parsing::pass1::parse1;
 use crate::parsing::pass2::parse2;
 use serde::Serialize;
+use serde_json::json;
 use std::fmt::{Debug, Display};
 use std::fs;
 use std::fs::File;
 use std::path::{Path, PathBuf};
-use serde_json::json;
 
 fn get_stq_files(dir: impl AsRef<Path>) -> anyhow::Result<Vec<PathBuf>> {
     let paths = fs::read_dir(dir)?

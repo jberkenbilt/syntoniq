@@ -1,3 +1,6 @@
+// This file contains the second pass of parsing from the output of pass1. Read comments in
+// ../parsing.rs.
+
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
     Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader, NoteLine,
@@ -16,6 +19,14 @@ use winnow::combinator::{alt, delimited, eof, fail, opt, peek, preceded, separat
 use winnow::token::{one_of, take_while};
 use winnow::{Parser, combinator};
 
+// Pass2 Step 1: Pass 2 of parsing uses the output of pass 1 as its input. The winnow crate allows
+// any slice to be used as an input, but a lot of features aren't available if you use something
+// other than `&str` or `&[u8]`. In particular, with rust 1.89 and winnow 0.7, using `map` on
+// parsers or returning parsers directly turns out to be very hard. Attempting to define traits like
+// the parser and intermediate parser traits from pass 1 results in rust errors about limitations of
+// the trait solver that will be resolved in a future release. Any function that takes a mutable
+// reference to the input type and returns a `winnow::Result` is a parser, and most of the basic
+// combinators work with those. Search for Pass2 Step 2.
 type Input2<'a, 's> = &'a [Token1<'s>];
 pub type Token2<'s> = Spanned<Token<'s, Pass2>>;
 
@@ -213,8 +224,12 @@ fn ratio_or_zero(
 }
 
 fn exponent(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Factor> {
-    // Accept this as an exponent and consume the tokens as long as it is syntactically valid. If
-    // there are problems report the errors.
+    // Pass 2 Step 7: accept this as an exponent and consume the tokens as long as it is
+    // syntactically valid. If there are problems report the errors. This is an example of the
+    // pattern used frequently in pass 1 where we liberally match tokens and then perform
+    // validation. Both this and the `ratio` parser have extensive validation. This allows us to
+    // give precise, targeted error messages without breaking the flow of the parser. After studying
+    // this function, resume with Pass 2 Step 8.
     move |input| {
         (
             opt((number(), opt(preceded(character('/'), number())))),
@@ -270,6 +285,15 @@ fn factor(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fact
 }
 
 fn pitch_or_ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<PitchOrRatio> {
+    // Pass 2 Step 6: this is a case where parser combinators make relatively easy what would
+    // require a lot of work with a traditional grammar. All ratios parse as both ratios and
+    // pitches. At this stage of processing, we don't know whether a pitch or a ratio will be
+    // wanted, and you can't tell from a Pitch object whether it was originally specified as a
+    // ratio. For example, the pitch `*4/3^0|19` is the ratio `4/3`, but it was written as a pitch.
+    // If we ever directly called the `ratio` parser in an `alt` with `pitch`, if we called `ratio`
+    // first, it would potentially consume part of a pitch, giving us unwanted results, and if we
+    // called it second, it would never match because `pitch` would always match. Instead, we use
+    // `peek` to see if this would have matched as a ratio...
     move |input| {
         let as_ratio = peek(ratio(diags)).parse_next(input);
         preceded(
@@ -279,6 +303,11 @@ fn pitch_or_ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Res
         .with_taken()
         .parse_next(input)
         .map(|(factors, tokens)| {
+            // ...and then, if it matches as a pitch, we store it based on whether it also matched
+            // as a ratio. The resulting `PitchOrRatio` can always be converted to a Pitch, and it
+            // can also be converted to a `Ratio`, but only if it appeared literally as a ratio in
+            // the input. This is not knowable by looking at the `Pitch` object. We have to store
+            // the information at the time of parsing. Continue to Pass 2 Step 7.
             let span = tokens.get_span().unwrap();
             let p = Pitch::new(factors);
             if let Ok(r) = as_ratio {
@@ -339,6 +368,17 @@ fn param(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Param
 }
 
 fn directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Directive>> {
+    // Pass2 Step 5: this is an example of how our parsers look in Pass 2. Because we can't directly
+    // return opaque types that implement some kind of Parser2, as we did with Parser1 in pass 1 (we
+    // could maybe do it, but it would be lots of extra trait implementations, and as of initial
+    // writing, there are rust-level trait solver issues as well), we make parsers by implementing
+    // functions that take an input slice and return a result. This means we are responsible for
+    // calling `parse_next` ourselves, and we don't have the convenience of abstracting away
+    // `with_taken` when we need it. That creates a small amount of additional boilerplate. Most of
+    // our parsers will return closures like this one. Inside the closures, we can still use normal
+    // winnow combinators. See the winnow docs to understand what these functions do. They are
+    // mostly self-explanatory. You can follow into these various parsers. Start by stepping into
+    // `param` and follow the path. Then continue with Pass2 Step 6.
     move |input| {
         (
             terminated(
@@ -499,6 +539,22 @@ fn note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanne
 }
 
 fn note_leader() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<NoteLeader>> {
+    // Pass 2 Step 9: inner spans. To keep Pass1 tokens copiable and to keep them from containing
+    // multiple slices to the same input source (which would require the `Pass1` type to have a
+    // namespace parameter), some Pass1 tokens contain inner spans. The inner spans are always
+    // ranges relative to the original input as they should be directly usable for error messages.
+    // If we want to grab the slice of the original source when all we have is the bytes for that
+    // token, we need to adjust the span. To be more concrete, if a string token, for example, has a
+    // span of 10..20, the inside of the string not including the quotation marks will have the span
+    // 11..19. That could be applied to the original input, but we don't have that inside the string
+    // token. We only have what was matched by the string token. To help with that, our Span type
+    // has a `relative_to` method that returns a span relative to an outer span. You can see its use
+    // here to get the text corresponding to the name span and the note span. This allows us to
+    // construct a NoteLeader from the Pass1 token that contains spanned elements, which makes it
+    // possible for the semantic layer to use those spans for specific downstream error messages.
+    // This is exercised nontrivially in the test suite. That concludes the tour of pass 2. It
+    // should now be possible to understand the remaining parsers. Look at the tests for the various
+    // passes, the overall parser tests, and comments for additional passes.
     move |input| {
         one_of(Pass1::is_note_leader).parse_next(input).map(|tok| {
             let (name_span, note) = Pass1::get_note_leader(&tok).unwrap();
@@ -673,8 +729,28 @@ fn degraded_top_level(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow:
 }
 
 fn degraded_directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
-    // Match on things that may appear in a directive, stopping when we hit a closed parenthesis,
-    // and reporting errors for surprises.
+    // Pass 2 Step 8: degraded mode. Match on things that may appear in a directive, stopping when
+    // we hit a closed parenthesis, and reporting errors for surprises. There are several sharp
+    // edges to be aware of:
+    // - all branches of `alt` have to return the same type. In this case, we don't care about any
+    //   of the values. You can see in the `degraded_top_level` function that we map the output of
+    //   each branch of `alt` to the unit type, but you can find other calls to `map` that are less
+    //   trivial, such as the param_value or factor parsers.
+    // - winnow panics of the `repeat` combinator doesn't consume any tokens. That means that, if
+    //   you pass `alt` to `repeat`, you must ensure that none of the branches of `alt` contain
+    //   `opt`, since `opt` can succeed and match zero tokens. Specifically, calling
+    //   `repeat(alt(opt(...)))` will cause `opt` to match if nothing else matches, which will cause
+    //   a panic.
+    //
+    // Notice what's happening here. The main repeat loop keeps matching tokens up to a `")"`. When
+    // it encounters one of the valid top-level tokens (in `degraded_top_level`), it just discards
+    // it, but this allows those matchers to report errors they may notice. For example, if there's
+    // an invalid pitch or a broken string literal, we'll still see those errors. If any other token
+    // appears, which presumably happens or else the original `directive` parser would have matched,
+    // we report a syntax error and consume the token. This produces better error recovery. It is
+    // nontrivially tested in the test suite. All the degraded mode parsers work in this way.
+    //
+    // Continue with Pass 2 Step 9 for additional notes.
     move |input| {
         terminated(
             combinator::repeat(
@@ -786,24 +862,44 @@ fn handle_token<'s>(
     input: &mut Input2<'_, 's>,
     diags: &Diagnostics,
 ) -> Result<Token2<'s>, Degraded> {
+    // Pass2 Step 3: this is called from the pass-2 main loop. It is similar to the pass-1 main loop
+    // in that peeks at the first token to decide which branch to take. Here, we actually call
+    // `peek` to look ahead a little farther to decide which branch to commit to.
     let tok = &input[0];
     match &tok.value.t {
+        // Space, comments, and newlines are the same for all modes. In pass 1, we recognized these
+        // by looking at a character. In pass 2, we recognize them by noticing the pass-1 tokens. We
+        // could have used `any` to grab the first token, but there's no reason that we can't
+        // simplify things and just advance input ourselves. In pass 1, we relied more heavily on
+        // winnow for things like spans. In pass 2, we are getting spans by merging spans from
+        // pass-1 tokens. You can see that promote_and_consume_first is manually copying payload and
+        // advancing the input slice. The pass-1 parser returns tokens suitable to the lexer state,
+        // so we don't have to repeat that logic here. We know what kind of state we're in based on
+        // the next token.
         Pass1::Space => Ok(promote_and_consume_first(input, Pass2::Space)),
         Pass1::Newline => Ok(promote_and_consume_first(input, Pass2::Newline)),
         Pass1::Comment => Ok(promote_and_consume_first(input, Pass2::Comment)),
         Pass1::Identifier => {
+            // Pass 1 only gives us the `Identifier` token at the top-level. The top level state
+            // consists entirely of directives (after white space and comments have been handled).
+            // We get better error messages if we know we're in something that looks like a
+            // directive instead of a stray identifier, so look for the open parenthesis. This
+            // enables us to fail into one of two different degraded modes.
             if peek((identifier, optional_space, character('(')))
                 .parse_next(input)
                 .is_ok()
             {
                 // Try to parse as a directive.
                 if let Ok(d) = directive(diags).parse_next(input) {
+                    // We got a directive, so keep that token.
                     Ok(Token::new_spanned(
                         &src[d.span],
                         d.span,
                         Pass2::Directive(d.value),
                     ))
                 } else {
+                    // We didn't get a directive, but we know we're in something that looks like a
+                    // directive. Fall into a directive-specific degraded mode.
                     diags.err(
                         code::TOPLEVEL_SYNTAX,
                         tok.span,
@@ -812,11 +908,18 @@ fn handle_token<'s>(
                     Err(Degraded::Directive)
                 }
             } else {
+                // If we didn't see an open parenthesis, fall back to a different degraded mode. The
+                // differences are explained in later comments.
                 diags.err(code::TOPLEVEL_SYNTAX, tok.span, "expected a directive");
                 Err(Degraded::Misc)
             }
         }
         Pass1::NoteLeader { .. } => {
+            // This logic is the same as the directive logic but for note lines. The presence of a
+            // note leader tells us we should be in a note line. We don't need a peek as above
+            // because the single token is sufficient. That's because pass 1 already recognized the
+            // entire leader token `[part.note]`. As for directive, we have a note-specific degraded
+            // mode if the rule didn't match.
             if let Ok(x) = note_line(diags).parse_next(input) {
                 Ok(Token::new_spanned(
                     &src[x.span],
@@ -829,6 +932,7 @@ fn handle_token<'s>(
             }
         }
         Pass1::DynamicLeader { .. } => {
+            // This is the same as the note leader logic except for dynamics.
             if let Ok(x) = dynamic_line(diags).parse_next(input) {
                 Ok(Token::new_spanned(
                     &src[x.span],
@@ -845,6 +949,7 @@ fn handle_token<'s>(
             }
         }
         _ => {
+            // If we get anything else, fall into degraded mode. Continue with Pass2 Step 4.
             diags.err(code::SYNTAX, tok.span, diagnostics::SYNTAX_ERROR);
             Err(Degraded::Misc)
         }
@@ -887,11 +992,20 @@ pub fn parse_pitch(s: &str) -> anyhow::Result<Pitch> {
 }
 
 pub fn parse2<'s>(src: &'s str) -> Result<Vec<Token2<'s>>, Diagnostics> {
+    // Pass2 Step 2: this function performs pass 2 of the parsing. For ergonomic and lifetime
+    // handling reasons, it must take the original input source. We first do pass1 parsing, and if
+    // that fails, we stop. Otherwise, we continue with a simple parser for pass 2. The job of the
+    // pass-2 parser is to recognize higher-level token types that are composed of lexical tokens.
+    // This is approximately like parsing in a traditional scanner/parsers/static semantics model,
+    // but we are not generating a full abstract syntax tree and are still doing some lexical work.
+    // This function goes from &str -> Vec<Token1> -> Vec<Token2>.
+
     let low_tokens = pass1::parse1(src)?;
     let diags = Diagnostics::new();
     let mut input = low_tokens.as_slice();
     let mut out: Vec<Token2> = Vec::new();
 
+    // Proceed to Pass2 Step 3 in handle_token.
     while !input.is_empty() {
         match handle_token(src, &mut input, &diags) {
             Ok(tok) => {
@@ -899,6 +1013,12 @@ pub fn parse2<'s>(src: &'s str) -> Result<Vec<Token2<'s>>, Diagnostics> {
                 out.push(tok);
             }
             Err(mode) => {
+                // Pass2 Step 4: degraded mode. Call a more relaxed parser that accepts tokens that
+                // don't belong to it. The Directive degraded mode tries to scan until it finds a
+                // closed parenthesis. It is only invoked when we found the open parenthesis. The
+                // other degraded mode parsers expect the kinds of tokens we would expect in that
+                // type of line but return to normal parsing on newline or EOF. Search for Pass2
+                // Step 5.
                 let tok = match mode {
                     Degraded::Directive => degraded_directive(&diags).parse_next(&mut input),
                     Degraded::Dynamic => degraded_dynamic(&diags).parse_next(&mut input),
