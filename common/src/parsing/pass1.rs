@@ -1,9 +1,9 @@
 // This file contains the first pass of parsing from the raw input string to Vec<Token1>.
 // These are low-level tokens that are handled by pass 2.
 
-use crate::parsing::diagnostics::Diagnostics;
+use crate::parsing::diagnostics::{Diagnostics, code};
 use crate::parsing::model;
-use crate::parsing::model::{Span, Spanned, Token, code};
+use crate::parsing::model::{Span, Spanned, Token};
 use serde::Serialize;
 use std::fmt::{Display, Formatter};
 use winnow::combinator::{alt, delimited, fail, preceded};
@@ -206,8 +206,8 @@ fn number_intermediate<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, 
         // Other code unwraps parse calls on this data.
         let n = match out.parse::<u32>() {
             Ok(n) => n,
-            Err(e) => {
-                diags.err(code::LEXICAL, span, format!("while parsing number: {e}"));
+            Err(_) => {
+                diags.err(code::NUM_RANGE, span, "number too large for 32 bits");
                 1
             }
         };
@@ -247,7 +247,7 @@ fn string_literal<'s>(diags: &Diagnostics) -> impl Parser1<'s> {
                 if !['\\', '"'].contains(&next) {
                     // Span is character after the backslash
                     diags.err(
-                        code::LEXICAL,
+                        code::STRING,
                         offset + 1..offset + 1 + char_len,
                         "invalid quoted character",
                     );
@@ -256,7 +256,7 @@ fn string_literal<'s>(diags: &Diagnostics) -> impl Parser1<'s> {
                 offset += char_len;
             } else if ['\r', '\n'].contains(&ch) {
                 diags.err(
-                    code::LEXICAL,
+                    code::STRING,
                     offset..offset + 1,
                     "string may not contain newline characters",
                 );
@@ -359,7 +359,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
             ';' => parse_next!(comment()),
             '[' if at_bol => {
                 diags.err(
-                    code::LEXICAL,
+                    code::LINE_START,
                     offset..offset + 1,
                     "encountered '[' but didn't recognize note or dynamic line leader",
                 );
@@ -390,14 +390,14 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
             Ok(t) => {
                 if matches!(t.value.t, Pass1::Unknown) {
                     // discard token
-                    diags.err(code::LEXICAL, t.span, "unknown character");
+                    diags.err(code::SYNTAX, t.span, "this character is not allowed here");
                 } else {
                     model::trace(format!("lex pass 1: {t}"));
                     out.push(t)
                 }
             }
             Err(e) => diags.err(
-                code::LEXICAL,
+                code::SYNTAX,
                 offset..offset + 1,
                 format!("unknown lexical error: {e}"),
             ),
@@ -408,7 +408,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
         }
     }
     if out.is_empty() {
-        diags.err(code::LEXICAL, 0..1, "empty file");
+        diags.err(code::EMPTY, 0..1, "this file is empty");
     }
     if diags.has_errors() {
         Err(diags)

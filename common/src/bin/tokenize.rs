@@ -22,7 +22,7 @@ fn main() -> anyhow::Result<()> {
         serde_json::to_writer_pretty(io::stdout(), &r)?;
     } else {
         match r {
-            Err(diags) => diags.render(&cli.filename, input),
+            Err(diags) => anstream::eprintln!("{}", diags.render(&cli.filename, input)),
             Ok(tokens) => {
                 for t in tokens {
                     println!("{t}")

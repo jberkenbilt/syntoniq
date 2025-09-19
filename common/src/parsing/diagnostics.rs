@@ -1,10 +1,26 @@
-use crate::parsing::model::{code, Span, Spanned};
+use crate::parsing::model::{Span, Spanned};
 use annotate_snippets::renderer::DecorStyle;
 use annotate_snippets::{AnnotationKind, Group, Level, Renderer, Snippet};
 use serde::Serialize;
 use std::cell::RefCell;
+use std::collections::HashSet;
 use std::fmt::{Display, Formatter};
 use std::mem;
+
+pub const SYNTAX_ERROR: &str = "this syntax is not expected here";
+pub mod code {
+    pub const SYNTAX: &str = "E1001 syntax error";
+    pub const NUM_RANGE: &str = "E1002 numeric range";
+    pub const STRING: &str = "E1003 invalid string literal";
+    pub const LINE_START: &str = "E1004 unable to infer line type";
+    pub const EMPTY: &str = "E1005 empty file";
+    pub const NUM_FORMAT: &str = "E1006 incorrect number format";
+    pub const PITCH: &str = "E1007 incorrect pitch syntax";
+    pub const NOTE: &str = "E1008 incorrect note syntax";
+    pub const SCORE_SYNTAX: &str = "E1009 incorrect score syntax";
+    pub const DYNAMIC: &str = "E1010 incorrect dynamic syntax";
+    pub const TOPLEVEL_SYNTAX: &str = "E1011 incorrect syntax";
+}
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Diagnostic {
@@ -42,6 +58,7 @@ impl Diagnostic {
 #[derive(Serialize, Default, Debug)]
 pub struct Diagnostics {
     pub list: RefCell<Vec<Diagnostic>>,
+    pub seen: RefCell<HashSet<(&'static str, Span)>>,
 }
 impl Diagnostics {
     pub fn new() -> Self {
@@ -49,17 +66,23 @@ impl Diagnostics {
     }
 }
 impl Display for Diagnostics {
+    /// Diagnostics can be formatted as a string, but it's better to use [Diagnostics::render].
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let list = self.list.borrow_mut();
         if list.is_empty() {
             return writeln!(f, "no errors");
         }
-        write!(f, "ERRORS:")?;
-        // TODO: improve this
+        let mut first = true;
         for i in &*list {
+            if first {
+                write!(f, "ERRORS: ")?;
+                first = false;
+            } else {
+                write!(f, ", ")?;
+            }
             write!(
                 f,
-                "\n  {}..{}: {}: {}",
+                "offset {}..{}: {}: {}",
                 i.message.span.start, i.message.span.end, i.code, i.message.value
             )?;
         }
@@ -73,7 +96,9 @@ impl Diagnostics {
     }
 
     pub fn push(&self, d: Diagnostic) {
-        self.list.borrow_mut().push(d)
+        if self.seen.borrow_mut().insert((d.code, d.message.span)) {
+            self.list.borrow_mut().push(d)
+        }
     }
 
     pub fn has_errors(&self) -> bool {
@@ -84,10 +109,10 @@ impl Diagnostics {
         mem::take(&mut self.list.borrow_mut())
     }
 
-    pub fn render(&self, filename: &str, src: &str) {
+    pub fn render(&self, filename: &str, src: &str) -> String {
         let list = self.list.borrow();
         let report: Vec<Group> = list.iter().map(|x| x.group(filename, src)).collect();
         let renderer = Renderer::styled().decor_style(DecorStyle::Unicode);
-        anstream::eprintln!("{}", renderer.render(&report));
+        renderer.render(&report)
     }
 }

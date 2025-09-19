@@ -7,14 +7,7 @@ use std::ops::Index;
 use std::ops::Range;
 use std::sync::LazyLock;
 
-pub mod code {
-    pub const LEXICAL: &str = "E1001 lexical error";
-    pub const SYNTAX: &str = "E1002 syntax error";
-    pub const NUMBER: &str = "E1003 numerical error";
-    pub const PITCH: &str = "E1004 pitch error";
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Clone, Copy)]
 pub struct Span {
     pub start: usize,
     pub end: usize,

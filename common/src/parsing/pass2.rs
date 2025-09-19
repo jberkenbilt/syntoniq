@@ -1,7 +1,7 @@
-use crate::parsing::diagnostics::Diagnostics;
+use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
     Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader, NoteLine,
-    NoteOption, Param, ParamValue, PitchOrRatio, RegularNote, Span, Spanned, Token, code,
+    NoteOption, Param, ParamValue, PitchOrRatio, RegularNote, Span, Spanned, Token,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
@@ -137,7 +137,7 @@ fn ratio_inner(
                         let len = frac.span.end - frac.span.start;
                         if len > 3 {
                             diags.err(
-                                code::NUMBER,
+                                code::NUM_FORMAT,
                                 frac.span,
                                 "a maximum of three decimal places is allowed",
                             );
@@ -156,16 +156,16 @@ fn ratio_inner(
                     Some(x) => x,
                     None => {
                         diags.err(
-                            code::NUMBER,
+                            code::NUM_FORMAT,
                             num_dec_t.span,
-                            "insufficient precision for numerator",
+                            "too much precision for numerator",
                         );
                         1
                     }
                 };
                 if (!allow_zero || den_t.is_some()) && numerator == 0 {
                     diags.err(
-                        code::NUMBER,
+                        code::NUM_FORMAT,
                         num_dec_t.span,
                         "zero not allowed as numerator",
                     );
@@ -174,16 +174,20 @@ fn ratio_inner(
                 let denominator: u32 = if let Some(den_t) = den_t {
                     let den: u32 = den_t.value;
                     if den == 0 {
-                        diags.err(code::NUMBER, den_t.span, "zero not allowed as denominator");
+                        diags.err(
+                            code::NUM_FORMAT,
+                            den_t.span,
+                            "zero not allowed as denominator",
+                        );
                         1
                     } else {
                         match den.checked_mul(scale) {
                             Some(x) => x,
                             None => {
                                 diags.err(
-                                    code::NUMBER,
+                                    code::NUM_FORMAT,
                                     den_t.span,
-                                    "insufficient precision for denominator",
+                                    "too much precision for denominator",
                                 );
                                 1
                             }
@@ -244,7 +248,15 @@ fn exponent(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fa
                     }
                 };
                 let mut exp_num: i32 = exp_num_t.value as i32;
-                let exp_den = exp_den_t.value as i32;
+                let mut exp_den = exp_den_t.value as i32;
+                if exp_den == 0 {
+                    diags.err(
+                        code::PITCH,
+                        exp_den_t.span,
+                        "zero not allowed as exponent denominator",
+                    );
+                    exp_den = 1;
+                }
                 if let Some(c) = sign_t {
                     span_start = c.span.start;
                     exp_num = -exp_num;
@@ -371,12 +383,12 @@ fn octave(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Span
                     let count: i8 = if let Ok(n) = i8::try_from(n.value) {
                         n
                     } else {
-                        diags.err(code::SYNTAX, n.span, "octave count is too large");
+                        diags.err(code::NOTE, n.span, "octave count is too large");
                         1
                     };
                     if count == 0 {
                         // It can be zero, but not explicitly zero.
-                        diags.err(code::SYNTAX, n.span, "octave count may not be zero");
+                        diags.err(code::NOTE, n.span, "octave count may not be zero");
                     }
                     count
                 } else {
@@ -399,7 +411,7 @@ fn note_options(
             let inner_span = Pass1::get_note_options(&tok).unwrap();
             let data = &tok.value.raw[inner_span.relative_to(tok.span)];
             if data.is_empty() {
-                diags.err(code::LEXICAL, tok.span, "note options may not be empty");
+                diags.err(code::NOTE, tok.span, "note options may not be empty");
             }
             let mut result = Vec::new();
             let mut offset = inner_span.start;
@@ -408,7 +420,7 @@ fn note_options(
                 match ch {
                     '>' => result.push(Spanned::new(span, NoteOption::Accent)),
                     '^' => result.push(Spanned::new(span, NoteOption::Marcato)),
-                    _ => diags.err(code::SYNTAX, span, format!("invalid note option '{ch}'")),
+                    _ => diags.err(code::NOTE, span, format!("invalid note option '{ch}'")),
                 }
                 offset = span.end;
             }
@@ -520,7 +532,7 @@ fn require_spaces<T: Debug + Serialize>(
         .map(|(spc, item)| {
             if spc.is_none() {
                 diags.err(
-                    code::SYNTAX,
+                    code::SCORE_SYNTAX,
                     item.span,
                     "this item must be preceded by a space",
                 );
@@ -566,7 +578,7 @@ fn regular_dynamic(
                 let (level_t, _, position, change_t) = items;
                 let level: u8 = match Pass1::get_number(&level_t).unwrap() {
                     x if x > 127 => {
-                        diags.err(code::SYNTAX, level_t.span, "dynamic value must be <= 127");
+                        diags.err(code::DYNAMIC, level_t.span, "dynamic value must be <= 127");
                         127
                     }
                     x => x as u8,
@@ -680,7 +692,7 @@ fn degraded_directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow:
                     newline_or_eof(),
                     degraded_top_level(diags),
                     one_of(|x: Token1| x.value.raw != ")").map(|tok: Token1| {
-                        diags.err(code::SYNTAX, tok.span, "unexpected item");
+                        diags.err(code::SYNTAX, tok.span, diagnostics::SYNTAX_ERROR);
                     }),
                 )),
             )
@@ -701,7 +713,7 @@ fn degraded_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resu
                     space_or_comment,
                     note(diags).map(|_| ()),
                     one_of(|x: Token1| !matches!(x.value.t, Pass1::Newline)).map(|tok: Token1| {
-                        diags.err(code::SYNTAX, tok.span, "unexpected item in note line");
+                        diags.err(code::SCORE_SYNTAX, tok.span, "unexpected item in note line");
                     }),
                 )),
             )
@@ -722,7 +734,11 @@ fn degraded_dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::R
                     space_or_comment,
                     dynamic(diags).map(|_| ()),
                     one_of(|x: Token1| !matches!(x.value.t, Pass1::Newline)).map(|tok: Token1| {
-                        diags.err(code::SYNTAX, tok.span, "unexpected item in dynamic line");
+                        diags.err(
+                            code::SCORE_SYNTAX,
+                            tok.span,
+                            "unexpected item in dynamic line",
+                        );
                     }),
                 )),
             )
@@ -745,7 +761,7 @@ fn degraded_misc(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resu
                     character('(').map(|_| ()),
                     character(')').map(|_| ()),
                     one_of(|x: Token1| !matches!(x.value.t, Pass1::Newline)).map(|tok: Token1| {
-                        diags.err(code::SYNTAX, tok.span, "unexpected item");
+                        diags.err(code::SYNTAX, tok.span, diagnostics::SYNTAX_ERROR);
                     }),
                 )),
             )
@@ -797,11 +813,15 @@ fn handle_token<'s>(
                         Pass2::Directive(d.value),
                     ))
                 } else {
-                    diags.err(code::SYNTAX, tok.span, "unable to parse as directive");
+                    diags.err(
+                        code::TOPLEVEL_SYNTAX,
+                        tok.span,
+                        "unable to parse as directive",
+                    );
                     Err(Degraded::Directive)
                 }
             } else {
-                diags.err(code::SYNTAX, tok.span, "expected a directive");
+                diags.err(code::TOPLEVEL_SYNTAX, tok.span, "expected a directive");
                 Err(Degraded::Misc)
             }
         }
@@ -813,7 +833,7 @@ fn handle_token<'s>(
                     Pass2::NoteLine(x.value),
                 ))
             } else {
-                diags.err(code::SYNTAX, tok.span, "unable to parse as note line");
+                diags.err(code::SCORE_SYNTAX, tok.span, "unable to parse as note line");
                 Err(Degraded::Note)
             }
         }
@@ -825,16 +845,16 @@ fn handle_token<'s>(
                     Pass2::DynamicLine(x.value),
                 ))
             } else {
-                diags.err(code::SYNTAX, tok.span, "unable to parse as dynamic line");
+                diags.err(
+                    code::SCORE_SYNTAX,
+                    tok.span,
+                    "unable to parse as dynamic line",
+                );
                 Err(Degraded::Dynamic)
             }
         }
         _ => {
-            diags.err(
-                code::SYNTAX,
-                tok.span,
-                format!("unexpected item ({:?})", tok.value.t),
-            );
+            diags.err(code::SYNTAX, tok.span, diagnostics::SYNTAX_ERROR);
             Err(Degraded::Misc)
         }
     }

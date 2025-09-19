@@ -35,9 +35,9 @@ fn test_raw_number() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [Diagnostic::new(
-            code::LEXICAL,
+            code::NUM_RANGE,
             0..23,
-            "while parsing number: number too large to fit in target type"
+            "number too large for 32 bits"
         )]
     );
     Ok(())
@@ -62,10 +62,10 @@ fn test_string_literal() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [
-            Diagnostic::new(code::LEXICAL, 13..14, "invalid quoted character"),
-            Diagnostic::new(code::LEXICAL, 24..28, "invalid quoted character"),
+            Diagnostic::new(code::STRING, 13..14, "invalid quoted character"),
+            Diagnostic::new(code::STRING, 24..28, "invalid quoted character"),
             Diagnostic::new(
-                code::LEXICAL,
+                code::STRING,
                 28..29,
                 "string may not contain newline characters"
             ),

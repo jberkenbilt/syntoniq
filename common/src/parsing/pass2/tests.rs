@@ -72,7 +72,7 @@ fn test_ratio() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [Diagnostic::new(
-            code::NUMBER,
+            code::NUM_FORMAT,
             2..6,
             "a maximum of three decimal places is allowed"
         )]
@@ -82,9 +82,9 @@ fn test_ratio() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [Diagnostic::new(
-            code::NUMBER,
+            code::NUM_FORMAT,
             0..9,
-            "insufficient precision for numerator"
+            "too much precision for numerator"
         )]
     );
 
@@ -92,9 +92,9 @@ fn test_ratio() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [Diagnostic::new(
-            code::NUMBER,
+            code::NUM_FORMAT,
             6..15,
-            "insufficient precision for denominator"
+            "too much precision for denominator"
         )]
     );
 
@@ -102,8 +102,8 @@ fn test_ratio() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [
-            Diagnostic::new(code::NUMBER, 0..1, "zero not allowed as numerator"),
-            Diagnostic::new(code::NUMBER, 2..3, "zero not allowed as denominator")
+            Diagnostic::new(code::NUM_FORMAT, 0..1, "zero not allowed as numerator"),
+            Diagnostic::new(code::NUM_FORMAT, 2..3, "zero not allowed as denominator")
         ]
     );
 
@@ -111,7 +111,7 @@ fn test_ratio() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [Diagnostic::new(
-            code::NUMBER,
+            code::NUM_FORMAT,
             0..1,
             "zero not allowed as numerator"
         ),]
@@ -121,8 +121,8 @@ fn test_ratio() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [
-            Diagnostic::new(code::NUMBER, 0..1, "zero not allowed as numerator"),
-            Diagnostic::new(code::NUMBER, 2..3, "zero not allowed as denominator")
+            Diagnostic::new(code::NUM_FORMAT, 0..1, "zero not allowed as numerator"),
+            Diagnostic::new(code::NUM_FORMAT, 2..3, "zero not allowed as denominator")
         ]
     );
 
@@ -153,9 +153,9 @@ fn test_exponent() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [Diagnostic::new(
-            "E1004 pitch error",
-            1..4,
-            "zero may not appear anywhere in base or in exponent denominator"
+            code::PITCH,
+            3..4,
+            "zero not allowed as exponent denominator"
         )]
     );
 
@@ -315,7 +315,7 @@ fn test_octave() -> anyhow::Result<()> {
     assert_eq!(
         e,
         vec![Diagnostic::new(
-            code::SYNTAX,
+            code::NOTE,
             1..4,
             "octave count is too large"
         )]
@@ -324,7 +324,7 @@ fn test_octave() -> anyhow::Result<()> {
     assert_eq!(
         e,
         vec![Diagnostic::new(
-            code::SYNTAX,
+            code::NOTE,
             1..2,
             "octave count may not be zero"
         )]
