@@ -148,18 +148,20 @@ fn ratio_inner(
                         }
                     }
                 };
-                let mut numerator =
-                    match u32::try_from(num_dec as u64 * scale as u64 + num_frac as u64) {
-                        Ok(x) => x,
-                        Err(_) => {
-                            diags.err(
-                                code::NUMBER,
-                                num_dec_t.span,
-                                "insufficient precision for numerator",
-                            );
-                            1
-                        }
-                    };
+                let mut numerator = match num_dec
+                    .checked_mul(scale)
+                    .and_then(|x| x.checked_add(num_frac))
+                {
+                    Some(x) => x,
+                    None => {
+                        diags.err(
+                            code::NUMBER,
+                            num_dec_t.span,
+                            "insufficient precision for numerator",
+                        );
+                        1
+                    }
+                };
                 if (!allow_zero || den_t.is_some()) && numerator == 0 {
                     diags.err(
                         code::NUMBER,
@@ -174,9 +176,9 @@ fn ratio_inner(
                         diags.err(code::NUMBER, den_t.span, "zero not allowed as denominator");
                         1
                     } else {
-                        match u32::try_from(den as u64 * scale as u64) {
-                            Ok(x) => x,
-                            Err(_) => {
+                        match den.checked_mul(scale) {
+                            Some(x) => x,
+                            None => {
                                 diags.err(
                                     code::NUMBER,
                                     den_t.span,
