@@ -1,182 +1,4358 @@
-{
-  "Err": {
-    "list": [
+[
+  {
+    "Ok": [
       {
-        "code": "E1011 incorrect syntax",
-        "message": {
-          "span": [
-            239,
-            246
-          ],
-          "value": "expected a directive"
-        },
-        "context": []
+        "span": [
+          0,
+          7
+        ],
+        "value": {
+          "raw": "; hello",
+          "t": "Comment"
+        }
       },
       {
-        "code": "E1006 incorrect number format",
-        "message": {
-          "span": [
-            272,
-            276
-          ],
-          "value": "a maximum of three decimal places is allowed"
-        },
-        "context": []
+        "span": [
+          7,
+          8
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
       },
       {
-        "code": "E1011 incorrect syntax",
-        "message": {
-          "span": [
-            350,
-            368
-          ],
-          "value": "unable to parse as directive; expected directive(k=v, ...)"
-        },
-        "context": []
+        "span": [
+          8,
+          17
+        ],
+        "value": {
+          "raw": "onceThere",
+          "t": "Identifier"
+        }
       },
       {
-        "code": "E1001 syntax error",
-        "message": {
-          "span": [
-            379,
-            380
-          ],
-          "value": "this syntax is not expected here"
-        },
-        "context": []
+        "span": [
+          17,
+          18
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
       },
       {
-        "code": "E1011 incorrect syntax",
-        "message": {
-          "span": [
-            396,
-            410
-          ],
-          "value": "expected a directive"
-        },
-        "context": []
+        "span": [
+          18,
+          23
+        ],
+        "value": {
+          "raw": "quack",
+          "t": "Identifier"
+        }
       },
       {
-        "code": "E1001 syntax error",
-        "message": {
-          "span": [
-            420,
-            421
-          ],
-          "value": "this syntax is not expected here"
-        },
-        "context": []
+        "span": [
+          23,
+          24
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
       },
       {
-        "code": "E1001 syntax error",
-        "message": {
-          "span": [
-            461,
-            462
-          ],
-          "value": "this syntax is not expected here"
-        },
-        "context": []
+        "span": [
+          24,
+          32
+        ],
+        "value": {
+          "raw": "\"moo π\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                25,
+                31
+              ]
+            }
+          }
+        }
       },
       {
-        "code": "E1008 incorrect note syntax",
-        "message": {
-          "span": [
-            515,
-            517
-          ],
-          "value": "note options may not be empty"
-        },
-        "context": []
+        "span": [
+          32,
+          33
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
       },
       {
-        "code": "E1008 incorrect note syntax",
-        "message": {
-          "span": [
-            524,
-            525
-          ],
-          "value": "invalid note option '!'"
-        },
-        "context": []
+        "span": [
+          33,
+          34
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
       },
       {
-        "code": "E1009 incorrect score syntax",
-        "message": {
-          "span": [
-            598,
-            599
-          ],
-          "value": "this item must be preceded by a space"
-        },
-        "context": []
+        "span": [
+          34,
+          35
+        ],
+        "value": {
+          "raw": "a",
+          "t": "Identifier"
+        }
       },
       {
-        "code": "E1008 incorrect note syntax",
-        "message": {
-          "span": [
-            653,
-            657
-          ],
-          "value": "octave count is too large"
-        },
-        "context": []
+        "span": [
+          35,
+          36
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
       },
       {
-        "code": "E1009 incorrect score syntax",
-        "message": {
-          "span": [
-            658,
-            664
-          ],
-          "value": "unable to parse as note line"
-        },
-        "context": []
+        "span": [
+          36,
+          37
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  36,
+                  37
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
       },
       {
-        "code": "E1009 incorrect score syntax",
-        "message": {
-          "span": [
-            703,
-            706
-          ],
-          "value": "unexpected item in note line"
-        },
-        "context": []
+        "span": [
+          37,
+          38
+        ],
+        "value": {
+          "raw": ".",
+          "t": "Punctuation"
+        }
       },
       {
-        "code": "E1010 incorrect dynamic syntax",
-        "message": {
-          "span": [
-            829,
-            832
-          ],
-          "value": "dynamic value must be <= 127"
-        },
-        "context": []
+        "span": [
+          38,
+          40
+        ],
+        "value": {
+          "raw": "14",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  38,
+                  40
+                ],
+                "value": 14
+              }
+            }
+          }
+        }
       },
       {
-        "code": "E1009 incorrect score syntax",
-        "message": {
-          "span": [
-            835,
-            839
-          ],
-          "value": "unable to parse as dynamic line"
-        },
-        "context": []
+        "span": [
+          40,
+          41
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
       },
       {
-        "code": "E1009 incorrect score syntax",
-        "message": {
-          "span": [
-            856,
-            857
-          ],
-          "value": "unexpected item in dynamic line"
-        },
-        "context": []
+        "span": [
+          41,
+          42
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          42,
+          43
+        ],
+        "value": {
+          "raw": "b",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          43,
+          44
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          44,
+          45
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          45,
+          46
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          46,
+          47
+        ],
+        "value": {
+          "raw": "*",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          47,
+          48
+        ],
+        "value": {
+          "raw": "^",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          48,
+          49
+        ],
+        "value": {
+          "raw": "-",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          49,
+          50
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  49,
+                  50
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          50,
+          51
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          51,
+          53
+        ],
+        "value": {
+          "raw": "17",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  51,
+                  53
+                ],
+                "value": 17
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          53,
+          54
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          54,
+          55
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          55,
+          56
+        ],
+        "value": {
+          "raw": "d",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          56,
+          57
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          57,
+          58
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          58,
+          59
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          59,
+          60
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  59,
+                  60
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          60,
+          61
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          61,
+          62
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  61,
+                  62
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          62,
+          63
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          63,
+          64
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          64,
+          65
+        ],
+        "value": {
+          "raw": "f",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          65,
+          66
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          66,
+          67
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          67,
+          68
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          68,
+          77
+        ],
+        "value": {
+          "raw": "; comment",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          77,
+          78
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          78,
+          97
+        ],
+        "value": {
+          "raw": "; comment by itself",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          97,
+          98
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          98,
+          100
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          100,
+          121
+        ],
+        "value": {
+          "raw": "; comment after space",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          121,
+          122
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          122,
+          123
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          123,
+          188
+        ],
+        "value": {
+          "raw": "; After the first mistake, we go into degraded mode for the line.",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          188,
+          189
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          189,
+          230
+        ],
+        "value": {
+          "raw": "; Some things are caught; others are not.",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          230,
+          231
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          231,
+          236
+        ],
+        "value": {
+          "raw": "valid",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          236,
+          237
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          237,
+          238
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          238,
+          239
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          239,
+          246
+        ],
+        "value": {
+          "raw": "invalid",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          246,
+          247
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          247,
+          254
+        ],
+        "value": {
+          "raw": "ignored",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          254,
+          255
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          255,
+          256
+        ],
+        "value": {
+          "raw": "a",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          256,
+          257
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          257,
+          260
+        ],
+        "value": {
+          "raw": "\"b\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                258,
+                259
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          260,
+          261
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          261,
+          262
+        ],
+        "value": {
+          "raw": "c",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          262,
+          263
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          263,
+          265
+        ],
+        "value": {
+          "raw": "19",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  263,
+                  265
+                ],
+                "value": 19
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          265,
+          266
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          266,
+          267
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          267,
+          268
+        ],
+        "value": {
+          "raw": "d",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          268,
+          269
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          269,
+          271
+        ],
+        "value": {
+          "raw": "23",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  269,
+                  271
+                ],
+                "value": 23
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          271,
+          272
+        ],
+        "value": {
+          "raw": ".",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          272,
+          276
+        ],
+        "value": {
+          "raw": "4567",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  272,
+                  276
+                ],
+                "value": 4567
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          276,
+          277
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          277,
+          278
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          278,
+          283
+        ],
+        "value": {
+          "raw": "valid",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          283,
+          284
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          284,
+          285
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          285,
+          287
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          287,
+          288
+        ],
+        "value": {
+          "raw": "a",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          288,
+          289
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          289,
+          290
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  289,
+                  290
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          290,
+          291
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          291,
+          292
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          292,
+          294
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          294,
+          295
+        ],
+        "value": {
+          "raw": "b",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          295,
+          296
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          296,
+          299
+        ],
+        "value": {
+          "raw": "\"2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                297,
+                298
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          299,
+          300
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          300,
+          302
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          302,
+          316
+        ],
+        "value": {
+          "raw": "; comment here",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          316,
+          317
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          317,
+          319
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          319,
+          320
+        ],
+        "value": {
+          "raw": "c",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          320,
+          321
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          321,
+          322
+        ],
+        "value": {
+          "raw": "*",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          322,
+          323
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  322,
+                  323
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          323,
+          324
+        ],
+        "value": {
+          "raw": "^",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          324,
+          325
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  324,
+                  325
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          325,
+          326
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          326,
+          328
+        ],
+        "value": {
+          "raw": "19",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  326,
+                  328
+                ],
+                "value": 19
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          328,
+          330
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          330,
+          346
+        ],
+        "value": {
+          "raw": "; optional comma",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          346,
+          347
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          347,
+          348
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          348,
+          349
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          349,
+          350
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          350,
+          368
+        ],
+        "value": {
+          "raw": "degraded_directive",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          368,
+          369
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          369,
+          370
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          370,
+          372
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          372,
+          378
+        ],
+        "value": {
+          "raw": "resume",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          378,
+          379
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          379,
+          380
+        ],
+        "value": {
+          "raw": "^",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          380,
+          381
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          381,
+          383
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          383,
+          385
+        ],
+        "value": {
+          "raw": "at",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          385,
+          386
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          386,
+          391
+        ],
+        "value": {
+          "raw": "clope",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          391,
+          392
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          392,
+          394
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          394,
+          395
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          395,
+          396
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          396,
+          410
+        ],
+        "value": {
+          "raw": "reported_again",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          410,
+          411
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          411,
+          412
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          412,
+          417
+        ],
+        "value": {
+          "raw": "valid",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          417,
+          418
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          418,
+          419
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          419,
+          420
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          420,
+          421
+        ],
+        "value": {
+          "raw": ".",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          421,
+          422
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          422,
+          436
+        ],
+        "value": {
+          "raw": "invalid_syntax",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          436,
+          437
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          437,
+          452
+        ],
+        "value": {
+          "raw": "not_a_directive",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          452,
+          453
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          453,
+          458
+        ],
+        "value": {
+          "raw": "valid",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          458,
+          459
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          459,
+          460
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          460,
+          461
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          461,
+          462
+        ],
+        "value": {
+          "raw": "?",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          462,
+          463
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          463,
+          464
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          464,
+          470
+        ],
+        "value": {
+          "raw": "[p1.0]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                465,
+                467
+              ],
+              "note": {
+                "span": [
+                  468,
+                  469
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          470,
+          472
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          472,
+          473
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  472,
+                  473
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          473,
+          474
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          474,
+          475
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  474,
+                  475
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          475,
+          476
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          476,
+          477
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          477,
+          478
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          478,
+          479
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          479,
+          480
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          480,
+          481
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          481,
+          482
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          482,
+          483
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          483,
+          484
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          484,
+          485
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          485,
+          486
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          486,
+          487
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          487,
+          488
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          488,
+          489
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          489,
+          492
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          492,
+          493
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          493,
+          494
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          494,
+          495
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          495,
+          501
+        ],
+        "value": {
+          "raw": "      ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          501,
+          502
+        ],
+        "value": {
+          "raw": "f",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          502,
+          503
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          503,
+          504
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          504,
+          507
+        ],
+        "value": {
+          "raw": "(^)",
+          "t": {
+            "NoteOptions": {
+              "inner_span": [
+                505,
+                506
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          507,
+          512
+        ],
+        "value": {
+          "raw": "     ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          512,
+          513
+        ],
+        "value": {
+          "raw": "f",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          513,
+          514
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          514,
+          515
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          515,
+          517
+        ],
+        "value": {
+          "raw": "()",
+          "t": {
+            "NoteOptions": {
+              "inner_span": [
+                516,
+                516
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          517,
+          520
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          520,
+          521
+        ],
+        "value": {
+          "raw": "f",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          521,
+          522
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          522,
+          523
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          523,
+          526
+        ],
+        "value": {
+          "raw": "(!)",
+          "t": {
+            "NoteOptions": {
+              "inner_span": [
+                524,
+                525
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          526,
+          530
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          530,
+          531
+        ],
+        "value": {
+          "raw": "f",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          531,
+          533
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          533,
+          534
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          534,
+          537
+        ],
+        "value": {
+          "raw": "(>)",
+          "t": {
+            "NoteOptions": {
+              "inner_span": [
+                535,
+                536
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          537,
+          538
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          538,
+          544
+        ],
+        "value": {
+          "raw": "[p1.1]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                539,
+                541
+              ],
+              "note": {
+                "span": [
+                  542,
+                  543
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          544,
+          548
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          548,
+          549
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  548,
+                  549
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          549,
+          550
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          550,
+          551
+        ],
+        "value": {
+          "raw": "d",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          551,
+          554
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          554,
+          555
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          555,
+          558
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          558,
+          559
+        ],
+        "value": {
+          "raw": "d",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          559,
+          562
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          562,
+          563
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          563,
+          568
+        ],
+        "value": {
+          "raw": "     ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          568,
+          569
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          569,
+          575
+        ],
+        "value": {
+          "raw": "      ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          575,
+          576
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          576,
+          579
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          579,
+          580
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  579,
+                  580
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          580,
+          581
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          581,
+          582
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  581,
+                  582
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          582,
+          583
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          583,
+          584
+        ],
+        "value": {
+          "raw": "d",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          584,
+          585
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          585,
+          586
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          586,
+          589
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          589,
+          590
+        ],
+        "value": {
+          "raw": "d",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          590,
+          591
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          591,
+          592
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          592,
+          593
+        ],
+        "value": {
+          "raw": ">",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          593,
+          596
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          596,
+          597
+        ],
+        "value": {
+          "raw": "d",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          597,
+          598
+        ],
+        "value": {
+          "raw": "~",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          598,
+          599
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          599,
+          600
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          600,
+          606
+        ],
+        "value": {
+          "raw": "[p1.2]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                601,
+                603
+              ],
+              "note": {
+                "span": [
+                  604,
+                  605
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          606,
+          610
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          610,
+          611
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  610,
+                  611
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          611,
+          612
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          612,
+          613
+        ],
+        "value": {
+          "raw": "~",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          613,
+          618
+        ],
+        "value": {
+          "raw": "     ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          618,
+          619
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  618,
+                  619
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          619,
+          620
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          620,
+          621
+        ],
+        "value": {
+          "raw": "b",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          621,
+          622
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          622,
+          624
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          624,
+          626
+        ],
+        "value": {
+          "raw": "b%",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          626,
+          627
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          627,
+          630
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          630,
+          631
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          631,
+          635
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          635,
+          636
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  635,
+                  636
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          636,
+          637
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          637,
+          638
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          638,
+          651
+        ],
+        "value": {
+          "raw": "             ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          651,
+          652
+        ],
+        "value": {
+          "raw": "b",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          652,
+          653
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          653,
+          657
+        ],
+        "value": {
+          "raw": "4096",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  653,
+                  657
+                ],
+                "value": 4096
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          657,
+          658
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          658,
+          664
+        ],
+        "value": {
+          "raw": "[p1.3]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                659,
+                661
+              ],
+              "note": {
+                "span": [
+                  662,
+                  663
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          664,
+          668
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          668,
+          669
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  668,
+                  669
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          669,
+          670
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          670,
+          671
+        ],
+        "value": {
+          "raw": "~",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          671,
+          688
+        ],
+        "value": {
+          "raw": "                 ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          688,
+          689
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          689,
+          693
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          693,
+          694
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  693,
+                  694
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          694,
+          695
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          695,
+          696
+        ],
+        "value": {
+          "raw": "~",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          696,
+          703
+        ],
+        "value": {
+          "raw": "       ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          703,
+          706
+        ],
+        "value": {
+          "raw": "640",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  703,
+                  706
+                ],
+                "value": 640
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          706,
+          712
+        ],
+        "value": {
+          "raw": "      ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          712,
+          713
+        ],
+        "value": {
+          "raw": "a",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          713,
+          714
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          714,
+          715
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          715,
+          716
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          716,
+          722
+        ],
+        "value": {
+          "raw": "[p1.4]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                717,
+                719
+              ],
+              "note": {
+                "span": [
+                  720,
+                  721
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          722,
+          726
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          726,
+          727
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  726,
+                  727
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          727,
+          728
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          728,
+          729
+        ],
+        "value": {
+          "raw": "~",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          729,
+          746
+        ],
+        "value": {
+          "raw": "                 ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          746,
+          747
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          747,
+          751
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          751,
+          752
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  751,
+                  752
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          752,
+          753
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          753,
+          754
+        ],
+        "value": {
+          "raw": "a",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          754,
+          755
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          755,
+          765
+        ],
+        "value": {
+          "raw": "          ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          765,
+          766
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  765,
+                  766
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          766,
+          767
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          767,
+          768
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          768,
+          769
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          769,
+          770
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          770,
+          771
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  770,
+                  771
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          771,
+          772
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          772,
+          773
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  772,
+                  773
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          773,
+          774
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          774,
+          775
+        ],
+        "value": {
+          "raw": "f",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          775,
+          776
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          776,
+          777
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          777,
+          778
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          778,
+          779
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          779,
+          780
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          780,
+          782
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          782,
+          786
+        ],
+        "value": {
+          "raw": "[p1]",
+          "t": {
+            "DynamicLeader": {
+              "name_span": [
+                783,
+                785
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          786,
+          789
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          789,
+          791
+        ],
+        "value": {
+          "raw": "64",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  789,
+                  791
+                ],
+                "value": 64
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          791,
+          792
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          792,
+          793
+        ],
+        "value": {
+          "raw": "0",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  792,
+                  793
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          793,
+          797
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          797,
+          799
+        ],
+        "value": {
+          "raw": "64",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  797,
+                  799
+                ],
+                "value": 64
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          799,
+          800
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          800,
+          801
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  800,
+                  801
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          801,
+          802
+        ],
+        "value": {
+          "raw": "<",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          802,
+          810
+        ],
+        "value": {
+          "raw": "        ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          810,
+          811
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          811,
+          814
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          814,
+          816
+        ],
+        "value": {
+          "raw": "96",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  814,
+                  816
+                ],
+                "value": 96
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          816,
+          817
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          817,
+          818
+        ],
+        "value": {
+          "raw": "0",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  817,
+                  818
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          818,
+          819
+        ],
+        "value": {
+          "raw": ">",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          819,
+          829
+        ],
+        "value": {
+          "raw": "          ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          829,
+          832
+        ],
+        "value": {
+          "raw": "640",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  829,
+                  832
+                ],
+                "value": 640
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          832,
+          833
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          833,
+          834
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  833,
+                  834
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          834,
+          835
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          835,
+          839
+        ],
+        "value": {
+          "raw": "[p2]",
+          "t": {
+            "DynamicLeader": {
+              "name_span": [
+                836,
+                838
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          839,
+          841
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          841,
+          843
+        ],
+        "value": {
+          "raw": "64",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  841,
+                  843
+                ],
+                "value": 64
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          843,
+          844
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          844,
+          845
+        ],
+        "value": {
+          "raw": "0",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  844,
+                  845
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          845,
+          849
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          849,
+          851
+        ],
+        "value": {
+          "raw": "64",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  849,
+                  851
+                ],
+                "value": 64
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          851,
+          852
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          852,
+          853
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  852,
+                  853
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          853,
+          854
+        ],
+        "value": {
+          "raw": "<",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          854,
+          856
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          856,
+          857
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          857,
+          863
+        ],
+        "value": {
+          "raw": "      ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          863,
+          864
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          864,
+          867
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          867,
+          869
+        ],
+        "value": {
+          "raw": "96",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  867,
+                  869
+                ],
+                "value": 96
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          869,
+          870
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          870,
+          871
+        ],
+        "value": {
+          "raw": "0",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  870,
+                  871
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          871,
+          872
+        ],
+        "value": {
+          "raw": ">",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          872,
+          873
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          873,
+          877
+        ],
+        "value": {
+          "raw": "[p3]",
+          "t": {
+            "DynamicLeader": {
+              "name_span": [
+                874,
+                876
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          877,
+          879
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          879,
+          881
+        ],
+        "value": {
+          "raw": "64",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  879,
+                  881
+                ],
+                "value": 64
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          881,
+          882
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          882,
+          883
+        ],
+        "value": {
+          "raw": "0",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  882,
+                  883
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          883,
+          887
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          887,
+          889
+        ],
+        "value": {
+          "raw": "64",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  887,
+                  889
+                ],
+                "value": 64
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          889,
+          890
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          890,
+          891
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  890,
+                  891
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          891,
+          892
+        ],
+        "value": {
+          "raw": "<",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          892,
+          900
+        ],
+        "value": {
+          "raw": "        ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          900,
+          901
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          901,
+          904
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          904,
+          906
+        ],
+        "value": {
+          "raw": "96",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  904,
+                  906
+                ],
+                "value": 96
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          906,
+          907
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          907,
+          908
+        ],
+        "value": {
+          "raw": "0",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  907,
+                  908
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          908,
+          909
+        ],
+        "value": {
+          "raw": ">",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          909,
+          910
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
       }
     ]
+  },
+  {
+    "Err": {
+      "list": [
+        {
+          "code": "E1011 incorrect syntax",
+          "context": [],
+          "message": {
+            "span": [
+              239,
+              246
+            ],
+            "value": "expected a directive"
+          }
+        },
+        {
+          "code": "E1006 incorrect number format",
+          "context": [],
+          "message": {
+            "span": [
+              272,
+              276
+            ],
+            "value": "a maximum of three decimal places is allowed"
+          }
+        },
+        {
+          "code": "E1011 incorrect syntax",
+          "context": [],
+          "message": {
+            "span": [
+              350,
+              368
+            ],
+            "value": "unable to parse as directive; expected directive(k=v, ...)"
+          }
+        },
+        {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              379,
+              380
+            ],
+            "value": "this syntax is not expected here"
+          }
+        },
+        {
+          "code": "E1011 incorrect syntax",
+          "context": [],
+          "message": {
+            "span": [
+              396,
+              410
+            ],
+            "value": "expected a directive"
+          }
+        },
+        {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              420,
+              421
+            ],
+            "value": "this syntax is not expected here"
+          }
+        },
+        {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              461,
+              462
+            ],
+            "value": "this syntax is not expected here"
+          }
+        },
+        {
+          "code": "E1008 incorrect note syntax",
+          "context": [],
+          "message": {
+            "span": [
+              515,
+              517
+            ],
+            "value": "note options may not be empty"
+          }
+        },
+        {
+          "code": "E1008 incorrect note syntax",
+          "context": [],
+          "message": {
+            "span": [
+              524,
+              525
+            ],
+            "value": "invalid note option '!'"
+          }
+        },
+        {
+          "code": "E1009 incorrect score syntax",
+          "context": [],
+          "message": {
+            "span": [
+              598,
+              599
+            ],
+            "value": "this item must be preceded by a space"
+          }
+        },
+        {
+          "code": "E1008 incorrect note syntax",
+          "context": [],
+          "message": {
+            "span": [
+              653,
+              657
+            ],
+            "value": "octave count is too large"
+          }
+        },
+        {
+          "code": "E1009 incorrect score syntax",
+          "context": [],
+          "message": {
+            "span": [
+              658,
+              664
+            ],
+            "value": "unable to parse as note line"
+          }
+        },
+        {
+          "code": "E1009 incorrect score syntax",
+          "context": [],
+          "message": {
+            "span": [
+              703,
+              706
+            ],
+            "value": "unexpected item in note line"
+          }
+        },
+        {
+          "code": "E1010 incorrect dynamic syntax",
+          "context": [],
+          "message": {
+            "span": [
+              829,
+              832
+            ],
+            "value": "dynamic value must be <= 127"
+          }
+        },
+        {
+          "code": "E1009 incorrect score syntax",
+          "context": [],
+          "message": {
+            "span": [
+              835,
+              839
+            ],
+            "value": "unable to parse as dynamic line"
+          }
+        },
+        {
+          "code": "E1009 incorrect score syntax",
+          "context": [],
+          "message": {
+            "span": [
+              856,
+              857
+            ],
+            "value": "unexpected item in dynamic line"
+          }
+        }
+      ]
+    }
   }
-}
+]

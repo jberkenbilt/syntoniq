@@ -5,3 +5,6 @@ pub mod diagnostics;
 pub mod model;
 pub mod pass1;
 pub mod pass2;
+
+#[cfg(test)]
+mod tests;

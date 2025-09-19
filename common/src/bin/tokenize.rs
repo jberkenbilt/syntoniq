@@ -1,7 +1,8 @@
 use clap::Parser;
 use std::io::Write;
 use std::{fs, io};
-use syntoniq_common::parsing::pass2;
+use serde_json::json;
+use syntoniq_common::parsing::{pass1, pass2};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -18,11 +19,18 @@ fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
     let data = fs::read(&cli.filename)?;
     let input = str::from_utf8(&data)?;
-    let r = pass2::parse2(input);
     if cli.json {
-        serde_json::to_writer_pretty(io::stdout(), &r)?;
+        let mut results = Vec::new();
+        let r = pass1::parse1(input);
+        results.push(json!(&r));
+        if r.is_ok() {
+            let r = pass2::parse2(input);
+            results.push(json!(&r));
+        }
+        serde_json::to_writer_pretty(io::stdout(), &results)?;
         _ = io::stdout().write(b"\n");
     } else {
+        let r = pass2::parse2(input);
         match r {
             Err(diags) => anstream::eprintln!("{}", diags.render(&cli.filename, input)),
             Ok(tokens) => {

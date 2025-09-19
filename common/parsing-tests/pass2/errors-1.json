@@ -1,61 +1,63 @@
-{
-  "Err": {
-    "list": [
-      {
-        "code": "E1001 syntax error",
-        "message": {
-          "span": [
-            156,
-            160
-          ],
-          "value": "this character is not allowed here"
+[
+  {
+    "Err": {
+      "list": [
+        {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              156,
+              160
+            ],
+            "value": "this character is not allowed here"
+          }
         },
-        "context": []
-      },
-      {
-        "code": "E1004 unable to infer line type",
-        "message": {
-          "span": [
-            172,
-            173
-          ],
-          "value": "encountered '[' but didn't recognize note or dynamic line leader"
+        {
+          "code": "E1004 unable to infer line type",
+          "context": [],
+          "message": {
+            "span": [
+              172,
+              173
+            ],
+            "value": "encountered '[' but didn't recognize note or dynamic line leader"
+          }
         },
-        "context": []
-      },
-      {
-        "code": "E1001 syntax error",
-        "message": {
-          "span": [
-            198,
-            199
-          ],
-          "value": "this character is not allowed here"
+        {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              198,
+              199
+            ],
+            "value": "this character is not allowed here"
+          }
         },
-        "context": []
-      },
-      {
-        "code": "E1001 syntax error",
-        "message": {
-          "span": [
-            314,
-            315
-          ],
-          "value": "this character is not allowed here"
+        {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              314,
+              315
+            ],
+            "value": "this character is not allowed here"
+          }
         },
-        "context": []
-      },
-      {
-        "code": "E1001 syntax error",
-        "message": {
-          "span": [
-            554,
-            555
-          ],
-          "value": "this character is not allowed here"
-        },
-        "context": []
-      }
-    ]
+        {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              554,
+              555
+            ],
+            "value": "this character is not allowed here"
+          }
+        }
+      ]
+    }
   }
-}
+]
