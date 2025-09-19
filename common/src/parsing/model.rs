@@ -47,6 +47,11 @@ impl From<Range<usize>> for Span {
         }
     }
 }
+impl From<Span> for Range<usize> {
+    fn from(value: Span) -> Self {
+        value.start..value.end
+    }
+}
 impl Span {
     pub fn relative_to(&self, other: Span) -> Span {
         Span {

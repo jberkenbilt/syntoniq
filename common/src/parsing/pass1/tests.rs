@@ -34,12 +34,11 @@ fn test_raw_number() -> anyhow::Result<()> {
         .get_all();
     assert_eq!(
         e,
-        [Diagnostic {
-            code: code::LEXICAL,
-            span: (0..23).into(),
-            // Part of this is a rust error which may change (but not likely)
-            message: "while parsing number: number too large to fit in target type".to_string(),
-        }]
+        [Diagnostic::new(
+            code::LEXICAL,
+            0..23,
+            "while parsing number: number too large to fit in target type"
+        )]
     );
     Ok(())
 }
@@ -63,21 +62,13 @@ fn test_string_literal() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [
-            Diagnostic {
-                code: code::LEXICAL,
-                span: (13..14).into(),
-                message: "invalid quoted character".to_string(),
-            },
-            Diagnostic {
-                code: code::LEXICAL,
-                span: (24..28).into(),
-                message: "invalid quoted character".to_string(),
-            },
-            Diagnostic {
-                code: code::LEXICAL,
-                span: (28..29).into(),
-                message: "string may not contain newline characters".to_string(),
-            }
+            Diagnostic::new(code::LEXICAL, 13..14, "invalid quoted character"),
+            Diagnostic::new(code::LEXICAL, 24..28, "invalid quoted character"),
+            Diagnostic::new(
+                code::LEXICAL,
+                28..29,
+                "string may not contain newline characters"
+            ),
         ]
     );
 

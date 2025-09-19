@@ -71,74 +71,58 @@ fn test_ratio() -> anyhow::Result<()> {
     let e = parse_ratio("2.0001/3").unwrap_err().get_all();
     assert_eq!(
         e,
-        [Diagnostic {
-            code: code::NUMBER,
-            span: (2..6).into(),
-            message: "a maximum of three decimal places is allowed".to_string(),
-        }]
+        [Diagnostic::new(
+            code::NUMBER,
+            2..6,
+            "a maximum of three decimal places is allowed"
+        )]
     );
 
     let e = parse_ratio("123456789.001").unwrap_err().get_all();
     assert_eq!(
         e,
-        [Diagnostic {
-            code: code::NUMBER,
-            span: (0..9).into(),
-            message: "insufficient precision for numerator".to_string(),
-        }]
+        [Diagnostic::new(
+            code::NUMBER,
+            0..9,
+            "insufficient precision for numerator"
+        )]
     );
 
     let e = parse_ratio("1.001/123456789").unwrap_err().get_all();
     assert_eq!(
         e,
-        [Diagnostic {
-            code: code::NUMBER,
-            span: (6..15).into(),
-            message: "insufficient precision for denominator".to_string(),
-        }]
+        [Diagnostic::new(
+            code::NUMBER,
+            6..15,
+            "insufficient precision for denominator"
+        )]
     );
 
     let e = parse_ratio("0/0").unwrap_err().get_all();
     assert_eq!(
         e,
         [
-            Diagnostic {
-                code: code::NUMBER,
-                span: (0..1).into(),
-                message: "zero not allowed as numerator".to_string(),
-            },
-            Diagnostic {
-                code: code::NUMBER,
-                span: (2..3).into(),
-                message: "zero not allowed as denominator".to_string(),
-            }
+            Diagnostic::new(code::NUMBER, 0..1, "zero not allowed as numerator"),
+            Diagnostic::new(code::NUMBER, 2..3, "zero not allowed as denominator")
         ]
     );
 
     let e = parse_ratio("0").unwrap_err().get_all();
     assert_eq!(
         e,
-        [Diagnostic {
-            code: code::NUMBER,
-            span: (0..1).into(),
-            message: "zero not allowed as numerator".to_string(),
-        },]
+        [Diagnostic::new(
+            code::NUMBER,
+            0..1,
+            "zero not allowed as numerator"
+        ),]
     );
 
     let e = parse_ratio_or_zero("0/0").unwrap_err().get_all();
     assert_eq!(
         e,
         [
-            Diagnostic {
-                code: code::NUMBER,
-                span: (0..1).into(),
-                message: "zero not allowed as numerator".to_string(),
-            },
-            Diagnostic {
-                code: code::NUMBER,
-                span: (2..3).into(),
-                message: "zero not allowed as denominator".to_string(),
-            }
+            Diagnostic::new(code::NUMBER, 0..1, "zero not allowed as numerator"),
+            Diagnostic::new(code::NUMBER, 2..3, "zero not allowed as denominator")
         ]
     );
 
@@ -168,11 +152,11 @@ fn test_exponent() -> anyhow::Result<()> {
     let e = parse_exponent("^5|0").unwrap_err().get_all();
     assert_eq!(
         e,
-        [Diagnostic {
-            code: "E1004 pitch error",
-            span: (1..4).into(),
-            message: "zero may not appear anywhere in base or in exponent denominator".to_string()
-        }]
+        [Diagnostic::new(
+            "E1004 pitch error",
+            1..4,
+            "zero may not appear anywhere in base or in exponent denominator"
+        )]
     );
 
     Ok(())
@@ -330,20 +314,20 @@ fn test_octave() -> anyhow::Result<()> {
     let e = parse_octave(",128").unwrap_err().get_all();
     assert_eq!(
         e,
-        vec![Diagnostic {
-            code: code::SYNTAX,
-            span: (1..4).into(),
-            message: "octave count is too large".to_string(),
-        }]
+        vec![Diagnostic::new(
+            code::SYNTAX,
+            1..4,
+            "octave count is too large"
+        )]
     );
     let e = parse_octave("'0").unwrap_err().get_all();
     assert_eq!(
         e,
-        vec![Diagnostic {
-            code: code::SYNTAX,
-            span: (1..2).into(),
-            message: "octave count may not be zero".to_string(),
-        }]
+        vec![Diagnostic::new(
+            code::SYNTAX,
+            1..2,
+            "octave count may not be zero"
+        )]
     );
     Ok(())
 }

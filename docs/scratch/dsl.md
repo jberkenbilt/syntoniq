@@ -407,7 +407,7 @@ It would be nice for an error to contain a trace. Example:
   * ...
   * will need to deal with length deltas macro parameter substitutions
 * Crates to study for errors:
-  * https://docs.rs/annotate-snippets/0.12.3/annotate_snippets/
+  * https://docs.rs/annotate-snippets/0.12.3/annotate_snippets/ <-- winner
   * https://github.com/zesterer/ariadne
   * https://github.com/brendanzab/codespan
 
