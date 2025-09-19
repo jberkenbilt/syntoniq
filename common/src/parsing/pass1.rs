@@ -1,8 +1,9 @@
 // This file contains the first pass of parsing from the raw input string to Vec<Token1>.
 // These are low-level tokens that are handled by pass 2.
 
+use crate::parsing::diagnostics::Diagnostics;
 use crate::parsing::model;
-use crate::parsing::model::{Diagnostics, Span, Spanned, Token, code};
+use crate::parsing::model::{Span, Spanned, Token, code};
 use serde::Serialize;
 use std::fmt::{Display, Formatter};
 use winnow::combinator::{alt, delimited, fail, preceded};

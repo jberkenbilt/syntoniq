@@ -1,5 +1,5 @@
 use super::*;
-use crate::parsing::model::Diagnostic;
+use crate::parsing::diagnostics::Diagnostic;
 use crate::parsing::pass1::parse1;
 use std::fs::File;
 use std::path::{Path, PathBuf};

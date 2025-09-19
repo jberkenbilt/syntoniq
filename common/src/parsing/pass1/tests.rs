@@ -1,5 +1,5 @@
 use super::*;
-use crate::parsing::model::Diagnostic;
+use crate::parsing::diagnostics::Diagnostic;
 use crate::to_anyhow;
 
 /// Test first stage parsers that work with strings

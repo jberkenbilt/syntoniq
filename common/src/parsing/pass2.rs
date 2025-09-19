@@ -1,6 +1,7 @@
+use crate::parsing::diagnostics::Diagnostics;
 use crate::parsing::model::{
-    Diagnostics, Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader,
-    NoteLine, NoteOption, Param, ParamValue, PitchOrRatio, RegularNote, Span, Spanned, Token, code,
+    Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader, NoteLine,
+    NoteOption, Param, ParamValue, PitchOrRatio, RegularNote, Span, Spanned, Token, code,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
