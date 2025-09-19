@@ -7,15 +7,14 @@ Things to document:
 * alt -- all branches have to return the same type
 * repeat must always consume, so never repeat with an alt that has an optional
 
-Error handling:
-* diagnostics
-  * don't repeat any error messages
-  * degraded mode: just try to recognize things until we reach an end token
+Test notes:
 
-Testing:
-* Have a directory with files. Parse to JSON and compare. One file should contain files with outputs. Another should just check that they succeed. That can be used for fuzz testing.
-
-CURRENT: test_pass2
+Eval this:
+```elisp
+(defalias 'highlight-next-span
+   (kmacro "C-x o M-x c l e a r - r e g i o n - h i g h l i g h t s RET C-x o C-s \" s p a n \" : SPC [ RET C-M-f C-M-b C-SPC C-M-f C-x r s s C-M-f C-M-b C-SPC C-M-f C-x r s e C-x o M-: ( h i g h l i g h t - r e g i o n - b y - o f f s e t SPC C-x r i s C-e SPC C-x r i e ) RET C-x o"))
+```
+Then load a testing .stq file and .json file in two windows in the same frame. Inside the json buffer, run the above. You can put this in a keyboard macro and then use it to step through all the spans. This implements the logic described in pass2/tests.rs.
 
 # Syntoniq DSL
 

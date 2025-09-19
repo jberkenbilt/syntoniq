@@ -1,0 +1,182 @@
+{
+  "Err": {
+    "list": [
+      {
+        "code": "E1011 incorrect syntax",
+        "message": {
+          "span": [
+            239,
+            246
+          ],
+          "value": "expected a directive"
+        },
+        "context": []
+      },
+      {
+        "code": "E1006 incorrect number format",
+        "message": {
+          "span": [
+            272,
+            276
+          ],
+          "value": "a maximum of three decimal places is allowed"
+        },
+        "context": []
+      },
+      {
+        "code": "E1011 incorrect syntax",
+        "message": {
+          "span": [
+            350,
+            368
+          ],
+          "value": "unable to parse as directive; expected directive(k=v, ...)"
+        },
+        "context": []
+      },
+      {
+        "code": "E1001 syntax error",
+        "message": {
+          "span": [
+            379,
+            380
+          ],
+          "value": "this syntax is not expected here"
+        },
+        "context": []
+      },
+      {
+        "code": "E1011 incorrect syntax",
+        "message": {
+          "span": [
+            396,
+            410
+          ],
+          "value": "expected a directive"
+        },
+        "context": []
+      },
+      {
+        "code": "E1001 syntax error",
+        "message": {
+          "span": [
+            420,
+            421
+          ],
+          "value": "this syntax is not expected here"
+        },
+        "context": []
+      },
+      {
+        "code": "E1001 syntax error",
+        "message": {
+          "span": [
+            461,
+            462
+          ],
+          "value": "this syntax is not expected here"
+        },
+        "context": []
+      },
+      {
+        "code": "E1008 incorrect note syntax",
+        "message": {
+          "span": [
+            515,
+            517
+          ],
+          "value": "note options may not be empty"
+        },
+        "context": []
+      },
+      {
+        "code": "E1008 incorrect note syntax",
+        "message": {
+          "span": [
+            524,
+            525
+          ],
+          "value": "invalid note option '!'"
+        },
+        "context": []
+      },
+      {
+        "code": "E1009 incorrect score syntax",
+        "message": {
+          "span": [
+            598,
+            599
+          ],
+          "value": "this item must be preceded by a space"
+        },
+        "context": []
+      },
+      {
+        "code": "E1008 incorrect note syntax",
+        "message": {
+          "span": [
+            653,
+            657
+          ],
+          "value": "octave count is too large"
+        },
+        "context": []
+      },
+      {
+        "code": "E1009 incorrect score syntax",
+        "message": {
+          "span": [
+            658,
+            664
+          ],
+          "value": "unable to parse as note line"
+        },
+        "context": []
+      },
+      {
+        "code": "E1009 incorrect score syntax",
+        "message": {
+          "span": [
+            703,
+            706
+          ],
+          "value": "unexpected item in note line"
+        },
+        "context": []
+      },
+      {
+        "code": "E1010 incorrect dynamic syntax",
+        "message": {
+          "span": [
+            829,
+            832
+          ],
+          "value": "dynamic value must be <= 127"
+        },
+        "context": []
+      },
+      {
+        "code": "E1009 incorrect score syntax",
+        "message": {
+          "span": [
+            835,
+            839
+          ],
+          "value": "unable to parse as dynamic line"
+        },
+        "context": []
+      },
+      {
+        "code": "E1009 incorrect score syntax",
+        "message": {
+          "span": [
+            856,
+            857
+          ],
+          "value": "unexpected item in dynamic line"
+        },
+        "context": []
+      }
+    ]
+  }
+}

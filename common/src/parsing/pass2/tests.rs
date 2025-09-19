@@ -1,9 +1,9 @@
 use super::*;
 use crate::parsing::diagnostics::Diagnostic;
 use crate::parsing::pass1::parse1;
+use std::fs;
 use std::fs::File;
 use std::path::{Path, PathBuf};
-use std::{fs, io};
 
 macro_rules! make_parser2 {
     ($f:ident, $p:ident, $r:ty) => {
@@ -348,7 +348,24 @@ fn get_stq_files(dir: impl AsRef<Path>) -> anyhow::Result<Vec<PathBuf>> {
 
 #[test]
 fn test_pass2() -> anyhow::Result<()> {
-    // TODO: HERE: generate tests and carefully validate or hand-generate output and errors.
+    // GENERAL STRATEGY
+    // - Create a file in the test directory whose name ends with stq
+    // - Use the tokenize program to tokenize it and inspect the regular output as prettified
+    //   tokens or error messages to ensure that everything is right
+    // - Use the tokenize program again to create JSON and store as file.json
+    // - Hand-check any spans or other details that are not otherwise exercised.
+    //
+    // Earlier tests do extensive validation of spans and so forth and were all hand-coded.
+    // Fully hand-coding this output would be extremely cumbersome and error-prone. At the point
+    // where these were automatically generated, there was high confidence of correctness. By having
+    // these, we can ensure that we don't regress on the current state or any future fixes.
+    //
+    // For a quick way to check all spans, load the json and sqt files into emacs and use a keyboard
+    // macro to search for the span in the json file and highlight the selected region in the stq
+    // file. My custom elisp functions highlight-region-by-offset and clear-region-highlights make
+    // this easy. With this approach, you can just repeat the keyboard macro and see every span in
+    // the JSON file to make sure all the spans are correct. This works equally well for errors
+    // and correctly tokenized files.
 
     // This is designed to fail if anything failed but to run all the tests and produce useful
     // output for analysis.
@@ -364,12 +381,14 @@ fn test_pass2() -> anyhow::Result<()> {
         if in_value == out_value {
             eprintln!("{}: PASS", p.display());
         } else {
-            // Generate output with ./target/debug/tokenize --json
+            // Generate output with ./target/debug/tokenize --json. Use eprintln on strings
+            // rather than serde_json::to_writer_pretty to ensure we don't have interleaving.
             eprintln!("------ {} ------", p.display());
             eprintln!("------ ACTUAL ------");
-            serde_json::to_writer_pretty(io::stderr(), &r)?;
+            eprintln!("{}", serde_json::to_string_pretty(&in_value)?);
             eprintln!("------ EXPECTED ------");
-            serde_json::to_writer_pretty(io::stderr(), &out_value)?;
+            eprintln!("{}", serde_json::to_string_pretty(&out_value)?);
+            eprintln!("------ END {} ------", p.display());
             errors.push(anyhow!("{}: FAIL", p.display()));
         }
     }

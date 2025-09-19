@@ -1,4 +1,5 @@
 use clap::Parser;
+use std::io::Write;
 use std::{fs, io};
 use syntoniq_common::parsing::pass2;
 
@@ -20,6 +21,7 @@ fn main() -> anyhow::Result<()> {
     let r = pass2::parse2(input);
     if cli.json {
         serde_json::to_writer_pretty(io::stdout(), &r)?;
+        _ = io::stdout().write(b"\n");
     } else {
         match r {
             Err(diags) => anstream::eprintln!("{}", diags.render(&cli.filename, input)),

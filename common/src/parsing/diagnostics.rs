@@ -58,6 +58,7 @@ impl Diagnostic {
 #[derive(Serialize, Default, Debug)]
 pub struct Diagnostics {
     pub list: RefCell<Vec<Diagnostic>>,
+    #[serde(skip)]
     pub seen: RefCell<HashSet<(&'static str, Span)>>,
 }
 impl Diagnostics {

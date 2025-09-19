@@ -95,6 +95,9 @@ impl Factor {
         exp_numerator: i32,
         exp_denominator: i32,
     ) -> anyhow::Result<Self> {
+        // If any new validations are added here, ensure that the parser in pass2.rs repeats
+        // the validations so its call to Factor::new can't fail. The parser can give more
+        // specific error messages with spans.
         if base_numerator == 0 || base_denominator == 0 || exp_denominator == 0 {
             bail!("zero may not appear anywhere in base or in exponent denominator");
         }

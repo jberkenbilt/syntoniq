@@ -232,20 +232,15 @@ fn exponent(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fa
                 // All parses can be safely unwrapped. We have verified that everything fits
                 // in an i32.
                 let (sign_t, exp_num_t, exp_den_t) = exp;
-                let mut span_start = exp_num_t.span.start;
-                let span_end = exp_den_t.span.end;
                 let (base_num, base_den) = match base {
                     None => (2, 1),
-                    Some((num, den)) => {
-                        span_start = num.span.start;
-                        (
-                            num.value,
-                            match den {
-                                None => 1,
-                                Some(den) => den.value,
-                            },
-                        )
-                    }
+                    Some((num, den)) => (
+                        num.value,
+                        match den {
+                            None => 1,
+                            Some(den) => den.value,
+                        },
+                    ),
                 };
                 let mut exp_num: i32 = exp_num_t.value as i32;
                 let mut exp_den = exp_den_t.value as i32;
@@ -257,17 +252,13 @@ fn exponent(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fa
                     );
                     exp_den = 1;
                 }
-                if let Some(c) = sign_t {
-                    span_start = c.span.start;
+                if sign_t.is_some() {
                     exp_num = -exp_num;
                 };
-                match Factor::new(base_num, base_den, exp_num, exp_den) {
-                    Ok(f) => f,
-                    Err(e) => {
-                        diags.err(code::PITCH, span_start..span_end, e.to_string());
-                        Factor::new(1, 1, 1, 1).unwrap()
-                    }
-                }
+                // We have checked all errors that are checked by Factor::new, so this should always
+                // succeed.
+                Factor::new(base_num, base_den, exp_num, exp_den)
+                    .expect("uncaught pitch syntax error")
             })
     }
 }
@@ -447,9 +438,9 @@ fn hold(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanne
             character('~'),
         )
             .parse_next(input)
-            .map(|(duration, h)| {
-                let span = model::merge_spans(&[duration.get_span(), h.get_span()]).unwrap();
-                Spanned::new(span, Note::Hold(Hold { duration }))
+            .map(|(duration, ch)| {
+                let span = model::merge_spans(&[duration.get_span(), ch.get_span()]).unwrap();
+                Spanned::new(span, Note::Hold(Hold { duration, ch }))
             })
     }
 }
@@ -816,7 +807,7 @@ fn handle_token<'s>(
                     diags.err(
                         code::TOPLEVEL_SYNTAX,
                         tok.span,
-                        "unable to parse as directive",
+                        "unable to parse as directive; expected directive(k=v, ...)",
                     );
                     Err(Degraded::Directive)
                 }

@@ -317,6 +317,7 @@ impl Display for RegularNote {
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Hold {
     pub duration: Option<Spanned<Ratio<u32>>>,
+    pub ch: Spanned<char>,
 }
 impl Display for Hold {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
