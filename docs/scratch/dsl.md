@@ -1,3 +1,7 @@
+# TODO
+
+Pass3 parsing, or do that with semantics outside the common crate. Mostly, it's straightforward at this point. Remember to allow comments on their own lines inside a score block. Relax blank lines. Once we see a note or dynamic line, we start a score block that ends at the first thing that is not a score line or a comment line.
+
 # Syntoniq DSL
 
 The goal is to create an ASCII/UTF-8 file format for describing music with arbitrary tuning systems.
@@ -70,6 +74,10 @@ Leading whitespace is stripped. Any remark about what a line starts with refers 
 
 The comment character is `;`. Everything from `;` to the end of the is a comment.
 
+Comments are allowed in most places. There are a few exceptions:
+* Inside multi-line directives, comments are allowed after the initial `(` and after each parameter, but comments on their own lines are errors.
+* Inside multi-line scale blocks, comments are allowed after the initial `<<` and at the end of each line, but comments on their own lines are errors.
+
 Blank lines are ignored except when they terminate score blocks.
 
 A file consists of a sequence of the following, excluding comments and non-functional blank lines:
@@ -103,6 +111,65 @@ Each line starts with `[part]` or `[part.n]`, where `n` is a note number. `n` ma
 A score block must be both preceded and followed by a blank line, the beginning of the file, or the end of the file.
 
 See examples below.
+
+## Scales
+
+The `define_scale` directive is followed by scale definition blocks.
+```
+define_scale(name=... base_pitch=... cycle_ratio=...)
+```
+* `name` is mandatory
+* `base_pitch` defaults to `220*^1|4` (middle C based on 440 Hz, 12-TET)
+* `cycle_ratio` defaults to `2` (octave)
+
+An scale definition block has the format
+```
+<<
+pitch-factor name name name
+pitch-factor name name name
+...
+>>
+```
+
+or
+```
+<< pitch-factor name name | pitch-factor name name >>
+```
+
+The names are enharmonic names for the scale degree. Examples:
+```
+define_scale(name="19-EDO")
+<<
+ ^0|19 c |  ^1|19 c# d%% |  ^2|19 d% c##
+ ^3|19 d |  ^4|19 d# e%% |  ^5|19 e% d##
+ ^6|19 e |  ^7|19 e# f%
+ ^8|19 f |  ^9|19 f# g%% | ^10|19 g% f##
+^11|19 g | ^12|19 g# a%% | ^13|19 a% g##
+^14|19 a | ^15|19 a# b%% | ^16|19 b% a##
+^17|19 b | ^18|19 b# c%
+>>
+
+define_scale(name="11-JI-partial")
+<<
+1     c
+17/16 c#
+9/8   d
+6/5   e%
+5/4   e
+4/3   f
+11/8  h11    ; 11th harmonic
+45/32 f#-d   ; major third above d
+17/12 f#-c#  ; fourth above c#
+3/2   g
+8/5   a%
+5/3   a
+7/4   h7     ; 7th harmonic
+16/9  b%
+15/8  b
+>>
+```
+
+I had considered having a special "equal division" scale type and using an index instead of a pitch factor, but allowing `0` to be used creates a lot of parsing headache, and the only thing different about EDO scales is that you can note shift them. But we don't have to disallow note shift for non-EDO scales, so there's no reason to have the distinction.
 
 ## Notes
 
@@ -380,31 +447,16 @@ It would be useful to be able to generate data about time and/or beat offsets fo
 
 The software needs to be self-documenting.
 
-We should be able to parse linearly in one pass to generate a time-ordered sequence of events consisting of instrument change, volume change, note on, and note off.
+The parser is written with winnow and hand-coded state machines. It is thoroughly commented.
 
-Every parsed element should decompose into tokens which have a location. A location is a list of spans that carry back into a macro. Macro expansion should be as we go. I think macros will be lexical, so macros will be stored as byte streams and expanded each time they appear. Using this approach, file inclusion could also be implemented pretty easily.
-
-It would be nice for an error to contain a trace. Example:
-
-* parse error
-* trace
-  * file: line, col: error message
-  * file: line, col: macro invocation/file inclusion
-  * ...
-  * will need to deal with length deltas macro parameter substitutions
-* Crates to study for errors:
-  * https://docs.rs/annotate-snippets/0.12.3/annotate_snippets/ <-- winner
-  * https://github.com/zesterer/ariadne
-  * https://github.com/brendanzab/codespan
-
-Final parse tree should look like a list of global operations, which may be global or tied to parts (or maybe just a part), notes, and dynamics. Once fully parsed, just walk through this to generate output.
+The final parse tree should look like a list of directives, scale definitions, and score blocks. Once fully parsed, just walk through this to generate output.
 
 For csound, we should design some kind of instrument template that allows dynamic volume change, but changes to instruments can just be a part to instrument mapping change in the software. For MIDI, we will have to maintain some kind of track/channel mappings, but it shouldn't be very hard. Probably the rule should be to put as many notes as possible in one channel, moving out to additional channels if we have differences in channel-specific settings like volume or pitch bend.
 
 Everything should have simple defaults. The following should be a valid file:
 ```
-version(1)
-[p1] 1:c
+syntoniq(version=1)
+[p1.0] 1:c
 ```
 
 Defaults:
@@ -474,6 +526,18 @@ Summary:
   * Tree-sitter uses a static grammar definition; it is a library that editors use directly, not a server with a protocol.
   * The core of your work will be creating a grammar.js file. This single file defines your language's syntax using a JavaScript DSL. The Tree-sitter CLI tool then uses this file to generate a C parser (parser.c), which gets compiled into a shared library that editors can load.
   * The best reference for getting started is the official Tree-sitter documentation: [Creating Parsers](https://tree-sitter.github.io/tree-sitter/creating-parsers)
+
+## Reformatting
+
+Suggested reformatting rules:
+* Collapse multiple blank lines to single blank lines, and remove leading and trailing blank lines
+* Remove trailing white space
+* In a multi-line structure (score block, scale definition block, multiline directive), keep comments aligned and offset by two spaces from the longest line
+* Remove spaces from around `=` in directive parameters
+* If a directive with any trailing comment exceeds 100 columns, move the trailing comment to the preceding line. If still over 100 columns, break the directive to one parameter per line.
+* If a directive that contains no parameter-level comments fits on one line in <= 100 columns, reformat as a single line. Never move a preceding comment to after a single-line directive.
+* Apply alignment to score blocks as above
+* Within scale definition blocks, right-justify pitches or indices with columns, then align and left-justify note names
 
 ## Considerations
 

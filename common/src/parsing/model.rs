@@ -88,7 +88,7 @@ impl<'s, T: Debug + Display + Serialize> Display for Token<'s, T> {
             })
             .collect();
         write!(f, "{} ", self.t)?;
-        color!(f, 248, "raw=|{raw}|")
+        color!(f, 248, "raw=⟨{raw}⟩")
     }
 }
 impl<'s, T: Debug + Serialize> Token<'s, T> {
@@ -130,6 +130,11 @@ pub enum PitchOrNumber {
     Integer((u32, Pitch)),
     Ratio((Ratio<u32>, Pitch)),
     Pitch(Pitch),
+}
+impl Display for PitchOrNumber {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        color!(f, 6, "{}", self.as_pitch())
+    }
 }
 
 impl PitchOrNumber {
@@ -173,7 +178,7 @@ pub enum ParamValue {
 impl Display for ParamValue {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            ParamValue::PitchOrNumber(pr) => color!(f, 6, "{}", pr.as_pitch()),
+            ParamValue::PitchOrNumber(pr) => Display::fmt(pr, f),
             ParamValue::String(s) => color!(f, 166, "\"{s}\""),
         }
     }
@@ -471,6 +476,44 @@ impl Display for NoteLine {
             Display::fmt(comment, f)?;
         }
         Ok(())
+    }
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct ScaleNote {
+    pub pitch_or_index: Spanned<PitchOrNumber>,
+    pub note_names: Vec<Spanned<String>>,
+    pub comment: Option<Comment>,
+}
+impl Display for ScaleNote {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.pitch_or_index.value, f)?;
+        for name in &self.note_names {
+            color!(f, 2, " {}", name.value)?;
+        }
+        if let Some(comment) = &self.comment {
+            Display::fmt(comment, f)?;
+        }
+        Ok(())
+    }
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct ScaleBlock {
+    pub opening_comment: Option<Comment>,
+    pub notes: Vec<Spanned<ScaleNote>>,
+}
+impl Display for ScaleBlock {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "<<")?;
+        if let Some(comment) = &self.opening_comment {
+            Display::fmt(comment, f)?;
+        }
+        write!(f, "|")?;
+        for n in &self.notes {
+            write!(f, "{}|", &n.value)?;
+        }
+        write!(f, ">>")
     }
 }
 

@@ -14,12 +14,23 @@
           }
         },
         {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              246,
+              247
+            ],
+            "value": "this character is not allowed here"
+          }
+        },
+        {
           "code": "E1004 unable to infer line type",
           "context": [],
           "message": {
             "span": [
-              172,
-              173
+              264,
+              265
             ],
             "value": "encountered '[' but didn't recognize note or dynamic line leader"
           }
@@ -29,8 +40,8 @@
           "context": [],
           "message": {
             "span": [
-              198,
-              199
+              290,
+              291
             ],
             "value": "this character is not allowed here"
           }
@@ -40,8 +51,8 @@
           "context": [],
           "message": {
             "span": [
-              314,
-              315
+              406,
+              407
             ],
             "value": "this character is not allowed here"
           }
@@ -51,8 +62,8 @@
           "context": [],
           "message": {
             "span": [
-              554,
-              555
+              646,
+              647
             ],
             "value": "this character is not allowed here"
           }

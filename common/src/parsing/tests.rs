@@ -148,18 +148,11 @@ fn test_pass2() -> anyhow::Result<()> {
         if actual_value == exp_value {
             eprintln!("{}: PASS", p.display());
         } else {
-            // Generate output with ./target/debug/tokenize --json. Use eprintln on strings
-            // rather than serde_json::to_writer_pretty to ensure we don't have interleaving.
-            eprintln!("------ {} ------", p.display());
-            eprintln!("------ ACTUAL ------");
-            eprintln!("{}", serde_json::to_string_pretty(&actual_value)?);
-            eprintln!("------ EXPECTED ------");
-            eprintln!("{}", serde_json::to_string_pretty(&exp_value)?);
-            eprintln!("------ END {} ------", p.display());
             errors.push(format!("{}: FAIL", p.display()));
         }
     }
     if !errors.is_empty() {
+        eprintln!("Run ./target/debug/tokenize file.stq --json to generate output for comparison");
         for e in errors {
             eprintln!("ERROR: {e}");
         }

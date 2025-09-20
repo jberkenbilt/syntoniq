@@ -4,8 +4,8 @@
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
     Comment, Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader,
-    NoteLine, NoteOption, Param, ParamKV, ParamValue, PitchOrNumber, RegularNote, Span, Spanned,
-    Token,
+    NoteLine, NoteOption, Param, ParamKV, ParamValue, PitchOrNumber, RegularNote, ScaleBlock,
+    ScaleNote, Span, Spanned, Token, merge_spans,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
@@ -40,6 +40,7 @@ pub enum Pass2 {
     Directive(Directive),
     NoteLine(NoteLine),
     DynamicLine(DynamicLine),
+    ScaleBlock(ScaleBlock),
 }
 impl Display for Pass2 {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -47,7 +48,8 @@ impl Display for Pass2 {
             Pass2::Directive(x) => write!(f, "Directive{{{x}}}"),
             Pass2::NoteLine(x) => write!(f, "NoteLine{{{x}}}"),
             Pass2::DynamicLine(x) => write!(f, "DynamicLine:{{{x}}}"),
-            _ => write!(f, "{self:?}"),
+            Pass2::ScaleBlock(x) => write!(f, "ScaleBlock:{{{x}}}"),
+            Pass2::Space | Pass2::Newline | Pass2::Comment => write!(f, "{self:?}"),
         }
     }
 }
@@ -56,6 +58,7 @@ pub enum Degraded {
     Directive,
     Dynamic,
     Note,
+    Scale,
     Misc,
 }
 
@@ -99,6 +102,14 @@ fn character(ch: char) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<char
         one_of(|x: Token1| x.value.raw.len() == 1 && x.value.raw.starts_with(ch))
             .parse_next(input)
             .map(|x| Spanned::new(x.span, ch))
+    }
+}
+
+fn note_name() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<String>> {
+    move |input| {
+        one_of(|x: Token1| matches!(x.value.t, Pass1::NoteName))
+            .parse_next(input)
+            .map(|x| Spanned::new(x.span, x.value.raw))
     }
 }
 
@@ -270,7 +281,7 @@ fn factor(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fact
 
 fn pitch_or_number(
     diags: &Diagnostics,
-) -> impl FnMut(&mut Input2) -> winnow::Result<PitchOrNumber> {
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<PitchOrNumber>> {
     // Pass 2 Step 6: this is a case where parser combinators make relatively easy what would
     // require a lot of work with a traditional grammar. All ratios parse as both ratios and
     // pitches. At this stage of processing, we don't know whether a pitch or a ratio will be
@@ -298,7 +309,7 @@ fn pitch_or_number(
             // this can only be known at parse time. Continue to Pass 2 Step 7.
             let span = tokens.get_span().unwrap();
             let p = Pitch::new(factors);
-            if let Ok(r) = as_ratio {
+            let r = if let Ok(r) = as_ratio {
                 if tokens.len() == 1 {
                     // This must be a straight integer.
                     PitchOrNumber::Integer((*r.value.numer(), p))
@@ -311,13 +322,26 @@ fn pitch_or_number(
                 }
             } else {
                 PitchOrNumber::Pitch(p)
-            }
+            };
+            Spanned::new(span, r)
         })
     }
 }
 
 fn identifier<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
     one_of(|x: Token1| matches!(x.value.t, Pass1::Identifier))
+        .parse_next(input)
+        .map(|t| Spanned::new(t.span, t.value.raw))
+}
+
+fn scale_start<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
+    one_of(|x: Token1| matches!(x.value.t, Pass1::ScaleStart))
+        .parse_next(input)
+        .map(|t| Spanned::new(t.span, t.value.raw))
+}
+
+fn scale_end<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
+    one_of(|x: Token1| matches!(x.value.t, Pass1::ScaleEnd))
         .parse_next(input)
         .map(|t| Spanned::new(t.span, t.value.raw))
 }
@@ -336,7 +360,7 @@ fn param_value(
     move |input| {
         alt((
             string(diags).map(|x| ParamValue::String(x.value)),
-            pitch_or_number(diags).map(ParamValue::PitchOrNumber),
+            pitch_or_number(diags).map(|x| ParamValue::PitchOrNumber(x.value)),
         ))
         .with_taken()
         .parse_next(input)
@@ -519,7 +543,7 @@ fn regular_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resul
     |input| {
         (
             opt(terminated(ratio(diags), character(':'))),
-            one_of(|x: Token1| matches!(x.value.t, Pass1::NoteName)),
+            note_name(),
             opt(octave(diags)),
             opt(note_options(diags)),
             opt(note_behavior()),
@@ -527,7 +551,6 @@ fn regular_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resul
             .parse_next(input)
             .map(|items| {
                 let (duration, name, octave, options, behavior) = items;
-                let name = Spanned::new(name.span, name.value.raw);
                 // This merges these spans. Since `name` is definite set, we can safely unwrap
                 // the result.
                 let span = model::merge_spans(&[
@@ -751,6 +774,69 @@ fn dynamic_line(
     }
 }
 
+fn scale_note(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<ScaleNote>> {
+    |input| {
+        let r1: Spanned<ScaleNote> = terminated(
+            (
+                preceded(optional_space, pitch_or_number(diags)),
+                combinator::repeat(1.., preceded(space, note_name())),
+                opt(comment),
+            ),
+            optional_space,
+        )
+        .parse_next(input)
+        .map(|items: (_, Vec<_>, _)| {
+            let (pitch_or_index, note_names, comment) = items;
+            let span = merge_spans(&[
+                pitch_or_index.get_span(),
+                note_names.as_slice().get_span(),
+                comment.as_ref().map(|x| x.content.span),
+            ])
+            .unwrap();
+            Spanned::new(
+                span,
+                ScaleNote {
+                    pitch_or_index,
+                    note_names,
+                    comment,
+                },
+            )
+        })?;
+        // If this is followed by a newline or a bar, we need to consume it, but if it's followed
+        // by scale end, we need to leave it there. It's easier to do this explicitly.
+        if peek(scale_end).parse_next(input).is_err() {
+            (optional_space, alt((character('|').map(|_| ()), newline))).parse_next(input)?;
+        }
+        Ok(r1)
+    }
+}
+
+fn scale_block(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<ScaleBlock>> {
+    |input| {
+        (
+            scale_start,
+            terminated(opt(comment), (optional_space, opt(newline))),
+            combinator::repeat(1.., scale_note(diags)),
+            preceded(optional_space, scale_end),
+        )
+            .parse_next(input)
+            .map(|items: (_, _, Vec<_>, _)| {
+                let (start, opening_comment, notes, end) = items;
+                Spanned::new(
+                    start.span.start..end.span.end,
+                    ScaleBlock {
+                        opening_comment,
+                        notes,
+                    },
+                )
+            })
+    }
+}
+
 fn degraded_top_level(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
     // These are things that can appear at the top level with higher-level things before lower-level
     // things. This is useful for scanning through tokens in degraded mode.
@@ -847,6 +933,35 @@ fn degraded_dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::R
                             code::SCORE_SYNTAX,
                             tok.span,
                             "unexpected item in dynamic line",
+                        );
+                    }),
+                )),
+            )
+            .map(|_: Vec<_>| ()),
+            newline_or_eof,
+        )
+        .parse_next(input)
+        .map(|_| ())
+    }
+}
+
+fn degraded_scale(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
+    move |input| {
+        terminated(
+            combinator::repeat(
+                1..,
+                alt((
+                    space,
+                    comment.map(|_| ()),
+                    newline.map(|_| ()),
+                    pitch_or_number(diags).map(|_| ()),
+                    character('|').map(|_| ()),
+                    note_name().map(|_| ()),
+                    one_of(|x: Token1| !matches!(x.value.t, Pass1::ScaleEnd)).map(|tok: Token1| {
+                        diags.err(
+                            code::SCORE_SYNTAX,
+                            tok.span,
+                            "unexpected item in scale block",
                         );
                     }),
                 )),
@@ -991,6 +1106,18 @@ fn handle_token<'s>(
                 Err(Degraded::Dynamic)
             }
         }
+        Pass1::ScaleStart => {
+            if let Ok(x) = scale_block(diags).parse_next(input) {
+                Ok(Token::new_spanned(
+                    &src[x.span],
+                    x.span,
+                    Pass2::ScaleBlock(x.value),
+                ))
+            } else {
+                diags.err(code::SCALE, tok.span, "unable to parse as scale block");
+                Err(Degraded::Scale)
+            }
+        }
         _ => {
             // If we get anything else, fall into degraded mode. Continue with Pass2 Step 4.
             diags.err(code::SYNTAX, tok.span, diagnostics::SYNTAX_ERROR);
@@ -1013,7 +1140,7 @@ pub fn parse_pitch(s: &str) -> anyhow::Result<Pitch> {
                     if d.has_errors() {
                         diags = Some(d);
                     } else {
-                        p = Some(pr.into_pitch());
+                        p = Some(pr.value.into_pitch());
                     }
                 }
                 Err(_) => diags = Some(d),
@@ -1066,6 +1193,7 @@ pub fn parse2<'s>(src: &'s str) -> Result<Vec<Token2<'s>>, Diagnostics> {
                     Degraded::Directive => degraded_directive(&diags).parse_next(&mut input),
                     Degraded::Dynamic => degraded_dynamic(&diags).parse_next(&mut input),
                     Degraded::Note => degraded_note(&diags).parse_next(&mut input),
+                    Degraded::Scale => degraded_scale(&diags).parse_next(&mut input),
                     Degraded::Misc => degraded_misc(&diags).parse_next(&mut input),
                 };
                 if tok.is_err() {

@@ -69,9 +69,11 @@ static NOTE_PUNCTUATION: &str = "|/.:>~,'";
 /// backward compatibility, so we want to be cautious about over-doing it. It would be nice to
 /// include `\`, but since this is a quoting character in strings and is hard to type cleanly
 /// in TOML files, which is probably where we define note names, we're omitting it for now.
-static NOTE_NAME_CHARACTERS: &str = "_*^/|+-!#%&";
+static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!#%&";
 /// Characters allowed in dynamics
 static DYNAMIC_PUNCTUATION: &str = "|<>@";
+/// Characters allowed in pitches (other than numbers)
+static PITCH_CHARACTERS: &str = "^*|/.";
 
 #[derive(Serialize, Debug, Clone, Copy)]
 /// The Pass1 type contains payload for pass-1 tokens. These contain only spans and numbers, which
@@ -90,6 +92,8 @@ pub enum Pass1 {
     DynamicLeader { name_span: Span },
     NoteOptions { inner_span: Span },
     NoteName,
+    ScaleStart,
+    ScaleEnd,
 }
 impl Display for Pass1 {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -176,6 +180,7 @@ enum LexState {
     Top,
     DynamicLine,
     NoteLine,
+    Scale,
 }
 
 // Pass1 Step 5: This is the heart of our parsing logic. It's simple, but there's a lot to unpack.
@@ -370,6 +375,14 @@ fn string_literal<'s>(diags: &Diagnostics) -> impl Parser1<'s> {
     })
 }
 
+fn scale_start<'s>() -> impl Parser1<'s> {
+    parse1_token(take_while(2, '<'), |_raw, _span, _chars| Pass1::ScaleStart)
+}
+
+fn scale_end<'s>() -> impl Parser1<'s> {
+    parse1_token(take_while(2, '>'), |_raw, _span, _chars| Pass1::ScaleEnd)
+}
+
 fn note_leader<'s>(diags: &Diagnostics) -> impl Parser1<'s> {
     parse1_token(
         delimited(
@@ -444,6 +457,12 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
     let mut state = LexState::Top;
     let mut next_at_bol = true; // whether next token as at beginning of line
 
+    macro_rules! parse_next {
+        ($p:expr) => {
+            $p.parse_next(&mut input).ok()
+        };
+    }
+
     // Keep consuming tokens until we've got them all.
     while !input.is_empty() {
         // Peek at the first character.
@@ -454,36 +473,44 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
         // be at the beginning of a line. This is effectively skipping over initial whitespace.
         let at_bol = next_at_bol;
         next_at_bol = ch == '\n' || (next_at_bol && is_space(ch));
-        if at_bol && !next_at_bol {
-            // This is the first non-blank token of the line. Determine state. This is our first
-            // example of using parser combinators.  The `alt` combinator is a special parser that
-            // takes a tuple of parsers that all return the same type. It tries them in order. If a
-            // parser fails to match, it tries the next one. Ending with `fail`, which always fails,
-            // prevents a partial success where some tokens are consumed. In this particular
-            // instance, we are seeing whether the input matches a note leader or a dynamic leader.
-            // If either of those are matched, keep the matching token and switch lexer states to
-            // recognize the tokens that are valid in that context. If none match, revert to the
-            // top-level state.
-            if let Ok((tok, new_state)) = alt((
-                note_leader(&diags).map(|x| (x, LexState::NoteLine)),
-                dynamic_leader().map(|x| (x, LexState::DynamicLine)),
-                fail,
-            ))
-            .parse_next(&mut input)
-            {
-                state = new_state;
-                model::trace(format!("lex pass 1: {tok} -> {state:?}"));
-                out.push(tok);
-                continue;
-            } else {
-                state = LexState::Top;
-            }
+        if ch == '\n' && matches!(state, LexState::DynamicLine | LexState::NoteLine) {
+            state = LexState::Top;
         }
-
-        macro_rules! parse_next {
-            ($p:expr) => {
-                $p.parse_next(&mut input).ok()
+        let (tok, new_state) =
+            if at_bol && !next_at_bol && matches!(state, LexState::Top) && ch == '[' {
+                // This is the first non-blank token of the line. Determine state. This is our first
+                // example of using parser combinators.  The `alt` combinator is a special parser that
+                // takes a tuple of parsers that all return the same type. It tries them in order. If a
+                // parser fails to match, it tries the next one. Ending with `fail`, which always fails,
+                // prevents a partial success where some tokens are consumed. In this particular
+                // instance, we are seeing whether the input matches a note leader or a dynamic leader.
+                // If either of those are matched, keep the matching token and switch lexer states to
+                // recognize the tokens that are valid in that context. If none match, revert to the
+                // top-level state.
+                if let Ok((tok, new_state)) = alt((
+                    note_leader(&diags).map(|x| (x, LexState::NoteLine)),
+                    dynamic_leader().map(|x| (x, LexState::DynamicLine)),
+                    fail,
+                ))
+                .parse_next(&mut input)
+                {
+                    (Some(tok), new_state)
+                } else {
+                    (None, LexState::Top)
+                }
+            } else if input.starts_with("<<") && matches!(state, LexState::Top) {
+                let tok = parse_next!(scale_start());
+                (tok, tok.map(|_| LexState::Scale).unwrap_or(state))
+            } else if ch == '>' && matches!(state, LexState::Scale) {
+                (None, LexState::Top)
+            } else {
+                (None, state)
             };
+        state = new_state;
+        if let Some(tok) = tok {
+            model::trace(format!("lex pass 1: {tok} -> {state:?}"));
+            out.push(tok);
+            continue;
         }
 
         // At this point, we are in a known state, so this is the main pass1 parser loop. In pass 1,
@@ -519,6 +546,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
             _ => match state {
                 LexState::Top => match ch {
                     '"' => parse_next!(string_literal(&diags)),
+                    '>' if input.starts_with(">>") => parse_next!(scale_end()),
                     x if x.is_ascii_punctuation() => parse_next!(punctuation()),
                     x if AsChar::is_alpha(x) => parse_next!(identifier()),
                     _ => None,
@@ -531,6 +559,11 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
                 },
                 LexState::DynamicLine => match ch {
                     x if DYNAMIC_PUNCTUATION.contains(x) => parse_next!(punctuation()),
+                    _ => None,
+                },
+                LexState::Scale => match ch {
+                    x if PITCH_CHARACTERS.contains(x) => parse_next!(punctuation()),
+                    x if AsChar::is_alpha(x) => parse_next!(note_name()),
                     _ => None,
                 },
             },

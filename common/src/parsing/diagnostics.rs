@@ -21,6 +21,7 @@ pub mod code {
     pub const DYNAMIC: &str = "E1010 incorrect dynamic syntax";
     pub const TOPLEVEL_SYNTAX: &str = "E1011 incorrect syntax";
     pub const DIRECTIVE: &str = "E1012 incorrect directive syntax";
+    pub const SCALE: &str = "E1013 incorrect scale block syntax";
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]

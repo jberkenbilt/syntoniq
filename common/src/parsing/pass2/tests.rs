@@ -26,7 +26,7 @@ macro_rules! make_parser2 {
 make_parser2!(parse_ratio, ratio, Spanned<Ratio<u32>>);
 make_parser2!(parse_ratio_or_zero, ratio_or_zero, Spanned<Ratio<u32>>);
 make_parser2!(parse_exponent, exponent, Factor);
-make_parser2!(parse_pitch, pitch_or_number, PitchOrNumber);
+make_parser2!(parse_pitch, pitch_or_number, Spanned<PitchOrNumber>);
 make_parser2!(parse_string, string, Spanned<String>);
 make_parser2!(parse_param_kv, param_kv, ParamKV);
 make_parser2!(parse_directive, directive, Spanned<Directive>);
@@ -176,21 +176,21 @@ fn test_pitch() -> anyhow::Result<()> {
 
     let (p, rest) = parse_pitch("^1|31*2/3z").map_err(to_anyhow)?;
     assert_eq!(rest, "z");
-    assert!(p.clone().try_into_int().is_none());
-    assert!(p.clone().try_into_ratio().is_none());
-    assert_eq!(p.into_pitch().to_string(), "2/3*^1|31");
+    assert!(p.value.clone().try_into_int().is_none());
+    assert!(p.value.clone().try_into_ratio().is_none());
+    assert_eq!(p.value.into_pitch().to_string(), "2/3*^1|31");
 
     let (p, rest) = parse_pitch("22/7z").map_err(to_anyhow)?;
     assert_eq!(rest, "z");
-    assert!(p.clone().try_into_int().is_none());
-    assert_eq!(p.clone().try_into_ratio().unwrap(), Ratio::new(22, 7));
-    assert_eq!(p.into_pitch().to_string(), "22/7");
+    assert!(p.value.clone().try_into_int().is_none());
+    assert_eq!(p.value.clone().try_into_ratio().unwrap(), Ratio::new(22, 7));
+    assert_eq!(p.value.into_pitch().to_string(), "22/7");
 
     let (p, rest) = parse_pitch("12z").map_err(to_anyhow)?;
     assert_eq!(rest, "z");
-    assert_eq!(p.clone().try_into_int().unwrap(), 12);
-    assert_eq!(p.clone().try_into_ratio().unwrap(), Ratio::new(12, 1));
-    assert_eq!(p.into_pitch().to_string(), "12");
+    assert_eq!(p.value.clone().try_into_int().unwrap(), 12);
+    assert_eq!(p.value.clone().try_into_ratio().unwrap(), Ratio::new(12, 1));
+    assert_eq!(p.value.into_pitch().to_string(), "12");
 
     Ok(())
 }

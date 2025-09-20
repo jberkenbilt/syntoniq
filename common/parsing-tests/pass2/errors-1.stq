@@ -6,6 +6,13 @@ f() ; comment
 
 . invalid_syntax not_a_directive 🥔 valid() ?
 
+<< ; opening comment
+*1 q+
+*^2|17 r* potato | 3.14 pi ; comment
+*^3|13 z!!?
+22/7 w/x/yZ
+>>
+
 [unknown
 
 [p1.0]  1/2:e g ? e g e g e   g |      f g     f g   f g(!)    f  g(>)
