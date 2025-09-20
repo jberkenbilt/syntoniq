@@ -4,7 +4,7 @@
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
     Comment, Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader,
-    NoteLine, NoteOption, Param, ParamKV, ParamValue, PitchOrRatio, RegularNote, Span, Spanned,
+    NoteLine, NoteOption, Param, ParamKV, ParamValue, PitchOrNumber, RegularNote, Span, Spanned,
     Token,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
@@ -268,7 +268,9 @@ fn factor(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fact
     }
 }
 
-fn pitch_or_ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<PitchOrRatio> {
+fn pitch_or_number(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<PitchOrNumber> {
     // Pass 2 Step 6: this is a case where parser combinators make relatively easy what would
     // require a lot of work with a traditional grammar. All ratios parse as both ratios and
     // pitches. At this stage of processing, we don't know whether a pitch or a ratio will be
@@ -288,22 +290,27 @@ fn pitch_or_ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Res
         .parse_next(input)
         .map(|(factors, tokens)| {
             // ...and then, if it matches as a pitch, we store it based on whether it also matched
-            // as a ratio. The resulting `PitchOrRatio` can always be converted to a Pitch, and it
+            // as a ratio. The resulting `PitchOrNumber` can always be converted to a Pitch, and it
             // can also be converted to a `Ratio`, but only if it appeared literally as a ratio in
             // the input. This is not knowable by looking at the `Pitch` object. We have to store
-            // the information at the time of parsing. Continue to Pass 2 Step 7.
+            // the information at the time of parsing. After this logic was initially created, it
+            // was further refined to allow recognition of straight integers for the same reason:
+            // this can only be known at parse time. Continue to Pass 2 Step 7.
             let span = tokens.get_span().unwrap();
             let p = Pitch::new(factors);
             if let Ok(r) = as_ratio {
-                if r.span == span {
-                    // This pitch is parseable as a ratio. Treat it as a ration, and allow the
+                if tokens.len() == 1 {
+                    // This must be a straight integer.
+                    PitchOrNumber::Integer((*r.value.numer(), p))
+                } else if r.span == span {
+                    // This pitch is parseable as a ratio. Treat it as a ratio, and allow the
                     // semantic layer to upgrade it to a pitch later if needed.
-                    PitchOrRatio::Ratio((r.value, p))
+                    PitchOrNumber::Ratio((r.value, p))
                 } else {
-                    PitchOrRatio::Pitch(p)
+                    PitchOrNumber::Pitch(p)
                 }
             } else {
-                PitchOrRatio::Pitch(p)
+                PitchOrNumber::Pitch(p)
             }
         })
     }
@@ -329,7 +336,7 @@ fn param_value(
     move |input| {
         alt((
             string(diags).map(|x| ParamValue::String(x.value)),
-            pitch_or_ratio(diags).map(ParamValue::PitchOrRatio),
+            pitch_or_number(diags).map(ParamValue::PitchOrNumber),
         ))
         .with_taken()
         .parse_next(input)
@@ -755,7 +762,7 @@ fn degraded_top_level(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow:
             character('=').map(|_| ()),
             identifier.map(|_| ()),
             string(diags).map(|_| ()),
-            pitch_or_ratio(diags).map(|_| ()),
+            pitch_or_number(diags).map(|_| ()),
         ))
         .parse_next(input)
     }
@@ -1000,7 +1007,7 @@ pub fn parse_pitch(s: &str) -> anyhow::Result<Pitch> {
         Ok(tokens) => {
             let input = tokens.as_slice();
             let d = Diagnostics::new();
-            let pr = pitch_or_ratio(&d).parse(input);
+            let pr = pitch_or_number(&d).parse(input);
             match pr {
                 Ok(pr) => {
                     if d.has_errors() {

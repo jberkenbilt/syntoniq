@@ -26,7 +26,7 @@ macro_rules! make_parser2 {
 make_parser2!(parse_ratio, ratio, Spanned<Ratio<u32>>);
 make_parser2!(parse_ratio_or_zero, ratio_or_zero, Spanned<Ratio<u32>>);
 make_parser2!(parse_exponent, exponent, Factor);
-make_parser2!(parse_pitch, pitch_or_ratio, PitchOrRatio);
+make_parser2!(parse_pitch, pitch_or_number, PitchOrNumber);
 make_parser2!(parse_string, string, Spanned<String>);
 make_parser2!(parse_param_kv, param_kv, ParamKV);
 make_parser2!(parse_directive, directive, Spanned<Directive>);
@@ -166,13 +166,21 @@ fn test_pitch() -> anyhow::Result<()> {
 
     let (p, rest) = parse_pitch("^1|31*2/3z").map_err(to_anyhow)?;
     assert_eq!(rest, "z");
+    assert!(p.clone().try_into_int().is_none());
     assert!(p.clone().try_into_ratio().is_none());
     assert_eq!(p.into_pitch().to_string(), "2/3*^1|31");
 
     let (p, rest) = parse_pitch("22/7z").map_err(to_anyhow)?;
     assert_eq!(rest, "z");
+    assert!(p.clone().try_into_int().is_none());
     assert_eq!(p.clone().try_into_ratio().unwrap(), Ratio::new(22, 7));
     assert_eq!(p.into_pitch().to_string(), "22/7");
+
+    let (p, rest) = parse_pitch("12z").map_err(to_anyhow)?;
+    assert_eq!(rest, "z");
+    assert_eq!(p.clone().try_into_int().unwrap(), 12);
+    assert_eq!(p.clone().try_into_ratio().unwrap(), Ratio::new(12, 1));
+    assert_eq!(p.into_pitch().to_string(), "12");
 
     Ok(())
 }
@@ -194,7 +202,7 @@ fn test_param() -> anyhow::Result<()> {
             key: Spanned::new(0..1, "a"),
             value: Spanned::new(
                 2..7,
-                ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse("^2|19")))
+                ParamValue::PitchOrNumber(PitchOrNumber::Pitch(Pitch::must_parse("^2|19")))
             ),
         }
     );
@@ -228,7 +236,7 @@ fn test_directive() -> anyhow::Result<()> {
                         key: Spanned::new(5..15, "base_pitch"),
                         value: Spanned::new(
                             16..21,
-                            ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
+                            ParamValue::PitchOrNumber(PitchOrNumber::Pitch(Pitch::must_parse(
                                 "^2|19"
                             )))
                         ),
@@ -269,8 +277,8 @@ fn test_directive() -> anyhow::Result<()> {
                         key: Spanned::new(41..44, "one"),
                         value: Spanned::new(
                             49..50,
-                            ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
-                                Ratio::new(1, 1),
+                            ParamValue::PitchOrNumber(PitchOrNumber::Integer((
+                                1,
                                 Pitch::must_parse("1")
                             )))
                         ),
@@ -282,7 +290,7 @@ fn test_directive() -> anyhow::Result<()> {
                         key: Spanned::new(63..66, "two"),
                         value: Spanned::new(
                             71..75,
-                            ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
+                            ParamValue::PitchOrNumber(PitchOrNumber::Ratio((
                                 Ratio::new(22, 7),
                                 Pitch::must_parse("22/7")
                             )))
@@ -302,7 +310,7 @@ fn test_directive() -> anyhow::Result<()> {
                         key: Spanned::new(118..122, "four"),
                         value: Spanned::new(
                             126..138,
-                            ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
+                            ParamValue::PitchOrNumber(PitchOrNumber::Pitch(Pitch::must_parse(
                                 "0.5*3^29|31"
                             )))
                         ),

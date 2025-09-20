@@ -3730,7 +3730,7 @@
                         39
                       ],
                       "value": {
-                        "PitchOrRatio": {
+                        "PitchOrNumber": {
                           "Ratio": [
                             [
                               157,
@@ -3759,7 +3759,7 @@
                         51
                       ],
                       "value": {
-                        "PitchOrRatio": {
+                        "PitchOrNumber": {
                           "Pitch": "1/2*^15|17"
                         }
                       }
@@ -3782,7 +3782,7 @@
                         59
                       ],
                       "value": {
-                        "PitchOrRatio": {
+                        "PitchOrNumber": {
                           "Ratio": [
                             [
                               1,
@@ -4025,12 +4025,9 @@
                         227
                       ],
                       "value": {
-                        "PitchOrRatio": {
-                          "Ratio": [
-                            [
-                              1,
-                              1
-                            ],
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
                             "1"
                           ]
                         }

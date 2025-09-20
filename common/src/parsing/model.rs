@@ -126,43 +126,54 @@ impl<T: Debug + Serialize> Spanned<T> {
 /// lexical phase, we never know whether a ratio is supposed to be a ratio or a pitch. During the
 /// semantic phase, if a pitch was provided when a ratio was wanted, we can give an error at that
 /// time.
-pub enum PitchOrRatio {
+pub enum PitchOrNumber {
+    Integer((u32, Pitch)),
     Ratio((Ratio<u32>, Pitch)),
     Pitch(Pitch),
 }
 
-impl PitchOrRatio {
+impl PitchOrNumber {
     pub fn as_pitch(&self) -> &Pitch {
         match self {
-            PitchOrRatio::Ratio((_, p)) => p,
-            PitchOrRatio::Pitch(p) => p,
+            PitchOrNumber::Integer((_, p)) => p,
+            PitchOrNumber::Ratio((_, p)) => p,
+            PitchOrNumber::Pitch(p) => p,
         }
     }
 
     pub fn into_pitch(self) -> Pitch {
         match self {
-            PitchOrRatio::Ratio((_, p)) => p,
-            PitchOrRatio::Pitch(p) => p,
+            PitchOrNumber::Integer((_, p)) => p,
+            PitchOrNumber::Ratio((_, p)) => p,
+            PitchOrNumber::Pitch(p) => p,
         }
     }
 
     pub fn try_into_ratio(self) -> Option<Ratio<u32>> {
         match self {
-            PitchOrRatio::Ratio((r, _)) => Some(r),
-            PitchOrRatio::Pitch(_) => None,
+            PitchOrNumber::Integer((i, _)) => Some(Ratio::from_integer(i)),
+            PitchOrNumber::Ratio((r, _)) => Some(r),
+            PitchOrNumber::Pitch(_) => None,
+        }
+    }
+
+    pub fn try_into_int(self) -> Option<u32> {
+        match self {
+            PitchOrNumber::Integer((i, _)) => Some(i),
+            _ => None,
         }
     }
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum ParamValue {
-    PitchOrRatio(PitchOrRatio),
+    PitchOrNumber(PitchOrNumber),
     String(String),
 }
 impl Display for ParamValue {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            ParamValue::PitchOrRatio(pr) => color!(f, 6, "{}", pr.as_pitch()),
+            ParamValue::PitchOrNumber(pr) => color!(f, 6, "{}", pr.as_pitch()),
             ParamValue::String(s) => color!(f, 166, "\"{s}\""),
         }
     }
@@ -171,21 +182,21 @@ impl Display for ParamValue {
 impl ParamValue {
     pub fn try_into_pitch(self) -> Option<Pitch> {
         match self {
-            ParamValue::PitchOrRatio(pr) => Some(pr.into_pitch()),
+            ParamValue::PitchOrNumber(pr) => Some(pr.into_pitch()),
             ParamValue::String(_) => None,
         }
     }
 
     pub fn try_into_ratio(self) -> Option<Ratio<u32>> {
         match self {
-            ParamValue::PitchOrRatio(pr) => pr.try_into_ratio(),
+            ParamValue::PitchOrNumber(pr) => pr.try_into_ratio(),
             ParamValue::String(_) => None,
         }
     }
 
     pub fn try_into_string(self) -> Option<String> {
         match self {
-            ParamValue::PitchOrRatio(_r) => None,
+            ParamValue::PitchOrNumber(_r) => None,
             ParamValue::String(s) => Some(s),
         }
     }
