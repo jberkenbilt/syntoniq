@@ -33,6 +33,16 @@ make_parser2!(parse_directive, directive, Spanned<Directive>);
 make_parser2!(parse_octave, octave, Spanned<i8>);
 
 #[test]
+fn for_coverage() {
+    // Usually I consider 100% coverage to be a non-goal, but for the parser, it's good to have
+    // all error conditions tested. This just exercises some cases that are unreachable in the
+    // normal flow for coverage.
+    let v: Vec<Token1> = Vec::new();
+    let mut s = v.as_slice();
+    consume_one(&mut s)
+}
+
+#[test]
 fn test_ratio() -> anyhow::Result<()> {
     // Not a ratio, no errors found while scanning
     assert!(!parse_ratio("potato").unwrap_err().has_errors());

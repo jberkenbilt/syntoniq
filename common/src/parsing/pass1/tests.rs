@@ -22,6 +22,19 @@ make_parser1!(parse_raw_number, number);
 make_parser1!(parse_string_literal, string_literal);
 
 #[test]
+fn for_coverage() {
+    // Usually I consider 100% coverage to be a non-goal, but for the parser, it's good to have
+    // all error conditions tested. This just exercises some cases that are unreachable in the
+    // normal flow for coverage.
+    let t = Token::new_spanned(" ", 0..2, Pass1::Space);
+    assert!(Pass1::get_number(&t).is_none());
+    assert!(Pass1::get_dynamic_leader(&t).is_none());
+    assert!(Pass1::get_note_leader(&t).is_none());
+    assert!(Pass1::get_note_options(&t).is_none());
+    assert!(Pass1::get_string(&t).is_none());
+}
+
+#[test]
 fn test_raw_number() -> anyhow::Result<()> {
     assert!(!parse_raw_number("potato").unwrap_err().has_errors());
 
