@@ -28,7 +28,7 @@ make_parser2!(parse_ratio_or_zero, ratio_or_zero, Spanned<Ratio<u32>>);
 make_parser2!(parse_exponent, exponent, Factor);
 make_parser2!(parse_pitch, pitch_or_ratio, PitchOrRatio);
 make_parser2!(parse_string, string, Spanned<String>);
-make_parser2!(parse_param, param, Param);
+make_parser2!(parse_param_kv, param_kv, ParamKV);
 make_parser2!(parse_directive, directive, Spanned<Directive>);
 make_parser2!(parse_octave, octave, Spanned<i8>);
 
@@ -187,10 +187,10 @@ fn test_string() -> anyhow::Result<()> {
 
 #[test]
 fn test_param() -> anyhow::Result<()> {
-    let (s, rest) = parse_param("a=^2|19").map_err(to_anyhow)?;
+    let (s, rest) = parse_param_kv("a=^2|19").map_err(to_anyhow)?;
     assert_eq!(
         s,
-        Param {
+        ParamKV {
             key: Spanned::new(0..1, "a"),
             value: Spanned::new(
                 2..7,
@@ -200,10 +200,10 @@ fn test_param() -> anyhow::Result<()> {
     );
     assert!(rest.is_empty());
 
-    let (s, rest) = parse_param("potato = \"salad\"!").map_err(to_anyhow)?;
+    let (s, rest) = parse_param_kv("potato = \"salad\"!").map_err(to_anyhow)?;
     assert_eq!(
         s,
-        Param {
+        ParamKV {
             key: Spanned::new(0..6, "potato"),
             value: Spanned::new(9..16, ParamValue::String("salad".to_string())),
         }
@@ -216,22 +216,31 @@ fn test_param() -> anyhow::Result<()> {
 #[test]
 fn test_directive() -> anyhow::Result<()> {
     let (d, rest) =
-        parse_directive("tune(base_pitch=^2|19, scale=\"17-EDO\")").map_err(to_anyhow)?;
+        parse_directive("tune(base_pitch=^2|19 scale=\"17-EDO\")").map_err(to_anyhow)?;
     assert_eq!(
         d.value,
         Directive {
+            opening_comment: None,
             name: Spanned::new(0..4, "tune"),
             params: vec![
                 Param {
-                    key: Spanned::new(5..15, "base_pitch"),
-                    value: Spanned::new(
-                        16..21,
-                        ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse("^2|19")))
-                    ),
+                    kv: ParamKV {
+                        key: Spanned::new(5..15, "base_pitch"),
+                        value: Spanned::new(
+                            16..21,
+                            ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
+                                "^2|19"
+                            )))
+                        ),
+                    },
+                    comment: None,
                 },
                 Param {
-                    key: Spanned::new(23..28, "scale"),
-                    value: Spanned::new(29..37, ParamValue::String("17-EDO".to_string())),
+                    kv: ParamKV {
+                        key: Spanned::new(22..27, "scale"),
+                        value: Spanned::new(28..36, ParamValue::String("17-EDO".to_string())),
+                    },
+                    comment: None,
                 }
             ],
         }
@@ -239,56 +248,85 @@ fn test_directive() -> anyhow::Result<()> {
     assert!(rest.is_empty());
 
     let (d, rest) = parse_directive(
-        r#"function (
-            one   = 1 ,
-            two   = 22/7 ,
-            three = "π+🥔" ,
-            four  = *3^-2|31*3/2 ,  ; comment
+        r#"function ( ; opening comment
+            one   = 1
+            two   = 22/7
+            three = "π+🥔"
+            four  = *3^-2|31*3/2   ; comment
         )"#,
     )
     .map_err(to_anyhow)?;
     assert_eq!(
         d.value,
         Directive {
+            opening_comment: Some(Comment {
+                content: Spanned::new(11..28, "; opening comment")
+            }),
             name: Spanned::new(0..8, "function"),
             params: vec![
                 Param {
-                    key: Spanned::new(23..26, "one"),
-                    value: Spanned::new(
-                        31..32,
-                        ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
-                            Ratio::new(1, 1),
-                            Pitch::must_parse("1")
-                        )))
-                    ),
+                    kv: ParamKV {
+                        key: Spanned::new(41..44, "one"),
+                        value: Spanned::new(
+                            49..50,
+                            ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
+                                Ratio::new(1, 1),
+                                Pitch::must_parse("1")
+                            )))
+                        ),
+                    },
+                    comment: None
                 },
                 Param {
-                    key: Spanned::new(47..50, "two"),
-                    value: Spanned::new(
-                        55..59,
-                        ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
-                            Ratio::new(22, 7),
-                            Pitch::must_parse("22/7")
-                        )))
-                    ),
+                    kv: ParamKV {
+                        key: Spanned::new(63..66, "two"),
+                        value: Spanned::new(
+                            71..75,
+                            ParamValue::PitchOrRatio(PitchOrRatio::Ratio((
+                                Ratio::new(22, 7),
+                                Pitch::must_parse("22/7")
+                            )))
+                        ),
+                    },
+                    comment: None
                 },
                 Param {
-                    key: Spanned::new(74..79, "three"),
-                    value: Spanned::new(82..91, ParamValue::String("π+🥔".to_string())),
+                    kv: ParamKV {
+                        key: Spanned::new(88..93, "three"),
+                        value: Spanned::new(96..105, ParamValue::String("π+🥔".to_string())),
+                    },
+                    comment: None
                 },
                 Param {
-                    key: Spanned::new(106..110, "four"),
-                    value: Spanned::new(
-                        114..126,
-                        ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
-                            "0.5*3^29|31"
-                        )))
-                    ),
-                }
+                    kv: ParamKV {
+                        key: Spanned::new(118..122, "four"),
+                        value: Spanned::new(
+                            126..138,
+                            ParamValue::PitchOrRatio(PitchOrRatio::Pitch(Pitch::must_parse(
+                                "0.5*3^29|31"
+                            )))
+                        ),
+                    },
+                    comment: Some(Comment {
+                        content: Spanned::new(141..150, "; comment"),
+                    })
+                },
             ],
         }
     );
     assert!(rest.is_empty());
+
+    let e = parse_directive("tune(a=^2|19b=\"<- missing space\")")
+        .unwrap_err()
+        .get_all();
+    assert_eq!(
+        e,
+        vec![Diagnostic::new(
+            code::DIRECTIVE,
+            5..12,
+            "this parameter must be followed by a space, comment, or newline"
+        )]
+    );
 
     Ok(())
 }

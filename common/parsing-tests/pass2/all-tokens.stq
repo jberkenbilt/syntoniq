@@ -1,10 +1,21 @@
 ; hello
-onceThere(quack="moo π", a=3.14, b = *^-2|17, d = 1/5)
+onceThere(quack="moo π" a=3.14 b = *^-2|17 d = 1/5)
 f()
+something(  ; comment
+  a="trailing whitespace"   
+b="newline only"
+  c="comment without space";comment
+  d="comment"  ; another comment
+  )
+else( ; comment
+  a=1
+  b="immediate close")
 
 [p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g(>)
 [p1.1]    1:d   c   d   c     |      e   1/2:d e   d e>   d~ e
 [p1.2]    2:~     1:b,  b%,   |    2:c'2           b,2
-[p1.3]    4:~                 |    2:~             a,
+[p1.3]    4:~                 |    2:~             a,   ; comment on note line
 [p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
   [p1]   64@0    64@2<        |   96@0>          64@2
+  [p2]   64@0    64@2<        |   96@0>          64@2  ; comment on dynamic line
+  [p3]   64@0    64@2<        |   96@0>          64@2

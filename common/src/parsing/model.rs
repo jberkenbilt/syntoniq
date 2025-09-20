@@ -192,11 +192,23 @@ impl ParamValue {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct Param {
+pub struct Comment {
+    pub content: Spanned<String>,
+}
+impl Display for Comment {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{{")?;
+        color!(f, 248, "{}", self.content.value)?;
+        write!(f, "}}")
+    }
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct ParamKV {
     pub key: Spanned<String>,
     pub value: Spanned<ParamValue>,
 }
-impl Display for Param {
+impl Display for ParamKV {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 88, "{}", self.key.value,)?;
         color!(f, 55, "=")?;
@@ -205,13 +217,32 @@ impl Display for Param {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct Param {
+    pub kv: ParamKV,
+    pub comment: Option<Comment>,
+}
+impl Display for Param {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        Display::fmt(&self.kv, f)?;
+        if let Some(comment) = &self.comment {
+            Display::fmt(comment, f)?;
+        }
+        Ok(())
+    }
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Directive {
+    pub opening_comment: Option<Comment>,
     pub name: Spanned<String>,
     pub params: Vec<Param>,
 }
 impl Display for Directive {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 39, "{}(", self.name.value)?;
+        if let Some(comment) = &self.opening_comment {
+            Display::fmt(comment, f)?;
+        }
         let mut first = true;
         for p in &self.params {
             if first {
@@ -398,12 +429,16 @@ impl Display for Dynamic {
 pub struct DynamicLine {
     pub leader: Spanned<DynamicLeader>,
     pub dynamics: Vec<Spanned<Dynamic>>,
+    pub comment: Option<Comment>,
 }
 impl Display for DynamicLine {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.leader.value)?;
         for i in &self.dynamics {
             write!(f, " {}", i.value)?;
+        }
+        if let Some(comment) = &self.comment {
+            Display::fmt(comment, f)?;
         }
         Ok(())
     }
@@ -413,12 +448,16 @@ impl Display for DynamicLine {
 pub struct NoteLine {
     pub leader: Spanned<NoteLeader>,
     pub notes: Vec<Spanned<Note>>,
+    pub comment: Option<Comment>,
 }
 impl Display for NoteLine {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.leader.value)?;
         for i in &self.notes {
             write!(f, " {}", i.value)?;
+        }
+        if let Some(comment) = &self.comment {
+            Display::fmt(comment, f)?;
         }
         Ok(())
     }

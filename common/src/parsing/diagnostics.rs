@@ -20,6 +20,7 @@ pub mod code {
     pub const SCORE_SYNTAX: &str = "E1009 incorrect score syntax";
     pub const DYNAMIC: &str = "E1010 incorrect dynamic syntax";
     pub const TOPLEVEL_SYNTAX: &str = "E1011 incorrect syntax";
+    pub const DIRECTIVE: &str = "E1012 incorrect directive syntax";
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]

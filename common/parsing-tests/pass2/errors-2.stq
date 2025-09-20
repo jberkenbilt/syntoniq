@@ -1,5 +1,5 @@
 ; hello
-onceThere(quack="moo π", a=3.14, b = *^-2|17, d = 1/5)
+onceThere(quack="moo π"  a=3.14  b = *^-2|17  d = 1/5)
 f() ; comment
 ; comment by itself
   ; comment after space
@@ -8,15 +8,17 @@ f() ; comment
 ; Some things are caught; others are not.
 valid() invalid ignored a="b" c=19, d=23.4567
 
+oops(missing="space"a=1)
+
 valid(
-  a=1,
-  b="2",  ; comment here
-  c=*3^4|19  ; optional comma
+  a=1 
+  b="2"   ; comment here
+  c=*3^4|19
 )
 
 degraded_directive(
   resume ^
-  at clope
+  at clope,
   )
 reported_again
 

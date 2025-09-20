@@ -3,8 +3,9 @@
 
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
-    Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader, NoteLine,
-    NoteOption, Param, ParamValue, PitchOrRatio, RegularNote, Span, Spanned, Token,
+    Comment, Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader,
+    NoteLine, NoteOption, Param, ParamKV, ParamValue, PitchOrRatio, RegularNote, Span, Spanned,
+    Token,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
@@ -16,7 +17,7 @@ use num_rational::Ratio;
 use serde::Serialize;
 use std::fmt::{Debug, Display, Formatter};
 use winnow::combinator::{alt, delimited, eof, fail, opt, peek, preceded, separated, terminated};
-use winnow::token::{one_of, take_while};
+use winnow::token::one_of;
 use winnow::{Parser, combinator};
 
 // Pass2 Step 1: Pass 2 of parsing uses the output of pass 1 as its input. The winnow crate allows
@@ -64,8 +65,8 @@ fn space(input: &mut Input2) -> winnow::Result<()> {
         .map(|_| ())
 }
 
-fn space_or_comment(input: &mut Input2) -> winnow::Result<()> {
-    one_of(|x: Token1| matches!(x.value.t, Pass1::Space | Pass1::Comment))
+fn newline(input: &mut Input2) -> winnow::Result<()> {
+    one_of(|x: Token1| matches!(x.value.t, Pass1::Newline))
         .parse_next(input)
         .map(|_| ())
 }
@@ -76,34 +77,21 @@ fn optional_space(input: &mut Input2) -> winnow::Result<()> {
         .map(|_| ())
 }
 
-fn optional_space_or_newline(input: &mut Input2) -> winnow::Result<()> {
-    take_while(0.., |x: Token1| {
-        matches!(x.value.t, Pass1::Space | Pass1::Comment | Pass1::Newline)
-    })
+fn comment(input: &mut Input2) -> winnow::Result<Comment> {
+    preceded(
+        optional_space,
+        one_of(|x: Token1| matches!(x.value.t, Pass1::Comment)),
+    )
     .parse_next(input)
-    .map(|_| ())
-}
-
-fn param_separator(input: &mut Input2) -> winnow::Result<()> {
-    (optional_space, character(','), optional_space_or_newline)
-        .parse_next(input)
-        .map(|_| ())
+    .map(|x| Comment {
+        content: Spanned::new(x.span, x.value.raw),
+    })
 }
 
 fn newline_or_eof(input: &mut Input2) -> winnow::Result<()> {
-    preceded(
-        combinator::repeat(
-            0..,
-            one_of(|x: Token1| matches!(x.value.t, Pass1::Space | Pass1::Comment)),
-        )
-        .map(|_: Vec<_>| ()),
-        alt((
-            eof.map(|_| ()),
-            one_of(|x: Token1| matches!(x.value.t, Pass1::Newline)).map(|_| ()),
-        )),
-    )
-    .parse_next(input)
-    .map(|_| ())
+    preceded(optional_space, alt((eof.map(|_| ()), newline)))
+        .parse_next(input)
+        .map(|_| ())
 }
 
 fn character(ch: char) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<char>> {
@@ -349,7 +337,7 @@ fn param_value(
     }
 }
 
-fn param(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Param> {
+fn param_kv(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<ParamKV> {
     move |input| {
         (
             terminated(
@@ -359,8 +347,17 @@ fn param(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Param
             param_value(diags),
         )
             .parse_next(input)
-            .map(|(key, value)| Param { key, value })
+            .map(|(key, value)| ParamKV { key, value })
     }
+}
+
+fn param_separator(input: &mut Input2) -> winnow::Result<Option<Comment>> {
+    alt((
+        terminated(comment, newline).map(Some),
+        preceded(optional_space, newline).map(|_| None),
+        space.map(|_| None),
+    ))
+    .parse_next(input)
 }
 
 fn directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Directive>> {
@@ -377,24 +374,50 @@ fn directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<S
     // `param` and follow the path. Then continue with Pass2 Step 6.
     move |input| {
         (
-            terminated(
-                identifier,
-                (optional_space, character('('), optional_space_or_newline),
+            identifier,
+            preceded(
+                (optional_space, character('(')),
+                terminated(preceded(optional_space, opt(comment)), opt(newline_or_eof)),
             ),
             terminated(
-                separated(0.., param(diags), param_separator),
-                (
-                    opt(param_separator),
-                    optional_space_or_newline,
-                    character(')'),
+                combinator::repeat(
+                    0..,
+                    (
+                        preceded(optional_space, param_kv(diags)),
+                        opt(param_separator),
+                    ),
                 ),
+                preceded(optional_space, character(')')),
             ),
         )
             .with_taken()
             .parse_next(input)
-            .map(|((name, params), tokens)| {
+            .map(|items: ((_, _, Vec<_>), _)| {
+                let ((name, opening_comment, param_kv), tokens) = items;
+
                 let span = tokens.get_span().unwrap();
-                Spanned::new(span, Directive { name, params })
+                let num_kv = param_kv.len();
+                let mut params = Vec::new();
+                for (i, (kv, sep)) in param_kv.into_iter().enumerate() {
+                    if i < num_kv - 1 && sep.is_none() {
+                        // All but the last parameter must be followed by a space or comment
+                        diags.err(
+                            code::DIRECTIVE,
+                            kv.key.span.start..kv.value.span.end,
+                            "this parameter must be followed by a space, comment, or newline",
+                        )
+                    }
+                    let comment = sep.unwrap_or_default();
+                    params.push(Param { kv, comment })
+                }
+                Spanned::new(
+                    span,
+                    Directive {
+                        name,
+                        opening_comment,
+                        params,
+                    },
+                )
             })
     }
 }
@@ -589,20 +612,27 @@ fn note_line(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<S
     move |input| {
         (
             note_leader(),
-            terminated(
-                combinator::repeat(1.., (opt(space), note(diags))),
-                newline_or_eof,
-            ),
+            combinator::repeat(1.., (opt(space), note(diags))),
+            terminated(opt(comment), newline_or_eof),
         )
             .with_taken()
             .parse_next(input)
-            .map(|((leader, notes), tokens): ((_, Vec<_>), Input2)| {
-                let span = tokens.get_span().unwrap();
-                // Space is required, but don't want omission to prevent the line from being
-                // recognized, causing spurious errors or preventing other parsing.
-                let notes = require_spaces(diags, notes);
-                Spanned::new(span, NoteLine { leader, notes })
-            })
+            .map(
+                |((leader, notes, comment), tokens): ((_, Vec<_>, _), Input2)| {
+                    let span = tokens.get_span().unwrap();
+                    // Space is required, but don't want omission to prevent the line from being
+                    // recognized, causing spurious errors or preventing other parsing.
+                    let notes = require_spaces(diags, notes);
+                    Spanned::new(
+                        span,
+                        NoteLine {
+                            leader,
+                            notes,
+                            comment,
+                        },
+                    )
+                },
+            )
     }
 }
 
@@ -692,18 +722,25 @@ fn dynamic_line(
     move |input| {
         (
             dynamic_leader(),
-            terminated(
-                combinator::repeat(1.., (opt(space), dynamic(diags))),
-                newline_or_eof,
-            ),
+            combinator::repeat(1.., (opt(space), dynamic(diags))),
+            terminated(opt(comment), newline_or_eof),
         )
             .with_taken()
             .parse_next(input)
-            .map(|((leader, dynamics), tokens): ((_, Vec<_>), Input2)| {
-                let span = tokens.get_span().unwrap();
-                let dynamics = require_spaces(diags, dynamics);
-                Spanned::new(span, DynamicLine { leader, dynamics })
-            })
+            .map(
+                |((leader, dynamics, comment), tokens): ((_, Vec<_>, _), Input2)| {
+                    let span = tokens.get_span().unwrap();
+                    let dynamics = require_spaces(diags, dynamics);
+                    Spanned::new(
+                        span,
+                        DynamicLine {
+                            leader,
+                            dynamics,
+                            comment,
+                        },
+                    )
+                },
+            )
     }
 }
 
@@ -712,10 +749,10 @@ fn degraded_top_level(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow:
     // things. This is useful for scanning through tokens in degraded mode.
     move |input| {
         alt((
-            space_or_comment,
-            param(diags).map(|_| ()),
+            space,
+            comment.map(|_| ()),
+            param_kv(diags).map(|_| ()),
             character('=').map(|_| ()),
-            character(',').map(|_| ()),
             identifier.map(|_| ()),
             string(diags).map(|_| ()),
             pitch_or_ratio(diags).map(|_| ()),
@@ -773,7 +810,8 @@ fn degraded_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resu
             combinator::repeat(
                 1..,
                 alt((
-                    space_or_comment,
+                    space,
+                    comment.map(|_| ()),
                     note(diags).map(|_| ()),
                     one_of(|x: Token1| !matches!(x.value.t, Pass1::Newline)).map(|tok: Token1| {
                         diags.err(code::SCORE_SYNTAX, tok.span, "unexpected item in note line");
@@ -794,7 +832,8 @@ fn degraded_dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::R
             combinator::repeat(
                 1..,
                 alt((
-                    space_or_comment,
+                    space,
+                    comment.map(|_| ()),
                     dynamic(diags).map(|_| ()),
                     one_of(|x: Token1| !matches!(x.value.t, Pass1::Newline)).map(|tok: Token1| {
                         diags.err(
@@ -819,7 +858,8 @@ fn degraded_misc(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resu
             combinator::repeat(
                 1..,
                 alt((
-                    space_or_comment,
+                    space,
+                    comment.map(|_| ()),
                     degraded_top_level(diags),
                     character('(').map(|_| ()),
                     character(')').map(|_| ()),

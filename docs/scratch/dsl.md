@@ -68,28 +68,33 @@ Work in progress; all syntax is subject to change.
 
 Leading whitespace is stripped. Any remark about what a line starts with refers to after any leading whitespace.
 
-The comment character is `;`. Everything from `;` to the end of the is removed.
+The comment character is `;`. Everything from `;` to the end of the is a comment.
 
 Blank lines are ignored except when they terminate score blocks.
 
 A file consists of a sequence of the following, excluding comments and non-functional blank lines:
 
-* Global directives: lines consisting of operations, which look like function calls, and have global scope
-* Score blocks: a sequence of one or more lines, each starting with [part.note], both preceded by and followed by a blank line
-* A macro definition
-* Possibly an escape hatch if needed, but hopefully not
+* Directives: declarative statements that look like function calls
+* Score blocks: a sequence of one or more lines, each starting with `[part]` or `[part.note]`, both preceded by and followed by a blank line
+* Scale definitions, described below
+
+## Directives
+
+* `name(k=v k=v ...)`
+* may be divided across lines
+  ```
+  name(
+    k=v
+    k=v
+  )
+  ```
+* a keyword may be repeated, e.g. `tempo(bpm=60 part="p1" part="p2")`
+* multiple may occur on one line
 
 Parameters can have one of these types:
-* Pitch: the pitch notation with a leading `*`
+* Pitch: the pitch notation
 * Number: an integer, rational, or fixed-point decimal
 * String: a double-quoted string with `\` as a quoting character only for `\"` and `\\`
-
-## Operations
-
-* `name(k=v, k=v, ...)`
-* must be contained within a single line
-* multiple may occur on one line
-* If not in a score block, scope is global; otherwise, scope is for the part.
 
 ## Score Blocks
 
@@ -156,7 +161,7 @@ Can only be expressed at the part level.
 
 ## Macros
 
-Tentative. Not sure if this is a good idea.
+Tentative. Not sure if this is a good idea. Leaning against doing this. The separator syntax is bad.
 
 Single-line macro. `n` is the number of parameters and `,` is the separator. Within the macro, `$n` is replaced by the argument.
 ```
@@ -193,7 +198,7 @@ The first directive must be `version(n)`. This is a file format version, not a s
 
 Tuning
 ```
-tune(base_pitch=..., base_note=..., base_factor=..., scale=...)
+tune(base_pitch=... base_note=... base_factor=... scale=...)
 reset_tuning()
 ```
 * Default tuning is 12-EDO with the base pitch of `220*1|4`
@@ -207,15 +212,15 @@ reset_tuning()
 
 Also, for EDO-based scales:
 ```
-note_shift(up=..., down=...)
+note_shift(up=... down=...)
 ```
 to just generate a different note without retuning. This is like an isomorphic notation, useful where 12-tone intervals aren't portable. For example, transposing up a step in 17-EDO, the C..E interval is 6 steps, but the D..F# interval is only 5 steps. Using `note_shift(up=3)` and then using `c` and `e` would generate `d` and `g%`, for the correct interval step size without requiring a retuning.
 
 Examples:
 ```
-tune(scale="17-EDO", base_note="e")
+tune(scale="17-EDO" base_note="e")
 tune(base_factor="*2|17")
-tune(scale="17-EDO", base_pitch=264)
+tune(scale="17-EDO" base_pitch=264)
 note_shift(up=1)
 ```
 
@@ -225,17 +230,17 @@ Tempo changes are global and can be delayed relative to the current beat whereve
 
 Set the tempo to 60 beats per minute starting 2.5 beats after the current moment:
 ```
-tempo(bpm=60, when=2.5)
+tempo(bpm=60 when=2.5)
 ```
 
 Accelerate linearly, starting immediately from 60 to 90 beats per minute over the next 8 beats:
 ```
-accel(start=60, end=90, for=8)
+accel(start=60 end=90 for=8)
 ```
 
 Decelerate linearly, starting in two beats from 90 to 60 beats per minute over 4 beats:
 ```
-decel(start=90, end=60, when=2, for=4)
+decel(start=90 end=60 when=2 for=4)
 ```
 
 # Row repeat
@@ -321,20 +326,20 @@ One way to support morphing might be to allow a note to start or end with `>`, e
 ```
 [p1] 1:c> >e
 ```
-If this is done, we probably need a morph directive, like `morph(before=1/8, after=0, when=2)`, indicating to start the morph 1/8 of a beat before the note change and end exactly at the new note, effective 2 beats after the current moment. This makes it similar to accel/decel.
+If this is done, we probably need a morph directive, like `morph(before=1/8 after=0 when=2)`, indicating to start the morph 1/8 of a beat before the note change and end exactly at the new note, effective 2 beats after the current moment. This makes it similar to accel/decel.
 
 # Strumming
 
-To indicate strumming, we can use something like `strum(gap=beats, on_beat=n)` where `n` is a note number, and notes are strummed in order. For example:
+To indicate strumming, we can use something like `strum(gap=beats on_beat=n)` where `n` is a note number, and notes are strummed in order. For example:
 ```
-  [p1] strum(gap=1/12, on_beat=0)
+  [p1] strum(gap=1/12 on_beat=0)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 ```
 would strum a C major chord with the `c` on the beat and the `e` and `g` following 1/12 and 2/12 of a beat later.
 ```
-  [p1] strum(gap=1/12, on_beat=2)
+  [p1] strum(gap=1/12 on_beat=2)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
@@ -352,7 +357,7 @@ Key signature and time signature are not needed for this application, but time s
 If we support midi and csound, we need different ways to represent instruments. It should be general so additional backends could be added.
 
 ```
-define_instrument(name=..., midi=..., csound=...)
+define_instrument(name=... midi=... csound=...)
 use_instrument(name=...) ; global or within a part
 ```
 * name: generic
@@ -363,7 +368,7 @@ use_instrument(name=...) ; global or within a part
 
 ```
 mark(name="x")
-repeat(from="mark1", to="mark2")
+repeat(from="mark1" to="mark2")
 skip_repeats()
 ```
 
