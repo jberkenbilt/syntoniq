@@ -1,0 +1,12 @@
+; Simple syntoniq score to test parsing
+version(1)
+
+; Define a scale  
+scale(name="12-EDO", divisions=[12, 2, 1], base_pitch="220*^3|12")
+
+; Note lines for different parts
+[violin.1] 2:c' e' g' 1:c''
+[violin.2] 4:c e g | 2:d f a  
+
+; Dynamic lines
+[violin] 60@0 80@1/4 100@1/2 60@1
