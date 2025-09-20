@@ -90,22 +90,20 @@ fn param_separator(input: &mut Input2) -> winnow::Result<()> {
         .map(|_| ())
 }
 
-fn newline_or_eof() -> impl FnMut(&mut Input2) -> winnow::Result<()> {
-    move |input| {
-        preceded(
-            combinator::repeat(
-                0..,
-                one_of(|x: Token1| matches!(x.value.t, Pass1::Space | Pass1::Comment)),
-            )
-            .map(|_: Vec<_>| ()),
-            alt((
-                eof.map(|_| ()),
-                one_of(|x: Token1| matches!(x.value.t, Pass1::Newline)).map(|_| ()),
-            )),
+fn newline_or_eof(input: &mut Input2) -> winnow::Result<()> {
+    preceded(
+        combinator::repeat(
+            0..,
+            one_of(|x: Token1| matches!(x.value.t, Pass1::Space | Pass1::Comment)),
         )
-        .parse_next(input)
-        .map(|_| ())
-    }
+        .map(|_: Vec<_>| ()),
+        alt((
+            eof.map(|_| ()),
+            one_of(|x: Token1| matches!(x.value.t, Pass1::Newline)).map(|_| ()),
+        )),
+    )
+    .parse_next(input)
+    .map(|_| ())
 }
 
 fn character(ch: char) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<char>> {
@@ -116,12 +114,10 @@ fn character(ch: char) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<char
     }
 }
 
-fn number() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<u32>> {
-    move |input| {
-        one_of(Pass1::is_number)
-            .parse_next(input)
-            .map(|tok| Spanned::new(tok.span, Pass1::get_number(&tok).unwrap()))
-    }
+fn number(input: &mut Input2) -> winnow::Result<Spanned<u32>> {
+    one_of(Pass1::is_number)
+        .parse_next(input)
+        .map(|tok| Spanned::new(tok.span, Pass1::get_number(&tok).unwrap()))
 }
 
 fn ratio_inner(
@@ -132,9 +128,9 @@ fn ratio_inner(
     // there are problems report the errors.
     move |input| {
         (
-            number(),
-            opt(preceded(character('.'), number())),
-            opt(preceded(character('/'), number())),
+            number,
+            opt(preceded(character('.'), number)),
+            opt(preceded(character('/'), number)),
         )
             .with_taken()
             .parse_next(input)
@@ -232,13 +228,13 @@ fn exponent(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fa
     // this function, resume with Pass 2 Step 8.
     move |input| {
         (
-            opt((number(), opt(preceded(character('/'), number())))),
+            opt((number, opt(preceded(character('/'), number)))),
             preceded(
                 character('^'),
                 (
                     opt(character('-')),
-                    number(),
-                    preceded(character('|'), number()),
+                    number,
+                    preceded(character('|'), number),
                 ),
             ),
         )
@@ -293,7 +289,7 @@ fn pitch_or_ratio(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Res
     // If we ever directly called the `ratio` parser in an `alt` with `pitch`, if we called `ratio`
     // first, it would potentially consume part of a pitch, giving us unwanted results, and if we
     // called it second, it would never match because `pitch` would always match. Instead, we use
-    // `peek` to see if this would have matched as a ratio...
+    // `peek` to see if this would also have matched as a ratio...
     move |input| {
         let as_ratio = peek(ratio(diags)).parse_next(input);
         preceded(
@@ -405,7 +401,7 @@ fn directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<S
 
 fn octave(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<i8>> {
     move |input| {
-        (alt((character('\''), character(','), fail)), opt(number()))
+        (alt((character('\''), character(','), fail)), opt(number))
             .parse_next(input)
             .map(|(sym, num)| {
                 let mut span = sym.span;
@@ -595,7 +591,7 @@ fn note_line(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<S
             note_leader(),
             terminated(
                 combinator::repeat(1.., (opt(space), note(diags))),
-                newline_or_eof(),
+                newline_or_eof,
             ),
         )
             .with_taken()
@@ -698,7 +694,7 @@ fn dynamic_line(
             dynamic_leader(),
             terminated(
                 combinator::repeat(1.., (opt(space), dynamic(diags))),
-                newline_or_eof(),
+                newline_or_eof,
             ),
         )
             .with_taken()
@@ -756,7 +752,7 @@ fn degraded_directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow:
             combinator::repeat(
                 1..,
                 alt((
-                    newline_or_eof(),
+                    newline_or_eof,
                     degraded_top_level(diags),
                     one_of(|x: Token1| x.value.raw != ")").map(|tok: Token1| {
                         diags.err(code::SYNTAX, tok.span, diagnostics::SYNTAX_ERROR);
@@ -785,7 +781,7 @@ fn degraded_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resu
                 )),
             )
             .map(|_: Vec<_>| ()),
-            newline_or_eof(),
+            newline_or_eof,
         )
         .parse_next(input)
         .map(|_| ())
@@ -810,7 +806,7 @@ fn degraded_dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::R
                 )),
             )
             .map(|_: Vec<_>| ()),
-            newline_or_eof(),
+            newline_or_eof,
         )
         .parse_next(input)
         .map(|_| ())
