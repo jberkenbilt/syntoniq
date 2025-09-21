@@ -5702,7 +5702,7 @@
                         "value": "u"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         282,
                         283
@@ -5732,7 +5732,7 @@
                         "value": "v"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         288,
                         289
@@ -5762,7 +5762,7 @@
                         "value": "w"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         294,
                         295
@@ -5792,7 +5792,7 @@
                         "value": "x"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         300,
                         301
@@ -5822,7 +5822,7 @@
                         "value": "y/z"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         306,
                         307
@@ -5932,7 +5932,7 @@
                         "value": "u"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         345,
                         346
@@ -5962,7 +5962,7 @@
                         "value": "v"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         351,
                         352
@@ -5992,7 +5992,7 @@
                         "value": "w"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         357,
                         360
@@ -6025,7 +6025,7 @@
                         "value": "x"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         365,
                         368
@@ -6158,7 +6158,7 @@
                         "value": "q+"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         448,
                         450
@@ -6192,7 +6192,7 @@
                         "value": "potato"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         454,
                         460
@@ -6227,7 +6227,7 @@
                         "value": "pi"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         473,
                         477
@@ -6260,7 +6260,7 @@
                         "value": "z!!"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         491,
                         497
@@ -6287,7 +6287,7 @@
                         "value": "w/x/yZ"
                       }
                     ],
-                    "pitch_or_index": {
+                    "pitch": {
                       "span": [
                         502,
                         506

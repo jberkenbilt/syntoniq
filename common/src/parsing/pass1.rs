@@ -583,7 +583,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
         }
     }
     if out.is_empty() {
-        diags.err(code::EMPTY, 0..1, "this file is empty");
+        diags.err(code::EMPTY_FILE, 0..1, "this file is empty");
     }
     if diags.has_errors() {
         Err(diags)

@@ -3,9 +3,9 @@
 
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
-    Comment, Directive, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader,
-    NoteLine, NoteOption, Param, ParamKV, ParamValue, PitchOrNumber, RegularNote, ScaleBlock,
-    ScaleNote, Span, Spanned, Token, merge_spans,
+    Comment, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteBehavior, NoteLeader, NoteLine,
+    NoteOption, Param, ParamKV, ParamValue, PitchOrNumber, RawDirective, RegularNote, ScaleBlock,
+    ScaleNote, Span, Spanned, Token,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
@@ -37,7 +37,7 @@ pub enum Pass2 {
     Space,
     Newline,
     Comment,
-    Directive(Directive),
+    Directive(RawDirective),
     NoteLine(NoteLine),
     DynamicLine(DynamicLine),
     ScaleBlock(ScaleBlock),
@@ -256,7 +256,7 @@ fn exponent(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fa
                 let mut exp_den = exp_den_t.value as i32;
                 if exp_den == 0 {
                     diags.err(
-                        code::PITCH,
+                        code::PITCH_SYNTAX,
                         exp_den_t.span,
                         "zero not allowed as exponent denominator",
                     );
@@ -391,7 +391,9 @@ fn param_separator(input: &mut Input2) -> winnow::Result<Option<Comment>> {
     .parse_next(input)
 }
 
-fn directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Directive>> {
+fn directive(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<RawDirective>> {
     // Pass2 Step 5: this is an example of how our parsers look in Pass 2. Because we can't directly
     // return opaque types that implement some kind of Parser2, as we did with Parser1 in pass 1 (we
     // could maybe do it, but it would be lots of extra trait implementations, and as of initial
@@ -433,7 +435,7 @@ fn directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<S
                     if i < num_kv - 1 && sep.is_none() {
                         // All but the last parameter must be followed by a space or comment
                         diags.err(
-                            code::DIRECTIVE,
+                            code::DIRECTIVE_SYNTAX,
                             kv.key.span.start..kv.value.span.end,
                             "this parameter must be followed by a space, comment, or newline",
                         )
@@ -443,7 +445,7 @@ fn directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<S
                 }
                 Spanned::new(
                     span,
-                    Directive {
+                    RawDirective {
                         name,
                         opening_comment,
                         params,
@@ -464,12 +466,12 @@ fn octave(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Span
                     let count: i8 = if let Ok(n) = i8::try_from(n.value) {
                         n
                     } else {
-                        diags.err(code::NOTE, n.span, "octave count is too large");
+                        diags.err(code::NOTE_SYNTAX, n.span, "octave count is too large");
                         1
                     };
                     if count == 0 {
                         // It can be zero, but not explicitly zero.
-                        diags.err(code::NOTE, n.span, "octave count may not be zero");
+                        diags.err(code::NOTE_SYNTAX, n.span, "octave count may not be zero");
                     }
                     count
                 } else {
@@ -492,7 +494,7 @@ fn note_options(
             let inner_span = Pass1::get_note_options(&tok).unwrap();
             let data = &tok.value.raw[inner_span.relative_to(tok.span)];
             if data.is_empty() {
-                diags.err(code::NOTE, tok.span, "note options may not be empty");
+                diags.err(code::NOTE_SYNTAX, tok.span, "note options may not be empty");
             }
             let mut result = Vec::new();
             let mut offset = inner_span.start;
@@ -501,7 +503,11 @@ fn note_options(
                 match ch {
                     '>' => result.push(Spanned::new(span, NoteOption::Accent)),
                     '^' => result.push(Spanned::new(span, NoteOption::Marcato)),
-                    _ => diags.err(code::NOTE, span, format!("invalid note option '{ch}'")),
+                    _ => diags.err(
+                        code::NOTE_SYNTAX,
+                        span,
+                        format!("invalid note option '{ch}'"),
+                    ),
                 }
                 offset = span.end;
             }
@@ -681,7 +687,11 @@ fn regular_dynamic(
                 let (level_t, _, position, change_t) = items;
                 let level: u8 = match Pass1::get_number(&level_t).unwrap() {
                     x if x > 127 => {
-                        diags.err(code::DYNAMIC, level_t.span, "dynamic value must be <= 127");
+                        diags.err(
+                            code::DYNAMIC_SYNTAX,
+                            level_t.span,
+                            "dynamic value must be <= 127",
+                        );
                         127
                     }
                     x => x as u8,
@@ -788,9 +798,9 @@ fn scale_note(
         )
         .parse_next(input)
         .map(|items: (_, Vec<_>, _)| {
-            let (pitch_or_index, note_names, comment) = items;
-            let span = merge_spans(&[
-                pitch_or_index.get_span(),
+            let (pitch, note_names, comment) = items;
+            let span = model::merge_spans(&[
+                pitch.get_span(),
                 note_names.as_slice().get_span(),
                 comment.as_ref().map(|x| x.content.span),
             ])
@@ -798,7 +808,7 @@ fn scale_note(
             Spanned::new(
                 span,
                 ScaleNote {
-                    pitch_or_index,
+                    pitch,
                     note_names,
                     comment,
                 },
@@ -980,8 +990,6 @@ fn degraded_misc(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resu
             combinator::repeat(
                 1..,
                 alt((
-                    space,
-                    comment.map(|_| ()),
                     degraded_top_level(diags),
                     character('(').map(|_| ()),
                     character(')').map(|_| ()),
@@ -1114,7 +1122,11 @@ fn handle_token<'s>(
                     Pass2::ScaleBlock(x.value),
                 ))
             } else {
-                diags.err(code::SCALE, tok.span, "unable to parse as scale block");
+                diags.err(
+                    code::SCALE_SYNTAX,
+                    tok.span,
+                    "unable to parse as scale block",
+                );
                 Err(Degraded::Scale)
             }
         }

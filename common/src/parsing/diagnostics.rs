@@ -13,15 +13,15 @@ pub mod code {
     pub const NUM_RANGE: &str = "E1002 numeric range";
     pub const STRING: &str = "E1003 invalid string literal";
     pub const LINE_START: &str = "E1004 unable to infer line type";
-    pub const EMPTY: &str = "E1005 empty file";
+    pub const EMPTY_FILE: &str = "E1005 empty file";
     pub const NUM_FORMAT: &str = "E1006 incorrect number format";
-    pub const PITCH: &str = "E1007 incorrect pitch syntax";
-    pub const NOTE: &str = "E1008 incorrect note syntax";
+    pub const PITCH_SYNTAX: &str = "E1007 incorrect pitch syntax";
+    pub const NOTE_SYNTAX: &str = "E1008 incorrect note syntax";
     pub const SCORE_SYNTAX: &str = "E1009 incorrect score syntax";
-    pub const DYNAMIC: &str = "E1010 incorrect dynamic syntax";
+    pub const DYNAMIC_SYNTAX: &str = "E1010 incorrect dynamic syntax";
     pub const TOPLEVEL_SYNTAX: &str = "E1011 incorrect syntax";
-    pub const DIRECTIVE: &str = "E1012 incorrect directive syntax";
-    pub const SCALE: &str = "E1013 incorrect scale block syntax";
+    pub const DIRECTIVE_SYNTAX: &str = "E1012 incorrect directive syntax";
+    pub const SCALE_SYNTAX: &str = "E1013 incorrect scale block syntax";
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]

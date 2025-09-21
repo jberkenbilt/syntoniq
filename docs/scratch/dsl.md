@@ -2,6 +2,8 @@
 
 Pass3 parsing, or do that with semantics outside the common crate. Mostly, it's straightforward at this point. Remember to allow comments on their own lines inside a score block. Relax blank lines. Once we see a note or dynamic line, we start a score block that ends at the first thing that is not a score line or a comment line.
 
+Fuzz testing. A file that ends in the middle of a directive panics. The panic would have been clearer with context as well.
+
 # Syntoniq DSL
 
 The goal is to create an ASCII/UTF-8 file format for describing music with arbitrary tuning systems.

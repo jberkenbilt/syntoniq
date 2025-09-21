@@ -154,17 +154,17 @@ impl PitchOrNumber {
         }
     }
 
-    pub fn try_into_ratio(self) -> Option<Ratio<u32>> {
+    pub fn try_as_ratio(&self) -> Option<Ratio<u32>> {
         match self {
-            PitchOrNumber::Integer((i, _)) => Some(Ratio::from_integer(i)),
-            PitchOrNumber::Ratio((r, _)) => Some(r),
+            PitchOrNumber::Integer((i, _)) => Some(Ratio::from_integer(*i)),
+            PitchOrNumber::Ratio((r, _)) => Some(*r),
             PitchOrNumber::Pitch(_) => None,
         }
     }
 
-    pub fn try_into_int(self) -> Option<u32> {
+    pub fn try_as_int(&self) -> Option<u32> {
         match self {
-            PitchOrNumber::Integer((i, _)) => Some(i),
+            PitchOrNumber::Integer((i, _)) => Some(*i),
             _ => None,
         }
     }
@@ -185,21 +185,28 @@ impl Display for ParamValue {
 }
 
 impl ParamValue {
-    pub fn try_into_pitch(self) -> Option<Pitch> {
+    pub fn try_as_pitch(&self) -> Option<&Pitch> {
         match self {
-            ParamValue::PitchOrNumber(pr) => Some(pr.into_pitch()),
+            ParamValue::PitchOrNumber(pr) => Some(pr.as_pitch()),
             ParamValue::String(_) => None,
         }
     }
 
-    pub fn try_into_ratio(self) -> Option<Ratio<u32>> {
+    pub fn try_as_ratio(&self) -> Option<Ratio<u32>> {
         match self {
-            ParamValue::PitchOrNumber(pr) => pr.try_into_ratio(),
+            ParamValue::PitchOrNumber(pr) => pr.try_as_ratio(),
             ParamValue::String(_) => None,
         }
     }
 
-    pub fn try_into_string(self) -> Option<String> {
+    pub fn try_as_int(&self) -> Option<u32> {
+        match self {
+            ParamValue::PitchOrNumber(pr) => pr.try_as_int(),
+            ParamValue::String(_) => None,
+        }
+    }
+
+    pub fn try_as_string(&self) -> Option<&String> {
         match self {
             ParamValue::PitchOrNumber(_r) => None,
             ParamValue::String(s) => Some(s),
@@ -248,12 +255,12 @@ impl Display for Param {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct Directive {
+pub struct RawDirective {
     pub opening_comment: Option<Comment>,
     pub name: Spanned<String>,
     pub params: Vec<Param>,
 }
-impl Display for Directive {
+impl Display for RawDirective {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 39, "{}(", self.name.value)?;
         if let Some(comment) = &self.opening_comment {
@@ -481,13 +488,13 @@ impl Display for NoteLine {
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct ScaleNote {
-    pub pitch_or_index: Spanned<PitchOrNumber>,
+    pub pitch: Spanned<PitchOrNumber>,
     pub note_names: Vec<Spanned<String>>,
     pub comment: Option<Comment>,
 }
 impl Display for ScaleNote {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        Display::fmt(&self.pitch_or_index.value, f)?;
+        Display::fmt(&self.pitch.value, f)?;
         for name in &self.note_names {
             color!(f, 2, " {}", name.value)?;
         }

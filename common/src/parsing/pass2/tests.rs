@@ -29,7 +29,7 @@ make_parser2!(parse_exponent, exponent, Factor);
 make_parser2!(parse_pitch, pitch_or_number, Spanned<PitchOrNumber>);
 make_parser2!(parse_string, string, Spanned<String>);
 make_parser2!(parse_param_kv, param_kv, ParamKV);
-make_parser2!(parse_directive, directive, Spanned<Directive>);
+make_parser2!(parse_directive, directive, Spanned<RawDirective>);
 make_parser2!(parse_octave, octave, Spanned<i8>);
 
 #[test]
@@ -160,7 +160,7 @@ fn test_exponent() -> anyhow::Result<()> {
     assert_eq!(
         e,
         [Diagnostic::new(
-            code::PITCH,
+            code::PITCH_SYNTAX,
             3..4,
             "zero not allowed as exponent denominator"
         )]
@@ -176,21 +176,21 @@ fn test_pitch() -> anyhow::Result<()> {
 
     let (p, rest) = parse_pitch("^1|31*2/3z").map_err(to_anyhow)?;
     assert_eq!(rest, "z");
-    assert!(p.value.clone().try_into_int().is_none());
-    assert!(p.value.clone().try_into_ratio().is_none());
+    assert!(p.value.try_as_int().is_none());
+    assert!(p.value.try_as_ratio().is_none());
     assert_eq!(p.value.into_pitch().to_string(), "2/3*^1|31");
 
     let (p, rest) = parse_pitch("22/7z").map_err(to_anyhow)?;
     assert_eq!(rest, "z");
-    assert!(p.value.clone().try_into_int().is_none());
-    assert_eq!(p.value.clone().try_into_ratio().unwrap(), Ratio::new(22, 7));
+    assert!(p.value.try_as_int().is_none());
+    assert_eq!(p.value.try_as_ratio().unwrap(), Ratio::new(22, 7));
     assert_eq!(p.value.into_pitch().to_string(), "22/7");
 
     let (p, rest) = parse_pitch("12z").map_err(to_anyhow)?;
     assert_eq!(rest, "z");
-    assert_eq!(p.value.clone().try_into_int().unwrap(), 12);
-    assert_eq!(p.value.clone().try_into_ratio().unwrap(), Ratio::new(12, 1));
-    assert_eq!(p.value.into_pitch().to_string(), "12");
+    assert_eq!(p.value.try_as_int().unwrap(), 12);
+    assert_eq!(p.value.try_as_ratio().unwrap(), Ratio::new(12, 1));
+    assert_eq!(p.value.as_pitch().to_string(), "12");
 
     Ok(())
 }
@@ -237,7 +237,7 @@ fn test_directive() -> anyhow::Result<()> {
         parse_directive("tune(base_pitch=^2|19 scale=\"17-EDO\")").map_err(to_anyhow)?;
     assert_eq!(
         d.value,
-        Directive {
+        RawDirective {
             opening_comment: None,
             name: Spanned::new(0..4, "tune"),
             params: vec![
@@ -276,7 +276,7 @@ fn test_directive() -> anyhow::Result<()> {
     .map_err(to_anyhow)?;
     assert_eq!(
         d.value,
-        Directive {
+        RawDirective {
             opening_comment: Some(Comment {
                 content: Spanned::new(11..28, "; opening comment")
             }),
@@ -340,7 +340,7 @@ fn test_directive() -> anyhow::Result<()> {
     assert_eq!(
         e,
         vec![Diagnostic::new(
-            code::DIRECTIVE,
+            code::DIRECTIVE_SYNTAX,
             5..12,
             "this parameter must be followed by a space, comment, or newline"
         )]
@@ -368,7 +368,7 @@ fn test_octave() -> anyhow::Result<()> {
     assert_eq!(
         e,
         vec![Diagnostic::new(
-            code::NOTE,
+            code::NOTE_SYNTAX,
             1..4,
             "octave count is too large"
         )]
@@ -377,7 +377,7 @@ fn test_octave() -> anyhow::Result<()> {
     assert_eq!(
         e,
         vec![Diagnostic::new(
-            code::NOTE,
+            code::NOTE_SYNTAX,
             1..2,
             "octave count may not be zero"
         )]
