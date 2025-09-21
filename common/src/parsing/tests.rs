@@ -120,7 +120,7 @@ fn check_output<T: Debug + Serialize>(
 fn test_pass2() -> anyhow::Result<()> {
     // This is designed to fail if anything failed but to run all the tests and produce useful
     // output for analysis.
-    let paths = get_stq_files("parsing-tests/pass2")?;
+    let paths = get_stq_files("parsing-tests")?;
     let mut errors = Vec::<String>::new();
     for p in paths {
         let in_data = String::from_utf8(fs::read(&p)?)?;
