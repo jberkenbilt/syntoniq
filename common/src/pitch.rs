@@ -1,13 +1,14 @@
 use crate::parsing::pass2;
 use anyhow::bail;
 use num_rational::Ratio;
+use num_traits::{CheckedDiv, CheckedMul};
 use serde::de::Visitor;
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 use std::cmp::Ordering;
 use std::collections::HashMap;
-use std::fmt;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
+use std::{cmp, fmt};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Pitch {
@@ -135,71 +136,114 @@ impl Display for Pitch {
 
 impl Pitch {
     pub fn new(factors: Vec<Factor>) -> Self {
-        // Canonicalize. This was AI-generated with an extremely detailed spec of the algorithm
-        // and subsequently modified.
+        // Algorithm:
+        // - Rewrite as the product of primes raised to rational powers
+        // - Add exponents of like bases
+        // No attempt is made to reconstruct a semantically meaningful representation. If you
+        // want that, you can divide by the factor you want to call out. Something aware of the
+        // chain of transpositions could easily construct the trail, but otherwise, when
+        // non-integer, rational bases are involved, trying to reconstruct them is guesswork.
 
-        // For factors with exponent = 1, we'll multiply them together
-        let mut exp_1 = Ratio::<u32>::from_integer(1);
+        // When this is called, it is known that the base numerator and denominator are positive and
+        // the exponent denominator is non-negative. Since these are rationals, that just means
+        // we have positive bases.
 
-        // For other factors, group by base and sum exponents
-        let mut by_base: HashMap<Ratio<u32>, Ratio<i32>> = HashMap::new();
+        //TODO: This code doesn't really handle overflow properly. If it happens in practice,
+        // consider switching to bigint.
 
-        for factor in factors {
-            // Create rationals and reduce to simplest terms
-            if factor.exp == Ratio::from_integer(1) {
-                // Multiply into our running product
-                exp_1 *= factor.base;
+        // Split (a/b)^x to a^x * b^(-x)
+        let factors = {
+            let mut collect = Vec::new();
+            for f in factors {
+                let base_d = *f.base.denom();
+                if base_d == 1 {
+                    collect.push(f);
+                } else {
+                    let base_n = *f.base.numer();
+                    collect.push(Factor {
+                        base: Ratio::from_integer(base_n),
+                        exp: f.exp,
+                    });
+                    collect.push(Factor {
+                        base: Ratio::from_integer(base_d),
+                        exp: -f.exp,
+                    });
+                };
+            }
+            collect
+        };
+
+        // Maintain an accumulator for each prime base and for pure rationals.
+        let max_base = factors
+            .iter()
+            .fold(1, |acc, x| cmp::max(acc, *x.base.numer()));
+        let sieve = primal::Sieve::new(1 + max_base.isqrt() as usize);
+        let mut exp_accumulators = HashMap::<u32, Ratio<i32>>::new();
+        let mut rational_accumulator = Ratio::from_integer(1);
+        for f in factors {
+            if f.exp == Ratio::from_integer(1) {
+                rational_accumulator = rational_accumulator
+                    .checked_mul(&f.base)
+                    .expect("TODO: handle overflow");
             } else {
-                // Add exponent to existing base or insert new
-                by_base
-                    .entry(factor.base)
-                    .and_modify(|e| *e += factor.exp)
-                    .or_insert(factor.exp);
+                let base_n = *f.base.numer();
+                for (prime, prime_exp) in sieve.factor(base_n as usize).unwrap() {
+                    let exp = f
+                        .exp
+                        .checked_mul(&Ratio::from_integer(prime_exp as i32))
+                        .expect("TODO: handle overflow");
+                    exp_accumulators
+                        .entry(prime as u32)
+                        .and_modify(|e| *e += exp)
+                        .or_insert(exp);
+                }
             }
         }
 
-        let mut result = Vec::new();
-
-        // Add all other factors with base other than 1. If the exponent is negative, adjust
-        // the exp_1 base and make it positive.
-        for (base, mut exp) in by_base {
-            // Normalize to between 0 and denominator
-            while *exp.numer() < 0 {
-                exp += Ratio::from_integer(1);
-                exp_1 /= base;
+        let mut result = Vec::<Factor>::new();
+        // Normalize all exponents to [0, 1) by adjusting the accumulated rational. Discard any
+        // factors with a zero exponent.
+        for (base, mut exp) in exp_accumulators {
+            let q = exp.floor();
+            if q != Ratio::from_integer(0) {
+                let qn = *q.numer();
+                if qn > 0 {
+                    rational_accumulator = rational_accumulator
+                        .checked_mul(&Ratio::from_integer(
+                            base.checked_pow(qn as u32).expect("TODO: overflow"),
+                        ))
+                        .expect("TODO: handle overflow");
+                } else {
+                    rational_accumulator = rational_accumulator
+                        .checked_div(&Ratio::from_integer(
+                            base.checked_pow((-qn) as u32).expect("TODO: overflow"),
+                        ))
+                        .expect("TODO: handle overflow");
+                }
+                exp -= q;
             }
-            while *exp.numer() > *exp.denom() {
-                exp -= Ratio::from_integer(1);
-                exp_1 *= base;
-            }
-            if *exp.numer() == 0 {
-                continue;
-            }
-            if base == Ratio::from_integer(1) {
-                // The exponent doesn't matter if the base is 1
-                exp = Ratio::from_integer(1);
-            }
-            if exp == Ratio::from_integer(1) {
-                exp_1 *= base;
-            } else {
-                result.push(Factor { base, exp });
+            if exp != Ratio::from_integer(0) {
+                result.push(Factor {
+                    base: Ratio::from_integer(base),
+                    exp,
+                })
             }
         }
 
-        // For consistent results, sort parts with non-1 exponent in decreasing order of exponent.
-        // We'll reverse after attaching the exponent-1 factor.
-        result.sort_by_key(|f| (f.exp, f.base));
+        // In the end, we want the pure rational factor first, then the others sorted by base.
+        // Start with the non-rational terms.
+        result.sort_by_key(|f| (f.base, f.exp));
 
-        // Append the exponent-1 factor, taking care to avoid needless multiply by 1
-        if result.is_empty() || exp_1 != Ratio::from_integer(1) {
-            result.push(Factor {
-                base: exp_1,
+        // Prepend the accumulated rational, taking care to avoid needless multiply by 1
+        if result.is_empty() || rational_accumulator != Ratio::from_integer(1) {
+            result = [Factor {
+                base: rational_accumulator,
                 exp: Ratio::from_integer(1),
-            });
+            }]
+            .into_iter()
+            .chain(result)
+            .collect();
         }
-        // Reverse so the exponent-1 factor is first, followed by the other factors in decreasing
-        // order of exponent.
-        result.reverse();
 
         Self { factors: result }
     }
@@ -364,8 +408,9 @@ mod tests {
             p,
             Pitch {
                 factors: vec![
-                    Factor::new(500, 1, 1, 1).unwrap(),
-                    Factor::new(4, 3, 4, 7).unwrap(),
+                    Factor::new(1000, 3, 1, 1).unwrap(),
+                    Factor::new(2, 1, 1, 7).unwrap(),
+                    Factor::new(3, 1, 3, 7).unwrap(),
                 ],
             }
         );
@@ -445,6 +490,10 @@ mod tests {
         check("100*^2|2", "200")?;
         check("660*^-5|12", "330*^7|12")?;
         check("500*^0|31", "500")?;
+        check("9^1|2", "3")?;
+        check("8^2|3", "4")?;
+        check("12^1|2*3^-1|2*4^-1|2", "1")?;
+        check("6/7^1|2*5/3^1|2", "15/7^1|2*2/3^1|2")?;
 
         let p1 = Pitch::parse("440")?;
         let p2 = &p1 * &Pitch::parse("3/2")?;
@@ -457,7 +506,7 @@ mod tests {
         assert_eq!(p3.to_string(), "330*^7|12");
         assert_eq!(
             Pitch::parse("3/4*5/3*^1|12*^10|31*3/2^1|2")?.to_string(),
-            "5/4*3/2^1|2*^151|372"
+            "5/8*^337|372*3^1|2"
         );
 
         Ok(())

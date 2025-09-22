@@ -13,3 +13,5 @@ clap.workspace = true
 anstream = "0.6.20"
 serde_json = "1.0.145"
 annotate-snippets = "0.12.4"
+primal = "0.3.3"
+num-traits = "0.2.19"
