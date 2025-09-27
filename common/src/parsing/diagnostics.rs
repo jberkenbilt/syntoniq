@@ -22,6 +22,14 @@ pub mod code {
     pub const TOPLEVEL_SYNTAX: &str = "E1011 incorrect syntax";
     pub const DIRECTIVE_SYNTAX: &str = "E1012 incorrect directive syntax";
     pub const SCALE_SYNTAX: &str = "E1013 incorrect scale block syntax";
+    pub const UNKNOWN_DIRECTIVE: &str = "E1014 unknown directive";
+    pub const UNKNOWN_DIRECTIVE_PARAM: &str = "E1015 unknown directive parameter";
+    pub const INCORRECT_DIRECTIVE_PARAM: &str = "E1016 incorrect parameter type";
+    pub const DIRECTIVE_USAGE: &str = "E1017 incorrect directive usage";
+    pub const SCALE: &str = "E1018 incorrect scale data";
+    pub const INITIALIZATION: &str = "E1019 syntoniq initialization";
+    pub const USAGE: &str = "E1020 general usage";
+    pub const SCORE: &str = "E1021 incorrect score block";
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
@@ -106,6 +114,10 @@ impl Diagnostics {
 
     pub fn has_errors(&self) -> bool {
         !self.list.borrow_mut().is_empty()
+    }
+
+    pub fn num_errors(&self) -> usize {
+        self.list.borrow().len()
     }
 
     pub fn get_all(&self) -> Vec<Diagnostic> {

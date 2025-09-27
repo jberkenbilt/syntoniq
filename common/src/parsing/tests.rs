@@ -61,6 +61,7 @@ use crate::parsing::diagnostics::Diagnostics;
 use crate::parsing::model::Spanned;
 use crate::parsing::pass1::parse1;
 use crate::parsing::pass2::parse2;
+use crate::parsing::pass3::parse3;
 use serde::Serialize;
 use serde_json::json;
 use std::fmt::{Debug, Display};
@@ -137,10 +138,16 @@ fn test_pass2() -> anyhow::Result<()> {
             results.push(json!(&r));
             r.is_ok()
         };
-        if is_ok {
+        let is_ok = is_ok && {
             // Pass 2
             let r = parse2(&in_data);
             check_output(&path, in_len, "pass 2", &mut errors, &r);
+            results.push(json!(&r));
+            r.is_ok()
+        };
+        if is_ok {
+            // Pass 3
+            let r = parse3(&in_data).map(|_| ());
             results.push(json!(&r));
         }
 

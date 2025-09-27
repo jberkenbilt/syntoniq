@@ -2,6 +2,7 @@
 resolver = "3"
 members = [
   "common",
+  "common/directive_derive",
   "keyboard",
 ]
 

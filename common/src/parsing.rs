@@ -60,6 +60,9 @@ pub mod diagnostics;
 pub mod model;
 pub mod pass1;
 pub mod pass2;
+pub mod pass3;
+pub mod score;
+pub(crate) mod score_helpers;
 
 #[cfg(test)]
 mod tests;

@@ -1,0 +1,230 @@
+[
+  {
+    "Ok": [
+      {
+        "span": [
+          0,
+          12
+        ],
+        "value": {
+          "raw": "define_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          12,
+          13
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          13,
+          17
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          17,
+          18
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          18,
+          33
+        ],
+        "value": {
+          "raw": "\"uninitialized\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                19,
+                32
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          33,
+          34
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          34,
+          35
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          35,
+          42
+        ],
+        "value": {
+          "raw": "ignored",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          42,
+          43
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          43,
+          44
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          44,
+          45
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      }
+    ]
+  },
+  {
+    "Ok": [
+      {
+        "span": [
+          0,
+          34
+        ],
+        "value": {
+          "raw": "define_scale(name=\"uninitialized\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  0,
+                  12
+                ],
+                "value": "define_scale"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        13,
+                        17
+                      ],
+                      "value": "name"
+                    },
+                    "value": {
+                      "span": [
+                        18,
+                        33
+                      ],
+                      "value": {
+                        "String": "uninitialized"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          34,
+          35
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          35,
+          44
+        ],
+        "value": {
+          "raw": "ignored()",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  35,
+                  42
+                ],
+                "value": "ignored"
+              },
+              "opening_comment": null,
+              "params": []
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          44,
+          45
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      }
+    ]
+  },
+  {
+    "Err": {
+      "list": [
+        {
+          "code": "E1019 syntoniq initialization",
+          "context": [],
+          "message": {
+            "span": [
+              0,
+              34
+            ],
+            "value": "syntonic is not initialized -- the first directive must be syntoniq(version=n)"
+          }
+        }
+      ]
+    }
+  }
+]

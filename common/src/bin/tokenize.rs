@@ -2,7 +2,7 @@ use clap::Parser;
 use serde_json::json;
 use std::io::Write;
 use std::{fs, io};
-use syntoniq_common::parsing::{pass1, pass2};
+use syntoniq_common::parsing::{pass1, pass2, pass3};
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -26,17 +26,18 @@ fn main() -> anyhow::Result<()> {
         if r.is_ok() {
             let r = pass2::parse2(input);
             results.push(json!(&r));
-        }
+            if r.is_ok() {
+                let r = pass3::parse3(input).map(|_| ());
+                results.push(json!(&r));
+            }
+        };
         serde_json::to_writer_pretty(io::stdout(), &results)?;
         _ = io::stdout().write(b"\n");
     } else {
-        let r = pass2::parse2(input);
-        match r {
+        match pass3::parse3(input) {
             Err(diags) => anstream::eprintln!("{}", diags.render(&cli.filename, input)),
-            Ok(tokens) => {
-                for t in tokens {
-                    println!("{t}")
-                }
+            Ok(_) => {
+                // TODO
             }
         }
     }

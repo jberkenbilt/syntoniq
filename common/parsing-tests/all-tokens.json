@@ -5837,7 +5837,11 @@
                   }
                 }
               ],
-              "opening_comment": null
+              "opening_comment": null,
+              "span": [
+                279,
+                281
+              ]
             }
           }
         }
@@ -6043,7 +6047,11 @@
                   }
                 }
               ],
-              "opening_comment": null
+              "opening_comment": null,
+              "span": [
+                342,
+                344
+              ]
             }
           }
         }
@@ -6313,7 +6321,11 @@
                   ],
                   "value": "; opening comment"
                 }
-              }
+              },
+              "span": [
+                427,
+                429
+              ]
             }
           }
         }
@@ -8166,5 +8178,33 @@
         }
       }
     ]
+  },
+  {
+    "Err": {
+      "list": [
+        {
+          "code": "E1014 unknown directive",
+          "context": [],
+          "message": {
+            "span": [
+              8,
+              17
+            ],
+            "value": "unknown directive 'onceThere'"
+          }
+        },
+        {
+          "code": "E1019 syntoniq initialization",
+          "context": [],
+          "message": {
+            "span": [
+              8,
+              60
+            ],
+            "value": "syntonic is not initialized -- the first directive must be syntoniq(version=n)"
+          }
+        }
+      ]
+    }
   }
 ]

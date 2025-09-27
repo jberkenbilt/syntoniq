@@ -595,5 +595,22 @@
         }
       }
     ]
+  },
+  {
+    "Err": {
+      "list": [
+        {
+          "code": "E1019 syntoniq initialization",
+          "context": [],
+          "message": {
+            "span": [
+              0,
+              62
+            ],
+            "value": "syntonic is not initialized -- the first directive must be syntoniq(version=n)"
+          }
+        }
+      ]
+    }
   }
 ]

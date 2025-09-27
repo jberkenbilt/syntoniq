@@ -1,0 +1,233 @@
+// This module defines a derive macro to generate code for creating specific directives from
+// structs that define their argument types. Additional requirements:
+//   - Type must have a `span` field of type `Span`
+//   - Type must have a validate() method.
+
+use heck::ToSnakeCase;
+use proc_macro::TokenStream;
+use quote::{ToTokens, quote};
+use syn::{
+    Data, DataStruct, DeriveInput, GenericArgument, PathArguments, Type, TypeGroup, TypeParen,
+    TypePath,
+};
+use syn::{DataEnum, parse_macro_input};
+
+// TODO: use doc strings to generate help
+
+// This function was initially AI-generated. Given a type, and wrapper type X, if the type is X<T>,
+// it returns Some(T).
+fn option_inner_type<'a>(outer: &'static str, ty: &'a Type) -> Option<&'a Type> {
+    fn strip(ty: &Type) -> &Type {
+        match ty {
+            Type::Group(TypeGroup { elem, .. }) => strip(elem),
+            Type::Paren(TypeParen { elem, .. }) => strip(elem),
+            _ => ty,
+        }
+    }
+    let ty = strip(ty);
+    let Type::Path(TypePath { path, .. }) = ty else {
+        return None;
+    };
+    let last = path.segments.last()?;
+    if last.ident != outer {
+        return None;
+    }
+    match &last.arguments {
+        PathArguments::AngleBracketed(ab) => {
+            if let Some(GenericArgument::Type(inner)) = ab.args.first() {
+                Some(inner)
+            } else {
+                None
+            }
+        }
+        _ => None,
+    }
+}
+
+#[proc_macro_derive(FromRawDirective)]
+pub fn from_raw_directive_derive(input: TokenStream) -> TokenStream {
+    let derive_input = parse_macro_input!(input as DeriveInput);
+    // Dispatch based on whether this is a struct or an enum.
+    match &derive_input.data {
+        Data::Struct(data) => from_raw_struct(&derive_input, data),
+        Data::Enum(data) => from_raw_enum(&derive_input, data),
+        _ => syn::Error::new_spanned(&derive_input.ident, "only struct and enum is supported")
+            .to_compile_error(),
+    }
+    .into()
+}
+
+fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::TokenStream {
+    // Iterate through all the fields in the structure. Fields of type Option are for optional
+    // parameters. Fields of type Vec are for optional, repeatable parameters. Other fields are
+    // for required parameters. The generated code uses the CheckType trait to test for the correct
+    // argument. If the generated function is able to fully initialize the struct from the raw
+    // directive, it returns a Some value. Otherwise, it returns None. This ensures that additional
+    // semantic validation can safely operate on the fully-initialized type.
+
+    let top_name = &input.ident;
+    let mut var_decls = Vec::new();
+    let mut arg_checks = Vec::new();
+    let mut required_checks = Vec::new();
+    let mut inits = Vec::new();
+
+    for f in &data.fields {
+        let field_name = f.ident.as_ref().unwrap();
+        if *field_name == "span" {
+            // Special case
+            continue;
+        }
+        let field_type = &f.ty;
+        let option_type = option_inner_type("Option", field_type);
+        let vec_type = option_inner_type("Vec", field_type);
+        let var_type = option_type.unwrap_or(field_type); // contains garbage if Vec
+        let is_required = vec_type.is_none() && option_type.is_none();
+
+        // Generate code fragments. These are in context of the generated function (at the end).
+
+        // Create a local variable that gets initialized if the argument is encountered.
+        if let Some(inner) = vec_type {
+            var_decls.push(quote! {
+                let mut #field_name = Vec::<#inner>::new();
+            });
+        } else {
+            var_decls.push(quote! {
+                let mut #field_name: Option<#var_type> = None;
+            });
+        }
+
+        let arg_check = if vec_type.is_some() {
+            quote! {
+                if let Some(x) = score_helpers::check_value(diags, &d.name.value, &p) {
+                    #field_name.push(x);
+                }
+            }
+        } else {
+            quote! {
+                if #field_name.is_some() {
+                    diags.err(
+                        code::DIRECTIVE_USAGE,
+                        k.span,
+                        format!(
+                            "'{}': parameter '{}' is not repeatable",
+                            d.name.value,
+                            stringify!(#field_name),
+                        ),
+                    );
+                }
+                #field_name = score_helpers::check_value(diags, &d.name.value, &p);
+            }
+        };
+
+        // Generate the code that checks the parameter type and initializes.
+        arg_checks.push(quote! {
+            if k.value == stringify!(#field_name) {
+                params_seen.insert(k.value.to_string());
+                handled = true;
+                #arg_check
+            }
+        });
+
+        // Generate code for each required field to ensure that the parameter was seen.
+        let required_check = if is_required {
+            quote! {
+                if !params_seen.contains(stringify!(#field_name)) {
+                    diags.err(
+                        code::DIRECTIVE_USAGE,
+                        d.name.span,
+                        format!("'{}': missing parameter '{}'", d.name.value, stringify!(#field_name)),
+                    );
+                }
+            }
+        } else {
+            quote! {}
+        };
+        required_checks.push(required_check);
+
+        // Generate a code fragment that initializes the struct field from the local variable.
+        // Using `?` for required types ensures we return `None` if any are missing. This is done
+        // after missing parameters have already been reported.
+        let field_init = if option_type.is_none() && vec_type.is_none() {
+            quote! {: #field_name?}
+        } else {
+            quote! {}
+        };
+        inits.push(quote! {
+            #field_name #field_init,
+        });
+    }
+
+    quote! {
+        impl FromRawDirective for #top_name {
+            fn from_raw(diags: &Diagnostics, d: &RawDirective) -> Option<Self> {
+                let mut params_seen = HashSet::new();
+                #(#var_decls)*
+                for p in &d.params {
+                    let mut handled = false;
+                    let k = &p.kv.key;
+                    let v = &p.kv.value;
+                    #(#arg_checks)*
+                    if !handled {
+                        // TODO: refer user to help
+                        diags.err(
+                            code::UNKNOWN_DIRECTIVE_PARAM,
+                            p.kv.key.span,
+                            format!("'{}': unknown parameter '{}'", d.name.value, p.kv.key.value),
+                        );
+                    }
+                }
+                #(#required_checks)*
+                let mut r = Self {
+                    span: d.name.span,
+                    #(#inits)*
+                };
+                let before = diags.num_errors();
+                r.validate(diags);
+                if diags.num_errors() > before {
+                    None
+                } else {
+                    Some(r)
+                }
+            }
+        }
+    }
+}
+
+fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStream {
+    // Iterate through all the enum variants. Generate code that calls the appropriated initializer
+    // based on the name of the directive.
+
+    let top_name = &input.ident;
+    let mut match_arms = Vec::new();
+
+    for v in &data.variants {
+        let variant = &v.ident;
+        let field = v.fields.iter().next().unwrap();
+        let field_type = &field.ty;
+        let directive_name = field_type.to_token_stream().to_string().to_snake_case();
+        match_arms.push(quote! {
+            #directive_name => {
+                Some(#top_name::#variant(<#field_type as FromRawDirective>::from_raw(diags, d)?))
+            }
+        })
+    }
+
+    quote! {
+        impl FromRawDirective for #top_name {
+            fn from_raw(diags: &Diagnostics, d: &RawDirective) -> Option<Self> {
+                match d.name.value.as_ref() {
+                    #(#match_arms)*
+                    _ => {
+                        // TODO: refer to help
+                        diags.err(
+                            code::UNKNOWN_DIRECTIVE,
+                            d.name.span,
+                            format!("unknown directive '{}'", d.name.value),
+                        );
+                        None
+                    }
+                }
+            }
+        }
+    }
+}

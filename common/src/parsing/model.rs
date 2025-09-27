@@ -118,6 +118,9 @@ impl<T: Debug + Serialize> Spanned<T> {
             value: value.into(),
         }
     }
+    pub fn value(self) -> T {
+        self.value
+    }
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
@@ -507,6 +510,7 @@ impl Display for ScaleNote {
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct ScaleBlock {
+    pub span: Span,
     pub opening_comment: Option<Comment>,
     pub notes: Vec<Spanned<ScaleNote>>,
 }

@@ -839,6 +839,7 @@ fn scale_block(
                 Spanned::new(
                     start.span.start..end.span.end,
                     ScaleBlock {
+                        span: start.span,
                         opening_comment,
                         notes,
                     },

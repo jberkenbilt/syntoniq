@@ -1,8 +1,13 @@
 # TODO
 
-Pass3 parsing, or do that with semantics outside the common crate. Mostly, it's straightforward at this point. Remember to allow comments on their own lines inside a score block. Relax blank lines. Once we see a note or dynamic line, we start a score block that ends at the first thing that is not a score line or a comment line.
-
 Fuzz testing. A file that ends in the middle of a directive panics. The panic would have been clearer with context as well.
+
+Current state:
+* The derive macro for directives should be good now except for support for help
+* Next steps
+  * Start actually processing directives, registering scales, etc.
+  * Work on score blocks
+  * Work on reformatter
 
 # Syntoniq DSL
 
@@ -85,7 +90,7 @@ Blank lines are ignored except when they terminate score blocks.
 A file consists of a sequence of the following, excluding comments and non-functional blank lines:
 
 * Directives: declarative statements that look like function calls
-* Score blocks: a sequence of one or more lines, each starting with `[part]` or `[part.note]`, both preceded by and followed by a blank line
+* Score blocks: a sequence of one or more lines, each starting with `[part]` or `[part.note]`. Score blocks are ended by blank lines or things that are not comments, dynamic lines, or note lines.
 * Scale definitions, described below
 
 ## Directives
@@ -109,8 +114,6 @@ Parameters can have one of these types:
 ## Score Blocks
 
 Each line starts with `[part]` or `[part.n]`, where `n` is a note number. `n` may be omitted if there is only a single note, in which case the note number is `0`. If `n` is omitted, whatever is present refers to all notes on the line. Some operations, such as tuning, are only allowed to apply to the entire part.
-
-A score block must be both preceded and followed by a blank line, the beginning of the file, or the end of the file.
 
 See examples below.
 

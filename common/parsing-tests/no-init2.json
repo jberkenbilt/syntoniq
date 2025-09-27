@@ -1,0 +1,67 @@
+[
+  {
+    "Ok": [
+      {
+        "span": [
+          0,
+          24
+        ],
+        "value": {
+          "raw": "; Nothing happened here.",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          24,
+          25
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      }
+    ]
+  },
+  {
+    "Ok": [
+      {
+        "span": [
+          0,
+          24
+        ],
+        "value": {
+          "raw": "; Nothing happened here.",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          24,
+          25
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      }
+    ]
+  },
+  {
+    "Err": {
+      "list": [
+        {
+          "code": "E1019 syntoniq initialization",
+          "context": [],
+          "message": {
+            "span": [
+              0,
+              1
+            ],
+            "value": "Syntoniq was never initialized"
+          }
+        }
+      ]
+    }
+  }
+]

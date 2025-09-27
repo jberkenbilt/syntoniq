@@ -522,6 +522,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "directive_derive"
+version = "0.1.0"
+dependencies = [
+ "heck",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "either"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1475,6 +1485,7 @@ dependencies = [
  "anstream",
  "anyhow",
  "clap",
+ "directive_derive",
  "log",
  "num-rational",
  "num-traits",
