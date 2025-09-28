@@ -3,15 +3,58 @@
 Fuzz testing. A file that ends in the middle of a directive panics. The panic would have been clearer with context as well.
 
 Current state:
+* Next steps
+  * cresc/dim checks -- will require carrying some per-note state across score blocks or peeking at prior score block plus validation that last score block has no unresolved dynamic changes
+  * Timeline
+    * Backend order: JSON, MIDI, csound; target MTS instruments, use velocity for attack only, and play with either CC#7 or CC#11 or both for dynamics.
+  * Work on reformatter
+    * Should be able to work from token stream but only after validation has passed
+  * Generate music via timeline
 * Remaining syntax
   * tempo, accel, decel
-  * check cresc/dim in dynamics
   * morph, strum
   * define_instrument, use_instrument
   * marks, regions, repeats
-* Next steps
-  * Work on reformatter
-  * Generate music
+
+Next, I would like create a timeline capable of expressing everything we have so far, perhaps taking it end to end through csound and midi. Then, as new features are added, they can be added end to end. This will make it easier to test new features and result in more incremental or less refactoring.
+
+## Timeline
+
+Score parser should generate a timeline that is fully ready for generating various types of output. That's where the responsibility of the parsing module in the common crate should end.
+
+The timeline should contain enough information to generate csound, midi, and some kind of JSON dump that we can use for testing and debugging. Things in the timeline:
+
+* Header: source file
+* Timeline event:
+  * span of triggering event in source
+  * offset in ticks
+  * metadata
+  * similar to MIDI tracks, we have a global timeline with things like tempo and a timeline for each part
+  * also global section for tunings and instruments
+  * sorted by time, then span
+* Tuning
+  * Need to capture the chain of tunings for the base pitch so we can have a comment like `17-EDO, up ^2|19 from 'e' from default` or show the base pitch as `220*^1|4*^1|3*^2^19` or both.
+  * Pitches should be shown in comments factor from base pitch, e.g. `*9/8` or `*^2|19`
+  * Perhaps have a catalog of unique tunings, perhaps in order of appearance, and set a tuning based on that to reduce duplication and make it easier to generate tuning files. If we keep a uuid from an atomic counter on tune generation, this becomes easy; we just have to keep the predecessor's ID when `base_factor` or `base_note` is used.
+* Notes
+  * organized by part
+  * name
+  * pitch as
+    * factor of base
+    * Hz
+    * scale degree with zero as base pitch and pitches sorted numerically +/- cycle. If we allow pitches lower than the base pitch, I think it's okay. The base pitch still gets zero. So if you had a scale like `<< ^-1|3 q | 1 r | ^1|3 s >>`, then `q` would be -1, `r` would be 0, and `s` would be 1. Then `q'` would be 2, and `s,` would be -2. This can be used to map to midi note numbers
+  * on|off + "velocity"
+  * other details attached to the note
+* Dynamics -- need a way to represent crescendo, decrescendo
+* Instrument assignment, metadata changes (strum, morph)
+* Comments from source are not preserved here but are preserved by the reformatter
+
+End goal: output generators should be able to go straight to output without encountering any error conditions.
+
+Example:
+* Csound: can create a separate instrument for each source instrument or maybe for each part if we can share csound instruments easily. Our instruments have to support certain things...will have to design that part, but that can likely be done after generating the timeline.
+* MIDI: can allocate tracks and channels based on number of simultaneous notes, instruments, etc.
+* Dump/Json: just serialize the timeline
 
 # Syntoniq DSL
 
