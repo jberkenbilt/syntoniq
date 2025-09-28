@@ -3,6 +3,7 @@ use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{DynamicLine, Note, NoteLine, RawDirective, ScaleBlock, Span, Spanned};
 use num_rational::Ratio;
 use std::collections::{HashMap, HashSet};
+use std::sync::{Arc, LazyLock};
 
 mod directives;
 use crate::pitch::Pitch;
@@ -11,9 +12,10 @@ pub use directives::*;
 pub struct Score {
     pub version: u32,
     pub pending_scale: Option<ScaleDefinition>,
-    pub scales: HashMap<String, Scale>,
+    pub scales: HashMap<String, Arc<Scale>>,
     pub pending_score_block: Option<ScoreBlock>,
     pub score_blocks: Vec<ScoreBlock>,
+    pub tunings: HashMap<String, Arc<Tuning>>, // empty string key is default tuning
 }
 
 pub struct ScaleDefinition {
@@ -28,60 +30,70 @@ pub struct Scale {
     pub notes: HashMap<String, Pitch>,
 }
 
+pub struct Tuning {
+    pub scale: Arc<Scale>,
+    pub base_pitch: Pitch,
+}
+
 #[derive(Default)]
 pub struct ScoreBlock {
     pub note_lines: Vec<NoteLine>,
     pub dynamic_lines: Vec<DynamicLine>,
 }
 
-impl Score {
-    fn default_scale() -> Scale {
-        let base_pitch = Pitch::must_parse("220*^1|4");
-        let mut pitches = Vec::new();
-        let mut next_pitch = base_pitch.clone();
-        let increment = Pitch::must_parse("^1|12");
-        for _ in 0..=12 {
-            pitches.push(next_pitch.clone());
-            next_pitch *= &increment;
-        }
-        let notes = [
-            ("c", pitches[0].clone()),
-            ("c#", pitches[1].clone()),
-            ("d%", pitches[1].clone()),
-            ("d", pitches[2].clone()),
-            ("d#", pitches[3].clone()),
-            ("e%", pitches[3].clone()),
-            ("e", pitches[4].clone()),
-            ("e#", pitches[5].clone()),
-            ("f%", pitches[4].clone()),
-            ("f", pitches[5].clone()),
-            ("f#", pitches[6].clone()),
-            ("g%", pitches[6].clone()),
-            ("g", pitches[7].clone()),
-            ("g#", pitches[8].clone()),
-            ("a%", pitches[8].clone()),
-            ("a", pitches[9].clone()),
-            ("a#", pitches[10].clone()),
-            ("b%", pitches[10].clone()),
-            ("b", pitches[11].clone()),
-            ("b#", pitches[12].clone()),
-        ]
-        .into_iter()
-        .map(|(k, v)| (k.to_string(), v))
-        .collect();
-        Scale {
-            definition: ScaleDefinition {
-                span: (0..1).into(),
-                name: "default".to_string(),
-                base_pitch: base_pitch.clone(),
-                cycle: Ratio::from_integer(2),
-            },
-            notes,
-        }
+static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
+    let base_pitch = Pitch::must_parse("1");
+    let mut pitches = Vec::new();
+    let mut next_pitch = base_pitch.clone();
+    let increment = Pitch::must_parse("^1|12");
+    for _ in 0..=12 {
+        pitches.push(next_pitch.clone());
+        next_pitch *= &increment;
     }
+    let notes = [
+        ("c", pitches[0].clone()),
+        ("c#", pitches[1].clone()),
+        ("d%", pitches[1].clone()),
+        ("d", pitches[2].clone()),
+        ("d#", pitches[3].clone()),
+        ("e%", pitches[3].clone()),
+        ("e", pitches[4].clone()),
+        ("e#", pitches[5].clone()),
+        ("f%", pitches[4].clone()),
+        ("f", pitches[5].clone()),
+        ("f#", pitches[6].clone()),
+        ("g%", pitches[6].clone()),
+        ("g", pitches[7].clone()),
+        ("g#", pitches[8].clone()),
+        ("a%", pitches[8].clone()),
+        ("a", pitches[9].clone()),
+        ("a#", pitches[10].clone()),
+        ("b%", pitches[10].clone()),
+        ("b", pitches[11].clone()),
+        ("b#", pitches[12].clone()),
+    ]
+    .into_iter()
+    .map(|(k, v)| (k.to_string(), v))
+    .collect();
+    Arc::new(Scale {
+        definition: ScaleDefinition {
+            span: (0..1).into(),
+            name: "default".to_string(),
+            base_pitch: base_pitch.clone(),
+            cycle: Ratio::from_integer(2),
+        },
+        notes,
+    })
+});
+static DEFAULT_TUNING: LazyLock<Arc<Tuning>> = LazyLock::new(|| {
+    let scale = DEFAULT_SCALE.clone();
+    let base_pitch = scale.definition.base_pitch.clone();
+    Arc::new(Tuning { scale, base_pitch })
+});
 
+impl Score {
     pub fn new(s: Syntoniq) -> Self {
-        let scales = [("default".to_string(), Self::default_scale())]
+        let scales = [("default".to_string(), DEFAULT_SCALE.clone())]
             .into_iter()
             .collect();
         Self {
@@ -90,6 +102,7 @@ impl Score {
             scales,
             pending_score_block: None,
             score_blocks: Default::default(),
+            tunings: Default::default(),
         }
     }
 
@@ -119,6 +132,8 @@ impl Score {
                         .unwrap_or(Ratio::from_integer(2)),
                 });
             }
+            Directive::Tune(x) => self.apply_tuning(diags, x),
+            Directive::ResetTuning(x) => self.reset_tuning(x),
         }
     }
 
@@ -160,13 +175,13 @@ impl Score {
             return;
         };
         let name = definition.name.clone();
-        let scale = Scale {
+        let scale = Arc::new(Scale {
             definition,
             notes: name_to_pitch
                 .into_iter()
                 .map(|(name, (pitch, _))| (name, pitch))
                 .collect(),
-        };
+        });
         let span = scale.definition.span;
         if let Some(old) = self.scales.insert(name.clone(), scale) {
             diags.push(
@@ -225,8 +240,7 @@ impl Score {
                     .with_context(old, "here is the previous occurrence"),
                 )
             }
-            // TODO: get actual assigned scale
-            let scale_name = "default";
+            let tuning = self.tuning_for_part(&line.leader.value.name.value);
             // Count up beats and track bar checks. If we have a known scale, check note names.
             let mut prev_beats = Ratio::from_integer(1u32);
             let mut beats_so_far = Ratio::from_integer(0u32);
@@ -262,19 +276,16 @@ impl Score {
                     prev_beats = beats;
                     beats_so_far += beats;
                 }
-                if let Some(scale) = self.scales.get(scale_name)
-                    && let Note::Regular(r_note) = &note.value
-                {
-                    // If this is a known scale, check the note names. If it's not a known scale,
-                    // an error will already have been issued. Keeping the unknown scale name
-                    // around prevents spurious errors by signalling that we should not check note
-                    // names.
+                if let Note::Regular(r_note) = &note.value {
                     let name = &r_note.name.value;
-                    if !scale.notes.contains_key(name) {
+                    if !tuning.scale.notes.contains_key(name) {
                         diags.err(
                             code::SCORE,
                             note.span,
-                            format!("note '{name}' is not in the current scale ('{scale_name}')"),
+                            format!(
+                                "note '{name}' is not in the current scale ('{}')",
+                                tuning.scale.definition.name
+                            ),
                         )
                     }
                 }
@@ -363,5 +374,105 @@ impl Score {
         //     - each position is <= the number of beats in the bar -- okay for dynamic at end
 
         self.score_blocks.push(sb);
+    }
+
+    fn tuning_for_part(&mut self, part: &str) -> Arc<Tuning> {
+        // Determine the name of the part we should use. If the part has a tuning, use it.
+        // Otherwise, fall back to the empty string, which indicates the global tuning.
+        let part_to_use = self.tunings.get(part).map(|_| part).unwrap_or("");
+        // Get the tuning. If not defined, fall back to the default tuning.
+        self.tunings
+            .get(part_to_use)
+            .cloned()
+            .unwrap_or(DEFAULT_TUNING.clone())
+    }
+
+    fn apply_tuning(&mut self, diags: &Diagnostics, tuning: Tune) {
+        let Some(scale) = self.scales.get(&tuning.scale.value).cloned() else {
+            diags.err(
+                code::TUNE,
+                tuning.scale.span,
+                format!("unknown scale '{}'", tuning.scale.value),
+            );
+            return;
+        };
+        // Look up tuning by part for each part we are trying to tune. If no part is specified,
+        // this applies to the global tuning. The first part gathers the part names we care
+        // about, and the second part gets the effective tuning for the part.
+        let cur_tunings: HashMap<String, Arc<Tuning>> = if tuning.part.is_empty() {
+            vec![""]
+        } else {
+            tuning.part.iter().map(|x| x.value.as_ref()).collect()
+        }
+        .into_iter()
+        .map(|x| (x.to_string(), self.tuning_for_part(x)))
+        .collect();
+
+        // Get the base pitch for each part.
+        let base_pitches: HashMap<String, Pitch> = if let Some(p) = &tuning.base_pitch {
+            // Use this value for all parts, disregarding the current base pitch.
+            cur_tunings
+                .keys()
+                .map(|part| (part.to_string(), p.value.clone()))
+                .collect()
+        } else if let Some(p) = &tuning.base_factor {
+            // Multiply each  existing tuning's base pitch by the factor to get the new one.
+            cur_tunings
+                .iter()
+                .map(|(part, existing)| (part.to_string(), &existing.base_pitch * &p.value))
+                .collect()
+        } else if let Some(n) = &tuning.base_note {
+            // Make sure the note name is valid in voice
+            let fall_back = &scale.definition.base_pitch;
+            cur_tunings
+                .iter()
+                .map(|(part, existing)| {
+                    let p = if let Some(p) = existing.scale.notes.get(&n.value) {
+                        p.clone()
+                    } else {
+                        diags.err(
+                            code::TUNE,
+                            n.span,
+                            format!(
+                                "note '{}' is not present in scale '{}', which is the current scale for part '{}'",
+                                n.value,
+                                existing.scale.definition.name,
+                                part,
+                            ),
+                        );
+                        fall_back.clone()
+                    };
+                    (part.clone(), p)
+                }).collect()
+        } else {
+            // Use the scale's default base pitch
+            let p = scale.definition.base_pitch.clone();
+            cur_tunings
+                .keys()
+                .map(|part| (part.to_string(), p.clone()))
+                .collect()
+        };
+        // Create a tuning for each distinct base pitch with this scale. Then apply the tuning
+        // to each specified part.
+        let mut tunings_by_pitch = HashMap::<String, Arc<Tuning>>::new();
+        for (part, base_pitch) in base_pitches {
+            let tuning = tunings_by_pitch.entry(part.clone()).or_insert_with(|| {
+                Arc::new(Tuning {
+                    scale: scale.clone(),
+                    base_pitch,
+                })
+            });
+            self.tunings.insert(part, tuning.clone());
+        }
+    }
+
+    fn reset_tuning(&mut self, reset_tuning: ResetTuning) {
+        if reset_tuning.part.is_empty() {
+            self.tunings.clear();
+        } else {
+            for p in reset_tuning.part {
+                self.tunings.remove(&p.value);
+            }
+        }
     }
 }

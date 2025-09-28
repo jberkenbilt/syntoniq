@@ -3,11 +3,9 @@
 Fuzz testing. A file that ends in the middle of a directive panics. The panic would have been clearer with context as well.
 
 Current state:
-* The derive macro for directives should be good now except for support for help
 * Next steps
-  * Start actually processing directives, registering scales, etc.
-  * Work on score blocks
   * Work on reformatter
+  * Generate music
 
 # Syntoniq DSL
 
@@ -277,6 +275,7 @@ reset_tuning()
 * At most one of `base_pitch`, `base_note`, or `base_factor` is allowed
 * `base_pitch` sets the base pitch of the scale to an absolute pitch
 * `base_note` sets the base pitch to a specified note in the *current* scale
+* `base_factor` sets the base pitch by adjusting relative to the current scale's base pitch
 * `scale` sets the new scale
 * In global scope, this sets the default tuning. In part scope, it sets the tuning for the part.
 * `reset_tuning`: in global scope, resets the default to 12-EDO with `220*1|4`. In part scope, it resets the part's tuning to use the default tuning

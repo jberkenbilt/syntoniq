@@ -1,9 +1,11 @@
-use crate::parsing::diagnostics::{Diagnostics, code};
+use crate::parsing::diagnostics::{Diagnostic, Diagnostics, code};
 use crate::parsing::model::{Param, ParamValue, Spanned};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
+use std::collections::HashMap;
 use std::fmt::Debug;
+use std::hash::Hash;
 
 pub trait CheckValue: Sized {
     fn check_value(p: &ParamValue) -> Result<Self, impl AsRef<str>>;
@@ -50,5 +52,17 @@ impl CheckValue for Pitch {
 impl CheckValue for String {
     fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
         pv.try_as_string().cloned().ok_or("should be a string")
+    }
+}
+
+pub fn check_unique<T: Debug + Serialize + Eq + Hash>(diags: &Diagnostics, items: &[Spanned<T>]) {
+    let mut seen = HashMap::new();
+    for i in items {
+        if let Some(old) = seen.insert(&i.value, i.span) {
+            diags.push(
+                Diagnostic::new(code::USAGE, i.span, "this value has already been used")
+                    .with_context(old, "here is the previous value"),
+            );
+        }
     }
 }

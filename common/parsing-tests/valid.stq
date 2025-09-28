@@ -1,0 +1,33 @@
+syntoniq(version=1)
+
+; Define two 5-note scales with different pitches and partial overlap
+; in note names.
+define_scale(name="5-EDO") <<
+  ^0|5 p
+  ^1|5 q
+  ^2|5 r
+  ^3|5 s
+  ^4|5 t
+>>
+define_scale(name="5-JI") <<
+    1 p
+  5/4 q
+  4/3 r
+  3/2 u
+  7/4 v
+>>
+
+[p1.0]  1:c d e f
+
+tune(scale="5-EDO" part="p1")
+
+[p1.0]  1:p q r s
+[p2.0]  1:c d e f
+
+; Use the 5-JI scale for p2 setting the base pitch to the pitch of d
+; in its existing, scale, which is default.
+tune(scale="5-JI" part="p2" base_note="d")
+
+[p1.0]  1:p q r s
+[p2.0]  1:p q r u
+[p3.0]  1:a e g b%

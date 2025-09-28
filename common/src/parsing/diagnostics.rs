@@ -30,6 +30,7 @@ pub mod code {
     pub const INITIALIZATION: &str = "E1019 syntoniq initialization";
     pub const USAGE: &str = "E1020 general usage";
     pub const SCORE: &str = "E1021 incorrect score block";
+    pub const TUNE: &str = "E1022 incorrect tuning";
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]

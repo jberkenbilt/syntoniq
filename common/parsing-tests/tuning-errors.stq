@@ -1,0 +1,67 @@
+syntoniq(version=1)
+
+; Define two 5-note scales with different pitches and partial overlap
+; in note names.
+define_scale(name="5-EDO") <<
+  ^0|5 p
+  ^1|5 q
+  ^2|5 r
+  ^3|5 s
+  ^4|5 t
+>>
+define_scale(name="5-JI") <<
+    1 p
+  5/4 q
+  4/3 r
+  3/2 u
+  7/4 v
+>>
+
+[p1.0]  1:c d e f
+
+tune(scale="5-EDO" part="p1")
+
+[p1.0]  1:p q r s
+[p2.0]  1:c d e f
+
+; Use the 5-JI scale for p2 setting the base pitch to the pitch of d
+; in its existing, scale, which is default.
+tune(scale="5-JI" part="p2" base_note="d")
+
+[p1.0]  1:p q r s
+[p2.0]  1:p q r u
+
+; Error: duplicated part
+tune(scale="5-JI" part="p2" part="p2")
+
+; Error: unknown scale part
+tune(scale="potato" part="p2")
+
+; Error: can't tune relative to an unknown note + duplication
+tune(scale="5-JI" part="p2" base_note="d")
+
+reset_tuning()
+; Now okay
+tune(scale="5-EDO" base_note="d")
+tune(scale="5-JI" part="p2" base_note="q")
+; p1 doesn't have v
+tune(scale="5-EDO" part="p1" base_note="v")
+; okay -- they both have r
+tune(scale="5-EDO" part="p1" base_note="r")
+tune(scale="5-JI" part="p2" base_note="r")
+
+[p1.0]  1:p q r s
+[p2.0]  1:p q r s ; s is an error
+
+reset_tuning(part="p2")
+[p1.0]  1:p q r s
+[p2.0]  1:p q r s ; okay now
+
+tune(scale="5-EDO" part="p1" part="p2" base_factor=^1|19)
+tune(scale="5-EDO" part="p1" part="p2" base_pitch=440)
+tune(scale="default" part="p4")
+
+[p1.0]  1:p q r s
+[p2.0]  1:p q r s
+[p3.0]  1:p q r s ; uses global tuning
+[p4.0]  1:c# e% g b
