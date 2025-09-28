@@ -2533,6 +2533,173 @@
           "raw": "\n",
           "t": "Newline"
         }
+      },
+      {
+        "span": [
+          558,
+          560
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          560,
+          564
+        ],
+        "value": {
+          "raw": "[p3]",
+          "t": {
+            "DynamicLeader": {
+              "name_span": [
+                561,
+                563
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          564,
+          566
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          566,
+          568
+        ],
+        "value": {
+          "raw": "64",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  566,
+                  568
+                ],
+                "value": 64
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          568,
+          569
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          569,
+          570
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  569,
+                  570
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          570,
+          571
+        ],
+        "value": {
+          "raw": "<",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          571,
+          572
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          572,
+          574
+        ],
+        "value": {
+          "raw": "96",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  572,
+                  574
+                ],
+                "value": 96
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          574,
+          575
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          575,
+          576
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  575,
+                  576
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          576,
+          577
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
       }
     ]
   },
@@ -4155,6 +4322,109 @@
                   }
                 }
               ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          558,
+          560
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          560,
+          577
+        ],
+        "value": {
+          "raw": "[p3]  64@2< 96@3\n",
+          "t": {
+            "DynamicLine": {
+              "comment": null,
+              "dynamics": [
+                {
+                  "span": [
+                    566,
+                    571
+                  ],
+                  "value": {
+                    "Regular": {
+                      "change": {
+                        "span": [
+                          570,
+                          571
+                        ],
+                        "value": "Diminuendo"
+                      },
+                      "level": {
+                        "span": [
+                          566,
+                          568
+                        ],
+                        "value": 64
+                      },
+                      "position": {
+                        "span": [
+                          569,
+                          570
+                        ],
+                        "value": [
+                          2,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    572,
+                    576
+                  ],
+                  "value": {
+                    "Regular": {
+                      "change": null,
+                      "level": {
+                        "span": [
+                          572,
+                          574
+                        ],
+                        "value": 96
+                      },
+                      "position": {
+                        "span": [
+                          575,
+                          576
+                        ],
+                        "value": [
+                          3,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              ],
+              "leader": {
+                "span": [
+                  560,
+                  564
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      561,
+                      563
+                    ],
+                    "value": "p3"
+                  }
+                }
+              }
             }
           }
         }

@@ -22,8 +22,8 @@ define_scale(name="random") f()
 [p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
   [p1]   64@0    64@2<        |   96@0>          64@2
   [p2]   64@0    64@2<        |   96@0>          64@2  ; comment on dynamic line
-  [p3]   64@0    64@2<        |   96@0>          64@2
-  [p2]   64@0    64@2<        |   96@0>          64@2  ; comment on dynamic line
+  [p3]   64@0    64@2<            96@0>          64@2
+  [p2]   64@0    64@2<        |   96@0>   |      64@2  ; comment on dynamic line
 
 [p1] 64@0
 
@@ -31,3 +31,14 @@ define_scale(name="random") f()
 [p1.1]  1:c d e | g a b c
 [p2.0]  1:c d 1/2:e g e 0.25:g g | f a b c
 [p2.1]  1:c d e f | g a b c
+
+[p1.0]  1:c d e f | g a b c
+[p1.1]  1:c d e f | g a b c
+[p2.0]  1:c d 1/2:e g e 0.25:g g | 1:f a b c
+[p2.1]  1:c d e f | g a b c
+  [p1]  64@0 | 64@1 | 64@1
+  [p2]  64@0 64@0
+  [p3]  64@4 64@5 | 64@2 64@2 127@4.7 64@9/2
+
+[p1.0]  1:c d e f
+  [p1]  64@0 | 64@1 | 64@1

@@ -31,3 +31,4 @@ tune(scale="5-JI" part="p2" base_note="d")
 [p1.0]  1:p q r s
 [p2.0]  1:p q r u
 [p3.0]  1:a e g b%
+  [p3]  64@2< 96@3

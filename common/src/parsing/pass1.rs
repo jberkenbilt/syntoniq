@@ -71,7 +71,7 @@ static NOTE_PUNCTUATION: &str = "|/.:>~,'";
 /// in TOML files, which is probably where we define note names, we're omitting it for now.
 static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!#%&";
 /// Characters allowed in dynamics
-static DYNAMIC_PUNCTUATION: &str = "|<>@";
+static DYNAMIC_PUNCTUATION: &str = "|<>@/.";
 /// Characters allowed in pitches (other than numbers)
 static PITCH_CHARACTERS: &str = "^*|/.";
 

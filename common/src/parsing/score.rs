@@ -1,6 +1,8 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
-use crate::parsing::model::{DynamicLine, Note, NoteLine, RawDirective, ScaleBlock, Span, Spanned};
+use crate::parsing::model::{
+    Dynamic, DynamicLine, Note, NoteLine, RawDirective, ScaleBlock, Span, Spanned,
+};
 use num_rational::Ratio;
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, LazyLock};
@@ -334,6 +336,7 @@ impl Score {
                     }
                 }
                 if different {
+                    bar_checks_okay = false;
                     let what = if check_idx + 1 == num_bar_checks {
                         "the total number of beats".to_string()
                     } else {
@@ -352,7 +355,19 @@ impl Score {
                 }
             }
         }
-        // TODO: HERE
+        let beats_per_bar: Option<Vec<Ratio<u32>>> = if bar_checks_okay {
+            let mut delta: Ratio<u32> = Ratio::from_integer(0);
+            let mut beats_per_bar = Vec::new();
+            // Calculate the number of beats per "bar", where a bar is a group separated by bar
+            // checks. If no bar checks, there is one bar containing the whole line.
+            for (total_beats, _) in &note_line_bar_checks[0] {
+                beats_per_bar.push(*total_beats - delta);
+                delta = *total_beats;
+            }
+            Some(beats_per_bar)
+        } else {
+            None
+        };
         for line in &sb.dynamic_lines {
             let part = &line.leader.value.name.value;
             if let Some(old) = seen_dynamic_lines.insert(part, line.leader.span) {
@@ -365,14 +380,62 @@ impl Score {
                     .with_context(old, "here is the previous occurrence"),
                 )
             }
+            if let Some(beats_per_bar) = &beats_per_bar {
+                let mut check_idx = 0usize;
+                let mut last_position: Option<Ratio<u32>> = None;
+                for dynamic in &line.dynamics {
+                    match &dynamic.value {
+                        Dynamic::Regular(r) => {
+                            if r.position.value > beats_per_bar[check_idx] {
+                                diags.err(
+                                    code::SCORE,
+                                    r.position.span,
+                                    format!(
+                                        "this position exceeds the number of beats in this bar ({})",
+                                        beats_per_bar[check_idx],
+                                    ),
+                                );
+                            }
+                            if let Some(prev) = last_position
+                                && r.position.value <= prev
+                            {
+                                diags.err(
+                                    code::SCORE,
+                                    r.position.span,
+                                    "this dynamic does not occur after the preceding one",
+                                );
+                            }
+                            last_position = Some(r.position.value);
+                        }
+                        Dynamic::BarCheck(span) => {
+                            check_idx += 1;
+                            last_position = None;
+                            if check_idx >= beats_per_bar.len() {
+                                diags.err(
+                                    code::SCORE,
+                                    *span,
+                                    format!(
+                                        "too many bar checks; number expected: {}",
+                                        beats_per_bar.len() - 1,
+                                    ),
+                                );
+                                break;
+                            }
+                        }
+                    }
+                }
+                if check_idx < beats_per_bar.len() - 1 {
+                    diags.err(
+                        code::SCORE,
+                        line.leader.span,
+                        format!(
+                            "not enough bar checks; number expected: {}",
+                            beats_per_bar.len() - 1,
+                        ),
+                    );
+                }
+            }
         }
-
-        //TODO: remaining validations
-        // - durations and bar checks
-        //   - for dynamics
-        //     - each line has the same number of bar checks at the note lines
-        //     - each position is <= the number of beats in the bar -- okay for dynamic at end
-
         self.score_blocks.push(sb);
     }
 
