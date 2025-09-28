@@ -435,6 +435,7 @@ impl Score {
                     );
                 }
             }
+            // TODO: check crescendo, diminuendo
         }
         self.score_blocks.push(sb);
     }

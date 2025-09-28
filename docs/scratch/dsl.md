@@ -3,6 +3,12 @@
 Fuzz testing. A file that ends in the middle of a directive panics. The panic would have been clearer with context as well.
 
 Current state:
+* Remaining syntax
+  * tempo, accel, decel
+  * check cresc/dim in dynamics
+  * morph, strum
+  * define_instrument, use_instrument
+  * marks, regions, repeats
 * Next steps
   * Work on reformatter
   * Generate music
@@ -71,8 +77,6 @@ Project: write/find something for working with MIDI files and figure out what wo
 
 # Syntax
 
-Work in progress; all syntax is subject to change.
-
 ## Basic Syntactic Rules
 
 Leading whitespace is stripped. Any remark about what a line starts with refers to after any leading whitespace.
@@ -103,6 +107,7 @@ A file consists of a sequence of the following, excluding comments and non-funct
   ```
 * a keyword may be repeated, e.g. `tempo(bpm=60 part="p1" part="p2")`
 * multiple may occur on one line
+* comments allowed after `(` and on the same line as a parameter but not on lines between parameters
 
 Parameters can have one of these types:
 * Pitch: the pitch notation
@@ -111,9 +116,7 @@ Parameters can have one of these types:
 
 ## Score Blocks
 
-Each line starts with `[part]` or `[part.n]`, where `n` is a note number. `n` may be omitted if there is only a single note, in which case the note number is `0`. If `n` is omitted, whatever is present refers to all notes on the line. Some operations, such as tuning, are only allowed to apply to the entire part.
-
-See examples below.
+A score block consists of one or more note lines and zero or more dynamic lines. A note line starts with `[part.n]`, and a dynamic line starts with `[part]`. This is defined further below.
 
 ## Scales
 
@@ -197,7 +200,7 @@ The `|` symbol by itself may be used as an alignment check. It doesn't have to m
 
 Pitches are absolute (possibly transposed). No relative octaves.
 
-TODO: work out valid characters in note names. Note names should avoid any of `()~:=<>@,';` but can contain numbers other special characters, including `^`, `*`, `/`, `|`, and `.`, making it possible to use pitches as note names. It would useful to also allow `!` since that is used in ASCII sagittal notation sometimes, and all of `+-#%` are critical. It probably makes sense t disallow `[]{}$`. Whatever I decide, there needs to be a fully defined alphabet for note names for forward compatibility.
+Note names must start with a letter and may contain any alphanumeric character or any of the following: `_*^/.|+-!#%&`. The broad alphabet for note names allows various symbols to be used as accidentals and also allows ratios and pitch notation to be embedded in note names. We avoid any of `()~:=<>@,';` to avoid syntactic ambiguity.
 
 I would like to be able to morph smoothly from one pitch to another, e.g., to implement a glissando. Ideally, it should be possible to notate Fabio Costa's Etude on Minor Thirds as well as Elegy Waltz in EDO-17. I plan to use parts of these for demonstration purposes if I can get permission. See morhping and strumming below.
 
@@ -208,9 +211,7 @@ By convention, these ASCII symbols are used for accidentals.
 * + = ↑ (single scale step up)
 * - = ↓ (single scale step down)
 
-The default scale is 12-EDO with note names c, c#|d%, d, d#|e%, ...
-
-I need some mechanism for defining custom scales (similar to the launchpad controller) but with support for enharmonics.
+The default scale is 12-EDO with note names c, c#|d%, d, d#|e%, ... It is called `default`.
 
 Examples:
 * `c` -- play middle C (C4) for a single beat
@@ -262,14 +263,14 @@ A part maps (approximately) to a track for MIDI and an instrument for csound. In
 
 # Version
 
-The first directive must be `version(n)`. This is a file format version, not a software/semantic version. It increments whenever there is a non-backward compatible change. The contract is that you should always use the latest software that supports version `n` since operations, optional operation named parameters, or other syntactical changes that would have been errors in an older version are permitted without incrementing `n`.
+The first directive must be `syntoniq(version=n)`. This is a file format version, not a software/semantic version. It increments whenever there is a non-backward compatible change. The contract is that you should always use the latest software that supports version `n` since operations, optional operation named parameters, or other syntactical changes that would have been errors in an older version are permitted without incrementing `n`.
 
 # Tuning
 
 Tuning
 ```
-tune(base_pitch=... base_note=... base_factor=... scale=...)
-reset_tuning()
+tune(base_pitch=... base_note=... base_factor=... scale=... part=...)
+reset_tuning(part=...)
 ```
 * Default tuning is 12-EDO with the base pitch of `220*1|4`
 * At most one of `base_pitch`, `base_note`, or `base_factor` is allowed
@@ -277,11 +278,10 @@ reset_tuning()
 * `base_note` sets the base pitch to a specified note in the *current* scale
 * `base_factor` sets the base pitch by adjusting relative to the current scale's base pitch
 * `scale` sets the new scale
-* In global scope, this sets the default tuning. In part scope, it sets the tuning for the part.
-* `reset_tuning`: in global scope, resets the default to 12-EDO with `220*1|4`. In part scope, it resets the part's tuning to use the default tuning
+* When no parts are specified, this sets the default tuning. If one or more parts are specified, it sets the tuning for the specified parts.
+* `reset_tuning`: with no parts, resets all tunings. With parts, it resets each part's tuning to use the default tuning. There is no way to reset the default tuning without clearing the tuning table. If you need it, `tune(scale="default")` will do it.
 
-
-Also, for EDO-based scales:
+Tentative: not sure whether to do `note_shift`. It will be tricky to implement, surprising with non-EDO tunings, and cognitively difficult to use. It only matters for MIDI.
 ```
 note_shift(up=... down=...)
 ```
@@ -313,10 +313,6 @@ Decelerate linearly, starting in two beats from 90 to 60 beats per minute over 4
 ```
 decel(start=90 end=60 when=2 for=4)
 ```
-
-# Row repeat
-
-The content of a part line may be just `^` to indicate to replicate the previous line. This can be useful especially for applying dynamics or other parameters to multiple parts without having repeat them or use macros.
 
 # Examples
 
@@ -429,7 +425,7 @@ If we support midi and csound, we need different ways to represent instruments. 
 
 ```
 define_instrument(name=... midi=... csound=...)
-use_instrument(name=...) ; global or within a part
+use_instrument(name=... part=...) ; default or within a part
 ```
 * name: generic
 * midi: program/instrument number
@@ -449,11 +445,9 @@ It would be useful to be able to generate data about time and/or beat offsets fo
 
 # Software Design
 
-The software needs to be self-documenting.
+Follow comments in the code, starting from parsing.rs.
 
-The parser is written with winnow and hand-coded state machines. It is thoroughly commented.
-
-The final parse tree should look like a list of directives, scale definitions, and score blocks. Once fully parsed, just walk through this to generate output.
+Directives are defined using a derive macro that generates help from doc comments.
 
 For csound, we should design some kind of instrument template that allows dynamic volume change, but changes to instruments can just be a part to instrument mapping change in the software. For MIDI, we will have to maintain some kind of track/channel mappings, but it shouldn't be very hard. Probably the rule should be to put as many notes as possible in one channel, moving out to additional channels if we have differences in channel-specific settings like volume or pitch bend.
 
@@ -467,58 +461,6 @@ Defaults:
 * tempo: 60 bpm
 * instrument: csound instrument 1, MIDI program 0
 * tuning: 12-EDO (from C), base pitch = `220*1|4`
-
-## Directives
-
-Generate directive code from a JSON or TOML file that can also generate documentation.
-
-For example, this TOML:
-
-```toml
-[tuning]
-doc = """
-Change the tuning. May be used globally or in a part scope.
-See also `note_shift`.
-"""
-[tuning.scale.optional]
-type = "string"
-doc = "name of scale"
-[[tuning.base.at-most-one-of]]
-[[tuning.base.at-most-one-of.base_note]]
-type = "string"
-doc = "set scale base to the pitch of the named note in the current scale"
-[[tuning.base.at-most-one-of.base_pitch]]
-type = "pitch"
-doc = "set scale base pitch to absolute pitch"
-[[tuning.base.at-most-one-of.base_factor]]
-type = "pitch"
-doc = "scale base to a factor of the current base pitch"
-```
-
-could generate this rust:
-
-```rust
-pub enum Directive {
-    /// Change the tuning. May be used globally or in a part scope.
-    /// See also `note_shift`.
-    Tuning(TuningArgs),
-}
-pub struct TuningArgs {
-    /// set scale base to the pitch of the named note in the current scale
-    pub scale: Option<String>,
-    pub base: Option<TuningBase>,
-}
-pub enum TuningBase {
-    /// set scale base to the pitch of the named note in the current scale
-    BaseNote(String),
-    /// set scale base pitch to absolute pitch
-    BasePitch(Pitch),
-    /// scale base to a factor of the current base pitch
-    BaseFactor(Pitch),
-}
-```
-
-and could also generate documentation/built-in help.
 
 Write a tree-sitter grammar and an LSP server. See this chat: https://gemini.google.com/app/665ad5eb23ae0417
 
