@@ -1,10 +1,10 @@
 syntoniq(version=1 potato="salad")
-syntoniq(version=2)
+syntoniq(version=2) syntoniq(version=1)
 onceThere(quack="moo π" a=3.14 b = *^-2|17 d = 1/5)
 
-define_scale(name="5-EDO") f() << 1 u | 2 v | 3 w | 4 w | 5 y/z >>
+define_scale(name="5-EDO") << 1 u | 2 v | 3 w | 4 w | 5 y/z >>
 define_scale(name="5-EDO") << 1 u | 2 v | 3/2 w | 4/3 x>> ; terminate with no space
-define_scale(name="random")
+define_scale(name="random") f()
 << ; opening comment
 *1 q+
 *^2|17 r* potato | 3.14 pi ; comment
@@ -13,14 +13,21 @@ define_scale(name="random")
 22/7 w/x/yZ
 >>
 
-[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g(>)
+[p1.0]  1/2:e g e g e g e   g |      f g     f g   w g    f  g(>)
 ; comment in the middle of a score block
-[p1.1]    1:d   c   d   c     |      e   1/2:d e   d e>   d~ e
+[p1.1]      d   c   d   c     |      e   1/2:d e   d e>   d~ e
 [p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g(>)
-[p1.2]    2:~     1:b,  b%,   |    2:c'2           b,2
-[p1.3]    4:~                 |    2:~             a,   ; comment on note line
+[p1.2]      ~     1:b,  b%,   |    2:c'2           b,2
+[p1.3]  | 4:~                 |    2:~             a,   ; comment on note line
 [p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,
   [p1]   64@0    64@2<        |   96@0>          64@2
   [p2]   64@0    64@2<        |   96@0>          64@2  ; comment on dynamic line
   [p3]   64@0    64@2<        |   96@0>          64@2
   [p2]   64@0    64@2<        |   96@0>          64@2  ; comment on dynamic line
+
+[p1] 64@0
+
+[p1.0]  1:c d e f | g a b c
+[p1.1]  1:c d e | g a b c
+[p2.0]  1:c d 1/2:e g e 0.25:g g | f a b c
+[p2.1]  1:c d e f | g a b c

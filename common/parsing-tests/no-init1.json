@@ -219,9 +219,9 @@
           "message": {
             "span": [
               0,
-              34
+              1
             ],
-            "value": "syntonic is not initialized -- the first directive must be syntoniq(version=n)"
+            "value": "syntoniq file must start with syntoniq(version=n)"
           }
         }
       ]

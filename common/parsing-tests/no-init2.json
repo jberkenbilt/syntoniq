@@ -4,17 +4,77 @@
       {
         "span": [
           0,
-          24
+          8
         ],
         "value": {
-          "raw": "; Nothing happened here.",
-          "t": "Comment"
+          "raw": "syntoniq",
+          "t": "Identifier"
         }
       },
       {
         "span": [
-          24,
-          25
+          8,
+          9
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          9,
+          17
+        ],
+        "value": {
+          "raw": "bad_args",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          17,
+          18
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          18,
+          20
+        ],
+        "value": {
+          "raw": "12",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  18,
+                  20
+                ],
+                "value": 12
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          20,
+          21
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          21,
+          22
         ],
         "value": {
           "raw": "\n",
@@ -28,17 +88,56 @@
       {
         "span": [
           0,
-          24
+          21
         ],
         "value": {
-          "raw": "; Nothing happened here.",
-          "t": "Comment"
+          "raw": "syntoniq(bad_args=12)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  0,
+                  8
+                ],
+                "value": "syntoniq"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        9,
+                        17
+                      ],
+                      "value": "bad_args"
+                    },
+                    "value": {
+                      "span": [
+                        18,
+                        20
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            12,
+                            "12"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
         }
       },
       {
         "span": [
-          24,
-          25
+          21,
+          22
         ],
         "value": {
           "raw": "\n",
@@ -51,6 +150,28 @@
     "Err": {
       "list": [
         {
+          "code": "E1015 unknown directive parameter",
+          "context": [],
+          "message": {
+            "span": [
+              9,
+              17
+            ],
+            "value": "'syntoniq': unknown parameter 'bad_args'"
+          }
+        },
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [],
+          "message": {
+            "span": [
+              0,
+              8
+            ],
+            "value": "'syntoniq': missing parameter 'version'"
+          }
+        },
+        {
           "code": "E1019 syntoniq initialization",
           "context": [],
           "message": {
@@ -58,7 +179,7 @@
               0,
               1
             ],
-            "value": "Syntoniq was never initialized"
+            "value": "syntoniq file must start with syntoniq(version=n)"
           }
         }
       ]

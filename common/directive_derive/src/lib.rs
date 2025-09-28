@@ -7,8 +7,8 @@ use heck::ToSnakeCase;
 use proc_macro::TokenStream;
 use quote::{ToTokens, quote};
 use syn::{
-    Data, DataStruct, DeriveInput, GenericArgument, PathArguments, Type, TypeGroup, TypeParen,
-    TypePath,
+    Attribute, Data, DataStruct, DeriveInput, GenericArgument, PathArguments, Type, TypeGroup,
+    TypeParen, TypePath,
 };
 use syn::{DataEnum, parse_macro_input};
 
@@ -66,10 +66,26 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
     // semantic validation can safely operate on the fully-initialized type.
 
     let top_name = &input.ident;
+    let directive_name = top_name.to_string().to_snake_case();
     let mut var_decls = Vec::new();
     let mut arg_checks = Vec::new();
     let mut required_checks = Vec::new();
     let mut inits = Vec::new();
+    let mut help_statements = vec![quote! {
+        write!(w, "\n*** '{}' ***\n", #directive_name)?;
+    }];
+    let mut top_doc_comment = String::new();
+    get_doc_comment(&input.attrs, &mut top_doc_comment, "  ");
+    if !top_doc_comment.is_empty() {
+        help_statements.push(quote! {
+            write!(w, "{}", #top_doc_comment)?;
+        });
+    }
+    if !data.fields.is_empty() {
+        help_statements.push(quote! {
+            write!(w, "  ---\n")?;
+        });
+    }
 
     for f in &data.fields {
         let field_name = f.ident.as_ref().unwrap();
@@ -84,6 +100,25 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
         let is_required = vec_type.is_none() && option_type.is_none();
 
         // Generate code fragments. These are in context of the generated function (at the end).
+
+        let mut doc_comment = String::new();
+        get_doc_comment(&f.attrs, &mut doc_comment, "    ");
+        let field_name_str = field_name.to_string();
+        let qualifier = if vec_type.is_some() {
+            " (repeatable)"
+        } else if option_type.is_some() {
+            " (optional)"
+        } else {
+            ""
+        };
+        help_statements.push(quote! {
+            write!(w, "  {}{}\n", #field_name_str, #qualifier)?;
+        });
+        if !doc_comment.is_empty() {
+            help_statements.push(quote! {
+                write!(w, "{}", #doc_comment)?;
+            });
+        }
 
         // Create a local variable that gets initialized if the argument is encountered.
         if let Some(inner) = vec_type {
@@ -189,6 +224,11 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
                     Some(r)
                 }
             }
+
+            fn show_help(w: &mut impl io::Write) -> io::Result<()> {
+                #(#help_statements)*
+                Ok(())
+            }
         }
     }
 }
@@ -199,6 +239,7 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
 
     let top_name = &input.ident;
     let mut match_arms = Vec::new();
+    let mut help_calls = Vec::new();
 
     for v in &data.variants {
         let variant = &v.ident;
@@ -209,7 +250,10 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
             #directive_name => {
                 Some(#top_name::#variant(<#field_type as FromRawDirective>::from_raw(diags, d)?))
             }
-        })
+        });
+        help_calls.push(quote! {
+            <#field_type as FromRawDirective>::show_help(w)?;
+        });
     }
 
     quote! {
@@ -228,6 +272,27 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
                     }
                 }
             }
+
+            fn show_help(w: &mut impl io::Write) -> io::Result<()> {
+                #(#help_calls)*
+                Ok(())
+            }
+        }
+    }
+}
+
+fn get_doc_comment(attrs: &[Attribute], doc_comment: &mut String, indent: &'static str) {
+    for attr in attrs {
+        if attr.path().is_ident("doc")
+            && let syn::Meta::NameValue(nv) = &attr.meta
+            && let syn::Expr::Lit(syn::ExprLit {
+                lit: syn::Lit::Str(s),
+                ..
+            }) = &nv.value
+        {
+            doc_comment.push_str(indent);
+            doc_comment.push_str(s.value().trim());
+            doc_comment.push('\n');
         }
     }
 }

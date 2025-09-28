@@ -69,7 +69,7 @@ impl Diagnostic {
 pub struct Diagnostics {
     pub list: RefCell<Vec<Diagnostic>>,
     #[serde(skip)]
-    pub seen: RefCell<HashSet<(&'static str, Span)>>,
+    pub seen: RefCell<HashSet<(&'static str, Spanned<String>)>>,
 }
 impl Diagnostics {
     pub fn new() -> Self {
@@ -107,7 +107,7 @@ impl Diagnostics {
     }
 
     pub fn push(&self, d: Diagnostic) {
-        if self.seen.borrow_mut().insert((d.code, d.message.span)) {
+        if self.seen.borrow_mut().insert((d.code, d.message.clone())) {
             self.list.borrow_mut().push(d)
         }
     }

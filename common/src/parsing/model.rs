@@ -98,7 +98,7 @@ impl<'s, T: Debug + Serialize> Token<'s, T> {
 }
 impl<'s, T: Debug + Serialize + Copy> Copy for Token<'s, T> {}
 
-#[derive(Serialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Spanned<T: Debug + Serialize> {
     pub span: Span,
     pub value: T,

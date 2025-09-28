@@ -46,6 +46,7 @@ and the source file in the next window."
               (overlay-put ov 'syntoniq-next-span t)
             )
             (other-window -1)
+            (recenter)
           )
         )
       )

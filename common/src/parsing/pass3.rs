@@ -7,57 +7,80 @@
 // here since errors are handled using the Diagnostics type.
 
 use crate::parsing::diagnostics::{Diagnostics, code};
-use crate::parsing::model::RawDirective;
 use crate::parsing::pass2;
-use crate::parsing::pass2::Pass2;
-use crate::parsing::score::{Directive, Score};
-use crate::parsing::score_helpers::FromRawDirective;
+use crate::parsing::pass2::{Pass2, Token2};
+use crate::parsing::score::{Directive, FromRawDirective, Score};
 
-fn pre_init(diags: &Diagnostics, d: &RawDirective) -> Option<Score> {
-    if let Directive::Syntoniq(x) = Directive::from_raw(diags, d)? {
-        Some(Score::new(x))
-    } else {
-        None
+fn check_init(tokens: &[Token2], diags: &Diagnostics) -> Option<(usize, Score)> {
+    for (i, tok) in tokens.iter().enumerate() {
+        match &tok.value.t {
+            Pass2::Space | Pass2::Newline | Pass2::Comment => continue,
+            Pass2::Directive(raw) if raw.name.value == "syntoniq" => {
+                if let Some(Directive::Syntoniq(x)) = Directive::from_raw(diags, raw) {
+                    return Some((i + 1, Score::new(x)));
+                }
+                break;
+            }
+            _ => break,
+        }
     }
+    diags.err(
+        code::INITIALIZATION,
+        0..1,
+        "syntoniq file must start with syntoniq(version=n)",
+    );
+    None
+}
+
+fn is_space(t: &Pass2) -> bool {
+    matches!(t, Pass2::Space | Pass2::Comment | Pass2::Newline)
 }
 
 pub fn parse3<'s>(src: &'s str) -> Result<Score, Diagnostics> {
     let tokens = pass2::parse2(src)?;
     let diags = Diagnostics::new();
-    let mut option_score: Option<Score> = None;
+    let Some((skip, mut score)) = check_init(&tokens, &diags) else {
+        return Err(diags);
+    };
 
-    let mut non_space_since_last_newline = false;
+    let mut next_newline_is_blank_line = true;
+    for tok in tokens.into_iter().skip(skip) {
+        // Detect when we have to process a score block. Score blocks are groups of contiguous
+        // score/dynamic lines, possibly intermixed with comments. They are terminated by any
+        // other functional token, a line containing only white space, or EOF. EOF is handled
+        // specially at the end of the loop.
 
-    for tok in tokens {
-        match tok.value.t {
-            Pass2::Newline => {
-                if non_space_since_last_newline {
-                    non_space_since_last_newline = false;
-                } else if let Some(s) = option_score.as_mut() {
-                    s.handle_score_block(&diags);
-                }
-                continue;
-            }
-            Pass2::Space | Pass2::Comment => continue,
-            _ => {}
+        let terminates_score_block = match &tok.value.t {
+            Pass2::Space | Pass2::Comment => false,
+            Pass2::Newline => next_newline_is_blank_line,
+            Pass2::Directive(_) | Pass2::ScaleBlock(_) => true,
+            Pass2::NoteLine(_) | Pass2::DynamicLine(_) => false,
+        };
+        if terminates_score_block {
+            score.handle_score_block(&diags);
         }
-        non_space_since_last_newline = true;
-        let Some(score) = option_score.as_mut() else {
-            option_score = match tok.value.t {
-                Pass2::Directive(x) => pre_init(&diags, &x),
-                _ => None,
-            };
-            if option_score.is_none() {
-                diags.err(code::INITIALIZATION, tok.span, "syntonic is not initialized -- the first directive must be syntoniq(version=n)");
-                return Err(diags);
-            }
-            continue;
+
+        // Score lines swallow up their whole line including comments and newlines. For a newline
+        // to indicate a blank line, it must be seen after a score line or another newline without
+        // any intervening non-space tokens. A newline at the beginning of the file is also a blank
+        // line, though we don't actually care.
+        next_newline_is_blank_line = match &tok.value.t {
+            Pass2::Space => next_newline_is_blank_line,
+            Pass2::Comment | Pass2::Directive(_) | Pass2::ScaleBlock(_) => false,
+            Pass2::NoteLine(_) | Pass2::DynamicLine(_) | Pass2::Newline => true,
         };
 
+        // Handle the token. We need special logic around scale blocks. They must appear directly
+        // after a define_scale directive, possibly separated by white space or comments.
+
         // pending_scale will be `Some` when the last operation was a scale definition.
-        let mut pending_scale = score.pending_scale.take();
+        let mut pending_scale = if is_space(&tok.value.t) {
+            None
+        } else {
+            score.pending_scale.take()
+        };
         match tok.value.t {
-            Pass2::Space | Pass2::Newline | Pass2::Comment => unreachable!(),
+            Pass2::Space | Pass2::Newline | Pass2::Comment => continue,
             Pass2::Directive(x) => score.handle_directive(&diags, &x),
             Pass2::NoteLine(line) => score.add_note_line(line),
             Pass2::DynamicLine(line) => score.add_dynamic_line(line),
@@ -71,14 +94,10 @@ pub fn parse3<'s>(src: &'s str) -> Result<Score, Diagnostics> {
             );
         }
     }
-    match option_score {
-        None => diags.err(code::INITIALIZATION, 0..1, "Syntoniq was never initialized"),
-        Some(mut score) => {
-            score.handle_score_block(&diags);
-            if !diags.has_errors() {
-                return Ok(score);
-            }
-        }
+    score.handle_score_block(&diags);
+    if diags.has_errors() {
+        Err(diags)
+    } else {
+        Ok(score)
     }
-    Err(diags)
 }

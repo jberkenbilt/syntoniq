@@ -8183,25 +8183,14 @@
     "Err": {
       "list": [
         {
-          "code": "E1014 unknown directive",
-          "context": [],
-          "message": {
-            "span": [
-              8,
-              17
-            ],
-            "value": "unknown directive 'onceThere'"
-          }
-        },
-        {
           "code": "E1019 syntoniq initialization",
           "context": [],
           "message": {
             "span": [
-              8,
-              60
+              0,
+              1
             ],
-            "value": "syntonic is not initialized -- the first directive must be syntoniq(version=n)"
+            "value": "syntoniq file must start with syntoniq(version=n)"
           }
         }
       ]

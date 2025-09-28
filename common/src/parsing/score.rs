@@ -1,7 +1,6 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
-use crate::parsing::model::{DynamicLine, NoteLine, RawDirective, ScaleBlock, Span, Spanned};
-use crate::parsing::score_helpers::FromRawDirective;
+use crate::parsing::model::{DynamicLine, Note, NoteLine, RawDirective, ScaleBlock, Span, Spanned};
 use num_rational::Ratio;
 use std::collections::{HashMap, HashSet};
 
@@ -36,11 +35,59 @@ pub struct ScoreBlock {
 }
 
 impl Score {
+    fn default_scale() -> Scale {
+        let base_pitch = Pitch::must_parse("220*^1|4");
+        let mut pitches = Vec::new();
+        let mut next_pitch = base_pitch.clone();
+        let increment = Pitch::must_parse("^1|12");
+        for _ in 0..=12 {
+            pitches.push(next_pitch.clone());
+            next_pitch *= &increment;
+        }
+        let notes = [
+            ("c", pitches[0].clone()),
+            ("c#", pitches[1].clone()),
+            ("d%", pitches[1].clone()),
+            ("d", pitches[2].clone()),
+            ("d#", pitches[3].clone()),
+            ("e%", pitches[3].clone()),
+            ("e", pitches[4].clone()),
+            ("e#", pitches[5].clone()),
+            ("f%", pitches[4].clone()),
+            ("f", pitches[5].clone()),
+            ("f#", pitches[6].clone()),
+            ("g%", pitches[6].clone()),
+            ("g", pitches[7].clone()),
+            ("g#", pitches[8].clone()),
+            ("a%", pitches[8].clone()),
+            ("a", pitches[9].clone()),
+            ("a#", pitches[10].clone()),
+            ("b%", pitches[10].clone()),
+            ("b", pitches[11].clone()),
+            ("b#", pitches[12].clone()),
+        ]
+        .into_iter()
+        .map(|(k, v)| (k.to_string(), v))
+        .collect();
+        Scale {
+            definition: ScaleDefinition {
+                span: (0..1).into(),
+                name: "default".to_string(),
+                base_pitch: base_pitch.clone(),
+                cycle: Ratio::from_integer(2),
+            },
+            notes,
+        }
+    }
+
     pub fn new(s: Syntoniq) -> Self {
+        let scales = [("default".to_string(), Self::default_scale())]
+            .into_iter()
+            .collect();
         Self {
             version: s.version.value,
             pending_scale: None,
-            scales: Default::default(),
+            scales,
             pending_score_block: None,
             score_blocks: Default::default(),
         }
@@ -60,7 +107,7 @@ impl Score {
             }
             Directive::DefineScale(x) => {
                 self.pending_scale = Some(ScaleDefinition {
-                    span: x.span,
+                    span: x.name.span,
                     name: x.name.value,
                     base_pitch: x
                         .base_pitch
@@ -152,9 +199,20 @@ impl Score {
         let Some(sb) = self.pending_score_block.take() else {
             return;
         };
+        if sb.note_lines.is_empty() {
+            // No point in doing anything
+            diags.err(
+                code::SCORE,
+                sb.dynamic_lines[0].leader.span,
+                "at least one note line is required in a score block",
+            );
+            return;
+        }
         let mut seen_note_lines = HashMap::new();
         let mut seen_dynamic_lines = HashMap::new();
+        let mut note_line_bar_checks: Vec<Vec<(Ratio<u32>, Span)>> = Vec::new();
         for line in &sb.note_lines {
+            let mut bar_checks: Vec<(Ratio<u32>, Span)> = Vec::new();
             let part = &line.leader.value.name.value;
             let note = line.leader.value.note.value;
             if let Some(old) = seen_note_lines.insert((part, note), line.leader.span) {
@@ -162,12 +220,128 @@ impl Score {
                     Diagnostic::new(
                         code::SCORE,
                         line.leader.span,
-                        "a line for this note has already occurred in this block",
+                        "a line for this part/note has already occurred in this block",
                     )
                     .with_context(old, "here is the previous occurrence"),
                 )
             }
+            // TODO: get actual assigned scale
+            let scale_name = "default";
+            // Count up beats and track bar checks. If we have a known scale, check note names.
+            let mut prev_beats = Ratio::from_integer(1u32);
+            let mut beats_so_far = Ratio::from_integer(0u32);
+            let mut first = true;
+            let mut last_note_span = line.leader.span;
+            for note in &line.notes {
+                last_note_span = note.span;
+                let (is_bar_check, beats) = match &note.value {
+                    Note::Regular(r) => (false, r.duration),
+                    Note::Hold(h) => (false, h.duration),
+                    Note::BarCheck(_) => (true, None),
+                };
+                if first {
+                    if is_bar_check {
+                        diags.err(
+                            code::SCORE,
+                            note.span,
+                            "a line may not start with a bar check",
+                        );
+                    } else if beats.is_none() {
+                        diags.err(
+                            code::SCORE,
+                            note.span,
+                            "the first note on a line must have an explicit duration",
+                        );
+                    }
+                    first = false;
+                }
+                if is_bar_check {
+                    bar_checks.push((beats_so_far, note.span));
+                } else {
+                    let beats = beats.map(|x| x.value).unwrap_or(prev_beats);
+                    prev_beats = beats;
+                    beats_so_far += beats;
+                }
+                if let Some(scale) = self.scales.get(scale_name)
+                    && let Note::Regular(r_note) = &note.value
+                {
+                    // If this is a known scale, check the note names. If it's not a known scale,
+                    // an error will already have been issued. Keeping the unknown scale name
+                    // around prevents spurious errors by signalling that we should not check note
+                    // names.
+                    let name = &r_note.name.value;
+                    if !scale.notes.contains_key(name) {
+                        diags.err(
+                            code::SCORE,
+                            note.span,
+                            format!("note '{name}' is not in the current scale ('{scale_name}')"),
+                        )
+                    }
+                }
+            }
+            // Add a check for the whole line.
+            let end_span = (last_note_span.end - 1..last_note_span.end).into();
+            bar_checks.push((beats_so_far, end_span));
+            note_line_bar_checks.push(bar_checks);
         }
+        // Check consistency of note line durations and bar checks.
+        let mut bar_checks_okay = true;
+        let mut last_num_bar_checks: Option<usize> = None;
+        for lbc in &note_line_bar_checks {
+            let num_bar_checks = lbc.len();
+            if let Some(prev) = last_num_bar_checks
+                && prev != num_bar_checks
+            {
+                bar_checks_okay = false;
+                break;
+            }
+            last_num_bar_checks = Some(num_bar_checks);
+        }
+        if !bar_checks_okay {
+            let mut e = Diagnostic::new(
+                code::SCORE,
+                sb.note_lines[0].leader.span,
+                "note lines in this score block have different numbers of bar checks",
+            );
+            for (i, v) in note_line_bar_checks.iter().enumerate() {
+                e = e.with_context(
+                    sb.note_lines[i].leader.span,
+                    format!("this line has {}", v.len()),
+                );
+            }
+            diags.push(e);
+        } else {
+            // All the note lines have the same number of bar checks. Make sure they all match.
+            let num_bar_checks = note_line_bar_checks[0].len();
+            for check_idx in 0..num_bar_checks {
+                let mut different = false;
+                let (exp, _span) = note_line_bar_checks[0][check_idx];
+                for lbc in &note_line_bar_checks[1..] {
+                    let (actual, _span) = lbc[check_idx];
+                    if actual != exp {
+                        different = true;
+                    }
+                }
+                if different {
+                    let what = if check_idx + 1 == num_bar_checks {
+                        "the total number of beats".to_string()
+                    } else {
+                        format!("the number beats by bar check {}", check_idx + 1)
+                    };
+                    let mut e = Diagnostic::new(
+                        code::SCORE,
+                        sb.note_lines[0].leader.span,
+                        format!("in this score block, {what} is inconsistent across lines",),
+                    );
+                    for lbc in &note_line_bar_checks {
+                        let (this_one, span) = lbc[check_idx];
+                        e = e.with_context(span, format!("beats up to here = {this_one}"));
+                    }
+                    diags.push(e);
+                }
+            }
+        }
+        // TODO: HERE
         for line in &sb.dynamic_lines {
             let part = &line.leader.value.name.value;
             if let Some(old) = seen_dynamic_lines.insert(part, line.leader.span) {
@@ -182,7 +356,11 @@ impl Score {
             }
         }
 
-        // TODO: validate score blocks
+        //TODO: remaining validations
+        // - durations and bar checks
+        //   - for dynamics
+        //     - each line has the same number of bar checks at the note lines
+        //     - each position is <= the number of beats in the bar -- okay for dynamic at end
 
         self.score_blocks.push(sb);
     }

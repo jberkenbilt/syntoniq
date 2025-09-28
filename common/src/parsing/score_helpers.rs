@@ -1,13 +1,9 @@
 use crate::parsing::diagnostics::{Diagnostics, code};
-use crate::parsing::model::{Param, ParamValue, RawDirective, Spanned};
+use crate::parsing::model::{Param, ParamValue, Spanned};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
 use std::fmt::Debug;
-
-pub trait FromRawDirective: Sized {
-    fn from_raw(diags: &Diagnostics, d: &RawDirective) -> Option<Self>;
-}
 
 pub trait CheckValue: Sized {
     fn check_value(p: &ParamValue) -> Result<Self, impl AsRef<str>>;
