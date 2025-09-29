@@ -352,9 +352,8 @@ impl Display for RegularNote {
         color!(f, 2, "{}", self.name.value)?;
         if let Some(x) = self.octave {
             match x.value {
-                x if x > 0 => color!(f, 4, "'{x}")?,
                 x if x < 0 => color!(f, 4, ",{}", -x)?,
-                _ => (),
+                x => color!(f, 4, "'{x}")?,
             }
         }
         if !self.options.is_empty() {
@@ -580,6 +579,14 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_span_range() {
+        let r = 1..5;
+        assert_eq!(Range::from(Span::from(r.clone())), r);
+        let s: Span = r.into();
+        assert_eq!(Span::from(Range::from(s)), s);
+    }
+
+    #[test]
     fn test_merge_spans() {
         assert_eq!(
             GetSpan::get_span(&Some(vec![
@@ -595,5 +602,19 @@ mod tests {
             merge_spans(&[None, Some((1..2).into()), None, Some((3..4).into()), None]).unwrap(),
             (1..4).into()
         );
+    }
+
+    #[test]
+    fn test_param_value() {
+        let pv = ParamValue::String("a".to_string());
+        assert!(pv.try_as_int().is_none());
+        assert!(pv.try_as_ratio().is_none());
+        assert!(pv.try_as_pitch().is_none());
+        assert_eq!(pv.try_as_string().unwrap(), "a");
+        let pv = ParamValue::PitchOrNumber(PitchOrNumber::Integer((12, Pitch::must_parse("12"))));
+        assert_eq!(pv.try_as_int().unwrap(), 12);
+        assert_eq!(pv.try_as_ratio().unwrap(), Ratio::from_integer(12));
+        assert_eq!(*pv.try_as_pitch().unwrap(), Pitch::must_parse("12"));
+        assert!(pv.try_as_string().is_none());
     }
 }

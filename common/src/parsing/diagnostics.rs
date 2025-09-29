@@ -97,6 +97,13 @@ impl Display for Diagnostics {
                 "offset {}..{}: {}: {}",
                 i.message.span.start, i.message.span.end, i.code, i.message.value
             )?;
+            for c in &i.context {
+                write!(
+                    f,
+                    ", (context {}..{}: {})",
+                    c.span.start, c.span.end, c.value
+                )?;
+            }
         }
         Ok(())
     }
@@ -130,5 +137,22 @@ impl Diagnostics {
         let report: Vec<Group> = list.iter().map(|x| x.group(filename, src)).collect();
         let renderer = Renderer::styled().decor_style(DecorStyle::Unicode);
         renderer.render(&report)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_display() {
+        let x = Diagnostics::new();
+        assert!(x.to_string().contains("no errors"));
+        x.push(Diagnostic::new("e1", 1..2, "something").with_context(2..3, "else"));
+        x.push(Diagnostic::new("e2", 3..4, "potato").with_context(4..5, "salad"));
+        assert_eq!(
+            x.to_string(),
+            "ERRORS: offset 1..2: e1: something, (context 2..3: else), offset 3..4: e2: potato, (context 4..5: salad)"
+        );
     }
 }

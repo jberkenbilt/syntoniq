@@ -2270,7 +2270,7 @@
           490
         ],
         "value": {
-          "raw": "; comment",
+          "raw": ";comment\r",
           "t": "Comment"
         }
       },
@@ -6146,7 +6146,7 @@
           516
         ],
         "value": {
-          "raw": "<< ; opening comment\n*1 q+\n*^2|17 r* potato | 3.14 pi ; comment\n*^3|13 z!!\n22/7 w/x/yZ\n>>",
+          "raw": "<< ; opening comment\n*1 q+\n*^2|17 r* potato | 3.14 pi ;comment\r\n*^3|13 z!!\n22/7 w/x/yZ\n>>",
           "t": {
             "ScaleBlock": {
               "notes": [
@@ -6223,7 +6223,7 @@
                           481,
                           490
                         ],
-                        "value": "; comment"
+                        "value": ";comment\r"
                       }
                     },
                     "note_names": [

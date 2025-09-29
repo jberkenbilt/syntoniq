@@ -24,6 +24,14 @@ export LLVM_PROFILE_FILE="$PWD/.grcov/%p-%m.profraw"
 # Running ./build.sh ensures that rust code exercised through external
 # tests or doc tests are also included in coverage output.
 $(dirname $0)/build.sh
+
+# For coverage, exercise tracing. It requires an environment variable
+# to set, which can't be set with safe code in rust. This allows us to
+# keep 100% coverage for model.rs.
+CLICOLOR_FORCE=1 \
+    SYNTONIQ_TRACE_LEXER=1 \
+    target/debug/tokenize common/parsing-tests/errors-3.stq >/dev/null 2>&1
+
 if [ "$1" != "" ]; then
     "$@"
 fi

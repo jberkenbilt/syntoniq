@@ -9,7 +9,7 @@ define_scale(name="5-EDO") <<
   ^3|5 s
   ^4|5 t
 >>
-define_scale(name="5-JI") <<
+define_scale(name="5-JI" cycle_ratio=2 base_pitch=264) <<
     1 p
   5/4 q
   4/3 r
