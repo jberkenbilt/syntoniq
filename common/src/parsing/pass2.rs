@@ -700,9 +700,9 @@ fn regular_dynamic(
                     Spanned::new(
                         t.span,
                         if t.value == '<' {
-                            DynamicChange::Diminuendo
-                        } else {
                             DynamicChange::Crescendo
+                        } else {
+                            DynamicChange::Diminuendo
                         },
                     )
                 });
