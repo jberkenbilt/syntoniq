@@ -1,7 +1,8 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
-    Dynamic, DynamicLine, Note, NoteLine, RawDirective, ScaleBlock, Span, Spanned,
+    Dynamic, DynamicChange, DynamicLine, Note, NoteLine, RawDirective, RegularDynamic, ScaleBlock,
+    Span, Spanned,
 };
 use num_rational::Ratio;
 use std::collections::{HashMap, HashSet};
@@ -18,6 +19,7 @@ pub struct Score {
     pub pending_score_block: Option<ScoreBlock>,
     pub score_blocks: Vec<ScoreBlock>,
     pub tunings: HashMap<String, Arc<Tuning>>, // empty string key is default tuning
+    pub pending_dynamic_changes: HashMap<String, Spanned<RegularDynamic>>,
 }
 
 pub struct ScaleDefinition {
@@ -105,6 +107,7 @@ impl Score {
             pending_score_block: None,
             score_blocks: Default::default(),
             tunings: Default::default(),
+            pending_dynamic_changes: Default::default(),
         }
     }
 
@@ -213,6 +216,7 @@ impl Score {
     }
 
     pub fn handle_score_block(&mut self, diags: &Diagnostics) {
+        // TODO: break this into multiple functions
         let Some(sb) = self.pending_score_block.take() else {
             return;
         };
@@ -380,62 +384,102 @@ impl Score {
                     .with_context(old, "here is the previous occurrence"),
                 )
             }
-            if let Some(beats_per_bar) = &beats_per_bar {
-                let mut check_idx = 0usize;
-                let mut last_position: Option<Ratio<u32>> = None;
-                for dynamic in &line.dynamics {
-                    match &dynamic.value {
-                        Dynamic::Regular(r) => {
-                            if r.position.value > beats_per_bar[check_idx] {
-                                diags.err(
-                                    code::SCORE,
-                                    r.position.span,
-                                    format!(
-                                        "this position exceeds the number of beats in this bar ({})",
-                                        beats_per_bar[check_idx],
-                                    ),
-                                );
-                            }
-                            if let Some(prev) = last_position
-                                && r.position.value <= prev
-                            {
-                                diags.err(
-                                    code::SCORE,
-                                    r.position.span,
-                                    "this dynamic does not occur after the preceding one",
-                                );
-                            }
-                            last_position = Some(r.position.value);
+            let mut bar_check_idx = 0usize;
+            let mut check_bars = beats_per_bar.is_some();
+            let mut last_position: Option<Ratio<u32>> = None;
+            let mut last_change: Option<Spanned<RegularDynamic>> = self
+                .pending_dynamic_changes
+                .remove(&line.leader.value.name.value);
+            for dynamic in &line.dynamics {
+                match &dynamic.value {
+                    Dynamic::Regular(r) => {
+                        if check_bars
+                            && let Some(beats_per_bar) = &beats_per_bar
+                            && r.position.value > beats_per_bar[bar_check_idx]
+                        {
+                            diags.err(
+                                code::SCORE,
+                                r.position.span,
+                                format!(
+                                    "this position exceeds the number of beats in this bar ({})",
+                                    beats_per_bar[bar_check_idx],
+                                ),
+                            );
                         }
-                        Dynamic::BarCheck(span) => {
-                            check_idx += 1;
-                            last_position = None;
-                            if check_idx >= beats_per_bar.len() {
+                        if let Some(prev) = last_position
+                            && r.position.value <= prev
+                        {
+                            diags.err(
+                                code::SCORE,
+                                r.position.span,
+                                "this dynamic does not occur after the preceding one",
+                            );
+                        }
+                        last_position = Some(r.position.value);
+                        if let Some(last_change_ref) = last_change.as_ref() {
+                            let last_level = last_change_ref.value.level;
+                            match last_change_ref.value.change.unwrap().value {
+                                DynamicChange::Crescendo => {
+                                    if r.level.value <= last_level.value {
+                                        diags.push(
+                                            Diagnostic::new(
+                                                code::SCORE,
+                                                r.level.span,
+                                                "this dynamic level must be larger than the previous one, which contained a crescendo"
+                                            ).with_context(last_change_ref.span, "here is the previous dynamic for this part")
+                                        );
+                                    }
+                                }
+                                DynamicChange::Diminuendo => {
+                                    if r.level.value >= last_level.value {
+                                        diags.push(
+                                            Diagnostic::new(
+                                                code::SCORE,
+                                                r.level.span,
+                                                "this dynamic level must be less than the previous one, which contained a diminuendo"
+                                            ).with_context(last_change_ref.span, "here is the previous dynamic for this part")
+                                        );
+                                    }
+                                }
+                            }
+                        }
+                        last_change = r.change.map(|_| Spanned::new(dynamic.span, r.clone()));
+                    }
+                    Dynamic::BarCheck(span) => {
+                        last_position = None;
+                        if check_bars && let Some(beats_per_bar_ref) = &beats_per_bar {
+                            bar_check_idx += 1;
+                            if bar_check_idx >= beats_per_bar_ref.len() {
                                 diags.err(
                                     code::SCORE,
                                     *span,
                                     format!(
                                         "too many bar checks; number expected: {}",
-                                        beats_per_bar.len() - 1,
+                                        beats_per_bar_ref.len() - 1,
                                     ),
                                 );
-                                break;
+                                check_bars = false;
                             }
                         }
                     }
                 }
-                if check_idx < beats_per_bar.len() - 1 {
-                    diags.err(
-                        code::SCORE,
-                        line.leader.span,
-                        format!(
-                            "not enough bar checks; number expected: {}",
-                            beats_per_bar.len() - 1,
-                        ),
-                    );
-                }
             }
-            // TODO: check crescendo, diminuendo
+            if let Some(last_change) = last_change {
+                self.pending_dynamic_changes
+                    .insert(line.leader.value.name.value.clone(), last_change);
+            }
+            if let Some(beats_per_bar) = &beats_per_bar
+                && bar_check_idx < beats_per_bar.len() - 1
+            {
+                diags.err(
+                    code::SCORE,
+                    line.leader.span,
+                    format!(
+                        "not enough bar checks; number expected: {}",
+                        beats_per_bar.len() - 1,
+                    ),
+                );
+            }
         }
         self.score_blocks.push(sb);
     }
@@ -537,6 +581,25 @@ impl Score {
             for p in reset_tuning.part {
                 self.tunings.remove(&p.value);
             }
+        }
+    }
+
+    pub fn do_final_checks(&mut self, diags: &Diagnostics) {
+        for (part, dynamic) in &self.pending_dynamic_changes {
+            diags.err(
+                code::SCORE,
+                dynamic.span,
+                format!(
+                    "for part '{part}', the last dynamic has an unresolved crescendo/diminuendo"
+                ),
+            );
+        }
+        if let Some(def) = &self.pending_scale {
+            diags.err(
+                code::SCALE,
+                def.span,
+                "this scale definition was incomplete at EOF",
+            );
         }
     }
 }

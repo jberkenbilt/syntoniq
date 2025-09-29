@@ -95,6 +95,7 @@ pub fn parse3<'s>(src: &'s str) -> Result<Score, Diagnostics> {
         }
     }
     score.handle_score_block(&diags);
+    score.do_final_checks(&diags);
     if diags.has_errors() {
         Err(diags)
     } else {

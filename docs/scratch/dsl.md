@@ -4,7 +4,6 @@ Fuzz testing. A file that ends in the middle of a directive panics. The panic wo
 
 Current state:
 * Next steps
-  * cresc/dim checks -- will require carrying some per-note state across score blocks or peeking at prior score block plus validation that last score block has no unresolved dynamic changes
   * Timeline
     * Backend order: JSON, MIDI, csound; target MTS instruments, use velocity for attack only, and play with either CC#7 or CC#11 or both for dynamics.
   * Work on reformatter
