@@ -77,7 +77,7 @@ pub fn parse3<'s>(src: &'s str) -> Result<Score, Diagnostics> {
         let mut pending_scale = if is_space(&tok.value.t) {
             None
         } else {
-            score.pending_scale.take()
+            score.take_pending_scale()
         };
         match tok.value.t {
             Pass2::Space | Pass2::Newline | Pass2::Comment => continue,

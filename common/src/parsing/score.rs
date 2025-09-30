@@ -13,13 +13,18 @@ use crate::pitch::Pitch;
 pub use directives::*;
 
 pub struct Score {
-    pub version: u32,
-    pub pending_scale: Option<ScaleDefinition>,
-    pub scales: HashMap<String, Arc<Scale>>,
-    pub pending_score_block: Option<ScoreBlock>,
-    pub score_blocks: Vec<ScoreBlock>,
-    pub tunings: HashMap<String, Arc<Tuning>>, // empty string key is default tuning
-    pub pending_dynamic_changes: HashMap<String, Spanned<RegularDynamic>>,
+    _version: u32,
+    pending_scale: Option<ScaleDefinition>,
+    scales: HashMap<String, Arc<Scale>>,
+    pending_score_block: Option<ScoreBlock>,
+    score_blocks: Vec<ScoreBlock>,
+    tunings: HashMap<String, Arc<Tuning>>, // empty string key is default tuning
+    pending_dynamic_changes: HashMap<String, Spanned<RegularDynamic>>,
+}
+impl Score {
+    pub fn take_pending_scale(&mut self) -> Option<ScaleDefinition> {
+        self.pending_scale.take()
+    }
 }
 
 pub struct ScaleDefinition {
@@ -101,7 +106,7 @@ impl Score {
             .into_iter()
             .collect();
         Self {
-            version: s.version.value,
+            _version: s.version.value,
             pending_scale: None,
             scales,
             pending_score_block: None,
