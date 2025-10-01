@@ -1,8 +1,8 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
-    Dynamic, DynamicChange, DynamicLine, Note, NoteLine, RawDirective, RegularDynamic, ScaleBlock,
-    Span, Spanned,
+    Dynamic, DynamicChange, DynamicLeader, DynamicLine, Note, NoteLeader, NoteLine, RawDirective,
+    RegularDynamic, ScaleBlock, Span, Spanned,
 };
 use num_rational::Ratio;
 use std::collections::{HashMap, HashSet};
@@ -99,6 +99,315 @@ static DEFAULT_TUNING: LazyLock<Arc<Tuning>> = LazyLock::new(|| {
     let base_pitch = scale.definition.base_pitch.clone();
     Arc::new(Tuning { scale, base_pitch })
 });
+
+struct ScoreBlockValidator<'a> {
+    score: &'a mut Score,
+    diags: &'a Diagnostics,
+    seen_note_lines: HashMap<(&'a String, u32), Span>,
+    seen_dynamic_lines: HashMap<&'a String, Span>,
+    note_line_bar_checks: Vec<Vec<(Ratio<u32>, Span)>>,
+}
+
+impl<'a> ScoreBlockValidator<'a> {
+    fn new(score: &'a mut Score, diags: &'a Diagnostics) -> Self {
+        Self {
+            score,
+            diags,
+            seen_note_lines: Default::default(),
+            seen_dynamic_lines: Default::default(),
+            note_line_bar_checks: Vec::new(),
+        }
+    }
+
+    fn check_duplicated_note_line(&mut self, leader: &'a Spanned<NoteLeader>) {
+        let part = &leader.value.name.value;
+        let note = leader.value.note.value;
+        if let Some(old) = self.seen_note_lines.insert((part, note), leader.span) {
+            self.diags.push(
+                Diagnostic::new(
+                    code::SCORE,
+                    leader.span,
+                    "a line for this part/note has already occurred in this block",
+                )
+                .with_context(old, "here is the previous occurrence"),
+            )
+        }
+    }
+
+    fn check_duplicated_dynamic_line(&mut self, leader: &'a Spanned<DynamicLeader>) {
+        let part = &leader.value.name.value;
+        if let Some(old) = self.seen_dynamic_lines.insert(part, leader.span) {
+            self.diags.push(
+                Diagnostic::new(
+                    code::SCORE,
+                    leader.span,
+                    "a dynamic line for this part has already occurred in this block",
+                )
+                .with_context(old, "here is the previous occurrence"),
+            )
+        }
+    }
+
+    fn validate_note_line(&mut self, line: &'a NoteLine) {
+        let mut bar_checks: Vec<(Ratio<u32>, Span)> = Vec::new();
+        self.check_duplicated_note_line(&line.leader);
+        let tuning = self.score.tuning_for_part(&line.leader.value.name.value);
+        // Count up beats, track bar checks, and check note names.
+        let mut prev_beats = Ratio::from_integer(1u32);
+        let mut beats_so_far = Ratio::from_integer(0u32);
+        let mut first = true;
+        let mut last_note_span = line.leader.span;
+        for note in &line.notes {
+            last_note_span = note.span;
+            let (is_bar_check, beats) = match &note.value {
+                Note::Regular(r) => (false, r.duration),
+                Note::Hold(h) => (false, h.duration),
+                Note::BarCheck(_) => (true, None),
+            };
+            if first {
+                if is_bar_check {
+                    self.diags.err(
+                        code::SCORE,
+                        note.span,
+                        "a line may not start with a bar check",
+                    );
+                } else if beats.is_none() {
+                    self.diags.err(
+                        code::SCORE,
+                        note.span,
+                        "the first note on a line must have an explicit duration",
+                    );
+                }
+                first = false;
+            }
+            if is_bar_check {
+                bar_checks.push((beats_so_far, note.span));
+            } else {
+                let beats = beats.map(|x| x.value).unwrap_or(prev_beats);
+                prev_beats = beats;
+                beats_so_far += beats;
+            }
+            if let Note::Regular(r_note) = &note.value {
+                let name = &r_note.name.value;
+                if !tuning.scale.notes.contains_key(name) {
+                    self.diags.err(
+                        code::SCORE,
+                        note.span,
+                        format!(
+                            "note '{name}' is not in the current scale ('{}')",
+                            tuning.scale.definition.name
+                        ),
+                    )
+                }
+            }
+        }
+        // Add a bar check for the whole line.
+        let end_span = (last_note_span.end - 1..last_note_span.end).into();
+        bar_checks.push((beats_so_far, end_span));
+        self.note_line_bar_checks.push(bar_checks);
+    }
+
+    fn validate_bar_check_count(&self, sb: &'a ScoreBlock) -> Option<()> {
+        // Make sure all the lines have the same number of bar checks.
+        let mut bar_checks_okay = true;
+        let mut last_num_bar_checks: Option<usize> = None;
+        for lbc in &self.note_line_bar_checks {
+            let num_bar_checks = lbc.len();
+            if let Some(prev) = last_num_bar_checks
+                && prev != num_bar_checks
+            {
+                bar_checks_okay = false;
+                break;
+            }
+            last_num_bar_checks = Some(num_bar_checks);
+        }
+        if bar_checks_okay {
+            return Some(());
+        }
+        let mut e = Diagnostic::new(
+            code::SCORE,
+            sb.note_lines[0].leader.span,
+            "note lines in this score block have different numbers of bar checks",
+        );
+        for (i, v) in self.note_line_bar_checks.iter().enumerate() {
+            e = e.with_context(
+                sb.note_lines[i].leader.span,
+                format!("this line has {}", v.len()),
+            );
+        }
+        self.diags.push(e);
+        None
+    }
+
+    fn validate_bar_check_consistency(&self, sb: &'a ScoreBlock) -> Option<()> {
+        // All the note lines have the same number of bar checks. Make sure they all match.
+        let num_bar_checks = self.note_line_bar_checks[0].len();
+        let mut bar_checks_okay = true;
+        for check_idx in 0..num_bar_checks {
+            let mut different = false;
+            let (exp, _span) = self.note_line_bar_checks[0][check_idx];
+            for lbc in &self.note_line_bar_checks[1..] {
+                let (actual, _span) = lbc[check_idx];
+                if actual != exp {
+                    different = true;
+                }
+            }
+            if different {
+                bar_checks_okay = false;
+                let what = if check_idx + 1 == num_bar_checks {
+                    "the total number of beats".to_string()
+                } else {
+                    format!("the number beats by bar check {}", check_idx + 1)
+                };
+                let mut e = Diagnostic::new(
+                    code::SCORE,
+                    sb.note_lines[0].leader.span,
+                    format!("in this score block, {what} is inconsistent across lines",),
+                );
+                for lbc in &self.note_line_bar_checks {
+                    let (this_one, span) = lbc[check_idx];
+                    e = e.with_context(span, format!("beats up to here = {this_one}"));
+                }
+                self.diags.push(e);
+            }
+        }
+        if bar_checks_okay { Some(()) } else { None }
+    }
+
+    fn validate_bar_checks(&self, sb: &'a ScoreBlock) -> Option<Vec<Ratio<u32>>> {
+        // Check consistency of note line durations and bar checks.
+        self.validate_bar_check_count(sb)?;
+        self.validate_bar_check_consistency(sb)?;
+
+        // Calculate the number of beats per "bar", where a bar is a group separated by bar
+        // checks. If no bar checks, there is one bar containing the whole line. We can just
+        // use the first line since we know all the lines are consistent and there is always at
+        // least one line.
+        let mut delta: Ratio<u32> = Ratio::from_integer(0);
+        let mut beats_per_bar = Vec::new();
+        for (total_beats, _) in &self.note_line_bar_checks[0] {
+            beats_per_bar.push(*total_beats - delta);
+            delta = *total_beats;
+        }
+        Some(beats_per_bar)
+    }
+
+    fn validate_dynamic_line(
+        &mut self,
+        line: &'a DynamicLine,
+        beats_per_bar: &Option<Vec<Ratio<u32>>>,
+    ) {
+        self.check_duplicated_dynamic_line(&line.leader);
+        let mut bar_check_idx = 0usize;
+        let mut check_bars = beats_per_bar.is_some();
+        let mut last_position: Option<Ratio<u32>> = None;
+        let mut last_change: Option<Spanned<RegularDynamic>> = self
+            .score
+            .pending_dynamic_changes
+            .remove(&line.leader.value.name.value);
+        for dynamic in &line.dynamics {
+            match &dynamic.value {
+                Dynamic::Regular(r) => {
+                    if check_bars
+                        && let Some(beats_per_bar) = &beats_per_bar
+                        && r.position.value > beats_per_bar[bar_check_idx]
+                    {
+                        self.diags.err(
+                            code::SCORE,
+                            r.position.span,
+                            format!(
+                                "this position exceeds the number of beats in this bar ({})",
+                                beats_per_bar[bar_check_idx],
+                            ),
+                        );
+                    }
+                    if let Some(prev) = last_position
+                        && r.position.value <= prev
+                    {
+                        self.diags.err(
+                            code::SCORE,
+                            r.position.span,
+                            "this dynamic does not occur after the preceding one",
+                        );
+                    }
+                    last_position = Some(r.position.value);
+                    if let Some(last_change_ref) = last_change.as_ref() {
+                        let last_level = last_change_ref.value.level;
+                        match last_change_ref.value.change.unwrap().value {
+                            DynamicChange::Crescendo => {
+                                if r.level.value <= last_level.value {
+                                    self.diags.push(
+                                        Diagnostic::new(
+                                            code::SCORE,
+                                            r.level.span,
+                                            "this dynamic level must be larger than the previous one, which contained a crescendo"
+                                        ).with_context(last_change_ref.span, "here is the previous dynamic for this part")
+                                    );
+                                }
+                            }
+                            DynamicChange::Diminuendo => {
+                                if r.level.value >= last_level.value {
+                                    self.diags.push(
+                                        Diagnostic::new(
+                                            code::SCORE,
+                                            r.level.span,
+                                            "this dynamic level must be less than the previous one, which contained a diminuendo"
+                                        ).with_context(last_change_ref.span, "here is the previous dynamic for this part")
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    last_change = r.change.map(|_| Spanned::new(dynamic.span, r.clone()));
+                }
+                Dynamic::BarCheck(span) => {
+                    last_position = None;
+                    if check_bars && let Some(beats_per_bar_ref) = &beats_per_bar {
+                        bar_check_idx += 1;
+                        if bar_check_idx >= beats_per_bar_ref.len() {
+                            self.diags.err(
+                                code::SCORE,
+                                *span,
+                                format!(
+                                    "too many bar checks; number expected: {}",
+                                    beats_per_bar_ref.len() - 1,
+                                ),
+                            );
+                            check_bars = false;
+                        }
+                    }
+                }
+            }
+        }
+        if let Some(last_change) = last_change {
+            self.score
+                .pending_dynamic_changes
+                .insert(line.leader.value.name.value.clone(), last_change);
+        }
+        if let Some(beats_per_bar) = &beats_per_bar
+            && bar_check_idx < beats_per_bar.len() - 1
+        {
+            self.diags.err(
+                code::SCORE,
+                line.leader.span,
+                format!(
+                    "not enough bar checks; number expected: {}",
+                    beats_per_bar.len() - 1,
+                ),
+            );
+        }
+    }
+
+    fn validate(&mut self, sb: &'a ScoreBlock) {
+        for line in &sb.note_lines {
+            self.validate_note_line(line);
+        }
+        let beats_per_bar = self.validate_bar_checks(sb);
+        for line in &sb.dynamic_lines {
+            self.validate_dynamic_line(line, &beats_per_bar);
+        }
+    }
+}
 
 impl Score {
     pub fn new(s: Syntoniq) -> Self {
@@ -221,7 +530,6 @@ impl Score {
     }
 
     pub fn handle_score_block(&mut self, diags: &Diagnostics) {
-        // TODO: break this into multiple functions
         let Some(sb) = self.pending_score_block.take() else {
             return;
         };
@@ -234,258 +542,8 @@ impl Score {
             );
             return;
         }
-        let mut seen_note_lines = HashMap::new();
-        let mut seen_dynamic_lines = HashMap::new();
-        let mut note_line_bar_checks: Vec<Vec<(Ratio<u32>, Span)>> = Vec::new();
-        for line in &sb.note_lines {
-            let mut bar_checks: Vec<(Ratio<u32>, Span)> = Vec::new();
-            let part = &line.leader.value.name.value;
-            let note = line.leader.value.note.value;
-            if let Some(old) = seen_note_lines.insert((part, note), line.leader.span) {
-                diags.push(
-                    Diagnostic::new(
-                        code::SCORE,
-                        line.leader.span,
-                        "a line for this part/note has already occurred in this block",
-                    )
-                    .with_context(old, "here is the previous occurrence"),
-                )
-            }
-            let tuning = self.tuning_for_part(&line.leader.value.name.value);
-            // Count up beats and track bar checks. If we have a known scale, check note names.
-            let mut prev_beats = Ratio::from_integer(1u32);
-            let mut beats_so_far = Ratio::from_integer(0u32);
-            let mut first = true;
-            let mut last_note_span = line.leader.span;
-            for note in &line.notes {
-                last_note_span = note.span;
-                let (is_bar_check, beats) = match &note.value {
-                    Note::Regular(r) => (false, r.duration),
-                    Note::Hold(h) => (false, h.duration),
-                    Note::BarCheck(_) => (true, None),
-                };
-                if first {
-                    if is_bar_check {
-                        diags.err(
-                            code::SCORE,
-                            note.span,
-                            "a line may not start with a bar check",
-                        );
-                    } else if beats.is_none() {
-                        diags.err(
-                            code::SCORE,
-                            note.span,
-                            "the first note on a line must have an explicit duration",
-                        );
-                    }
-                    first = false;
-                }
-                if is_bar_check {
-                    bar_checks.push((beats_so_far, note.span));
-                } else {
-                    let beats = beats.map(|x| x.value).unwrap_or(prev_beats);
-                    prev_beats = beats;
-                    beats_so_far += beats;
-                }
-                if let Note::Regular(r_note) = &note.value {
-                    let name = &r_note.name.value;
-                    if !tuning.scale.notes.contains_key(name) {
-                        diags.err(
-                            code::SCORE,
-                            note.span,
-                            format!(
-                                "note '{name}' is not in the current scale ('{}')",
-                                tuning.scale.definition.name
-                            ),
-                        )
-                    }
-                }
-            }
-            // Add a check for the whole line.
-            let end_span = (last_note_span.end - 1..last_note_span.end).into();
-            bar_checks.push((beats_so_far, end_span));
-            note_line_bar_checks.push(bar_checks);
-        }
-        // Check consistency of note line durations and bar checks.
-        let mut bar_checks_okay = true;
-        let mut last_num_bar_checks: Option<usize> = None;
-        for lbc in &note_line_bar_checks {
-            let num_bar_checks = lbc.len();
-            if let Some(prev) = last_num_bar_checks
-                && prev != num_bar_checks
-            {
-                bar_checks_okay = false;
-                break;
-            }
-            last_num_bar_checks = Some(num_bar_checks);
-        }
-        if !bar_checks_okay {
-            let mut e = Diagnostic::new(
-                code::SCORE,
-                sb.note_lines[0].leader.span,
-                "note lines in this score block have different numbers of bar checks",
-            );
-            for (i, v) in note_line_bar_checks.iter().enumerate() {
-                e = e.with_context(
-                    sb.note_lines[i].leader.span,
-                    format!("this line has {}", v.len()),
-                );
-            }
-            diags.push(e);
-        } else {
-            // All the note lines have the same number of bar checks. Make sure they all match.
-            let num_bar_checks = note_line_bar_checks[0].len();
-            for check_idx in 0..num_bar_checks {
-                let mut different = false;
-                let (exp, _span) = note_line_bar_checks[0][check_idx];
-                for lbc in &note_line_bar_checks[1..] {
-                    let (actual, _span) = lbc[check_idx];
-                    if actual != exp {
-                        different = true;
-                    }
-                }
-                if different {
-                    bar_checks_okay = false;
-                    let what = if check_idx + 1 == num_bar_checks {
-                        "the total number of beats".to_string()
-                    } else {
-                        format!("the number beats by bar check {}", check_idx + 1)
-                    };
-                    let mut e = Diagnostic::new(
-                        code::SCORE,
-                        sb.note_lines[0].leader.span,
-                        format!("in this score block, {what} is inconsistent across lines",),
-                    );
-                    for lbc in &note_line_bar_checks {
-                        let (this_one, span) = lbc[check_idx];
-                        e = e.with_context(span, format!("beats up to here = {this_one}"));
-                    }
-                    diags.push(e);
-                }
-            }
-        }
-        let beats_per_bar: Option<Vec<Ratio<u32>>> = if bar_checks_okay {
-            let mut delta: Ratio<u32> = Ratio::from_integer(0);
-            let mut beats_per_bar = Vec::new();
-            // Calculate the number of beats per "bar", where a bar is a group separated by bar
-            // checks. If no bar checks, there is one bar containing the whole line.
-            for (total_beats, _) in &note_line_bar_checks[0] {
-                beats_per_bar.push(*total_beats - delta);
-                delta = *total_beats;
-            }
-            Some(beats_per_bar)
-        } else {
-            None
-        };
-        for line in &sb.dynamic_lines {
-            let part = &line.leader.value.name.value;
-            if let Some(old) = seen_dynamic_lines.insert(part, line.leader.span) {
-                diags.push(
-                    Diagnostic::new(
-                        code::SCORE,
-                        line.leader.span,
-                        "a dynamic line for this part has already occurred in this block",
-                    )
-                    .with_context(old, "here is the previous occurrence"),
-                )
-            }
-            let mut bar_check_idx = 0usize;
-            let mut check_bars = beats_per_bar.is_some();
-            let mut last_position: Option<Ratio<u32>> = None;
-            let mut last_change: Option<Spanned<RegularDynamic>> = self
-                .pending_dynamic_changes
-                .remove(&line.leader.value.name.value);
-            for dynamic in &line.dynamics {
-                match &dynamic.value {
-                    Dynamic::Regular(r) => {
-                        if check_bars
-                            && let Some(beats_per_bar) = &beats_per_bar
-                            && r.position.value > beats_per_bar[bar_check_idx]
-                        {
-                            diags.err(
-                                code::SCORE,
-                                r.position.span,
-                                format!(
-                                    "this position exceeds the number of beats in this bar ({})",
-                                    beats_per_bar[bar_check_idx],
-                                ),
-                            );
-                        }
-                        if let Some(prev) = last_position
-                            && r.position.value <= prev
-                        {
-                            diags.err(
-                                code::SCORE,
-                                r.position.span,
-                                "this dynamic does not occur after the preceding one",
-                            );
-                        }
-                        last_position = Some(r.position.value);
-                        if let Some(last_change_ref) = last_change.as_ref() {
-                            let last_level = last_change_ref.value.level;
-                            match last_change_ref.value.change.unwrap().value {
-                                DynamicChange::Crescendo => {
-                                    if r.level.value <= last_level.value {
-                                        diags.push(
-                                            Diagnostic::new(
-                                                code::SCORE,
-                                                r.level.span,
-                                                "this dynamic level must be larger than the previous one, which contained a crescendo"
-                                            ).with_context(last_change_ref.span, "here is the previous dynamic for this part")
-                                        );
-                                    }
-                                }
-                                DynamicChange::Diminuendo => {
-                                    if r.level.value >= last_level.value {
-                                        diags.push(
-                                            Diagnostic::new(
-                                                code::SCORE,
-                                                r.level.span,
-                                                "this dynamic level must be less than the previous one, which contained a diminuendo"
-                                            ).with_context(last_change_ref.span, "here is the previous dynamic for this part")
-                                        );
-                                    }
-                                }
-                            }
-                        }
-                        last_change = r.change.map(|_| Spanned::new(dynamic.span, r.clone()));
-                    }
-                    Dynamic::BarCheck(span) => {
-                        last_position = None;
-                        if check_bars && let Some(beats_per_bar_ref) = &beats_per_bar {
-                            bar_check_idx += 1;
-                            if bar_check_idx >= beats_per_bar_ref.len() {
-                                diags.err(
-                                    code::SCORE,
-                                    *span,
-                                    format!(
-                                        "too many bar checks; number expected: {}",
-                                        beats_per_bar_ref.len() - 1,
-                                    ),
-                                );
-                                check_bars = false;
-                            }
-                        }
-                    }
-                }
-            }
-            if let Some(last_change) = last_change {
-                self.pending_dynamic_changes
-                    .insert(line.leader.value.name.value.clone(), last_change);
-            }
-            if let Some(beats_per_bar) = &beats_per_bar
-                && bar_check_idx < beats_per_bar.len() - 1
-            {
-                diags.err(
-                    code::SCORE,
-                    line.leader.span,
-                    format!(
-                        "not enough bar checks; number expected: {}",
-                        beats_per_bar.len() - 1,
-                    ),
-                );
-            }
-        }
+        let mut v = ScoreBlockValidator::new(self, diags);
+        v.validate(&sb);
         self.score_blocks.push(sb);
     }
 
