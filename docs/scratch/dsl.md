@@ -17,6 +17,126 @@ Current state:
 
 Next, I would like create a timeline capable of expressing everything we have so far, perhaps taking it end to end through csound and midi. Then, as new features are added, they can be added end to end. This will make it easier to test new features and result in more incremental or less refactoring.
 
+# Keyboard thoughts
+
+We could replace the toml file for configuring the keyboard with something based on stq syntax.
+
+Add a layout definition.
+```
+define_isomorphic_layout(
+    shape="square" ; or "hex"
+    rows=n cols=n
+    scale="scale"
+    base-row=n base-col=n ; see below for row/col
+    steps-h=n steps-v=h   ; closest to h/v in the upper-left quadrant
+)
+
+define_manual_layout(
+    shape="square" ; or "hex"
+    rows=n cols=n
+    scale="scale"
+    base-row=n base-col=n ; see below for row/col
+    cycle-h=n cycle-v=n   ; see below
+) <<< ... >>>
+```
+
+With isomorphic keyboards, for square keyboards, `steps-h` and `steps-v` are self-explanatory, row 1 is the bottom row, and column 1 is the left column.
+
+For hex keyboards, consider these two layouts:
+
+```
+                           ⌈S⌉   ⌈X⌉   ⌈γ⌉
+<NN><OO><PP><QQ><RR>       ⌊S⌋|U⌉⌊X⌋⌈Z⌉⌊γ⌋
+  |JJ><KK><LL><MM>         ⌈R⌉⌊U⌋⌈W⌉⌊Z⌋⌈β⌉
+<EE><FF><GG><HH><II>       ⌊R⌋|T⌉⌊W⌋⌈Y⌉⌊β⌋
+  <AA><BB><CC><DD>         ⌈Q⌉⌊T⌋⌈V⌉⌊Y⌋⌈α⌉
+                           ⌊Q⌋   ⌊V⌋   ⌊α⌋
+```
+
+To assign rows and columns unambiguously, we create a staggered grid where either every column has only even/odd rows or every row has only even/odd columns. In the left layout, keys have immediate horizontal neighbors. In this case, odd rows have only even columns, and even rows have only odd columns.
+
+* A = row 1, column 2
+* B = row 1, column 4
+* E = row 2, column 1
+* J = row 3, column 2
+* N = row 4, column 1
+
+Horizontal would be in the direction from A to B, and vertical would be the closest to vertical in the upper-left quadrant, so it would be the direction from A to F.
+
+In the right layout, keys have immediate vertical neighbors. In this case, odd rows have only odd columns, and even rows have only even columns
+
+* Q = row 1, column 1
+* R = row 3, column 1
+* S = row 5, column 1
+* T = row 2, column 2
+* U = row 2, column 4
+
+Vertical would be in the direction from Q to R, and horizontal would be from Q to T.
+
+I feel like this is the only sensible way to do it unambiguously. Otherwise, the coordinates depend on whether start with column first or row first.
+
+For isomorphic layouts, the above is sufficient to fully describe the keyboard. For non-isomorphic layouts, we need some way of assigning notes to keys. Also, we can assign keys to only a fraction of the keyboard, and then repeat the pattern n cycles up in a given direction. The repetition period would be determined by the number of rows and columns defined in the layout. For hex keyboards, there needs to be an even number of rows if cycle-v is specified and an even number of columns if cycle-h is specified. In all cases, a rectangular region has to be specified, meaning each row has to have the same number of specified columns.
+
+I'm thinking `<<<` and `>>>` could be keyboard layout delimiters, and the syntax could be note names or `~` for unused in the layout of the keyboard.
+
+For example, this toml:
+
+```toml
+[[scale]]
+name = "JI-11"
+type = "Generic"
+base_pitch = "220*^3|12"
+pitches = [
+  "[61]*2", "[62]*2", "[63]*2", "[64]*2", "[65]*2", "[66]*2", "[67]*2", "[68]*2",
+  "[51]*2", "[52]*2", "[53]*2", "[54]*2", "[55]*2", "[56]*2", "[57]*2", "[58]*2",
+  "17/16",  "16/15",   "6/5",   "11/8",   "17/12",  "8/5",     "7/4",   "16/9",
+   "1",      "9/8",    "5/4",    "4/3",    "3/2",   "5/3",    "15/8",    "2",
+  "[61]*1/2", "[62]*1/2", "[63]*1/2", "[64]*1/2", "[65]*1/2", "[66]*1/2", "[67]*1/2", "[68]*1/2",
+  "[51]*1/2", "[52]*1/2", "[53]*1/2", "[54]*1/2", "[55]*1/2", "[56]*1/2", "[57]*1/2", "[58]*1/2",
+  "[41]*1/2", "[42]*1/2", "[43]*1/2", "[44]*1/2", "[45]*1/2", "[46]*1/2", "[47]*1/2", "[48]*1/2",
+  "[31]*1/2", "[32]*1/2", "[33]*1/2", "[34]*1/2", "[35]*1/2", "[36]*1/2", "[37]*1/2", "[38]*1/2",
+]
+note_names = [
+ "C♯'", "D♭'", "E♭'", "H11'", "F♯'", "A♭'", "H7'", "B♭'",
+ "C'",  "D'",  "E'",  "F'",   "G'",  "A'",  "B'",  "C'",
+ "C♯", "D♭", "E♭", "H11", "F♯", "A♭", "H7", "B♭",
+ "C",  "D",  "E",  "F",   "G",  "A",  "B",  "C",
+ "C♯,", "D♭,", "E♭,", "H11,", "F♯,", "A♭,", "H7,", "B♭,",
+ "C,",  "D,",  "E,",  "F,",   "G,",  "A,",  "B,",  "C,",
+ "C♯,,", "D♭,,", "E♭,,", "H11,,", "F♯,,", "A♭,,", "H7,,", "B♭,,",
+ "C,,",  "D,,",  "E,,",  "F,,",   "G,,",  "A,,",  "B,,",  "C,,",
+]
+
+[[layout]]
+name = "Just Intonation (11)"
+scale_name = "JI-11"
+```
+
+would be replaced with this:
+```
+define_scale(name="JI-11") <<
+ 1     c  | 17/16  c#  | 16/15  d%
+ 9/8   d  |  6/5   e%
+ 5/4   e
+ 4/3   f  | 11/8   h11 | 17/12  f#
+ 3/2   g  |  8/5   a%
+ 5/3   a  |  7/4   h7  | 16/9   b%
+15/8   b
+>>
+define_generic_layout(
+   shape="square" rows=8 cols=8
+   base-row=5 base-col=1
+   scale="JI-11" cycle-v=1
+) <<<
+c# d% e% h11 f# a% h7 b%
+c  d  e  f   g  a  b  c'
+>>>
+```
+
+We can ignore layouts in scores and pay attention to only scales and layouts for the keyboard. That way you can define layouts for the scales and tunings used in a particular file, and the transposition and shift features in the keyboard can work to replace the idea of tunings. We could even potentially have the keyboard output tuning directives in response to transposition events, which makes the keyboard even more useful for transcribing notes.
+
+This also makes the keyboard generalizable to other keyboard layouts. You just have to write a driver for the specific keyboard. When using a particular keyboard, only look at layouts that can be applied to that keyboard. A keyboard driver can accept or reject a given layout.
+
 ## Timeline
 
 Score parser should generate a timeline that is fully ready for generating various types of output. That's where the responsibility of the parsing module in the common crate should end.
@@ -25,25 +145,25 @@ The timeline should contain enough information to generate csound, midi, and som
 
 * Header: source file
 * Timeline event:
-  * span of triggering event in source
-  * offset in ticks
-  * metadata
-  * similar to MIDI tracks, we have a global timeline with things like tempo and a timeline for each part
-  * also global section for tunings and instruments
-  * sorted by time, then span
+ * span of triggering event in source
+ * offset in ticks
+ * metadata
+ * similar to MIDI tracks, we have a global timeline with things like tempo and a timeline for each part
+ * also global section for tunings and instruments
+ * sorted by time, then span
 * Tuning
-  * Need to capture the chain of tunings for the base pitch so we can have a comment like `17-EDO, up ^2|19 from 'e' from default` or show the base pitch as `220*^1|4*^1|3*^2^19` or both.
-  * Pitches should be shown in comments factor from base pitch, e.g. `*9/8` or `*^2|19`
-  * Perhaps have a catalog of unique tunings, perhaps in order of appearance, and set a tuning based on that to reduce duplication and make it easier to generate tuning files. If we keep a uuid from an atomic counter on tune generation, this becomes easy; we just have to keep the predecessor's ID when `base_factor` or `base_note` is used.
+ * Need to capture the chain of tunings for the base pitch so we can have a comment like `17-EDO, up ^2|19 from 'e' from default` or show the base pitch as `220*^1|4*^1|3*^2^19` or both.
+ * Pitches should be shown in comments factor from base pitch, e.g. `*9/8` or `*^2|19`
+ * Perhaps have a catalog of unique tunings, perhaps in order of appearance, and set a tuning based on that to reduce duplication and make it easier to generate tuning files. If we keep a uuid from an atomic counter on tune generation, this becomes easy; we just have to keep the predecessor's ID when `base_factor` or `base_note` is used.
 * Notes
-  * organized by part
-  * name
-  * pitch as
-    * factor of base
-    * Hz
-    * scale degree with zero as base pitch and pitches sorted numerically +/- cycle. If we allow pitches lower than the base pitch, I think it's okay. The base pitch still gets zero. So if you had a scale like `<< ^-1|3 q | 1 r | ^1|3 s >>`, then `q` would be -1, `r` would be 0, and `s` would be 1. Then `q'` would be 2, and `s,` would be -2. This can be used to map to midi note numbers
-  * on|off + "velocity"
-  * other details attached to the note
+ * organized by part
+ * name
+ * pitch as
+   * factor of base
+   * Hz
+   * scale degree with zero as base pitch and pitches sorted numerically +/- cycle. If we allow pitches lower than the base pitch, I think it's okay. The base pitch still gets zero. So if you had a scale like `<< ^-1|3 q | 1 r | ^1|3 s >>`, then `q` would be -1, `r` would be 0, and `s` would be 1. Then `q'` would be 2, and `s,` would be -2. This can be used to map to midi note numbers
+ * on|off + "velocity"
+ * other details attached to the note
 * Dynamics -- need a way to represent crescendo, decrescendo
 * Instrument assignment, metadata changes (strum, morph)
 * Comments from source are not preserved here but are preserved by the reformatter
