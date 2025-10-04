@@ -27,7 +27,7 @@ fn main() -> anyhow::Result<()> {
             let r = pass2::parse2(input);
             results.push(json!(&r));
             if r.is_ok() {
-                let r = pass3::parse3(input).map(|_| ());
+                let r = pass3::parse3(input);
                 results.push(json!(&r));
             }
         };

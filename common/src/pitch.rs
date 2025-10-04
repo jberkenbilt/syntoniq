@@ -134,6 +134,14 @@ impl Display for Pitch {
     }
 }
 
+impl From<Ratio<u32>> for Pitch {
+    fn from(ratio: Ratio<u32>) -> Self {
+        Self {
+            factors: vec![ratio.into()],
+        }
+    }
+}
+
 impl Pitch {
     pub fn new(factors: Vec<Factor>) -> Self {
         // Algorithm:

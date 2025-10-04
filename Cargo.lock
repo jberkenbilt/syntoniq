@@ -1487,6 +1487,7 @@ dependencies = [
  "clap",
  "directive_derive",
  "log",
+ "num-integer",
  "num-rational",
  "num-traits",
  "primal",

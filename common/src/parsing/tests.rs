@@ -147,7 +147,7 @@ fn test_pass2() -> anyhow::Result<()> {
         };
         if is_ok {
             // Pass 3
-            let r = parse3(&in_data).map(|_| ());
+            let r = parse3(&in_data);
             results.push(json!(&r));
         }
 
@@ -160,6 +160,7 @@ fn test_pass2() -> anyhow::Result<()> {
     }
     if !errors.is_empty() {
         eprintln!("Run ./target/debug/tokenize file.stq --json to generate output for comparison");
+        eprintln!("See also ./common/parsing-tests/refresh");
         for e in errors {
             eprintln!("ERROR: {e}");
         }

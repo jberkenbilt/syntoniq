@@ -7,9 +7,9 @@
 // here since errors are handled using the Diagnostics type.
 
 use crate::parsing::diagnostics::{Diagnostics, code};
-use crate::parsing::pass2;
 use crate::parsing::pass2::{Pass2, Token2};
 use crate::parsing::score::{Directive, FromRawDirective, Score};
+use crate::parsing::{Timeline, pass2};
 
 fn check_init(tokens: &[Token2], diags: &Diagnostics) -> Option<(usize, Score)> {
     for (i, tok) in tokens.iter().enumerate() {
@@ -36,7 +36,7 @@ fn is_space(t: &Pass2) -> bool {
     matches!(t, Pass2::Space | Pass2::Comment | Pass2::Newline)
 }
 
-pub fn parse3<'s>(src: &'s str) -> Result<Score, Diagnostics> {
+pub fn parse3<'s>(src: &'s str) -> Result<Timeline, Diagnostics> {
     let tokens = pass2::parse2(src)?;
     let diags = Diagnostics::new();
     let Some((skip, mut score)) = check_init(&tokens, &diags) else {
@@ -99,6 +99,6 @@ pub fn parse3<'s>(src: &'s str) -> Result<Score, Diagnostics> {
     if diags.has_errors() {
         Err(diags)
     } else {
-        Ok(score)
+        Ok(score.into_timeline())
     }
 }

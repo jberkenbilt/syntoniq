@@ -17,18 +17,40 @@ define_scale(name="5-JI" cycle_ratio=2 base_pitch=264) <<
   7/4 v
 >>
 
-[p1.0]  1:c d e f
+[p1.0]  1:c d e' f,
 
 tune(scale="5-EDO" part="p1")
 
-[p1.0]  1:p q r s
-[p2.0]  1:c d e f
+[p1.0]  1:p'2 q,2(>) r(^) s~
+[p2.1]  1:c> d e f
 
 ; Use the 5-JI scale for p2 setting the base pitch to the pitch of d
 ; in its existing, scale, which is default.
 tune(scale="5-JI" part="p2" base_note="d")
 
 [p1.0]  1:p q r s
-[p2.0]  1:p q r u
-[p3.0]  1:a e g b%
+[p2.1]  1:p q r u
+[p3.0]  1:a e ~ 1/2:b% b#
   [p3]  64@2< 96@3
+
+; Exercise scale degree logic more thoroughly by having notes that
+; extend outside the cycle (beyond b#). This ensures notes are sorted
+; properly. These go up by fifths.
+define_scale(name="fifths" cycle_ratio=2 base_pitch=264) <<
+   1    c
+   3/2  g
+   9/4  d  ;  9/8
+  27/8  a  ; 27/16
+  81/16 e  ; 81/64
+>>
+define_scale(name="fifths-3" cycle_ratio=3 base_pitch=264) <<
+   1    c!
+   1/2  g!  ;  3/2  * cycle
+   9/4  d!
+  27/8  a!  ;  9/8  * cycle
+  81/16 e!  ; 27/16 * cycle
+>>
+tune(scale="fifths" part="p1")
+tune(scale="fifths-3" part="p2")
+[p1.1] 2/5:c d, e,2 g a,
+[p2.1] 2/5:c!' a! g!'2 e! d!'

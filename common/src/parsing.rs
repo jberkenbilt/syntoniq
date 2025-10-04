@@ -63,6 +63,8 @@ pub mod pass2;
 pub mod pass3;
 pub mod score;
 pub(crate) mod score_helpers;
+mod timeline;
+pub use timeline::*;
 
 #[cfg(test)]
 mod tests;

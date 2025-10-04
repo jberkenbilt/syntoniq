@@ -1,0 +1,5 @@
+#!/bin/bash
+cd $(dirname $0)
+for i in *.stq; do
+    ../../target/debug/tokenize $i --json >| ${i/.stq/.json}
+done

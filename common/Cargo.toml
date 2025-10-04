@@ -16,3 +16,4 @@ annotate-snippets = "0.12.4"
 primal = "0.3.3"
 num-traits = "0.2.19"
 directive_derive = { path = "directive_derive" }
+num-integer = "0.1.46"

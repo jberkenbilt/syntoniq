@@ -1,14 +1,20 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
-    Dynamic, DynamicChange, DynamicLeader, DynamicLine, Note, NoteLeader, NoteLine, RawDirective,
-    RegularDynamic, ScaleBlock, Span, Spanned,
+    Dynamic, DynamicChange, DynamicLeader, DynamicLine, Note, NoteBehavior, NoteLeader, NoteLine,
+    RawDirective, RegularDynamic, ScaleBlock, Span, Spanned,
 };
 use num_rational::Ratio;
+use serde::Serialize;
 use std::collections::{HashMap, HashSet};
+use std::mem;
 use std::sync::{Arc, LazyLock};
 
 mod directives;
+use crate::parsing::{
+    DynamicEvent, NoteEvent, NoteValue, Timeline, TimelineData, TimelineEvent, TuningEvent,
+    WithTime,
+};
 use crate::pitch::Pitch;
 pub use directives::*;
 
@@ -18,29 +24,136 @@ pub struct Score {
     scales: HashMap<String, Arc<Scale>>,
     pending_score_block: Option<ScoreBlock>,
     score_blocks: Vec<ScoreBlock>,
-    tunings: HashMap<String, Arc<Tuning>>, // empty string key is default tuning
-    pending_dynamic_changes: HashMap<String, Spanned<RegularDynamic>>,
-}
-impl Score {
-    pub fn take_pending_scale(&mut self) -> Option<ScaleDefinition> {
-        self.pending_scale.take()
-    }
+    /// empty string key is default tuning
+    tunings: HashMap<String, Arc<Tuning>>,
+    pending_dynamic_changes: HashMap<String, WithTime<Spanned<RegularDynamic>>>,
+    line_start_time: Ratio<u32>,
+    timeline: Timeline,
 }
 
+#[derive(Serialize)]
 pub struct ScaleDefinition {
+    #[serde(skip)]
     pub span: Span,
     pub name: String,
     pub base_pitch: Pitch,
     pub cycle: Ratio<u32>,
 }
 
-pub struct Scale {
-    pub definition: ScaleDefinition,
-    pub notes: HashMap<String, Pitch>,
+pub(crate) mod scale_notes {
+    use crate::parsing::score::{NamedScaleDegree, ScaleDegree};
+    use serde::Serialize;
+    use serde::Serializer;
+    use std::collections::HashMap;
+
+    pub fn serialize<S: Serializer>(
+        v: &HashMap<String, ScaleDegree>,
+        s: S,
+    ) -> Result<S::Ok, S::Error> {
+        let mut notes: Vec<NamedScaleDegree> = v
+            .iter()
+            .map(|(name, degree)| NamedScaleDegree { name, degree })
+            .collect();
+        notes.sort_by_key(|x| (x.degree.degree, x.name));
+        Vec::serialize(&notes, s)
+    }
 }
 
+#[derive(Serialize)]
+pub struct Scale {
+    #[serde(flatten)]
+    pub definition: ScaleDefinition,
+    #[serde(with = "scale_notes")]
+    pub notes: HashMap<String, ScaleDegree>,
+    pub pitches: Vec<Pitch>,
+}
+#[derive(Serialize, Clone)]
+pub struct ScaleDegree {
+    pub base_relative: Pitch,
+    pub degree: i32,
+}
+#[derive(Serialize)]
+pub struct NamedScaleDegree<'a> {
+    pub name: &'a String,
+    #[serde(flatten)]
+    pub degree: &'a ScaleDegree,
+}
+
+impl Scale {
+    pub fn new(definition: ScaleDefinition, note_pitches: HashMap<String, Pitch>) -> Arc<Self> {
+        // For each note, calculate its pitch relative to the base and normalized to within the
+        // cycle. The results in a revised base-relative pitch and cycle offset. Sort the resulting
+        // normalized base-relative pitches to determine scale degrees. It is normal for scales to
+        // have notes that fall outside the cycle, such as B# in 12-TET, which has a base-relative
+        // pitch of 2.
+
+        // Gather notes based on normalized base pitch and cycle offset.
+        struct Intermediate {
+            name: String,
+            orig_base: Pitch,
+            normalized_base: Pitch,
+            cycle_offset: i32,
+        }
+
+        let one_as_pitch = Pitch::from(Ratio::from_integer(1));
+        let cycle_as_pitch = Pitch::from(definition.cycle);
+        let inverted_cycle_as_pitch = cycle_as_pitch.invert();
+        let mut intermediate: Vec<Intermediate> = Vec::new();
+        let mut distinct_base_relative = HashSet::new();
+        for (name, orig_base) in note_pitches {
+            // This may not be the most efficient way to calculate this, but it's probably the
+            // clearest. Calculate the cycle offset to normalize this to within a cycle.
+            let mut normalized_base = orig_base.clone();
+            let mut cycle_offset = 0;
+            while normalized_base < one_as_pitch {
+                normalized_base *= &cycle_as_pitch;
+                cycle_offset -= 1;
+            }
+            while normalized_base >= cycle_as_pitch {
+                normalized_base *= &inverted_cycle_as_pitch;
+                cycle_offset += 1;
+            }
+            distinct_base_relative.insert(normalized_base.clone());
+            intermediate.push(Intermediate {
+                name,
+                orig_base,
+                normalized_base,
+                cycle_offset,
+            });
+        }
+        // Get a sorted list of distinct normalized base-relative pitches
+        let mut pitches: Vec<Pitch> = distinct_base_relative.into_iter().collect();
+        pitches.sort();
+        // Map these to degree
+        let degrees: HashMap<Pitch, i32> = pitches
+            .iter()
+            .enumerate()
+            .map(|(i, pitch)| (pitch.clone(), i as i32))
+            .collect();
+        // Now we can compute the scale degree of each note
+        let degrees_per_cycle = pitches.len() as i32;
+        let notes = intermediate
+            .into_iter()
+            .map(|i| {
+                let degree = degrees[&i.normalized_base];
+                let s = ScaleDegree {
+                    base_relative: i.orig_base,
+                    degree: degree + (degrees_per_cycle * i.cycle_offset),
+                };
+                (i.name, s)
+            })
+            .collect();
+        Arc::new(Self {
+            definition,
+            notes,
+            pitches,
+        })
+    }
+}
+
+#[derive(Serialize)]
 pub struct Tuning {
-    pub scale: Arc<Scale>,
+    pub scale_name: String,
     pub base_pitch: Pitch,
 }
 
@@ -51,9 +164,9 @@ pub struct ScoreBlock {
 }
 
 static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
-    let base_pitch = Pitch::must_parse("1");
+    let start_pitch = Pitch::must_parse("1");
     let mut pitches = Vec::new();
-    let mut next_pitch = base_pitch.clone();
+    let mut next_pitch = start_pitch.clone();
     let increment = Pitch::must_parse("^1|12");
     for _ in 0..=12 {
         pitches.push(next_pitch.clone());
@@ -84,20 +197,24 @@ static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
     .into_iter()
     .map(|(k, v)| (k.to_string(), v))
     .collect();
-    Arc::new(Scale {
-        definition: ScaleDefinition {
+    Scale::new(
+        ScaleDefinition {
             span: (0..1).into(),
             name: "default".to_string(),
-            base_pitch: base_pitch.clone(),
+            base_pitch: Pitch::must_parse("220*^1|4"),
             cycle: Ratio::from_integer(2),
         },
         notes,
-    })
+    )
 });
 static DEFAULT_TUNING: LazyLock<Arc<Tuning>> = LazyLock::new(|| {
     let scale = DEFAULT_SCALE.clone();
+    let scale_name = scale.definition.name.clone();
     let base_pitch = scale.definition.base_pitch.clone();
-    Arc::new(Tuning { scale, base_pitch })
+    Arc::new(Tuning {
+        scale_name,
+        base_pitch,
+    })
 });
 
 struct ScoreBlockValidator<'a> {
@@ -180,26 +297,79 @@ impl<'a> ScoreBlockValidator<'a> {
                 }
                 first = false;
             }
-            if is_bar_check {
+            let beats = if is_bar_check {
                 bar_checks.push((beats_so_far, note.span));
+                Ratio::from_integer(0)
             } else {
-                let beats = beats.map(|x| x.value).unwrap_or(prev_beats);
+                let beats = beats.map(Spanned::value).unwrap_or(prev_beats);
                 prev_beats = beats;
-                beats_so_far += beats;
-            }
-            if let Note::Regular(r_note) = &note.value {
+                self.score.update_time_lcm(beats);
+                beats
+            };
+            if let Note::Regular(r_note) = &note.value
+                && let Some(scale) = self.score.scales.get(&tuning.scale_name)
+            {
                 let name = &r_note.name.value;
-                if !tuning.scale.notes.contains_key(name) {
+                if let Some(scale_degree) = scale.notes.get(name).cloned() {
+                    let time = beats_so_far + self.score.line_start_time;
+                    let part = line.leader.value.name.value.clone();
+                    let note_number = line.leader.value.note.value;
+                    let cycle = r_note.octave.map(Spanned::value).unwrap_or(0);
+                    let mut absolute_pitch = &tuning.base_pitch * &scale_degree.base_relative;
+                    if cycle != 0 {
+                        absolute_pitch *= &Pitch::from(scale.definition.cycle.pow(cycle as i32));
+                    }
+                    let absolute_scale_degree =
+                        scale_degree.degree + (cycle as i32 * scale.pitches.len() as i32);
+                    //TODO: There are currently no checks on `slide` behavior (e.g. that the last
+                    // note isn't a slide) or representation of the slide duration. When we add a
+                    // directive to configure that, we can come back to that issue.
+                    let value = Some(NoteValue {
+                        note_name: name.clone(),
+                        scale_name: scale.definition.name.clone(),
+                        absolute_pitch,
+                        absolute_scale_degree,
+                        options: r_note.options.iter().cloned().map(Spanned::value).collect(),
+                        behavior: r_note.behavior.map(Spanned::value),
+                    });
+                    self.score.push_event(
+                        time,
+                        note.span,
+                        TimelineData::Note(NoteEvent {
+                            part: part.clone(),
+                            note_number,
+                            value,
+                        }),
+                    );
+                    if let Some(behavior) = r_note.behavior
+                        && behavior.value == NoteBehavior::Sustain
+                    {
+                        // Don't generate a note off event.
+                    } else {
+                        //TODO: consider how long we want a note to sound. For now, just sound
+                        // for the entire note duration.
+                        self.score.push_event(
+                            time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats),
+                            note.span,
+                            TimelineData::Note(NoteEvent {
+                                part: part.clone(),
+                                note_number,
+                                value: None,
+                            }),
+                        );
+                    }
+                } else {
                     self.diags.err(
                         code::SCORE,
                         note.span,
                         format!(
                             "note '{name}' is not in the current scale ('{}')",
-                            tuning.scale.definition.name
+                            tuning.scale_name
                         ),
                     )
                 }
             }
+            beats_so_far += beats;
         }
         // Add a bar check for the whole line.
         let end_span = (last_note_span.end - 1..last_note_span.end).into();
@@ -301,10 +471,11 @@ impl<'a> ScoreBlockValidator<'a> {
         let mut bar_check_idx = 0usize;
         let mut check_bars = beats_per_bar.is_some();
         let mut last_position: Option<Ratio<u32>> = None;
-        let mut last_change: Option<Spanned<RegularDynamic>> = self
+        let mut last_change: Option<WithTime<Spanned<RegularDynamic>>> = self
             .score
             .pending_dynamic_changes
             .remove(&line.leader.value.name.value);
+        let mut bar_start_time = self.score.line_start_time;
         for dynamic in &line.dynamics {
             match &dynamic.value {
                 Dynamic::Regular(r) => {
@@ -331,9 +502,10 @@ impl<'a> ScoreBlockValidator<'a> {
                         );
                     }
                     last_position = Some(r.position.value);
+                    self.score.update_time_lcm(r.position.value);
                     if let Some(last_change_ref) = last_change.as_ref() {
-                        let last_level = last_change_ref.value.level;
-                        match last_change_ref.value.change.unwrap().value {
+                        let last_level = last_change_ref.item.value.level;
+                        match last_change_ref.item.value.change.unwrap().value {
                             DynamicChange::Crescendo => {
                                 if r.level.value <= last_level.value {
                                     self.diags.push(
@@ -341,7 +513,7 @@ impl<'a> ScoreBlockValidator<'a> {
                                             code::SCORE,
                                             r.level.span,
                                             "this dynamic level must be larger than the previous one, which contained a crescendo"
-                                        ).with_context(last_change_ref.span, "here is the previous dynamic for this part")
+                                        ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
                                     );
                                 }
                             }
@@ -352,17 +524,52 @@ impl<'a> ScoreBlockValidator<'a> {
                                             code::SCORE,
                                             r.level.span,
                                             "this dynamic level must be less than the previous one, which contained a diminuendo"
-                                        ).with_context(last_change_ref.span, "here is the previous dynamic for this part")
+                                        ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
                                     );
                                 }
                             }
                         }
                     }
-                    last_change = r.change.map(|_| Spanned::new(dynamic.span, r.clone()));
+                    let time = bar_start_time + r.position.value;
+                    let part = line.leader.value.name.value.clone();
+                    if let Some(ch) = last_change.take() {
+                        // Push the event for the previously started dynamic change. This may also
+                        // be the start of a new dynamic change or an instantaneous event.
+                        self.score.push_event(
+                            ch.time,
+                            ch.item.span,
+                            TimelineData::Dynamic(DynamicEvent {
+                                part: part.clone(),
+                                start_level: ch.item.value.level.value,
+                                end_level: Some(WithTime::new(time, r.level.value)),
+                            }),
+                        );
+                    }
+                    match r.change {
+                        None => {
+                            // This is an instantaneous event. It may also correspond with the end
+                            // of the previous dynamic change event.
+                            self.score.push_event(
+                                time,
+                                dynamic.span,
+                                TimelineData::Dynamic(DynamicEvent {
+                                    part,
+                                    start_level: r.level.value,
+                                    end_level: None,
+                                }),
+                            );
+                        }
+                        Some(_) => {
+                            // The event will be pushed when the dynamic change completes.
+                            last_change =
+                                Some(WithTime::new(time, Spanned::new(dynamic.span, r.clone())));
+                        }
+                    }
                 }
                 Dynamic::BarCheck(span) => {
                     last_position = None;
                     if check_bars && let Some(beats_per_bar_ref) = &beats_per_bar {
+                        bar_start_time += beats_per_bar_ref[bar_check_idx];
                         bar_check_idx += 1;
                         if bar_check_idx >= beats_per_bar_ref.len() {
                             self.diags.err(
@@ -406,14 +613,32 @@ impl<'a> ScoreBlockValidator<'a> {
         for line in &sb.dynamic_lines {
             self.validate_dynamic_line(line, &beats_per_bar);
         }
+        if let Some(x) = beats_per_bar {
+            for beats in x {
+                self.score.line_start_time += beats;
+            }
+        }
     }
 }
 
 impl Score {
     pub fn new(s: Syntoniq) -> Self {
-        let scales = [("default".to_string(), DEFAULT_SCALE.clone())]
+        let default_scale = DEFAULT_SCALE.clone();
+        let scales = [("default".to_string(), default_scale.clone())]
             .into_iter()
             .collect();
+        let timeline = Timeline {
+            scales: vec![default_scale],
+            events: vec![TimelineEvent {
+                time: Ratio::from_integer(0),
+                span: s.span,
+                data: TimelineData::Tuning(TuningEvent {
+                    tuning: DEFAULT_TUNING.clone(),
+                    parts: vec![],
+                }),
+            }],
+            time_lcm: 1,
+        };
         Self {
             _version: s.version.value,
             pending_scale: None,
@@ -422,7 +647,28 @@ impl Score {
             score_blocks: Default::default(),
             tunings: Default::default(),
             pending_dynamic_changes: Default::default(),
+            line_start_time: Ratio::from_integer(0),
+            timeline,
         }
+    }
+
+    pub fn into_timeline(self) -> Timeline {
+        self.timeline
+    }
+
+    pub fn take_pending_scale(&mut self) -> Option<ScaleDefinition> {
+        self.pending_scale.take()
+    }
+
+    fn push_event(&mut self, time: Ratio<u32>, span: Span, data: TimelineData) {
+        self.timeline
+            .events
+            .push(TimelineEvent { time, span, data });
+    }
+
+    fn update_time_lcm(&mut self, beats: Ratio<u32>) {
+        let d = beats.denom();
+        self.timeline.time_lcm = num_integer::lcm(self.timeline.time_lcm, *d);
     }
 
     pub fn handle_directive(&mut self, diags: &Diagnostics, d: &RawDirective) {
@@ -494,15 +740,15 @@ impl Score {
             return;
         };
         let name = definition.name.clone();
-        let scale = Arc::new(Scale {
+        let scale = Scale::new(
             definition,
-            notes: name_to_pitch
+            name_to_pitch
                 .into_iter()
                 .map(|(name, (pitch, _))| (name, pitch))
                 .collect(),
-        });
+        );
         let span = scale.definition.span;
-        if let Some(old) = self.scales.insert(name.clone(), scale) {
+        if let Some(old) = self.scales.insert(name.clone(), scale.clone()) {
             diags.push(
                 Diagnostic::new(
                     code::SCALE,
@@ -511,6 +757,8 @@ impl Score {
                 )
                 .with_context(old.definition.span, "here is the previous definition"),
             );
+        } else {
+            self.timeline.scales.push(scale);
         }
     }
 
@@ -558,48 +806,49 @@ impl Score {
             .unwrap_or(DEFAULT_TUNING.clone())
     }
 
-    fn apply_tuning(&mut self, diags: &Diagnostics, tuning: Tune) {
-        let Some(scale) = self.scales.get(&tuning.scale.value).cloned() else {
+    fn apply_tuning(&mut self, diags: &Diagnostics, directive: Tune) {
+        let Some(scale) = self.scales.get(&directive.scale.value).cloned() else {
             diags.err(
                 code::TUNE,
-                tuning.scale.span,
-                format!("unknown scale '{}'", tuning.scale.value),
+                directive.scale.span,
+                format!("unknown scale '{}'", directive.scale.value),
             );
             return;
         };
         // Look up tuning by part for each part we are trying to tune. If no part is specified,
         // this applies to the global tuning. The first part gathers the part names we care
         // about, and the second part gets the effective tuning for the part.
-        let cur_tunings: HashMap<String, Arc<Tuning>> = if tuning.part.is_empty() {
+        let cur_tunings: HashMap<String, Arc<Tuning>> = if directive.part.is_empty() {
             vec![""]
         } else {
-            tuning.part.iter().map(|x| x.value.as_ref()).collect()
+            directive.part.iter().map(|x| x.value.as_ref()).collect()
         }
         .into_iter()
         .map(|x| (x.to_string(), self.tuning_for_part(x)))
         .collect();
 
         // Get the base pitch for each part.
-        let base_pitches: HashMap<String, Pitch> = if let Some(p) = &tuning.base_pitch {
+        let base_pitches: HashMap<String, Pitch> = if let Some(p) = &directive.base_pitch {
             // Use this value for all parts, disregarding the current base pitch.
             cur_tunings
                 .keys()
                 .map(|part| (part.to_string(), p.value.clone()))
                 .collect()
-        } else if let Some(p) = &tuning.base_factor {
+        } else if let Some(p) = &directive.base_factor {
             // Multiply each  existing tuning's base pitch by the factor to get the new one.
             cur_tunings
                 .iter()
                 .map(|(part, existing)| (part.to_string(), &existing.base_pitch * &p.value))
                 .collect()
-        } else if let Some(n) = &tuning.base_note {
+        } else if let Some(n) = &directive.base_note {
             // Make sure the note name is valid in voice
             let fall_back = &scale.definition.base_pitch;
             cur_tunings
                 .iter()
                 .map(|(part, existing)| {
-                    let p = if let Some(p) = existing.scale.notes.get(&n.value) {
-                        p.clone()
+                    let p = if let Some(scale) =  self.scales.get(&existing.scale_name) &&
+                        let Some(sd) = scale.notes.get(&n.value) {
+                        &sd.base_relative * &scale.definition.base_pitch
                     } else {
                         diags.err(
                             code::TUNE,
@@ -607,7 +856,7 @@ impl Score {
                             format!(
                                 "note '{}' is not present in scale '{}', which is the current scale for part '{}'",
                                 n.value,
-                                existing.scale.definition.name,
+                                existing.scale_name,
                                 part,
                             ),
                         );
@@ -625,25 +874,62 @@ impl Score {
         };
         // Create a tuning for each distinct base pitch with this scale. Then apply the tuning
         // to each specified part.
-        let mut tunings_by_pitch = HashMap::<String, Arc<Tuning>>::new();
+        let mut tunings_by_pitch = HashMap::<Pitch, Arc<Tuning>>::new();
+        let mut parts_by_pitch = HashMap::<Pitch, Vec<String>>::new();
         for (part, base_pitch) in base_pitches {
-            let tuning = tunings_by_pitch.entry(part.clone()).or_insert_with(|| {
-                Arc::new(Tuning {
-                    scale: scale.clone(),
-                    base_pitch,
-                })
-            });
+            let tuning = tunings_by_pitch
+                .entry(base_pitch.clone())
+                .or_insert_with(|| {
+                    Arc::new(Tuning {
+                        scale_name: scale.definition.name.clone(),
+                        base_pitch: base_pitch.clone(),
+                    })
+                });
+            parts_by_pitch
+                .entry(base_pitch)
+                .or_default()
+                .push(part.clone());
             self.tunings.insert(part, tuning.clone());
+        }
+        // Add tunings to the timeline.
+        for (pitch, tuning) in tunings_by_pitch {
+            // This is guaranteed to be there since we always added to the two maps together.
+            let parts = parts_by_pitch.get(&pitch).unwrap().to_vec();
+            self.push_event(
+                self.line_start_time,
+                directive.span,
+                TimelineData::Tuning(TuningEvent { tuning, parts }),
+            );
         }
     }
 
     fn reset_tuning(&mut self, reset_tuning: ResetTuning) {
         if reset_tuning.part.is_empty() {
-            self.tunings.clear();
+            let mut old = HashMap::new();
+            mem::swap(&mut old, &mut self.tunings);
+            self.push_event(
+                self.line_start_time,
+                reset_tuning.span,
+                TimelineData::Tuning(TuningEvent {
+                    tuning: DEFAULT_TUNING.clone(),
+                    parts: old.into_keys().collect(),
+                }),
+            );
         } else {
+            let mut parts = Vec::new();
             for p in reset_tuning.part {
                 self.tunings.remove(&p.value);
+                parts.push(p.value.clone());
             }
+            let default_tuning = self.tuning_for_part("");
+            self.push_event(
+                self.line_start_time,
+                reset_tuning.span,
+                TimelineData::Tuning(TuningEvent {
+                    tuning: default_tuning,
+                    parts,
+                }),
+            );
         }
     }
 
@@ -651,7 +937,7 @@ impl Score {
         for (part, dynamic) in &self.pending_dynamic_changes {
             diags.err(
                 code::SCORE,
-                dynamic.span,
+                dynamic.item.span,
                 format!(
                     "for part '{part}', the last dynamic has an unresolved crescendo/diminuendo"
                 ),

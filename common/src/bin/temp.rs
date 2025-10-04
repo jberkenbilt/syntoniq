@@ -23,8 +23,8 @@ fn main() -> anyhow::Result<()> {
     let r = pass3::parse3(input);
     match r {
         Err(diags) => anstream::eprintln!("{}", diags.render(&cli.filename, input)),
-        Ok(_) => {
-            // TODO
+        Ok(timeline) => {
+            serde_json::to_writer_pretty(io::stdout().as_locked_write(), &timeline)?;
         }
     }
     Ok(())
