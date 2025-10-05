@@ -7,6 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/common/directive-macro/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/common/directive_derive/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/syntoniq/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />

@@ -1,6 +1,10 @@
 # TODO
 
+Check syntoniq/Cargo.toml
+
 Fuzz testing. A file that ends in the middle of a directive panics. The panic would have been clearer with context as well.
+
+Finish doc so `syntoniq doc` gives more than just directives.
 
 Current state:
 * Next steps

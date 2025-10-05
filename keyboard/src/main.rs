@@ -1,16 +1,15 @@
-use clap::{Command, CommandFactory};
+use clap::CommandFactory;
 use clap::{Parser, Subcommand};
-use clap_complete::{Generator, Shell, aot};
+use clap_complete::Shell;
 use log::LevelFilter;
 use std::collections::HashMap;
+use std::env;
 use std::path::PathBuf;
-use std::{env, io};
 use syntoniq_kbd::controller::Controller;
 use syntoniq_kbd::engine::SoundType;
 use syntoniq_kbd::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
 use syntoniq_kbd::view::web;
 use syntoniq_kbd::{controller, engine, events};
-// TODO: format or wrap help text
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
 /// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
@@ -18,7 +17,7 @@ use syntoniq_kbd::{controller, engine, events};
 /// Set RUST_LOG=syntoniq::module::path=level to see messages for a given module.
 /// Set RUST_LOG=syntoniq to see all messages.
 #[derive(Parser)]
-#[command(version, about, long_about = None)]
+#[command(version, about, long_about = None, verbatim_doc_comment)]
 struct Cli {
     /// Substring to match for midi port; run amidi -l
     #[arg(long)]
@@ -53,21 +52,12 @@ enum Commands {
     },
 }
 
-fn print_completions<G: Generator>(generator: G, cmd: &mut Command) {
-    aot::generate(
-        generator,
-        cmd,
-        cmd.get_name().to_string(),
-        &mut io::stdout(),
-    );
-}
-
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
     if let Commands::Completion { shell } = cli.command {
         let mut cmd = Cli::command();
-        print_completions(shell, &mut cmd);
+        syntoniq_common::cli_completions(shell, &mut cmd);
         return Ok(());
     }
     if cli.port.is_none() && !cli.no_dev {

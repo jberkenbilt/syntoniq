@@ -47,7 +47,7 @@
 // - After the tokens have been consumed, rather than using `Cut`, perform validations and report
 //   errors with our own `Diagnostics` system. This is a departure from how winnow documentation
 //   describes how to do error handling, but I have found it to be much easier to reason about and
-//   to create really good, contextual error messages.
+//   to create good, contextual error messages.
 //
 // At the end of each "pass" of parsing, if any diagnostics were issued, we stop. Otherwise, we
 // continue with the next pass.
@@ -64,7 +64,17 @@ pub mod pass3;
 pub mod score;
 pub(crate) mod score_helpers;
 mod timeline;
+use crate::parsing::diagnostics::Diagnostics;
+use crate::parsing::score::{Directive, FromRawDirective};
 pub use timeline::*;
+
+pub fn parse(input: &str) -> Result<Timeline, Diagnostics> {
+    pass3::parse3(input)
+}
+
+pub fn show_help() -> anyhow::Result<()> {
+    Ok(Directive::show_help(&mut anstream::stdout())?)
+}
 
 #[cfg(test)]
 mod tests;

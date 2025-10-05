@@ -4,6 +4,7 @@ members = [
   "common",
   "common/directive_derive",
   "keyboard",
+  "syntoniq",
 ]
 
 [workspace.package]
@@ -23,3 +24,9 @@ num-rational = { version = "0.4.2", features = ["serde"] }
 askama = "0.14.0"
 chrono = "0.4.42"
 winnow = "0.7.13"
+anstream = "0.6.20"
+serde_json = "1.0.145"
+annotate-snippets = "0.12.4"
+primal = "0.3.3"
+num-traits = "0.2.19"
+num-integer = "0.1.46"

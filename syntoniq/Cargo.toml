@@ -1,11 +1,12 @@
 [package]
-name = "syntoniq-common"
+name = "syntoniq"
 version = "0.1.0"
 edition.workspace = true
 
 [dependencies]
-directive_derive = { path = "directive_derive" }
+syntoniq-common = { path = "../common" }
 log.workspace = true
+env_logger.workspace = true
 serde.workspace = true
 anyhow.workspace = true
 num-rational.workspace = true
