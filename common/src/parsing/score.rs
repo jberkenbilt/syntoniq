@@ -12,8 +12,8 @@ use std::sync::{Arc, LazyLock};
 
 mod directives;
 use crate::parsing::{
-    DynamicEvent, NoteEvent, NoteValue, Timeline, TimelineData, TimelineEvent, TuningEvent,
-    WithTime,
+    DynamicEvent, NoteOffEvent, NoteOnEvent, NoteValue, Timeline, TimelineData, TimelineEvent,
+    TuningEvent, WithTime,
 };
 use crate::pitch::Pitch;
 pub use directives::*;
@@ -36,7 +36,6 @@ pub struct ScaleDefinition {
     #[serde(skip)]
     pub span: Span,
     pub name: String,
-    pub base_pitch: Pitch,
     pub cycle: Ratio<u32>,
 }
 
@@ -151,7 +150,7 @@ impl Scale {
     }
 }
 
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 pub struct Tuning {
     pub scale_name: String,
     pub base_pitch: Pitch,
@@ -201,7 +200,6 @@ static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
         ScaleDefinition {
             span: (0..1).into(),
             name: "default".to_string(),
-            base_pitch: Pitch::must_parse("220*^1|4"),
             cycle: Ratio::from_integer(2),
         },
         notes,
@@ -210,7 +208,7 @@ static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
 static DEFAULT_TUNING: LazyLock<Arc<Tuning>> = LazyLock::new(|| {
     let scale = DEFAULT_SCALE.clone();
     let scale_name = scale.definition.name.clone();
-    let base_pitch = scale.definition.base_pitch.clone();
+    let base_pitch = Pitch::must_parse("220*^1|4");
     Arc::new(Tuning {
         scale_name,
         base_pitch,
@@ -326,7 +324,7 @@ impl<'a> ScoreBlockValidator<'a> {
                     // directive to configure that, we can come back to that issue.
                     let value = NoteValue {
                         note_name: name.clone(),
-                        scale_name: scale.definition.name.clone(),
+                        tuning: tuning.clone(),
                         absolute_pitch,
                         absolute_scale_degree,
                         options: r_note.options.iter().cloned().map(Spanned::value).collect(),
@@ -335,10 +333,10 @@ impl<'a> ScoreBlockValidator<'a> {
                     self.score.push_event(
                         time,
                         note.span,
-                        TimelineData::NoteOn(NoteEvent {
+                        TimelineData::NoteOn(NoteOnEvent {
                             part: part.clone(),
                             note_number,
-                            value: value.clone(),
+                            value,
                         }),
                     );
                     if let Some(behavior) = r_note.behavior
@@ -351,10 +349,9 @@ impl<'a> ScoreBlockValidator<'a> {
                         self.score.push_event(
                             time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats),
                             note.span,
-                            TimelineData::NoteOff(NoteEvent {
+                            TimelineData::NoteOff(NoteOffEvent {
                                 part: part.clone(),
                                 note_number,
-                                value,
                             }),
                         );
                     }
@@ -512,7 +509,7 @@ impl<'a> ScoreBlockValidator<'a> {
                                         Diagnostic::new(
                                             code::SCORE,
                                             r.level.span,
-                                            "this dynamic level must be larger than the previous one, which contained a crescendo"
+                                            "this dynamic level must be larger than the previous one, which contained a crescendo",
                                         ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
                                     );
                                 }
@@ -523,7 +520,7 @@ impl<'a> ScoreBlockValidator<'a> {
                                         Diagnostic::new(
                                             code::SCORE,
                                             r.level.span,
-                                            "this dynamic level must be less than the previous one, which contained a diminuendo"
+                                            "this dynamic level must be less than the previous one, which contained a diminuendo",
                                         ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
                                     );
                                 }
@@ -688,10 +685,6 @@ impl Score {
                 self.pending_scale = Some(ScaleDefinition {
                     span: x.name.span,
                     name: x.name.value,
-                    base_pitch: x
-                        .base_pitch
-                        .map(Spanned::value)
-                        .unwrap_or_else(|| Pitch::must_parse("220*^1|4")),
                     cycle: x
                         .cycle_ratio
                         .map(Spanned::value)
@@ -843,13 +836,13 @@ impl Score {
                 .collect()
         } else if let Some(n) = &directive.base_note {
             // Make sure the note name is valid in voice
-            let fall_back = &scale.definition.base_pitch;
+            let fall_back = &DEFAULT_TUNING.base_pitch;
             cur_tunings
                 .iter()
                 .map(|(part, existing)| {
-                    let p = if let Some(scale) =  self.scales.get(&existing.scale_name) &&
+                    let p = if let Some(scale) = self.scales.get(&existing.scale_name) &&
                         let Some(sd) = scale.notes.get(&n.value) {
-                        &sd.base_relative * &scale.definition.base_pitch
+                        &sd.base_relative * &existing.base_pitch
                     } else {
                         diags.err(
                             code::TUNE,
@@ -866,11 +859,10 @@ impl Score {
                     (part.clone(), p)
                 }).collect()
         } else {
-            // Use the scale's default base pitch
-            let p = scale.definition.base_pitch.clone();
+            // Keep the same base pitch.
             cur_tunings
-                .keys()
-                .map(|part| (part.to_string(), p.clone()))
+                .iter()
+                .map(|(part, existing)| (part.to_string(), existing.base_pitch.clone()))
                 .collect()
         };
         // Create a tuning for each distinct base pitch with this scale. Then apply the tuning

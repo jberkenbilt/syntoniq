@@ -24,10 +24,10 @@ pub struct TimelineEvent {
 pub enum TimelineData {
     // Keep these in the order in which they should appear in the timeline relative to other
     // events that happen at the same time.
-    NoteOff(NoteEvent),
+    NoteOff(NoteOffEvent),
     Tuning(TuningEvent),
     Dynamic(DynamicEvent),
-    NoteOn(NoteEvent),
+    NoteOn(NoteOnEvent),
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
@@ -48,16 +48,22 @@ pub struct TuningEvent {
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct NoteEvent {
+pub struct NoteOnEvent {
     pub part: String,
     pub note_number: u32,
     pub value: NoteValue,
 }
 
-#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+pub struct NoteOffEvent {
+    pub part: String,
+    pub note_number: u32,
+}
+
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub struct NoteValue {
     pub note_name: String,
-    pub scale_name: String,
+    pub tuning: Arc<Tuning>,
     pub absolute_pitch: Pitch,
     /// Scale degrees from base pitch; add to 60 to get tuned MIDI note number
     pub absolute_scale_degree: i32,

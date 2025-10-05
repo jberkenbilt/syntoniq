@@ -41,8 +41,6 @@ pub struct DefineScale {
     pub span: Span,
     /// scale name
     pub name: Spanned<String>,
-    /// base pitch in pitch syntax; default is 220^1|4 (middle C from A-440 in 12-EDO)
-    pub base_pitch: Option<Spanned<Pitch>>,
     /// ratio to be applied by the octave marker; default is 2 (one octave)
     pub cycle_ratio: Option<Spanned<Ratio<u32>>>,
 }

@@ -9,7 +9,7 @@ define_scale(name="5-EDO") <<
   ^3|5 s
   ^4|5 t
 >>
-define_scale(name="5-JI" cycle_ratio=2 base_pitch=264) <<
+define_scale(name="5-JI" cycle_ratio=2) <<
     1 p
   5/4 q
   4/3 r
@@ -36,21 +36,21 @@ tune(scale="5-JI" part="p2" base_note="d")
 ; Exercise scale degree logic more thoroughly by having notes that
 ; extend outside the cycle (beyond b#). This ensures notes are sorted
 ; properly. These go up by fifths.
-define_scale(name="fifths" cycle_ratio=2 base_pitch=264) <<
+define_scale(name="fifths" cycle_ratio=2) <<
    1    c
    3/2  g
    9/4  d  ;  9/8
   27/8  a  ; 27/16
   81/16 e  ; 81/64
 >>
-define_scale(name="fifths-3" cycle_ratio=3 base_pitch=264) <<
+define_scale(name="fifths-3" cycle_ratio=3) <<
    1    c!
    1/2  g!  ;  3/2  * cycle
    9/4  d!
   27/8  a!  ;  9/8  * cycle
   81/16 e!  ; 27/16 * cycle
 >>
-tune(scale="fifths" part="p1")
-tune(scale="fifths-3" part="p2")
+tune(scale="fifths" part="p1" base_pitch=264)
+tune(scale="fifths-3" part="p2" base_pitch=264)
 [p1.1] 2/5:c d, e,2 g a,
 [p2.1] 2/5:c!' a! g!'2 e! d!'
