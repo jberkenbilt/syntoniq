@@ -17,6 +17,12 @@ Current state:
 
 Next, I would like create a timeline capable of expressing everything we have so far, perhaps taking it end to end through csound and midi. Then, as new features are added, they can be added end to end. This will make it easier to test new features and result in more incremental or less refactoring.
 
+See
+* ~/Downloads/MIDI Tuning Updated Specification.pdf
+* ~/source/examples/rust/midi
+
+Basic strategy: figure out total number of channels needed for 10 octaves of a scale, then track the number of simultaneous (instrument, scale, base_pitch) triples. This determines number of simultaneous channels, which in turn determines number of ports. Try to keep all channels for a part on the same port.
+
 # Keyboard thoughts
 
 We could replace the toml file for configuring the keyboard with something based on stq syntax.
