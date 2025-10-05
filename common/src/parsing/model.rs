@@ -307,7 +307,7 @@ impl Display for NoteLeader {
     }
 }
 
-#[derive(Serialize, Debug, Clone, Copy, PartialEq)]
+#[derive(Serialize, Debug, Clone, Copy, PartialOrd, PartialEq, Ord, Eq)]
 pub enum NoteOption {
     Accent,
     Marcato,
@@ -321,7 +321,7 @@ impl Display for NoteOption {
     }
 }
 
-#[derive(Serialize, Debug, Clone, Copy, PartialEq)]
+#[derive(Serialize, Debug, Clone, Copy, PartialOrd, PartialEq, Ord, Eq)]
 pub enum NoteBehavior {
     Sustain,
     Slide,

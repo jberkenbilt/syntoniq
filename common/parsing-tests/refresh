@@ -1,5 +1,7 @@
 #!/bin/bash
 cd $(dirname $0)
+# Avoid creating junk when running this right after a coverage build.
+export LLVM_PROFILE_FILE="$PWD/../../.grcov/%p-%m.profraw"
 for i in *.stq; do
     ../../target/debug/tokenize $i --json >| ${i/.stq/.json}
 done

@@ -13,21 +13,24 @@ pub struct Timeline {
     pub time_lcm: u32,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub struct TimelineEvent {
     pub time: Ratio<u32>,
     pub span: Span,
     pub data: TimelineData,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub enum TimelineData {
+    // Keep these in the order in which they should appear in the timeline relative to other
+    // events that happen at the same time.
+    NoteOff(NoteEvent),
     Tuning(TuningEvent),
-    Note(NoteEvent),
     Dynamic(DynamicEvent),
+    NoteOn(NoteEvent),
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub struct WithTime<T: Serialize> {
     pub time: Ratio<u32>,
     pub item: T,
@@ -38,21 +41,20 @@ impl<T: Serialize> WithTime<T> {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub struct TuningEvent {
     pub tuning: Arc<Tuning>,
     pub parts: Vec<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub struct NoteEvent {
     pub part: String,
     pub note_number: u32,
-    /// Some = note on, None = note off
-    pub value: Option<NoteValue>,
+    pub value: NoteValue,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq)]
 pub struct NoteValue {
     pub note_name: String,
     pub scale_name: String,
@@ -63,7 +65,7 @@ pub struct NoteValue {
     pub behavior: Option<NoteBehavior>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub struct DynamicEvent {
     pub part: String,
     pub start_level: u8,

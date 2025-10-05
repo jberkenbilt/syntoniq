@@ -151,7 +151,7 @@ impl Scale {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub struct Tuning {
     pub scale_name: String,
     pub base_pitch: Pitch,
@@ -324,21 +324,21 @@ impl<'a> ScoreBlockValidator<'a> {
                     //TODO: There are currently no checks on `slide` behavior (e.g. that the last
                     // note isn't a slide) or representation of the slide duration. When we add a
                     // directive to configure that, we can come back to that issue.
-                    let value = Some(NoteValue {
+                    let value = NoteValue {
                         note_name: name.clone(),
                         scale_name: scale.definition.name.clone(),
                         absolute_pitch,
                         absolute_scale_degree,
                         options: r_note.options.iter().cloned().map(Spanned::value).collect(),
                         behavior: r_note.behavior.map(Spanned::value),
-                    });
+                    };
                     self.score.push_event(
                         time,
                         note.span,
-                        TimelineData::Note(NoteEvent {
+                        TimelineData::NoteOn(NoteEvent {
                             part: part.clone(),
                             note_number,
-                            value,
+                            value: value.clone(),
                         }),
                     );
                     if let Some(behavior) = r_note.behavior
@@ -351,10 +351,10 @@ impl<'a> ScoreBlockValidator<'a> {
                         self.score.push_event(
                             time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats),
                             note.span,
-                            TimelineData::Note(NoteEvent {
+                            TimelineData::NoteOff(NoteEvent {
                                 part: part.clone(),
                                 note_number,
-                                value: None,
+                                value,
                             }),
                         );
                     }
@@ -652,7 +652,8 @@ impl Score {
         }
     }
 
-    pub fn into_timeline(self) -> Timeline {
+    pub fn into_timeline(mut self) -> Timeline {
+        self.timeline.events.sort();
         self.timeline
     }
 

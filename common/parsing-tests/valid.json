@@ -8304,7 +8304,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p1",
               "value": {
@@ -8328,10 +8328,17 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
               "note_number": 0,
               "part": "p1",
-              "value": null
+              "value": {
+                "absolute_pitch": "220*^1|4",
+                "absolute_scale_degree": 0,
+                "behavior": null,
+                "note_name": "c",
+                "options": [],
+                "scale_name": "default"
+              }
             }
           },
           "span": [
@@ -8345,7 +8352,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p1",
               "value": {
@@ -8369,10 +8376,17 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
               "note_number": 0,
               "part": "p1",
-              "value": null
+              "value": {
+                "absolute_pitch": "220*^5|12",
+                "absolute_scale_degree": 2,
+                "behavior": null,
+                "note_name": "d",
+                "options": [],
+                "scale_name": "default"
+              }
             }
           },
           "span": [
@@ -8386,7 +8400,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p1",
               "value": {
@@ -8410,10 +8424,17 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
               "note_number": 0,
               "part": "p1",
-              "value": null
+              "value": {
+                "absolute_pitch": "440*^7|12",
+                "absolute_scale_degree": 16,
+                "behavior": null,
+                "note_name": "e",
+                "options": [],
+                "scale_name": "default"
+              }
             }
           },
           "span": [
@@ -8427,7 +8448,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p1",
               "value": {
@@ -8451,10 +8472,17 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
               "note_number": 0,
               "part": "p1",
-              "value": null
+              "value": {
+                "absolute_pitch": "110*^2|3",
+                "absolute_scale_degree": -7,
+                "behavior": null,
+                "note_name": "f",
+                "options": [],
+                "scale_name": "default"
+              }
             }
           },
           "span": [
@@ -8489,7 +8517,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p1",
               "value": {
@@ -8513,10 +8541,41 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "220*^1|4",
+                "absolute_scale_degree": 0,
+                "behavior": "Slide",
+                "note_name": "c",
+                "options": [],
+                "scale_name": "default"
+              }
+            }
+          },
+          "span": [
+            377,
+            381
+          ],
+          "time": [
+            4,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 0,
               "part": "p1",
-              "value": null
+              "value": {
+                "absolute_pitch": "880*^1|4",
+                "absolute_scale_degree": 10,
+                "behavior": null,
+                "note_name": "p",
+                "options": [],
+                "scale_name": "5-EDO"
+              }
             }
           },
           "span": [
@@ -8530,7 +8589,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p1",
               "value": {
@@ -8556,10 +8615,67 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "220*^1|4",
+                "absolute_scale_degree": 0,
+                "behavior": "Slide",
+                "note_name": "c",
+                "options": [],
+                "scale_name": "default"
+              }
+            }
+          },
+          "span": [
+            377,
+            381
+          ],
+          "time": [
+            5,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "220*^5|12",
+                "absolute_scale_degree": 2,
+                "behavior": null,
+                "note_name": "d",
+                "options": [],
+                "scale_name": "default"
+              }
+            }
+          },
+          "span": [
+            382,
+            383
+          ],
+          "time": [
+            5,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 0,
               "part": "p1",
-              "value": null
+              "value": {
+                "absolute_pitch": "55*^9|20",
+                "absolute_scale_degree": -9,
+                "behavior": null,
+                "note_name": "q",
+                "options": [
+                  "Accent"
+                ],
+                "scale_name": "5-EDO"
+              }
             }
           },
           "span": [
@@ -8573,7 +8689,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p1",
               "value": {
@@ -8599,89 +8715,7 @@
         },
         {
           "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            361,
-            364
-          ],
-          "time": [
-            7,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": {
-                "absolute_pitch": "220*^17|20",
-                "absolute_scale_degree": 3,
-                "behavior": "Sustain",
-                "note_name": "s",
-                "options": [],
-                "scale_name": "5-EDO"
-              }
-            }
-          },
-          "span": [
-            366,
-            368
-          ],
-          "time": [
-            7,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": {
-                "absolute_pitch": "220*^1|4",
-                "absolute_scale_degree": 0,
-                "behavior": "Slide",
-                "note_name": "c",
-                "options": [],
-                "scale_name": "default"
-              }
-            }
-          },
-          "span": [
-            377,
-            381
-          ],
-          "time": [
-            4,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": null
-            }
-          },
-          "span": [
-            377,
-            381
-          ],
-          "time": [
-            5,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
+            "NoteOff": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -8699,30 +8733,13 @@
             383
           ],
           "time": [
-            5,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": null
-            }
-          },
-          "span": [
-            382,
-            383
-          ],
-          "time": [
             6,
             1
           ]
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -8746,10 +8763,67 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
+              "note_number": 0,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "220*^13|20",
+                "absolute_scale_degree": 2,
+                "behavior": null,
+                "note_name": "r",
+                "options": [
+                  "Marcato"
+                ],
+                "scale_name": "5-EDO"
+              }
+            }
+          },
+          "span": [
+            361,
+            364
+          ],
+          "time": [
+            7,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 0,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "220*^17|20",
+                "absolute_scale_degree": 3,
+                "behavior": "Sustain",
+                "note_name": "s",
+                "options": [],
+                "scale_name": "5-EDO"
+              }
+            }
+          },
+          "span": [
+            366,
+            368
+          ],
+          "time": [
+            7,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 1,
               "part": "p2",
-              "value": null
+              "value": {
+                "absolute_pitch": "220*^7|12",
+                "absolute_scale_degree": 4,
+                "behavior": null,
+                "note_name": "e",
+                "options": [],
+                "scale_name": "default"
+              }
             }
           },
           "span": [
@@ -8763,7 +8837,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -8787,10 +8861,17 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
               "note_number": 1,
               "part": "p2",
-              "value": null
+              "value": {
+                "absolute_pitch": "220*^2|3",
+                "absolute_scale_degree": 5,
+                "behavior": null,
+                "note_name": "f",
+                "options": [],
+                "scale_name": "default"
+              }
             }
           },
           "span": [
@@ -8825,7 +8906,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p1",
               "value": {
@@ -8849,147 +8930,7 @@
         },
         {
           "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            554,
-            557
-          ],
-          "time": [
-            9,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": {
-                "absolute_pitch": "220*^9|20",
-                "absolute_scale_degree": 1,
-                "behavior": null,
-                "note_name": "q",
-                "options": [],
-                "scale_name": "5-EDO"
-              }
-            }
-          },
-          "span": [
-            558,
-            559
-          ],
-          "time": [
-            9,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            558,
-            559
-          ],
-          "time": [
-            10,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": {
-                "absolute_pitch": "220*^13|20",
-                "absolute_scale_degree": 2,
-                "behavior": null,
-                "note_name": "r",
-                "options": [],
-                "scale_name": "5-EDO"
-              }
-            }
-          },
-          "span": [
-            560,
-            561
-          ],
-          "time": [
-            10,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            560,
-            561
-          ],
-          "time": [
-            11,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": {
-                "absolute_pitch": "220*^17|20",
-                "absolute_scale_degree": 3,
-                "behavior": null,
-                "note_name": "s",
-                "options": [],
-                "scale_name": "5-EDO"
-              }
-            }
-          },
-          "span": [
-            562,
-            563
-          ],
-          "time": [
-            11,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            562,
-            563
-          ],
-          "time": [
-            12,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -9013,147 +8954,7 @@
         },
         {
           "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": null
-            }
-          },
-          "span": [
-            572,
-            575
-          ],
-          "time": [
-            9,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": {
-                "absolute_pitch": "275*^5|12",
-                "absolute_scale_degree": 1,
-                "behavior": null,
-                "note_name": "q",
-                "options": [],
-                "scale_name": "5-JI"
-              }
-            }
-          },
-          "span": [
-            576,
-            577
-          ],
-          "time": [
-            9,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": null
-            }
-          },
-          "span": [
-            576,
-            577
-          ],
-          "time": [
-            10,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": {
-                "absolute_pitch": "880/3*^5|12",
-                "absolute_scale_degree": 2,
-                "behavior": null,
-                "note_name": "r",
-                "options": [],
-                "scale_name": "5-JI"
-              }
-            }
-          },
-          "span": [
-            578,
-            579
-          ],
-          "time": [
-            10,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": null
-            }
-          },
-          "span": [
-            578,
-            579
-          ],
-          "time": [
-            11,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": {
-                "absolute_pitch": "330*^5|12",
-                "absolute_scale_degree": 3,
-                "behavior": null,
-                "note_name": "u",
-                "options": [],
-                "scale_name": "5-JI"
-              }
-            }
-          },
-          "span": [
-            580,
-            581
-          ],
-          "time": [
-            11,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p2",
-              "value": null
-            }
-          },
-          "span": [
-            580,
-            581
-          ],
-          "time": [
-            12,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p3",
               "value": {
@@ -9177,10 +8978,113 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
+              "note_number": 0,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "220*^1|4",
+                "absolute_scale_degree": 0,
+                "behavior": null,
+                "note_name": "p",
+                "options": [],
+                "scale_name": "5-EDO"
+              }
+            }
+          },
+          "span": [
+            554,
+            557
+          ],
+          "time": [
+            9,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 0,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "220*^9|20",
+                "absolute_scale_degree": 1,
+                "behavior": null,
+                "note_name": "q",
+                "options": [],
+                "scale_name": "5-EDO"
+              }
+            }
+          },
+          "span": [
+            558,
+            559
+          ],
+          "time": [
+            9,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "220*^5|12",
+                "absolute_scale_degree": 0,
+                "behavior": null,
+                "note_name": "p",
+                "options": [],
+                "scale_name": "5-JI"
+              }
+            }
+          },
+          "span": [
+            572,
+            575
+          ],
+          "time": [
+            9,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "275*^5|12",
+                "absolute_scale_degree": 1,
+                "behavior": null,
+                "note_name": "q",
+                "options": [],
+                "scale_name": "5-JI"
+              }
+            }
+          },
+          "span": [
+            576,
+            577
+          ],
+          "time": [
+            9,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 0,
               "part": "p3",
-              "value": null
+              "value": {
+                "absolute_pitch": "440",
+                "absolute_scale_degree": 9,
+                "behavior": null,
+                "note_name": "a",
+                "options": [],
+                "scale_name": "default"
+              }
             }
           },
           "span": [
@@ -9194,7 +9098,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
               "part": "p3",
               "value": {
@@ -9218,15 +9122,22 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
               "note_number": 0,
-              "part": "p3",
-              "value": null
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "220*^9|20",
+                "absolute_scale_degree": 1,
+                "behavior": null,
+                "note_name": "q",
+                "options": [],
+                "scale_name": "5-EDO"
+              }
             }
           },
           "span": [
-            594,
-            595
+            558,
+            559
           ],
           "time": [
             10,
@@ -9235,83 +9146,97 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 0,
-              "part": "p3",
+              "part": "p1",
               "value": {
-                "absolute_pitch": "440*^1|12",
-                "absolute_scale_degree": 10,
+                "absolute_pitch": "220*^13|20",
+                "absolute_scale_degree": 2,
                 "behavior": null,
-                "note_name": "b%",
+                "note_name": "r",
                 "options": [],
-                "scale_name": "default"
+                "scale_name": "5-EDO"
               }
             }
           },
           "span": [
-            598,
-            604
+            560,
+            561
           ],
           "time": [
-            11,
+            10,
             1
           ]
         },
         {
           "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p3",
-              "value": null
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "275*^5|12",
+                "absolute_scale_degree": 1,
+                "behavior": null,
+                "note_name": "q",
+                "options": [],
+                "scale_name": "5-JI"
+              }
             }
           },
           "span": [
-            598,
-            604
+            576,
+            577
           ],
           "time": [
-            23,
-            2
+            10,
+            1
           ]
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "880/3*^5|12",
+                "absolute_scale_degree": 2,
+                "behavior": null,
+                "note_name": "r",
+                "options": [],
+                "scale_name": "5-JI"
+              }
+            }
+          },
+          "span": [
+            578,
+            579
+          ],
+          "time": [
+            10,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 0,
               "part": "p3",
               "value": {
-                "absolute_pitch": "440*^1|4",
-                "absolute_scale_degree": 12,
+                "absolute_pitch": "220*^7|12",
+                "absolute_scale_degree": 4,
                 "behavior": null,
-                "note_name": "b#",
+                "note_name": "e",
                 "options": [],
                 "scale_name": "default"
               }
             }
           },
           "span": [
-            605,
-            607
+            594,
+            595
           ],
           "time": [
-            23,
-            2
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 0,
-              "part": "p3",
-              "value": null
-            }
-          },
-          "span": [
-            605,
-            607
-          ],
-          "time": [
-            12,
+            10,
             1
           ]
         },
@@ -9340,6 +9265,126 @@
         },
         {
           "data": {
+            "NoteOff": {
+              "note_number": 0,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "220*^13|20",
+                "absolute_scale_degree": 2,
+                "behavior": null,
+                "note_name": "r",
+                "options": [],
+                "scale_name": "5-EDO"
+              }
+            }
+          },
+          "span": [
+            560,
+            561
+          ],
+          "time": [
+            11,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 0,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "220*^17|20",
+                "absolute_scale_degree": 3,
+                "behavior": null,
+                "note_name": "s",
+                "options": [],
+                "scale_name": "5-EDO"
+              }
+            }
+          },
+          "span": [
+            562,
+            563
+          ],
+          "time": [
+            11,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "880/3*^5|12",
+                "absolute_scale_degree": 2,
+                "behavior": null,
+                "note_name": "r",
+                "options": [],
+                "scale_name": "5-JI"
+              }
+            }
+          },
+          "span": [
+            578,
+            579
+          ],
+          "time": [
+            11,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "330*^5|12",
+                "absolute_scale_degree": 3,
+                "behavior": null,
+                "note_name": "u",
+                "options": [],
+                "scale_name": "5-JI"
+              }
+            }
+          },
+          "span": [
+            580,
+            581
+          ],
+          "time": [
+            11,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 0,
+              "part": "p3",
+              "value": {
+                "absolute_pitch": "440*^1|12",
+                "absolute_scale_degree": 10,
+                "behavior": null,
+                "note_name": "b%",
+                "options": [],
+                "scale_name": "default"
+              }
+            }
+          },
+          "span": [
+            598,
+            604
+          ],
+          "time": [
+            11,
+            1
+          ]
+        },
+        {
+          "data": {
             "Dynamic": {
               "end_level": null,
               "part": "p3",
@@ -9352,6 +9397,126 @@
           ],
           "time": [
             11,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
+              "note_number": 0,
+              "part": "p3",
+              "value": {
+                "absolute_pitch": "440*^1|12",
+                "absolute_scale_degree": 10,
+                "behavior": null,
+                "note_name": "b%",
+                "options": [],
+                "scale_name": "default"
+              }
+            }
+          },
+          "span": [
+            598,
+            604
+          ],
+          "time": [
+            23,
+            2
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 0,
+              "part": "p3",
+              "value": {
+                "absolute_pitch": "440*^1|4",
+                "absolute_scale_degree": 12,
+                "behavior": null,
+                "note_name": "b#",
+                "options": [],
+                "scale_name": "default"
+              }
+            }
+          },
+          "span": [
+            605,
+            607
+          ],
+          "time": [
+            23,
+            2
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
+              "note_number": 0,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "220*^17|20",
+                "absolute_scale_degree": 3,
+                "behavior": null,
+                "note_name": "s",
+                "options": [],
+                "scale_name": "5-EDO"
+              }
+            }
+          },
+          "span": [
+            562,
+            563
+          ],
+          "time": [
+            12,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p2",
+              "value": {
+                "absolute_pitch": "330*^5|12",
+                "absolute_scale_degree": 3,
+                "behavior": null,
+                "note_name": "u",
+                "options": [],
+                "scale_name": "5-JI"
+              }
+            }
+          },
+          "span": [
+            580,
+            581
+          ],
+          "time": [
+            12,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
+              "note_number": 0,
+              "part": "p3",
+              "value": {
+                "absolute_pitch": "440*^1|4",
+                "absolute_scale_degree": 12,
+                "behavior": null,
+                "note_name": "b#",
+                "options": [],
+                "scale_name": "default"
+              }
+            }
+          },
+          "span": [
+            605,
+            607
+          ],
+          "time": [
+            12,
             1
           ]
         },
@@ -9399,7 +9564,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p1",
               "value": {
@@ -9423,188 +9588,7 @@
         },
         {
           "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            1181,
-            1186
-          ],
-          "time": [
-            62,
-            5
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": {
-                "absolute_pitch": "297",
-                "absolute_scale_degree": 1,
-                "behavior": null,
-                "note_name": "d",
-                "options": [],
-                "scale_name": "fifths"
-              }
-            }
-          },
-          "span": [
-            1187,
-            1189
-          ],
-          "time": [
-            62,
-            5
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            1187,
-            1189
-          ],
-          "time": [
-            64,
-            5
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": {
-                "absolute_pitch": "334.125",
-                "absolute_scale_degree": 2,
-                "behavior": null,
-                "note_name": "e",
-                "options": [],
-                "scale_name": "fifths"
-              }
-            }
-          },
-          "span": [
-            1190,
-            1193
-          ],
-          "time": [
-            64,
-            5
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            1190,
-            1193
-          ],
-          "time": [
-            66,
-            5
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": {
-                "absolute_pitch": "396",
-                "absolute_scale_degree": 3,
-                "behavior": null,
-                "note_name": "g",
-                "options": [],
-                "scale_name": "fifths"
-              }
-            }
-          },
-          "span": [
-            1194,
-            1195
-          ],
-          "time": [
-            66,
-            5
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            1194,
-            1195
-          ],
-          "time": [
-            68,
-            5
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": {
-                "absolute_pitch": "445.5",
-                "absolute_scale_degree": 4,
-                "behavior": null,
-                "note_name": "a",
-                "options": [],
-                "scale_name": "fifths"
-              }
-            }
-          },
-          "span": [
-            1196,
-            1198
-          ],
-          "time": [
-            68,
-            5
-          ]
-        },
-        {
-          "data": {
-            "Note": {
-              "note_number": 1,
-              "part": "p1",
-              "value": null
-            }
-          },
-          "span": [
-            1196,
-            1198
-          ],
-          "time": [
-            14,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -9628,10 +9612,65 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "264",
+                "absolute_scale_degree": 0,
+                "behavior": null,
+                "note_name": "c",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1181,
+            1186
+          ],
+          "time": [
+            62,
+            5
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "297",
+                "absolute_scale_degree": 1,
+                "behavior": null,
+                "note_name": "d",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1187,
+            1189
+          ],
+          "time": [
+            62,
+            5
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 1,
               "part": "p2",
-              "value": null
+              "value": {
+                "absolute_pitch": "792",
+                "absolute_scale_degree": 5,
+                "behavior": null,
+                "note_name": "c!",
+                "options": [],
+                "scale_name": "fifths-3"
+              }
             }
           },
           "span": [
@@ -9645,7 +9684,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -9669,10 +9708,65 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "297",
+                "absolute_scale_degree": 1,
+                "behavior": null,
+                "note_name": "d",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1187,
+            1189
+          ],
+          "time": [
+            64,
+            5
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "334.125",
+                "absolute_scale_degree": 2,
+                "behavior": null,
+                "note_name": "e",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1190,
+            1193
+          ],
+          "time": [
+            64,
+            5
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 1,
               "part": "p2",
-              "value": null
+              "value": {
+                "absolute_pitch": "891",
+                "absolute_scale_degree": 6,
+                "behavior": null,
+                "note_name": "a!",
+                "options": [],
+                "scale_name": "fifths-3"
+              }
             }
           },
           "span": [
@@ -9686,7 +9780,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -9710,10 +9804,65 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "334.125",
+                "absolute_scale_degree": 2,
+                "behavior": null,
+                "note_name": "e",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1190,
+            1193
+          ],
+          "time": [
+            66,
+            5
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "396",
+                "absolute_scale_degree": 3,
+                "behavior": null,
+                "note_name": "g",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1194,
+            1195
+          ],
+          "time": [
+            66,
+            5
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 1,
               "part": "p2",
-              "value": null
+              "value": {
+                "absolute_pitch": "1188",
+                "absolute_scale_degree": 7,
+                "behavior": null,
+                "note_name": "g!",
+                "options": [],
+                "scale_name": "fifths-3"
+              }
             }
           },
           "span": [
@@ -9727,7 +9876,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -9751,10 +9900,65 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "396",
+                "absolute_scale_degree": 3,
+                "behavior": null,
+                "note_name": "g",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1194,
+            1195
+          ],
+          "time": [
+            68,
+            5
+          ]
+        },
+        {
+          "data": {
+            "NoteOn": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "445.5",
+                "absolute_scale_degree": 4,
+                "behavior": null,
+                "note_name": "a",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1196,
+            1198
+          ],
+          "time": [
+            68,
+            5
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 1,
               "part": "p2",
-              "value": null
+              "value": {
+                "absolute_pitch": "1336.5",
+                "absolute_scale_degree": 8,
+                "behavior": null,
+                "note_name": "e!",
+                "options": [],
+                "scale_name": "fifths-3"
+              }
             }
           },
           "span": [
@@ -9768,7 +9972,7 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOn": {
               "note_number": 1,
               "part": "p2",
               "value": {
@@ -9792,10 +9996,41 @@
         },
         {
           "data": {
-            "Note": {
+            "NoteOff": {
+              "note_number": 1,
+              "part": "p1",
+              "value": {
+                "absolute_pitch": "445.5",
+                "absolute_scale_degree": 4,
+                "behavior": null,
+                "note_name": "a",
+                "options": [],
+                "scale_name": "fifths"
+              }
+            }
+          },
+          "span": [
+            1196,
+            1198
+          ],
+          "time": [
+            14,
+            1
+          ]
+        },
+        {
+          "data": {
+            "NoteOff": {
               "note_number": 1,
               "part": "p2",
-              "value": null
+              "value": {
+                "absolute_pitch": "1782",
+                "absolute_scale_degree": 9,
+                "behavior": null,
+                "note_name": "d!",
+                "options": [],
+                "scale_name": "fifths-3"
+              }
             }
           },
           "span": [
