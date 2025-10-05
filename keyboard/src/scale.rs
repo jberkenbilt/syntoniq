@@ -305,7 +305,7 @@ mod tests {
         };
         let note = edo12.edo_note(0, 9);
         assert_eq!(note.pitch.as_float().round(), 440.0);
-        assert_eq!(note.pitch.midi(), (69, 8192));
+        assert_eq!(note.pitch.midi().unwrap(), (69, 8192));
         assert_eq!(note.name, "");
         assert_eq!(note.description, "0.9");
         assert_eq!(note.colors, (Color::MinorThirdOff, Color::MinorThirdOn));
@@ -325,7 +325,7 @@ mod tests {
         };
         let note = edo6.edo_note(0, 3);
         assert_eq!((100.0 * note.pitch.as_float()).round(), 37335.0);
-        assert_eq!(note.pitch.midi(), (66, 8833));
+        assert_eq!(note.pitch.midi().unwrap(), (66, 8833));
         assert_eq!(note.name, "F#");
 
         Ok(())

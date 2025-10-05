@@ -1,5 +1,6 @@
 use crate::events;
 use crate::events::Event;
+use anyhow::anyhow;
 use midir::os::unix::VirtualOutput;
 use midir::{MidiOutput, MidiOutputConnection};
 use std::collections::HashMap;
@@ -15,7 +16,9 @@ struct Player {
 
 impl Player {
     pub fn handle_note(&mut self, pitch: &Pitch, velocity: u8) -> anyhow::Result<()> {
-        let (note_number, bend) = pitch.midi();
+        let (note_number, bend) = pitch.midi().ok_or(anyhow!(
+            "unable to convert pitch {pitch} to midi pitch bend"
+        ))?;
         let notes = self.bend_to_notes.get_mut(&bend);
         let mut ch = self.bend_to_channel.get(&bend).copied();
         if velocity == 0 {
