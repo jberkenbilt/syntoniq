@@ -2,6 +2,16 @@
 
 Check syntoniq/Cargo.toml
 
+Oseh Shalom as possible JI demo piece: `1:g, c c b%, | 4:c | 1:g, b%, b%, a, | 4:b%, |` ...
+Anything with modulations.
+
+```
+1:g  b% a% g 4:f
+2:e%    e%   4:e%
+2:c     c    4:c
+2:~     b%,  4:a%,
+```
+
 Fuzz testing. A file that ends in the middle of a directive panics. The panic would have been clearer with context as well.
 
 Finish doc so `syntoniq doc` gives more than just directives.
