@@ -334,11 +334,15 @@ impl<'a> MidiGenerator<'a> {
             })
             .collect();
         tunings.sort();
-        for (program, (key, range)) in tunings.into_iter().enumerate() {
+        let mut program = 0;
+        for (key, range) in tunings {
             let ranges = split_range(range.min_incl..range.max_excl, 128);
             let data = ranges
                 .into_iter()
-                .map(|range| TuningData::new(range, program as i32 + 1))
+                .map(|range| {
+                    program += 1;
+                    TuningData::new(range, program)
+                })
                 .collect();
             self.tuning_data.insert(key, data);
         }
@@ -509,16 +513,17 @@ impl<'a> MidiGenerator<'a> {
         // Name: 16 bytes
         dump.append(&mut string_exact_bytes(&tuning.scale_name, 16));
 
+        // This is the actual pitch calcuation logic.
         let &scale = self
             .scales_by_name
             .get(tuning.scale_name.as_str())
             .ok_or_else(|| anyhow!("unknown scale in dump_tuning"))?;
+        // Get basic information about the scale.
         let degrees = scale.pitches.len() as i32;
         let cycle_ratio = scale.definition.cycle;
         let base_pitch = &tuning.base_pitch;
-        //TODO: if this doesn't cover 128 notes, extend to 0 and 128 as long as we can do so without
-        // overflowing or under-flowing pitches.
-        let first = data.range.start;
+        // Get the syntoniq degree for midi note 0.
+        let first = -data.midi_offset;
         let (mut cycle, mut degree) = first.div_mod_floor(&degrees);
         let mut pitch0 = base_pitch.clone();
         let cycle_factor = Pitch::from(cycle_ratio);
@@ -533,25 +538,20 @@ impl<'a> MidiGenerator<'a> {
             pitch0 *= &cycle_factor;
             cycle -= 1;
         }
-        let first_midi = data.range.start + data.midi_offset;
-        for _ in 0..first_midi {
-            dump.append(&mut vec![0; 3]);
-        }
-        let last_midi = data.range.end + data.midi_offset;
-        for _ in first_midi..last_midi {
+        for i in 0..128 {
             let pitch = &pitch0 * &scale.pitches[degree as usize];
-            dump.append(
-                &mut pitch
-                    .midi_tuning()
-                    .ok_or_else(|| anyhow!("range error computing midi tuning"))?,
-            );
+            let mut v = pitch.midi_tuning().unwrap_or_else(|| {
+                if i < data.midi_offset {
+                    vec![0; 3]
+                } else {
+                    vec![127; 3]
+                }
+            });
+            dump.append(&mut v);
             degree = (degree + 1) % degrees;
             if degree == 0 {
                 pitch0 *= &cycle_factor;
             }
-        }
-        for _ in last_midi..128 {
-            dump.append(&mut vec![127; 3]);
         }
         // Compute checksum per MTS spec. The MTS spec recommends that readers ignore the checksum.
         let mut checksum: u8 = 0;
