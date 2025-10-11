@@ -1481,21 +1481,17 @@ checksum = "0bf256ce5efdfa370213c1dabab5935a12e49f2c58d15e9eac2870d3b4f27263"
 name = "syntoniq"
 version = "0.1.0"
 dependencies = [
- "annotate-snippets",
  "anstream",
  "anyhow",
  "clap",
  "clap_complete",
  "env_logger",
  "log",
+ "midly",
  "num-integer",
  "num-rational",
- "num-traits",
- "primal",
- "serde",
  "serde_json",
  "syntoniq-common",
- "winnow",
 ]
 
 [[package]]

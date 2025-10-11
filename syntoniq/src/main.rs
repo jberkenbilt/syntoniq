@@ -21,10 +21,12 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Generate Csound or MIDI output
+    /// Generate Csound and/or MIDI output. If no output is specified, this just parses the score
+    /// and reports errors, if any.
     Generate(GenerateOptions),
     /// Show the timeline as JSON
     Dump {
+        /// Name of syntoniq score file
         #[arg(long)]
         score: PathBuf,
     },
