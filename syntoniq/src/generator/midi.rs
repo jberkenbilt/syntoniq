@@ -1,53 +1,58 @@
 use anyhow::{anyhow, bail};
 use midly::MetaMessage::{EndOfTrack, Tempo};
-use midly::num::{u4, u7, u15, u28};
+use midly::num::{u4, u7, u15, u24, u28};
 use midly::{
     Arena, Format, Header, MetaMessage, MidiMessage, Smf, Timing, TrackEvent, TrackEventKind,
 };
 use num_integer::Integer;
 use num_rational::Ratio;
+use std::cell::RefCell;
 use std::cmp;
-use std::collections::hash_map::Entry;
-use std::collections::{BTreeSet, HashMap, HashSet};
+use std::collections::btree_map::Entry;
+use std::collections::{BTreeMap, BTreeSet};
 use std::ops::Range;
 use std::path::Path;
+use std::sync::Arc;
 use syntoniq_common::parsing::score::{Scale, Tuning};
-use syntoniq_common::parsing::{Timeline, TimelineData};
+use syntoniq_common::parsing::{DynamicEvent, Timeline, TimelineData, TimelineEvent};
 use syntoniq_common::pitch::Pitch;
 
 // Key concepts:
+//   - A "part" is a syntoniq part, corresponding to a part in the score. A "port" is a MIDI port.
+//     To reduce confusion, we will use `score_part` and `midi_port` rather than `part` and `port`.
 //   - A tuning program consists of at most 128 notes. For the range of notes used in a current
 //     scale, there is one tuning program for each 128 notes. A syntoniq tuning is a scale and
 //     base pitch. A midi tuning is a subset of a syntoniq tuning.
 //   - For simplicity and to allow sustaining notes from one tuning while playing notes from a
-//     different tuning, we assign each channel a tuning
+//     different tuning, we assign each channel a tuning.
 //   - A track is a container for events. By convention, all events for a track are for the same
-//     port and instrument.
+//     MIDI port and score part.
 //
 // Therefore:
-//   - There is one port for every 15 channels (since we avoid channel 9 -- see comments)
-//   - There is one (channel, port) pair for each (instrument, tuning)
-//   - There is one track for each (instrument, port)
+//   - There is one MIDI port for every 15 channels (since we avoid channel 9 -- see comments)
+//   - There is one (channel, MIDI port) pair for each (score part, tuning)
+//   - There is one track for each (score part, MIDI port)
 //
 // We do the following up front:
 //   - Assign a tuning program and, if needed, bank for each tuning.
 //   - Dump all tunings to track 0 (midi track 1)
-//   - Create a track for each (instrument, port). At the beginning of the track,
-//     set the track's instrument and port.
-//   - For each (channel, port), get the (instrument, tuning). In the first track for that
-//     (port, instrument), set the tuning for that channel to the specific tuning.
+//   - Create a track for each (score part, MIDI port). At the beginning of the track,
+//     set the track's instrument and MIDI port.
+//   - For each (channel, MIDI port), get the (score part, tuning). In the first track for that
+//     (score part, MIDI port), set the instrument and  tuning for that channel to the specific
+//     tuning.
 //
 // Then, when we have a note:
 //   - Use the syntoniq tuning and specific note to map to a tuning program.
-//   - Use the tuning and instrument to map to a channel and port.
-//   - Use the instrument and port to map to a track.
+//   - Use the tuning and score part to map to a channel and MIDI port.
+//   - Use the score part and MIDI port to map to a track.
 //   - Play the note in the track using the given channel.
-//   - The note will have the correct instrument and port because of the track and the correct
+//   - The note will have the correct instrument and MIDI port because of the track and the correct
 //     tuning because of the channel.
 
-#[derive(Debug, PartialOrd, PartialEq, Eq, Hash)]
-struct NoteKey<'a> {
-    part: &'a str,
+#[derive(Debug, PartialOrd, PartialEq, Eq, Ord, Hash)]
+struct NoteKey {
+    part: String,
     note: u32,
 }
 struct PlayedNote {
@@ -58,20 +63,29 @@ struct PlayedNote {
 
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct PortChannel {
-    port: u7,
+    midi_port: u7,
+    channel: u4,
+}
+
+#[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
+struct TrackPortChannel {
+    track: usize,
+    midi_port: u7,
     channel: u4,
 }
 
 struct MidiGenerator<'a> {
     arena: &'a Arena,
     timeline: &'a Timeline,
-    scales_by_name: HashMap<&'a str, &'a Scale>,
-    last_time: u28,
-    ticks_per_beat: u32,
-    last_played: HashMap<NoteKey<'a>, PlayedNote>,
-    tuning_data: HashMap<&'a Tuning, Vec<TuningData>>,
-    channel_data: HashMap<ChannelKey<'a>, PortChannel>,
-    track_data: HashMap<TrackKey<'a>, usize>,
+    scales_by_name: BTreeMap<&'a str, &'a Scale>,
+    track_last_time: RefCell<BTreeMap<usize, u28>>,
+    ticks_per_beat: u15,
+    micros_per_beat: u24,
+    last_played: BTreeMap<NoteKey, PlayedNote>,
+    tuning_data: BTreeMap<&'a Tuning, Vec<TuningData>>,
+    channel_data: BTreeMap<ChannelKey<'a>, PortChannel>,
+    part_channels: BTreeMap<&'a str, BTreeSet<TrackPortChannel>>,
+    track_data: BTreeMap<TrackKey<'a>, usize>,
     tracks: Vec<Vec<TrackEvent<'a>>>,
     smf: Option<Smf<'a>>,
 }
@@ -121,14 +135,14 @@ impl TuningData {
 
 #[derive(Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct ChannelKey<'a> {
-    instrument: &'a str,
+    score_part: &'a str,
     raw_tuning: i32,
 }
 
 #[derive(Debug, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct TrackKey<'a> {
-    instrument: &'a str,
-    port: u7,
+    score_part: &'a str,
+    midi_port: u7,
 }
 
 #[derive(Debug, Clone, Copy, PartialOrd, PartialEq, Eq, Ord)]
@@ -187,39 +201,93 @@ fn split_range(r: Range<i32>, n: usize) -> Vec<Range<i32>> {
     out
 }
 
+/// Ramp linearly from a start to an end level over the given number of ticks in at most `steps`
+/// steps.
+pub fn ramp(start_level: u8, end_level: u8, ticks: u32, steps: u32) -> Vec<(u32, u8)> {
+    // AI generated with very specific prompt.
+    if steps == 0 {
+        return vec![(ticks, end_level)];
+    }
+
+    let s = start_level as i32;
+    let e = end_level as i32;
+    let d = e - s; // signed delta
+
+    let mut out = Vec::new();
+    let mut prev_level = s;
+
+    for i in 1..=steps {
+        // time uses plain floor for positive values
+        let t = ((i as u128) * (ticks as u128) / (steps as u128)) as u32;
+
+        // level uses Euclidean division to get mathematical floor for negatives
+        let q = ((d as i128) * (i as i128)).div_euclid(steps as i128); // floor(d*i/steps)
+        let level_i = s + q as i32;
+
+        // Emit when the level changes, or always on the last step
+        if level_i != prev_level || i == steps {
+            // safe because level_i is between min(s,e) and max(s,e), within 0..=255
+            let level_u8 = level_i.clamp(0, 255) as u8;
+            out.push((t, level_u8));
+            prev_level = level_i;
+        }
+    }
+    out
+}
+
 impl<'a> MidiGenerator<'a> {
-    fn new(timeline: &'a Timeline, arena: &'a Arena) -> Self {
+    fn new(timeline: &'a Timeline, arena: &'a Arena) -> anyhow::Result<Self> {
         // Pick a timing that accommodates 2, 3, 5, and 7 as well as anything used by the score.
-        let ticks_per_beat = num_integer::lcm(timeline.time_lcm, 210);
+        let ticks_per_beat = u16::try_from(num_integer::lcm(timeline.time_lcm, 210))
+            .ok()
+            .and_then(u15::try_from)
+            .ok_or_else(|| anyhow!("overflow calculating ticks per beat"))?;
+        let micros_per_beat: u24 = 833333.into(); // 72 BPM -- changed by tempo events
         let scales_by_name = timeline
             .scales
             .iter()
             .map(|s| (s.definition.name.as_str(), s.as_ref()))
             .collect();
-        Self {
+        Ok(Self {
             arena,
             timeline,
             scales_by_name,
-            last_time: 0.into(),
+            track_last_time: Default::default(),
             ticks_per_beat,
+            micros_per_beat,
             last_played: Default::default(),
             tuning_data: Default::default(),
             channel_data: Default::default(),
+            part_channels: Default::default(),
             track_data: Default::default(),
             tracks: Default::default(),
             smf: None,
-        }
+        })
     }
 
-    fn get_delta(&mut self, event_time: Ratio<u32>) -> anyhow::Result<u28> {
-        // Ticks per beat is known to be a multiple of LCM of all time denominators.
-        let time = u28::try_from(*(event_time * self.ticks_per_beat).numer())
-            .ok_or_else(|| anyhow!("time overflow"))?;
-        if time < self.last_time {
-            bail!("time must be monotonically non-decreasing");
-        }
-        let result = time - self.last_time;
-        self.last_time = time;
+    fn get_delta(&self, track: usize, event_time: Ratio<u32>) -> anyhow::Result<u28> {
+        let time = u28::try_from(
+            *(event_time * (u16::from(self.ticks_per_beat) as u32))
+                .floor()
+                .numer(),
+        )
+        .ok_or_else(|| anyhow!("time overflow"))?;
+        let mut track_last_time = self.track_last_time.borrow_mut();
+        let result = match track_last_time.entry(track) {
+            Entry::Occupied(mut v) => {
+                let last_time = v.get_mut();
+                if time < *last_time {
+                    bail!("time must be monotonically non-decreasing");
+                }
+                let result = time - *last_time;
+                *last_time = time;
+                result
+            }
+            Entry::Vacant(v) => {
+                v.insert(time);
+                time
+            }
+        };
         Ok(result)
     }
 
@@ -236,7 +304,7 @@ impl<'a> MidiGenerator<'a> {
     fn get_all_tunings(&mut self) -> anyhow::Result<()> {
         // A given tuning may have up to 128 notes (midi note numbers 0 through 127). For each
         // scale, figure the range of notes used, and divide into tunings.
-        let mut tunings: HashMap<&Tuning, NoteRange> = HashMap::new();
+        let mut tunings: BTreeMap<&Tuning, NoteRange> = BTreeMap::new();
         for event in &self.timeline.events {
             let TimelineData::NoteOn(note_event) = &event.data else {
                 continue;
@@ -278,9 +346,9 @@ impl<'a> MidiGenerator<'a> {
     }
 
     fn get_channel_mappings(&mut self) -> anyhow::Result<()> {
-        // Assign a separate channel to each (instrument, tuning) combination. Stay away from
+        // Assign a separate channel to each (score_part, tuning) combination. Stay away from
         // channel 9 (from 0) since this is usually used for percussion. Here, we assign a "raw
-        // channel", which is converted to a (port, channel) pair.
+        // channel", which is converted to a (midi_port, channel) pair.
 
         let mut channel_users: BTreeSet<ChannelKey> = BTreeSet::new();
         for event in &self.timeline.events {
@@ -291,30 +359,30 @@ impl<'a> MidiGenerator<'a> {
                 &note_event.value.tuning,
                 note_event.value.absolute_scale_degree,
             )?;
-            let instrument = "TODO"; // TODO: get instrument
+            let score_part = note_event.part.as_str();
             channel_users.insert(ChannelKey {
-                instrument,
+                score_part,
                 raw_tuning: tuning.raw_program,
             });
         }
-        let mut port: u7 = 0.into();
+        let mut midi_port: u7 = 0.into();
         let mut channel: u4 = 0.into();
         let mut too_many = false;
         for channel_key in channel_users {
             if too_many {
-                bail!("too many instrument/tuning pairs");
+                bail!("too many score part/tuning pairs");
             }
             self.channel_data
-                .insert(channel_key, PortChannel { port, channel });
+                .insert(channel_key, PortChannel { midi_port, channel });
             if channel == 8 {
                 // Skip channel 9, percussion
                 channel += 2.into();
             } else if channel == 15 {
                 channel = 0.into();
-                if port == 127 {
+                if midi_port == 127 {
                     too_many = true;
                 } else {
-                    port += 1.into();
+                    midi_port += 1.into();
                 }
             } else {
                 channel += 1.into();
@@ -333,23 +401,22 @@ impl<'a> MidiGenerator<'a> {
         let use_banks = self.use_banks();
         let track0 = vec![TrackEvent {
             delta: 0.into(),
-            // tempo is microseconds per quarter note
-            kind: TrackEventKind::Meta(Tempo(833333.into())),
+            kind: TrackEventKind::Meta(Tempo(self.micros_per_beat)),
         }];
         self.tracks.push(track0);
         let mut cur_track = 1usize;
-        let mut channels_seen = HashSet::new();
+        let mut channels_seen = BTreeSet::new();
         for (k, port_channel) in &self.channel_data {
             let track_key = TrackKey {
-                instrument: k.instrument,
-                port: port_channel.port,
+                score_part: k.score_part,
+                midi_port: port_channel.midi_port,
             };
             if let Entry::Vacant(v) = self.track_data.entry(track_key) {
                 v.insert(cur_track);
                 cur_track += 1;
                 self.tracks.push(vec![TrackEvent {
                     delta: 0.into(),
-                    kind: TrackEventKind::Meta(MetaMessage::MidiPort(port_channel.port)),
+                    kind: TrackEventKind::Meta(MetaMessage::MidiPort(port_channel.midi_port)),
                 }]);
             }
             if channels_seen.insert(port_channel) {
@@ -370,25 +437,40 @@ impl<'a> MidiGenerator<'a> {
         Ok(())
     }
 
+    fn get_part_channels(&mut self) -> anyhow::Result<()> {
+        // For each distinct part, make a list of all the tracks it uses. This is needed for
+        // dynamics.
+        for (channel_key, port_channel) in &self.channel_data {
+            let track_key = TrackKey {
+                score_part: channel_key.score_part,
+                midi_port: port_channel.midi_port,
+            };
+            let &track = self.track_data.get(&track_key).ok_or_else(|| {
+                anyhow!("get_part_channels: unable to get track for score_part/midi_port")
+            })?;
+            let tpc = TrackPortChannel {
+                track,
+                midi_port: port_channel.midi_port,
+                channel: port_channel.channel,
+            };
+            self.part_channels
+                .entry(channel_key.score_part)
+                .or_default()
+                .insert(tpc);
+        }
+        Ok(())
+    }
+
     fn analyze(&mut self) -> anyhow::Result<()> {
         self.get_all_tunings()?;
         self.get_channel_mappings()?;
         self.get_track_assignments()?;
+        self.get_part_channels()?;
         Ok(())
     }
 
     fn init_output(&mut self) -> anyhow::Result<()> {
-        let Some(metric) = u16::try_from(self.ticks_per_beat)
-            .ok()
-            .and_then(u15::try_from)
-        else {
-            bail!(
-                "overflow settings ticks per beat; computed value = {}",
-                self.ticks_per_beat
-            );
-        };
-        // Timing is ticks per quarter note
-        let header = Header::new(Format::Parallel, Timing::Metrical(metric));
+        let header = Header::new(Format::Parallel, Timing::Metrical(self.ticks_per_beat));
         self.smf = Some(Smf::new(header));
         Ok(())
     }
@@ -435,7 +517,7 @@ impl<'a> MidiGenerator<'a> {
         let cycle_ratio = scale.definition.cycle;
         let base_pitch = &tuning.base_pitch;
         //TODO: if this doesn't cover 128 notes, extend to 0 and 128 as long as we can do so without
-        // overflowing or underflowing pitches.
+        // overflowing or under-flowing pitches.
         let first = data.range.start;
         let (mut cycle, mut degree) = first.div_mod_floor(&degrees);
         let mut pitch0 = base_pitch.clone();
@@ -515,20 +597,35 @@ impl<'a> MidiGenerator<'a> {
         });
     }
 
+    fn volume_event(tpc: TrackPortChannel, delta: u28, value: u7) -> TrackEvent<'a> {
+        TrackEvent {
+            delta,
+            kind: TrackEventKind::Midi {
+                channel: tpc.channel,
+                message: MidiMessage::Controller {
+                    controller: 7.into(),
+                    value,
+                },
+            },
+        }
+    }
+
     fn generate(mut self) -> anyhow::Result<Smf<'a>> {
         self.analyze()?;
         self.init_output()?;
         self.dump_tunings()?;
 
-        for event in &self.timeline.events {
-            let delta = self.get_delta(event.time)?;
+        let mut events: BTreeSet<_> = self.timeline.events.iter().cloned().collect();
+        let last_event_time = events.last().unwrap().time;
+        while let Some(event) = events.pop_first() {
             match &event.data {
                 TimelineData::NoteOff(e) => {
                     let note_key = NoteKey {
-                        part: &e.part,
+                        part: e.part.clone(),
                         note: e.note_number,
                     };
                     if let Some(last_on) = self.last_played.remove(&note_key) {
+                        let delta = self.get_delta(last_on.track, event.time)?;
                         self.turn_off_last_note(&last_on, delta);
                     } else {
                         eprintln!("TODO: warn about unexpected note")
@@ -541,36 +638,71 @@ impl<'a> MidiGenerator<'a> {
                     // design, the tuning is fixed for a channel, which makes it possible to sustain
                     // notes in one channel while playing notes in a different one.
                 }
-                TimelineData::Dynamic(_) => {} // TODO
+                TimelineData::Dynamic(e) => {
+                    let part_channels = self
+                        .part_channels
+                        .get(e.part.as_str())
+                        .ok_or_else(|| anyhow!("unable to get part channels"))?;
+                    for &tpc in part_channels {
+                        let delta = self.get_delta(tpc.track, event.time)?;
+                        let value = u7::try_from(e.start_level)
+                            .ok_or_else(|| anyhow!("volume out of range"))?;
+                        self.tracks[tpc.track].push(Self::volume_event(tpc, delta, value));
+                        if let Some(end_level) = &e.end_level {
+                            let total_time = end_level.time - event.time;
+                            let total_ticks = *(total_time * u16::from(self.ticks_per_beat) as u32)
+                                .floor()
+                                .numer();
+                            let steps = 10;
+                            for (ticks, level) in
+                                ramp(e.start_level, end_level.item, total_ticks, steps)
+                            {
+                                let time =
+                                    event.time + (Ratio::new(ticks, total_ticks) * total_time);
+                                events.insert(Arc::new(TimelineEvent {
+                                    time,
+                                    span: event.span,
+                                    data: TimelineData::Dynamic(DynamicEvent {
+                                        part: e.part.clone(),
+                                        start_level: level,
+                                        end_level: None,
+                                    }),
+                                }));
+                            }
+                        }
+                    }
+                }
                 TimelineData::NoteOn(e) => {
                     let note_key = NoteKey {
-                        part: &e.part,
+                        part: e.part.clone(),
                         note: e.note_number,
                     };
                     if let Some(last_on) = self.last_played.remove(&note_key) {
                         // Turn this note off. This would happen if the note were sustained.
+                        let delta = self.get_delta(last_on.track, event.time)?;
                         self.turn_off_last_note(&last_on, delta);
                     }
                     let tuning_data =
                         self.tuning_for_note(&e.value.tuning, e.value.absolute_scale_degree)?;
-                    let instrument = "TODO"; // TODO: instrument
+                    let score_part = e.part.as_str();
                     let port_channel = self
                         .channel_data
                         .get(&ChannelKey {
-                            instrument,
+                            score_part,
                             raw_tuning: tuning_data.raw_program,
                         })
                         .cloned()
                         .ok_or_else(|| anyhow!("unknown channel for note"))?;
                     let track_key = TrackKey {
-                        instrument,
-                        port: port_channel.port,
+                        score_part,
+                        midi_port: port_channel.midi_port,
                     };
                     let track = self
                         .track_data
                         .get(&track_key)
                         .cloned()
                         .ok_or_else(|| anyhow!("unable to get track for note"))?;
+                    let delta = self.get_delta(track, event.time)?;
                     let key = u8::try_from(e.value.absolute_scale_degree + tuning_data.midi_offset)
                         .ok()
                         .and_then(u7::try_from)
@@ -598,11 +730,12 @@ impl<'a> MidiGenerator<'a> {
                 }
             }
         }
-        for track in self.tracks.iter_mut() {
-            let total_duration = track.iter().fold(u28::from(0), |acc, e| acc + e.delta);
-            let delta = self.last_time - total_duration;
+        let deltas: Vec<_> = (0..self.tracks.len())
+            .map(|track| self.get_delta(track, last_event_time).unwrap())
+            .collect();
+        for (track_idx, track) in self.tracks.iter_mut().enumerate() {
             track.push(TrackEvent {
-                delta,
+                delta: deltas[track_idx],
                 kind: TrackEventKind::Meta(EndOfTrack),
             });
         }
@@ -612,15 +745,6 @@ impl<'a> MidiGenerator<'a> {
         Ok(smf)
     }
 }
-
-// Notes on tracks, ports, and channels:
-// - A track is just a sequence of events. It typically represents a single part.
-// - A port is a device that can have up to 16 channels.
-// - To specify the port, use a MidiPort Meta event. Just number ports from 0. While a track
-//   can contain events for multiple ports, this is not usually done. Set the port as the first
-//   track event.
-// - A track often has events for multiple channels.
-// - If a total piece needs more than 16 channels, use multiple ports.
 
 fn select_tuning_program(
     track: &mut Vec<TrackEvent>,
@@ -675,7 +799,7 @@ fn select_tuning_program(
 
 pub(crate) fn generate(timeline: &Timeline, out: impl AsRef<Path>) -> anyhow::Result<()> {
     let arena = Arena::new();
-    let g = MidiGenerator::new(timeline, &arena);
+    let g = MidiGenerator::new(timeline, &arena)?;
     let smf = g.generate()?;
     smf.save(&out)?;
     println!("output written to {}", out.as_ref().display());
@@ -761,5 +885,35 @@ mod tests {
         assert_eq!(0.div_mod_floor(&10), (0, 0));
         assert_eq!(2.div_mod_floor(&10), (0, 2));
         assert_eq!(16.div_mod_floor(&10), (1, 6));
+    }
+
+    #[test]
+    fn test_ramp() {
+        assert_eq!(
+            ramp(10, 20, 100, 7),
+            [
+                (14, 11),
+                (28, 12),
+                (42, 14),
+                (57, 15),
+                (71, 17),
+                (85, 18),
+                (100, 20)
+            ]
+        );
+        assert_eq!(
+            ramp(20, 10, 100, 7),
+            [
+                (14, 18),
+                (28, 17),
+                (42, 15),
+                (57, 14),
+                (71, 12),
+                (85, 11),
+                (100, 10)
+            ]
+        );
+        assert_eq!(ramp(10, 12, 100, 7), [(57, 11), (100, 12)]);
+        assert_eq!(ramp(10, 12, 100, 0), [(100, 12)]);
     }
 }

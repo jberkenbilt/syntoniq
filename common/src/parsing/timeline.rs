@@ -3,11 +3,12 @@ use crate::parsing::score::{Scale, Tuning};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
+use std::collections::BTreeSet;
 use std::sync::Arc;
 
 #[derive(Serialize)]
 pub struct Timeline {
-    pub events: Vec<TimelineEvent>,
+    pub events: BTreeSet<Arc<TimelineEvent>>,
     pub scales: Vec<Arc<Scale>>,
     /// Least common multiple of time denominators, useful for computing ticks per beat
     pub time_lcm: u32,

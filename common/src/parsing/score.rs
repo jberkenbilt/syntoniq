@@ -330,7 +330,7 @@ impl<'a> ScoreBlockValidator<'a> {
                         options: r_note.options.iter().cloned().map(Spanned::value).collect(),
                         behavior: r_note.behavior.map(Spanned::value),
                     };
-                    self.score.push_event(
+                    self.score.insert_event(
                         time,
                         note.span,
                         TimelineData::NoteOn(NoteOnEvent {
@@ -346,7 +346,7 @@ impl<'a> ScoreBlockValidator<'a> {
                     } else {
                         //TODO: consider how long we want a note to sound. For now, just sound
                         // for the entire note duration.
-                        self.score.push_event(
+                        self.score.insert_event(
                             time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats),
                             note.span,
                             TimelineData::NoteOff(NoteOffEvent {
@@ -532,7 +532,7 @@ impl<'a> ScoreBlockValidator<'a> {
                     if let Some(ch) = last_change.take() {
                         // Push the event for the previously started dynamic change. This may also
                         // be the start of a new dynamic change or an instantaneous event.
-                        self.score.push_event(
+                        self.score.insert_event(
                             ch.time,
                             ch.item.span,
                             TimelineData::Dynamic(DynamicEvent {
@@ -546,7 +546,7 @@ impl<'a> ScoreBlockValidator<'a> {
                         None => {
                             // This is an instantaneous event. It may also correspond with the end
                             // of the previous dynamic change event.
-                            self.score.push_event(
+                            self.score.insert_event(
                                 time,
                                 dynamic.span,
                                 TimelineData::Dynamic(DynamicEvent {
@@ -626,14 +626,16 @@ impl Score {
             .collect();
         let timeline = Timeline {
             scales: vec![default_scale],
-            events: vec![TimelineEvent {
+            events: [Arc::new(TimelineEvent {
                 time: Ratio::from_integer(0),
                 span: s.span,
                 data: TimelineData::Tuning(TuningEvent {
                     tuning: DEFAULT_TUNING.clone(),
                     parts: vec![],
                 }),
-            }],
+            })]
+            .into_iter()
+            .collect(),
             time_lcm: 1,
         };
         Self {
@@ -649,8 +651,7 @@ impl Score {
         }
     }
 
-    pub fn into_timeline(mut self) -> Timeline {
-        self.timeline.events.sort();
+    pub fn into_timeline(self) -> Timeline {
         self.timeline
     }
 
@@ -658,10 +659,10 @@ impl Score {
         self.pending_scale.take()
     }
 
-    fn push_event(&mut self, time: Ratio<u32>, span: Span, data: TimelineData) {
+    fn insert_event(&mut self, time: Ratio<u32>, span: Span, data: TimelineData) {
         self.timeline
             .events
-            .push(TimelineEvent { time, span, data });
+            .insert(Arc::new(TimelineEvent { time, span, data }));
     }
 
     fn update_time_lcm(&mut self, beats: Ratio<u32>) {
@@ -888,7 +889,7 @@ impl Score {
         for (pitch, tuning) in tunings_by_pitch {
             // This is guaranteed to be there since we always added to the two maps together.
             let parts = parts_by_pitch.get(&pitch).unwrap().to_vec();
-            self.push_event(
+            self.insert_event(
                 self.line_start_time,
                 directive.span,
                 TimelineData::Tuning(TuningEvent { tuning, parts }),
@@ -900,7 +901,7 @@ impl Score {
         if reset_tuning.part.is_empty() {
             let mut old = HashMap::new();
             mem::swap(&mut old, &mut self.tunings);
-            self.push_event(
+            self.insert_event(
                 self.line_start_time,
                 reset_tuning.span,
                 TimelineData::Tuning(TuningEvent {
@@ -915,7 +916,7 @@ impl Score {
                 parts.push(p.value.clone());
             }
             let default_tuning = self.tuning_for_part("");
-            self.push_event(
+            self.insert_event(
                 self.line_start_time,
                 reset_tuning.span,
                 TimelineData::Tuning(TuningEvent {
