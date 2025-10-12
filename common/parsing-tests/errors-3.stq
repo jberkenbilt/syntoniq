@@ -43,5 +43,12 @@ define_scale(name="random") f()
 [p1.0]  1:c d e f
   [p1]  64@0 | 64@1 | 64@1<
 
+midi_instrument(part="" instrument=300 bank=30000)
+midi_instrument(instrument=1 bank=1)
+midi_instrument(instrument=1 bank=1) ; duplicate
+midi_instrument(part="p1" instrument=1 bank=1)
+midi_instrument(part="p1" instrument=1 bank=1) ; duplicate
+midi_instrument(part="p29" instrument=1 bank=1) ; unknown part
+
 ; unresolved define_scale must be the last thing in the file
 define_scale(name="oops")

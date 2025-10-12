@@ -1,4 +1,6 @@
 syntoniq(version=1)
+midi_instrument(instrument=23)
+midi_instrument(part="p2" instrument=55)
 
 define_scale(name="JI1") <<
 1     c

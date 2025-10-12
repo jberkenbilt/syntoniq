@@ -1,6 +1,6 @@
 # TODO
 
-Tempo, instrument assignment, then Reaper. And doc cleanup.
+Tempo, then Reaper. And doc cleanup.
 
 ----------
 
@@ -38,6 +38,8 @@ See
 * ~/source/examples/rust/midi
 
 Basic strategy: figure out total number of channels needed for 10 octaves of a scale, then track the number of simultaneous (instrument, scale, base_pitch) triples. This determines number of simultaneous channels, which in turn determines number of ports. Try to keep all channels for a part on the same port.
+
+XXX Document highlight-next-span in a dev/test README -- can refer to comment in code
 
 # Keyboard thoughts
 

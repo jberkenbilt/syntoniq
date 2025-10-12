@@ -66,3 +66,12 @@ pub fn check_unique<T: Debug + Serialize + Eq + Hash>(diags: &Diagnostics, items
         }
     }
 }
+
+pub fn check_part(diags: &Diagnostics, items: &[Spanned<String>]) {
+    check_unique(diags, items);
+    for i in items {
+        if i.value.is_empty() {
+            diags.err(code::USAGE, i.span, "a part name may not be empty");
+        }
+    }
+}

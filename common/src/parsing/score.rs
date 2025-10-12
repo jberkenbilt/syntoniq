@@ -12,8 +12,8 @@ use std::sync::{Arc, LazyLock};
 
 mod directives;
 use crate::parsing::{
-    DynamicEvent, NoteOffEvent, NoteOnEvent, NoteValue, Timeline, TimelineData, TimelineEvent,
-    WithTime,
+    DynamicEvent, MidiInstrumentNumber, NoteOffEvent, NoteOnEvent, NoteValue, Timeline,
+    TimelineData, TimelineEvent, WithTime,
 };
 use crate::pitch::Pitch;
 pub use directives::*;
@@ -28,6 +28,8 @@ pub struct Score {
     tunings: HashMap<String, Arc<Tuning>>,
     pending_dynamic_changes: HashMap<String, WithTime<Spanned<RegularDynamic>>>,
     line_start_time: Ratio<u32>,
+    midi_instruments: HashMap<String, Span>,
+    known_parts: HashSet<String>,
     timeline: Timeline,
 }
 
@@ -264,6 +266,9 @@ impl<'a> ScoreBlockValidator<'a> {
     }
 
     fn validate_note_line(&mut self, line: &'a NoteLine) {
+        self.score
+            .known_parts
+            .insert(line.leader.value.name.value.clone());
         let mut bar_checks: Vec<(Ratio<u32>, Span)> = Vec::new();
         self.check_duplicated_note_line(&line.leader);
         let tuning = self.score.tuning_for_part(&line.leader.value.name.value);
@@ -464,6 +469,9 @@ impl<'a> ScoreBlockValidator<'a> {
         line: &'a DynamicLine,
         beats_per_bar: &Option<Vec<Ratio<u32>>>,
     ) {
+        self.score
+            .known_parts
+            .insert(line.leader.value.name.value.clone());
         self.check_duplicated_dynamic_line(&line.leader);
         let mut bar_check_idx = 0usize;
         let mut check_bars = beats_per_bar.is_some();
@@ -627,6 +635,7 @@ impl Score {
         let timeline = Timeline {
             scales: vec![default_scale],
             events: Default::default(),
+            midi_instruments: Default::default(),
             time_lcm: 1,
         };
         Self {
@@ -638,6 +647,8 @@ impl Score {
             tunings: Default::default(),
             pending_dynamic_changes: Default::default(),
             line_start_time: Ratio::from_integer(0),
+            midi_instruments: Default::default(),
+            known_parts: Default::default(),
             timeline,
         }
     }
@@ -687,6 +698,7 @@ impl Score {
             Directive::Transpose(x) => self.transpose(diags, x),
             Directive::SetBasePitch(x) => self.set_base_pitch(x),
             Directive::ResetTuning(x) => self.reset_tuning(x),
+            Directive::MidiInstrument(x) => self.midi_instrument(diags, x),
         }
     }
 
@@ -934,7 +946,49 @@ impl Score {
         }
     }
 
+    fn midi_instrument(&mut self, diags: &Diagnostics, directive: MidiInstrument) {
+        // Validate has checked ranges.
+        let instrument = (directive.instrument.value - 1) as u8;
+        let bank = directive.bank.map(|x| x.value - 1).unwrap_or(0) as u16;
+        let part_spans: Vec<(&str, Span)> = if directive.part.is_empty() {
+            vec![("", directive.span)]
+        } else {
+            directive
+                .part
+                .iter()
+                .map(|p| (p.value.as_str(), p.span))
+                .collect()
+        };
+        let midi_instrument = MidiInstrumentNumber { bank, instrument };
+        for (part, span) in part_spans {
+            if let Some(old) = self.midi_instruments.insert(part.to_string(), span) {
+                let what = if part.is_empty() {
+                    "default MIDI instrument".to_string()
+                } else {
+                    format!("MIDI instrument for part '{part}'")
+                };
+                diags.push(
+                    Diagnostic::new(
+                        code::MIDI,
+                        directive.span,
+                        format!("a {what} has already been specified"),
+                    )
+                    .with_context(old, "here is the previous occurrence"),
+                );
+            } else {
+                self.timeline
+                    .midi_instruments
+                    .insert(part.to_string(), midi_instrument);
+            }
+        }
+    }
+
     pub fn do_final_checks(&mut self, diags: &Diagnostics) {
+        for (part, &span) in &self.midi_instruments {
+            if !part.is_empty() && !self.known_parts.contains(part) {
+                diags.err(code::MIDI, span, "this part never appeared in the score");
+            }
+        }
         for (part, dynamic) in &self.pending_dynamic_changes {
             diags.err(
                 code::SCORE,

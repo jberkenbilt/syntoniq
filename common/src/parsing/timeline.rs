@@ -3,13 +3,14 @@ use crate::parsing::score::{Scale, Tuning};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 #[derive(Serialize)]
 pub struct Timeline {
     pub events: BTreeSet<Arc<TimelineEvent>>,
     pub scales: Vec<Arc<Scale>>,
+    pub midi_instruments: BTreeMap<String, MidiInstrumentNumber>,
     /// Least common multiple of time denominators, useful for computing ticks per beat
     pub time_lcm: u32,
 }
@@ -70,4 +71,10 @@ pub struct DynamicEvent {
     pub part: String,
     pub start_level: u8,
     pub end_level: Option<WithTime<u8>>,
+}
+
+#[derive(Serialize, Clone, Copy, PartialOrd, PartialEq, Ord, Eq)]
+pub struct MidiInstrumentNumber {
+    pub bank: u16,
+    pub instrument: u8,
 }

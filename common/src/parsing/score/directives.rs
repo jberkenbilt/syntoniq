@@ -61,7 +61,7 @@ pub struct UseScale {
 }
 impl UseScale {
     pub fn validate(&mut self, diags: &Diagnostics) {
-        score_helpers::check_unique(diags, &self.part);
+        score_helpers::check_part(diags, &self.part);
     }
 }
 
@@ -85,7 +85,7 @@ pub struct Transpose {
 }
 impl Transpose {
     pub fn validate(&mut self, diags: &Diagnostics) {
-        score_helpers::check_unique(diags, &self.part);
+        score_helpers::check_part(diags, &self.part);
     }
 }
 
@@ -106,7 +106,7 @@ pub struct SetBasePitch {
 }
 impl SetBasePitch {
     pub fn validate(&mut self, diags: &Diagnostics) {
-        score_helpers::check_unique(diags, &self.part);
+        score_helpers::check_part(diags, &self.part);
         let n = [self.absolute.is_some(), self.relative.is_some()]
             .into_iter()
             .fold(0usize, |x, v| x + if v { 1 } else { 0 });
@@ -130,7 +130,43 @@ pub struct ResetTuning {
 }
 impl ResetTuning {
     pub fn validate(&mut self, diags: &Diagnostics) {
-        score_helpers::check_unique(diags, &self.part);
+        score_helpers::check_part(diags, &self.part);
+    }
+}
+
+#[derive(FromRawDirective)]
+/// Set the MIDI instrument number for zero or more parts. If no part is specified, this becomes
+/// the default instrument for all parts without a specific instrument. It is an error to name
+/// a part that doesn't appear somewhere in the score.
+pub struct MidiInstrument {
+    pub span: Span,
+    /// Midi instrument number from 1 to 128
+    pub instrument: Spanned<u32>,
+    /// Optional bank number from 1 to 16384
+    pub bank: Option<Spanned<u32>>,
+    /// Which parts use this instrument; if not specified, all unassigned parts use it
+    pub part: Vec<Spanned<String>>,
+}
+impl MidiInstrument {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        score_helpers::check_part(diags, &self.part);
+        // User-facing numbers are 1-based. We will store as 0-based internally.
+        if !(1..=128).contains(&self.instrument.value) {
+            diags.err(
+                code::MIDI,
+                self.instrument.span,
+                "instrument numbers must be between 1 and 128",
+            );
+        }
+        if let Some(bank) = self.bank
+            && !(1..=16384).contains(&bank.value)
+        {
+            diags.err(
+                code::MIDI,
+                bank.span,
+                "bank numbers must be between 1 and 16384",
+            );
+        }
     }
 }
 
@@ -142,4 +178,5 @@ pub enum Directive {
     Transpose(Transpose),
     SetBasePitch(SetBasePitch),
     ResetTuning(ResetTuning),
+    MidiInstrument(MidiInstrument),
 }

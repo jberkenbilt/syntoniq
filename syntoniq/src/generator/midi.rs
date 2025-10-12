@@ -172,6 +172,19 @@ fn string_exact_bytes(s: &str, size: usize) -> Vec<u8> {
     out
 }
 
+/// Given a larger integer value, return (msb, lsb)
+fn split_u14<T: TryInto<u16>>(val: T) -> anyhow::Result<(u7, u7)> {
+    let as_u16 = val
+        .try_into()
+        .map_err(|_| anyhow!("range error mapping value to 16 bits"))?;
+    let msb = u8::try_from(as_u16 / 128)
+        .ok()
+        .and_then(u7::try_from)
+        .ok_or_else(|| anyhow!("range error getting msb of 14-bit value"))?;
+    let lsb = u7::try_from((as_u16 % 128) as u8).unwrap();
+    Ok((msb, lsb))
+}
+
 fn split_range(r: Range<i32>, n: usize) -> Vec<Range<i32>> {
     assert!(n > 0, "n must be > 0");
     let start = r.start as i64;
@@ -423,19 +436,50 @@ impl<'a> MidiGenerator<'a> {
                     kind: TrackEventKind::Meta(MetaMessage::MidiPort(port_channel.midi_port)),
                 }]);
             }
+            let instrument = self
+                .timeline
+                .midi_instruments
+                .get(k.score_part)
+                .or_else(|| self.timeline.midi_instruments.get(""));
             if channels_seen.insert(port_channel) {
                 // This is the first track for this port/channel, so assign the channel to its
                 // fixed tuning program here.
                 let track = self.tracks.last_mut().unwrap();
                 select_tuning_program(track, port_channel.channel, k.raw_tuning, use_banks)?;
-                track.push(TrackEvent {
-                    delta: 0.into(),
-                    kind: TrackEventKind::Midi {
-                        channel: port_channel.channel,
-                        // TODO: instrument
-                        message: MidiMessage::ProgramChange { program: 23.into() }, // concertina
-                    },
-                });
+                if let Some(&instrument) = instrument {
+                    if instrument.bank > 0 {
+                        let (bank_msb, bank_lsb) = split_u14(instrument.bank)?;
+                        track.push(TrackEvent {
+                            delta: 0.into(),
+                            kind: TrackEventKind::Midi {
+                                channel: port_channel.channel,
+                                message: MidiMessage::Controller {
+                                    controller: 0.into(), // Bank Select MSB
+                                    value: bank_msb,
+                                },
+                            },
+                        });
+                        track.push(TrackEvent {
+                            delta: 0.into(),
+                            kind: TrackEventKind::Midi {
+                                channel: port_channel.channel,
+                                message: MidiMessage::Controller {
+                                    controller: 32.into(), // Bank Select LSB
+                                    value: bank_lsb,
+                                },
+                            },
+                        })
+                    }
+                    let program = u7::try_from(instrument.instrument)
+                        .ok_or_else(|| anyhow!("overflow getting instrument number"))?;
+                    track.push(TrackEvent {
+                        delta: 0.into(),
+                        kind: TrackEventKind::Midi {
+                            channel: port_channel.channel,
+                            message: MidiMessage::ProgramChange { program },
+                        },
+                    });
+                }
             }
         }
         Ok(())
@@ -513,7 +557,7 @@ impl<'a> MidiGenerator<'a> {
         // Name: 16 bytes
         dump.append(&mut string_exact_bytes(&tuning.scale_name, 16));
 
-        // This is the actual pitch calcuation logic.
+        // This is the actual pitch calculation logic.
         let &scale = self
             .scales_by_name
             .get(tuning.scale_name.as_str())
@@ -564,7 +608,6 @@ impl<'a> MidiGenerator<'a> {
         let dump = arena.add(&dump);
         track.push(TrackEvent {
             delta: 0.into(),
-            // Load 17-EDO into tuning program 1. Tuning program 0 remains 12-TET.
             kind: TrackEventKind::SysEx(dump),
         });
         Ok(())
@@ -908,5 +951,14 @@ mod tests {
         );
         assert_eq!(ramp(10, 12, 100, 7), [(57, 11), (100, 12)]);
         assert_eq!(ramp(10, 12, 100, 0), [(100, 12)]);
+    }
+
+    #[test]
+    fn test_split_u14() {
+        assert!(split_u14(65537).is_err());
+        assert!(split_u14(16384).is_err());
+        assert_eq!(split_u14(16383).unwrap(), (127.into(), 127.into()));
+        assert_eq!(split_u14(128).unwrap(), (1.into(), 0.into()));
+        assert_eq!(split_u14(127).unwrap(), (0.into(), 127.into()));
     }
 }

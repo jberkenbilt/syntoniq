@@ -31,6 +31,7 @@ pub mod code {
     pub const USAGE: &str = "E1020 general usage";
     pub const SCORE: &str = "E1021 incorrect score block";
     pub const TUNE: &str = "E1022 incorrect tuning";
+    pub const MIDI: &str = "E1023 MIDI-specific error";
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]

@@ -9596,37 +9596,17 @@
       {
         "span": [
           1528,
-          1588
+          1543
         ],
         "value": {
-          "raw": "; unresolved define_scale must be the last thing in the file",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          1588,
-          1589
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1589,
-          1601
-        ],
-        "value": {
-          "raw": "define_scale",
+          "raw": "midi_instrument",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          1601,
-          1602
+          1543,
+          1544
         ],
         "value": {
           "raw": "(",
@@ -9635,18 +9615,18 @@
       },
       {
         "span": [
-          1602,
-          1606
+          1544,
+          1548
         ],
         "value": {
-          "raw": "name",
+          "raw": "part",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          1606,
-          1607
+          1548,
+          1549
         ],
         "value": {
           "raw": "=",
@@ -9655,16 +9635,16 @@
       },
       {
         "span": [
-          1607,
-          1613
+          1549,
+          1551
         ],
         "value": {
-          "raw": "\"oops\"",
+          "raw": "\"\"",
           "t": {
             "String": {
               "inner_span": [
-                1608,
-                1612
+                1550,
+                1550
               ]
             }
           }
@@ -9672,8 +9652,108 @@
       },
       {
         "span": [
-          1613,
-          1614
+          1551,
+          1552
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1552,
+          1562
+        ],
+        "value": {
+          "raw": "instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1562,
+          1563
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1563,
+          1566
+        ],
+        "value": {
+          "raw": "300",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1563,
+                  1566
+                ],
+                "value": 300
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1566,
+          1567
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1567,
+          1571
+        ],
+        "value": {
+          "raw": "bank",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1571,
+          1572
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1572,
+          1577
+        ],
+        "value": {
+          "raw": "30000",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1572,
+                  1577
+                ],
+                "value": 30000
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1577,
+          1578
         ],
         "value": {
           "raw": ")",
@@ -9682,8 +9762,966 @@
       },
       {
         "span": [
+          1578,
+          1579
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1579,
+          1594
+        ],
+        "value": {
+          "raw": "midi_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1594,
+          1595
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1595,
+          1605
+        ],
+        "value": {
+          "raw": "instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1605,
+          1606
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1606,
+          1607
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1606,
+                  1607
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1607,
+          1608
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1608,
+          1612
+        ],
+        "value": {
+          "raw": "bank",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1612,
+          1613
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1613,
+          1614
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1613,
+                  1614
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
           1614,
           1615
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1615,
+          1616
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1616,
+          1631
+        ],
+        "value": {
+          "raw": "midi_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1631,
+          1632
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1632,
+          1642
+        ],
+        "value": {
+          "raw": "instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1642,
+          1643
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1643,
+          1644
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1643,
+                  1644
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1644,
+          1645
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1645,
+          1649
+        ],
+        "value": {
+          "raw": "bank",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1649,
+          1650
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1650,
+          1651
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1650,
+                  1651
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1651,
+          1652
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1652,
+          1653
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1653,
+          1664
+        ],
+        "value": {
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1664,
+          1665
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1665,
+          1680
+        ],
+        "value": {
+          "raw": "midi_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1680,
+          1681
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1681,
+          1685
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1685,
+          1686
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1686,
+          1690
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1687,
+                1689
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1690,
+          1691
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1691,
+          1701
+        ],
+        "value": {
+          "raw": "instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1701,
+          1702
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1702,
+          1703
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1702,
+                  1703
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1703,
+          1704
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1704,
+          1708
+        ],
+        "value": {
+          "raw": "bank",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1708,
+          1709
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1709,
+          1710
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1709,
+                  1710
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1710,
+          1711
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1711,
+          1712
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1712,
+          1727
+        ],
+        "value": {
+          "raw": "midi_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1727,
+          1728
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1728,
+          1732
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1732,
+          1733
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1733,
+          1737
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1734,
+                1736
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1737,
+          1738
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1738,
+          1748
+        ],
+        "value": {
+          "raw": "instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1748,
+          1749
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1749,
+          1750
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1749,
+                  1750
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1750,
+          1751
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1751,
+          1755
+        ],
+        "value": {
+          "raw": "bank",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1755,
+          1756
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1756,
+          1757
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1756,
+                  1757
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1757,
+          1758
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1758,
+          1759
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1759,
+          1770
+        ],
+        "value": {
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1770,
+          1771
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1771,
+          1786
+        ],
+        "value": {
+          "raw": "midi_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1786,
+          1787
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1787,
+          1791
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1791,
+          1792
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1792,
+          1797
+        ],
+        "value": {
+          "raw": "\"p29\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1793,
+                1796
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1797,
+          1798
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1798,
+          1808
+        ],
+        "value": {
+          "raw": "instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1808,
+          1809
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1809,
+          1810
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1809,
+                  1810
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1810,
+          1811
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1811,
+          1815
+        ],
+        "value": {
+          "raw": "bank",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1815,
+          1816
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1816,
+          1817
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1816,
+                  1817
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1817,
+          1818
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1818,
+          1819
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1819,
+          1833
+        ],
+        "value": {
+          "raw": "; unknown part",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1833,
+          1834
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1834,
+          1835
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1835,
+          1895
+        ],
+        "value": {
+          "raw": "; unresolved define_scale must be the last thing in the file",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1895,
+          1896
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1896,
+          1908
+        ],
+        "value": {
+          "raw": "define_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1908,
+          1909
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1909,
+          1913
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1913,
+          1914
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1914,
+          1920
+        ],
+        "value": {
+          "raw": "\"oops\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1915,
+                1919
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1920,
+          1921
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1921,
+          1922
         ],
         "value": {
           "raw": "\n",
@@ -16083,17 +17121,103 @@
       {
         "span": [
           1528,
-          1588
+          1578
         ],
         "value": {
-          "raw": "; unresolved define_scale must be the last thing in the file",
-          "t": "Comment"
+          "raw": "midi_instrument(part=\"\" instrument=300 bank=30000)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1528,
+                  1543
+                ],
+                "value": "midi_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1544,
+                        1548
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        1549,
+                        1551
+                      ],
+                      "value": {
+                        "String": ""
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1552,
+                        1562
+                      ],
+                      "value": "instrument"
+                    },
+                    "value": {
+                      "span": [
+                        1563,
+                        1566
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            300,
+                            "300"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1567,
+                        1571
+                      ],
+                      "value": "bank"
+                    },
+                    "value": {
+                      "span": [
+                        1572,
+                        1577
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            30000,
+                            "30000"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
         }
       },
       {
         "span": [
-          1588,
-          1589
+          1578,
+          1579
         ],
         "value": {
           "raw": "\n",
@@ -16102,8 +17226,586 @@
       },
       {
         "span": [
-          1589,
-          1614
+          1579,
+          1615
+        ],
+        "value": {
+          "raw": "midi_instrument(instrument=1 bank=1)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1579,
+                  1594
+                ],
+                "value": "midi_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1595,
+                        1605
+                      ],
+                      "value": "instrument"
+                    },
+                    "value": {
+                      "span": [
+                        1606,
+                        1607
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1608,
+                        1612
+                      ],
+                      "value": "bank"
+                    },
+                    "value": {
+                      "span": [
+                        1613,
+                        1614
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1615,
+          1616
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1616,
+          1652
+        ],
+        "value": {
+          "raw": "midi_instrument(instrument=1 bank=1)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1616,
+                  1631
+                ],
+                "value": "midi_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1632,
+                        1642
+                      ],
+                      "value": "instrument"
+                    },
+                    "value": {
+                      "span": [
+                        1643,
+                        1644
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1645,
+                        1649
+                      ],
+                      "value": "bank"
+                    },
+                    "value": {
+                      "span": [
+                        1650,
+                        1651
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1652,
+          1653
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1653,
+          1664
+        ],
+        "value": {
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1664,
+          1665
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1665,
+          1711
+        ],
+        "value": {
+          "raw": "midi_instrument(part=\"p1\" instrument=1 bank=1)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1665,
+                  1680
+                ],
+                "value": "midi_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1681,
+                        1685
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        1686,
+                        1690
+                      ],
+                      "value": {
+                        "String": "p1"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1691,
+                        1701
+                      ],
+                      "value": "instrument"
+                    },
+                    "value": {
+                      "span": [
+                        1702,
+                        1703
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1704,
+                        1708
+                      ],
+                      "value": "bank"
+                    },
+                    "value": {
+                      "span": [
+                        1709,
+                        1710
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1711,
+          1712
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1712,
+          1758
+        ],
+        "value": {
+          "raw": "midi_instrument(part=\"p1\" instrument=1 bank=1)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1712,
+                  1727
+                ],
+                "value": "midi_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1728,
+                        1732
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        1733,
+                        1737
+                      ],
+                      "value": {
+                        "String": "p1"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1738,
+                        1748
+                      ],
+                      "value": "instrument"
+                    },
+                    "value": {
+                      "span": [
+                        1749,
+                        1750
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1751,
+                        1755
+                      ],
+                      "value": "bank"
+                    },
+                    "value": {
+                      "span": [
+                        1756,
+                        1757
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1758,
+          1759
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1759,
+          1770
+        ],
+        "value": {
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1770,
+          1771
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1771,
+          1818
+        ],
+        "value": {
+          "raw": "midi_instrument(part=\"p29\" instrument=1 bank=1)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1771,
+                  1786
+                ],
+                "value": "midi_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1787,
+                        1791
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        1792,
+                        1797
+                      ],
+                      "value": {
+                        "String": "p29"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1798,
+                        1808
+                      ],
+                      "value": "instrument"
+                    },
+                    "value": {
+                      "span": [
+                        1809,
+                        1810
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1811,
+                        1815
+                      ],
+                      "value": "bank"
+                    },
+                    "value": {
+                      "span": [
+                        1816,
+                        1817
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1818,
+          1819
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1819,
+          1833
+        ],
+        "value": {
+          "raw": "; unknown part",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1833,
+          1834
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1834,
+          1835
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1835,
+          1895
+        ],
+        "value": {
+          "raw": "; unresolved define_scale must be the last thing in the file",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1895,
+          1896
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1896,
+          1921
         ],
         "value": {
           "raw": "define_scale(name=\"oops\")",
@@ -16111,8 +17813,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  1589,
-                  1601
+                  1896,
+                  1908
                 ],
                 "value": "define_scale"
               },
@@ -16123,15 +17825,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1602,
-                        1606
+                        1909,
+                        1913
                       ],
                       "value": "name"
                     },
                     "value": {
                       "span": [
-                        1607,
-                        1613
+                        1914,
+                        1920
                       ],
                       "value": {
                         "String": "oops"
@@ -16146,8 +17848,8 @@
       },
       {
         "span": [
-          1614,
-          1615
+          1921,
+          1922
         ],
         "value": {
           "raw": "\n",
@@ -16726,6 +18428,88 @@
           }
         },
         {
+          "code": "E1020 general usage",
+          "context": [],
+          "message": {
+            "span": [
+              1549,
+              1551
+            ],
+            "value": "a part name may not be empty"
+          }
+        },
+        {
+          "code": "E1023 MIDI-specific error",
+          "context": [],
+          "message": {
+            "span": [
+              1563,
+              1566
+            ],
+            "value": "instrument numbers must be between 1 and 128"
+          }
+        },
+        {
+          "code": "E1023 MIDI-specific error",
+          "context": [],
+          "message": {
+            "span": [
+              1572,
+              1577
+            ],
+            "value": "bank numbers must be between 1 and 16384"
+          }
+        },
+        {
+          "code": "E1023 MIDI-specific error",
+          "context": [
+            {
+              "span": [
+                1579,
+                1594
+              ],
+              "value": "here is the previous occurrence"
+            }
+          ],
+          "message": {
+            "span": [
+              1616,
+              1631
+            ],
+            "value": "a default MIDI instrument has already been specified"
+          }
+        },
+        {
+          "code": "E1023 MIDI-specific error",
+          "context": [
+            {
+              "span": [
+                1686,
+                1690
+              ],
+              "value": "here is the previous occurrence"
+            }
+          ],
+          "message": {
+            "span": [
+              1712,
+              1727
+            ],
+            "value": "a MIDI instrument for part 'p1' has already been specified"
+          }
+        },
+        {
+          "code": "E1023 MIDI-specific error",
+          "context": [],
+          "message": {
+            "span": [
+              1792,
+              1797
+            ],
+            "value": "this part never appeared in the score"
+          }
+        },
+        {
           "code": "E1021 incorrect score block",
           "context": [],
           "message": {
@@ -16741,8 +18525,8 @@
           "context": [],
           "message": {
             "span": [
-              1607,
-              1613
+              1914,
+              1920
             ],
             "value": "this scale definition was incomplete at EOF"
           }
