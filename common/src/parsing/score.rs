@@ -12,7 +12,7 @@ use std::sync::{Arc, LazyLock};
 
 mod directives;
 use crate::parsing::{
-    DynamicEvent, MidiInstrumentNumber, NoteOffEvent, NoteOnEvent, NoteValue, Timeline,
+    DynamicEvent, MidiInstrumentNumber, NoteOffEvent, NoteOnEvent, NoteValue, TempoEvent, Timeline,
     TimelineData, TimelineEvent, WithTime,
 };
 use crate::pitch::Pitch;
@@ -699,6 +699,7 @@ impl Score {
             Directive::SetBasePitch(x) => self.set_base_pitch(x),
             Directive::ResetTuning(x) => self.reset_tuning(x),
             Directive::MidiInstrument(x) => self.midi_instrument(diags, x),
+            Directive::Tempo(x) => self.tempo(x),
         }
     }
 
@@ -981,6 +982,27 @@ impl Score {
                     .insert(part.to_string(), midi_instrument);
             }
         }
+    }
+
+    pub fn tempo(&mut self, directive: Tempo) {
+        let offset = directive
+            .start_time
+            .map(Spanned::value)
+            .unwrap_or(Ratio::from_integer(0));
+        let start_time = self.line_start_time + offset;
+        // Validate has verified that end_level and duration are both present or both absent.
+        let end_bpm = directive.end_bpm.map(|level| {
+            let end_time = directive.duration.unwrap().value + start_time;
+            WithTime::new(end_time, level.value)
+        });
+        self.insert_event(
+            start_time,
+            directive.span,
+            TimelineData::Tempo(TempoEvent {
+                bpm: directive.bpm.value,
+                end_bpm,
+            }),
+        );
     }
 
     pub fn do_final_checks(&mut self, diags: &Diagnostics) {

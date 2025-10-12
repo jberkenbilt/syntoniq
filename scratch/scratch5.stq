@@ -35,10 +35,12 @@ define_scale(name="31-EDO") <<
 ^30|31 b# c-
 >>
 
+tempo(bpm=60)
 use_scale(name="31-EDO" part="p1")
 [p1.0] 2:e e-
 [p1.1] 2:g g+
 
+tempo(bpm=72 start_time=1 end_bpm=108 duration=4)
 [p1.0] 8:c,
 [p1.1] 1:~ 7:g,
 [p1.2] 2:~ 6:d

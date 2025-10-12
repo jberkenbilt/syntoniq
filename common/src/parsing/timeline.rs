@@ -26,6 +26,7 @@ pub struct TimelineEvent {
 pub enum TimelineData {
     // Keep these in the order in which they should appear in the timeline relative to other
     // events that happen at the same time.
+    Tempo(TempoEvent),
     NoteOff(NoteOffEvent),
     Dynamic(DynamicEvent),
     NoteOn(NoteOnEvent),
@@ -77,4 +78,10 @@ pub struct DynamicEvent {
 pub struct MidiInstrumentNumber {
     pub bank: u16,
     pub instrument: u8,
+}
+
+#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+pub struct TempoEvent {
+    pub bpm: Ratio<u32>,
+    pub end_bpm: Option<WithTime<Ratio<u32>>>,
 }

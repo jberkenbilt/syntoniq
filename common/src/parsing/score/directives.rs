@@ -171,6 +171,36 @@ impl MidiInstrument {
 }
 
 #[derive(FromRawDirective)]
+/// Set tempo, with possible accelerando or rallentando (gradual change).
+pub struct Tempo {
+    pub span: Span,
+    /// Tempo in beats per minute
+    pub bpm: Spanned<Ratio<u32>>,
+    /// Optional effective time relative to the current score time. This can be useful
+    /// for inserting a tempo change part way through a score line. Defaults to 0.
+    pub start_time: Option<Spanned<Ratio<u32>>>,
+    /// Optional end tempo; if specified, duration is required. Indicates that the tempo should
+    /// change gradually from `bpm` to `end_bpm` over `duration` beats.
+    pub end_bpm: Option<Spanned<Ratio<u32>>>,
+    /// Must appear with `end_bpm` to indicate the duration of a gradual tempo change.
+    pub duration: Option<Spanned<Ratio<u32>>>,
+}
+impl Tempo {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        let n = [self.end_bpm.is_some(), self.duration.is_some()]
+            .into_iter()
+            .fold(0usize, |x, v| x + if v { 1 } else { 0 });
+        if n == 1 {
+            diags.err(
+                code::USAGE,
+                self.span,
+                "'end_bpm' and 'duration' must either both be present or both be absent",
+            );
+        }
+    }
+}
+
+#[derive(FromRawDirective)]
 pub enum Directive {
     Syntoniq(Syntoniq),
     DefineScale(DefineScale),
@@ -179,4 +209,5 @@ pub enum Directive {
     SetBasePitch(SetBasePitch),
     ResetTuning(ResetTuning),
     MidiInstrument(MidiInstrument),
+    Tempo(Tempo),
 }

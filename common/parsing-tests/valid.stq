@@ -1,4 +1,5 @@
 syntoniq(version=1)
+tempo(bpm=60)
 
 ; Define two 5-note scales with different pitches and partial overlap
 ; in note names.
@@ -28,6 +29,7 @@ use_scale(name="5-EDO" part="p1")
 ; switch to the 5-JI scale for p2.
 transpose(written="c" pitch_from="d" part="p2") use_scale(name="5-JI" part="p2")
 
+tempo(bpm=72 start_time=1 end_bpm=96 duration=2)
 [p1.0]  1:p q r s
 [p2.1]  1:p q r u
 [p3.0]  1:a e ~ 1/2:b% b#

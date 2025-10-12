@@ -10634,37 +10634,17 @@
       {
         "span": [
           1835,
-          1895
+          1840
         ],
         "value": {
-          "raw": "; unresolved define_scale must be the last thing in the file",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          1895,
-          1896
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1896,
-          1908
-        ],
-        "value": {
-          "raw": "define_scale",
+          "raw": "tempo",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          1908,
-          1909
+          1840,
+          1841
         ],
         "value": {
           "raw": "(",
@@ -10673,18 +10653,18 @@
       },
       {
         "span": [
-          1909,
-          1913
+          1841,
+          1844
         ],
         "value": {
-          "raw": "name",
+          "raw": "bpm",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          1913,
-          1914
+          1844,
+          1845
         ],
         "value": {
           "raw": "=",
@@ -10693,25 +10673,78 @@
       },
       {
         "span": [
-          1914,
-          1920
+          1845,
+          1846
         ],
         "value": {
-          "raw": "\"oops\"",
+          "raw": "5",
           "t": {
-            "String": {
-              "inner_span": [
-                1915,
-                1919
-              ]
+            "Number": {
+              "n": {
+                "span": [
+                  1845,
+                  1846
+                ],
+                "value": 5
+              }
             }
           }
         }
       },
       {
         "span": [
-          1920,
-          1921
+          1846,
+          1847
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1847,
+          1854
+        ],
+        "value": {
+          "raw": "end_bpm",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1854,
+          1855
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1855,
+          1856
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1855,
+                  1856
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1856,
+          1857
         ],
         "value": {
           "raw": ")",
@@ -10720,8 +10753,245 @@
       },
       {
         "span": [
-          1921,
-          1922
+          1857,
+          1858
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1858,
+          1863
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1863,
+          1864
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1864,
+          1867
+        ],
+        "value": {
+          "raw": "bpm",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1867,
+          1868
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1868,
+          1869
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1868,
+                  1869
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1869,
+          1870
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1870,
+          1878
+        ],
+        "value": {
+          "raw": "duration",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1878,
+          1879
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1879,
+          1880
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1879,
+                  1880
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1880,
+          1881
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1881,
+          1882
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1882,
+          1883
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1883,
+          1943
+        ],
+        "value": {
+          "raw": "; unresolved define_scale must be the last thing in the file",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1943,
+          1944
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1944,
+          1956
+        ],
+        "value": {
+          "raw": "define_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1956,
+          1957
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1957,
+          1961
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1961,
+          1962
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1962,
+          1968
+        ],
+        "value": {
+          "raw": "\"oops\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1963,
+                1967
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1968,
+          1969
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1969,
+          1970
         ],
         "value": {
           "raw": "\n",
@@ -17785,17 +18055,167 @@
       {
         "span": [
           1835,
-          1895
+          1857
         ],
         "value": {
-          "raw": "; unresolved define_scale must be the last thing in the file",
-          "t": "Comment"
+          "raw": "tempo(bpm=5 end_bpm=5)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1835,
+                  1840
+                ],
+                "value": "tempo"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1841,
+                        1844
+                      ],
+                      "value": "bpm"
+                    },
+                    "value": {
+                      "span": [
+                        1845,
+                        1846
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            5,
+                            "5"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1847,
+                        1854
+                      ],
+                      "value": "end_bpm"
+                    },
+                    "value": {
+                      "span": [
+                        1855,
+                        1856
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            5,
+                            "5"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
         }
       },
       {
         "span": [
-          1895,
-          1896
+          1857,
+          1858
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1858,
+          1881
+        ],
+        "value": {
+          "raw": "tempo(bpm=5 duration=5)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1858,
+                  1863
+                ],
+                "value": "tempo"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1864,
+                        1867
+                      ],
+                      "value": "bpm"
+                    },
+                    "value": {
+                      "span": [
+                        1868,
+                        1869
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            5,
+                            "5"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1870,
+                        1878
+                      ],
+                      "value": "duration"
+                    },
+                    "value": {
+                      "span": [
+                        1879,
+                        1880
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            5,
+                            "5"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1881,
+          1882
         ],
         "value": {
           "raw": "\n",
@@ -17804,8 +18224,38 @@
       },
       {
         "span": [
-          1896,
-          1921
+          1882,
+          1883
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1883,
+          1943
+        ],
+        "value": {
+          "raw": "; unresolved define_scale must be the last thing in the file",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1943,
+          1944
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1944,
+          1969
         ],
         "value": {
           "raw": "define_scale(name=\"oops\")",
@@ -17813,8 +18263,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  1896,
-                  1908
+                  1944,
+                  1956
                 ],
                 "value": "define_scale"
               },
@@ -17825,15 +18275,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1909,
-                        1913
+                        1957,
+                        1961
                       ],
                       "value": "name"
                     },
                     "value": {
                       "span": [
-                        1914,
-                        1920
+                        1962,
+                        1968
                       ],
                       "value": {
                         "String": "oops"
@@ -17848,8 +18298,8 @@
       },
       {
         "span": [
-          1921,
-          1922
+          1969,
+          1970
         ],
         "value": {
           "raw": "\n",
@@ -18499,6 +18949,28 @@
           }
         },
         {
+          "code": "E1020 general usage",
+          "context": [],
+          "message": {
+            "span": [
+              1835,
+              1840
+            ],
+            "value": "'end_bpm' and 'duration' must either both be present or both be absent"
+          }
+        },
+        {
+          "code": "E1020 general usage",
+          "context": [],
+          "message": {
+            "span": [
+              1858,
+              1863
+            ],
+            "value": "'end_bpm' and 'duration' must either both be present or both be absent"
+          }
+        },
+        {
           "code": "E1023 MIDI-specific error",
           "context": [],
           "message": {
@@ -18525,8 +18997,8 @@
           "context": [],
           "message": {
             "span": [
-              1914,
-              1920
+              1962,
+              1968
             ],
             "value": "this scale definition was incomplete at EOF"
           }

@@ -14,7 +14,7 @@ use std::ops::Range;
 use std::path::Path;
 use std::sync::Arc;
 use syntoniq_common::parsing::score::{Scale, Tuning};
-use syntoniq_common::parsing::{DynamicEvent, Timeline, TimelineData, TimelineEvent};
+use syntoniq_common::parsing::{DynamicEvent, TempoEvent, Timeline, TimelineData, TimelineEvent};
 use syntoniq_common::pitch::Pitch;
 
 // Key concepts:
@@ -248,6 +248,30 @@ pub fn ramp(start_level: u8, end_level: u8, ticks: u32, steps: u32) -> Vec<(u32,
     out
 }
 
+fn ramp_rational(
+    start_level: Ratio<u32>,
+    end_level: Ratio<u32>,
+    start_time: Ratio<u32>,
+    duration: Ratio<u32>,
+) -> Vec<(Ratio<u32> /*time*/, Ratio<u32> /*level*/)> {
+    let steps: u32 = (duration * 4u32).ceil().to_integer();
+    let mut result = Vec::with_capacity(steps as usize);
+
+    for i in 1..=steps {
+        let frac = Ratio::new(i, steps);
+        let t = start_time + duration * frac;
+        let v = start_level + (end_level - start_level) * frac;
+        result.push((t, v));
+    }
+
+    result
+}
+
+fn bpm_to_micros_per_beat(bpm: Ratio<u32>) -> anyhow::Result<u24> {
+    let &micros_per_beat = (Ratio::from_integer(60_000_000) / bpm).floor().numer();
+    u24::try_from(micros_per_beat).ok_or_else(|| anyhow!("overflow calculating tempo"))
+}
+
 impl<'a> MidiGenerator<'a> {
     fn new(timeline: &'a Timeline, arena: &'a Arena) -> anyhow::Result<Self> {
         // Pick a timing that accommodates 2, 3, 5, and 7 as well as anything used by the score.
@@ -290,7 +314,10 @@ impl<'a> MidiGenerator<'a> {
             Entry::Occupied(mut v) => {
                 let last_time = v.get_mut();
                 if time < *last_time {
-                    bail!("time must be monotonically non-decreasing");
+                    bail!(
+                        "time must be monotonically non-decreasing (track {track}, last={}, time={time})",
+                        last_time
+                    );
                 }
                 let result = time - *last_time;
                 *last_time = time;
@@ -416,10 +443,19 @@ impl<'a> MidiGenerator<'a> {
         // A track should contain only notes for a single instrument/port. The first track
         // is for global information.
         let use_banks = self.use_banks();
-        let track0 = vec![TrackEvent {
-            delta: 0.into(),
-            kind: TrackEventKind::Meta(Tempo(self.micros_per_beat)),
-        }];
+        let mut track0 = Vec::new();
+        if !self
+            .timeline
+            .events
+            .iter()
+            .any(|x| matches!(x.data, TimelineData::Tempo(_)))
+        {
+            // Insert a tempo event based on the default tempo.
+            track0.push(TrackEvent {
+                delta: 0.into(),
+                kind: TrackEventKind::Meta(Tempo(self.micros_per_beat)),
+            });
+        }
         self.tracks.push(track0);
         let mut cur_track = 1usize;
         let mut channels_seen = BTreeSet::new();
@@ -659,9 +695,33 @@ impl<'a> MidiGenerator<'a> {
         self.dump_tunings()?;
 
         let mut events: BTreeSet<_> = self.timeline.events.iter().cloned().collect();
-        let last_event_time = events.last().unwrap().time;
+        let mut last_event_time = events.first().unwrap().time;
         while let Some(event) = events.pop_first() {
+            // We have to track last event time as we go since events may be inserted into the
+            // even stream during processing.
+            last_event_time = event.time;
             match &event.data {
+                TimelineData::Tempo(e) => {
+                    self.micros_per_beat = bpm_to_micros_per_beat(e.bpm)?;
+                    // All tempo events go in track 0.
+                    let delta = self.get_delta(0, event.time)?;
+                    self.tracks[0].push(TrackEvent {
+                        delta,
+                        kind: TrackEventKind::Meta(Tempo(self.micros_per_beat)),
+                    });
+                    if let Some(t) = &e.end_bpm {
+                        let end_bpm = t.item;
+                        // The event comes with an absolute time. We need a duration.
+                        let duration = t.time - event.time;
+                        for (time, bpm) in ramp_rational(e.bpm, end_bpm, event.time, duration) {
+                            events.insert(Arc::new(TimelineEvent {
+                                time,
+                                span: event.span,
+                                data: TimelineData::Tempo(TempoEvent { bpm, end_bpm: None }),
+                            }));
+                        }
+                    }
+                }
                 TimelineData::NoteOff(e) => {
                     let note_key = NoteKey {
                         part: e.part.clone(),
@@ -960,5 +1020,32 @@ mod tests {
         assert_eq!(split_u14(16383).unwrap(), (127.into(), 127.into()));
         assert_eq!(split_u14(128).unwrap(), (1.into(), 0.into()));
         assert_eq!(split_u14(127).unwrap(), (0.into(), 127.into()));
+    }
+
+    #[test]
+    fn test_bpm_to_micros_per_beat() {
+        assert_eq!(
+            bpm_to_micros_per_beat(Ratio::from_integer(72)).unwrap(),
+            833333
+        );
+    }
+
+    #[test]
+    fn test_ramp_rational() {
+        assert_eq!(
+            ramp_rational(
+                Ratio::new(9, 2),
+                Ratio::new(7, 1),
+                Ratio::from_integer(12),
+                Ratio::new(5, 4),
+            ),
+            [
+                (Ratio::new(49, 4), Ratio::new(5, 1)),
+                (Ratio::new(50, 4), Ratio::new(11, 2)),
+                (Ratio::new(51, 4), Ratio::new(6, 1)),
+                (Ratio::new(52, 4), Ratio::new(13, 2)),
+                (Ratio::new(53, 4), Ratio::new(7, 1)),
+            ]
+        );
     }
 }

@@ -1,6 +1,6 @@
 # TODO
 
-Tempo, then Reaper. And doc cleanup.
+Reaper. And doc cleanup.
 
 ----------
 
@@ -291,7 +291,7 @@ A file consists of a sequence of the following, excluding comments and non-funct
     k=v
   )
   ```
-* a keyword may be repeated, e.g. `tempo(bpm=60 part="p1" part="p2")`
+* a keyword may be repeated, e.g. `use_scale(name="default" part="p1" part="p2")`
 * multiple may occur on one line
 * comments allowed after `(` and on the same line as a parameter but not on lines between parameters
 
