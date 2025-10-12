@@ -1,6 +1,6 @@
 # TODO
 
-Reaper. And doc cleanup.
+csound, marks, repeats, doc cleanup.
 
 ----------
 

@@ -13,6 +13,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::ops::Range;
 use std::path::Path;
 use std::sync::Arc;
+use syntoniq_common::parsing::model::NoteOption;
 use syntoniq_common::parsing::score::{Scale, Tuning};
 use syntoniq_common::parsing::{DynamicEvent, TempoEvent, Timeline, TimelineData, TimelineEvent};
 use syntoniq_common::pitch::Pitch;
@@ -813,14 +814,18 @@ impl<'a> MidiGenerator<'a> {
                             key,
                         },
                     );
+                    let mut vel: u7 = 72.into();
+                    for o in &e.value.options {
+                        match o {
+                            NoteOption::Accent => vel = cmp::max(vel, 96.into()),
+                            NoteOption::Marcato => vel = cmp::max(vel, 108.into()),
+                        }
+                    }
                     self.tracks[track].push(TrackEvent {
                         delta,
                         kind: TrackEventKind::Midi {
                             channel: port_channel.channel,
-                            message: MidiMessage::NoteOn {
-                                key,
-                                vel: 72.into(),
-                            },
+                            message: MidiMessage::NoteOn { key, vel },
                         },
                     })
                 }
