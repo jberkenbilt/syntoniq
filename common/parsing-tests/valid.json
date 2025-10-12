@@ -1522,17 +1522,17 @@
       {
         "span": [
           294,
-          298
+          303
         ],
         "value": {
-          "raw": "tune",
+          "raw": "use_scale",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          298,
-          299
+          303,
+          304
         ],
         "value": {
           "raw": "(",
@@ -1541,18 +1541,18 @@
       },
       {
         "span": [
-          299,
-          304
+          304,
+          308
         ],
         "value": {
-          "raw": "scale",
+          "raw": "name",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          304,
-          305
+          308,
+          309
         ],
         "value": {
           "raw": "=",
@@ -1561,16 +1561,16 @@
       },
       {
         "span": [
-          305,
-          312
+          309,
+          316
         ],
         "value": {
           "raw": "\"5-EDO\"",
           "t": {
             "String": {
               "inner_span": [
-                306,
-                311
+                310,
+                315
               ]
             }
           }
@@ -1578,8 +1578,8 @@
       },
       {
         "span": [
-          312,
-          313
+          316,
+          317
         ],
         "value": {
           "raw": " ",
@@ -1588,8 +1588,8 @@
       },
       {
         "span": [
-          313,
-          317
+          317,
+          321
         ],
         "value": {
           "raw": "part",
@@ -1598,8 +1598,8 @@
       },
       {
         "span": [
-          317,
-          318
+          321,
+          322
         ],
         "value": {
           "raw": "=",
@@ -1608,16 +1608,16 @@
       },
       {
         "span": [
-          318,
-          322
+          322,
+          326
         ],
         "value": {
           "raw": "\"p1\"",
           "t": {
             "String": {
               "inner_span": [
-                319,
-                321
+                323,
+                325
               ]
             }
           }
@@ -1625,8 +1625,8 @@
       },
       {
         "span": [
-          322,
-          323
+          326,
+          327
         ],
         "value": {
           "raw": ")",
@@ -1635,8 +1635,8 @@
       },
       {
         "span": [
-          323,
-          324
+          327,
+          328
         ],
         "value": {
           "raw": "\n",
@@ -1645,8 +1645,8 @@
       },
       {
         "span": [
-          324,
-          325
+          328,
+          329
         ],
         "value": {
           "raw": "\n",
@@ -1655,21 +1655,21 @@
       },
       {
         "span": [
-          325,
-          331
+          329,
+          335
         ],
         "value": {
           "raw": "[p1.0]",
           "t": {
             "NoteLeader": {
               "name_span": [
-                326,
-                328
+                330,
+                332
               ],
               "note": {
                 "span": [
-                  329,
-                  330
+                  333,
+                  334
                 ],
                 "value": 0
               }
@@ -1679,8 +1679,8 @@
       },
       {
         "span": [
-          331,
-          333
+          335,
+          337
         ],
         "value": {
           "raw": "  ",
@@ -1689,8 +1689,8 @@
       },
       {
         "span": [
-          333,
-          334
+          337,
+          338
         ],
         "value": {
           "raw": "1",
@@ -1698,60 +1698,10 @@
             "Number": {
               "n": {
                 "span": [
-                  333,
-                  334
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          334,
-          335
-        ],
-        "value": {
-          "raw": ":",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          335,
-          336
-        ],
-        "value": {
-          "raw": "p",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          336,
-          337
-        ],
-        "value": {
-          "raw": "'",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          337,
-          338
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
                   337,
                   338
                 ],
-                "value": 2
+                "value": 1
               }
             }
           }
@@ -1763,8 +1713,8 @@
           339
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": ":",
+          "t": "Punctuation"
         }
       },
       {
@@ -1773,7 +1723,7 @@
           340
         ],
         "value": {
-          "raw": "q",
+          "raw": "p",
           "t": "NoteName"
         }
       },
@@ -1783,7 +1733,7 @@
           341
         ],
         "value": {
-          "raw": ",",
+          "raw": "'",
           "t": "Punctuation"
         }
       },
@@ -1810,18 +1760,31 @@
       {
         "span": [
           342,
+          343
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          343,
+          344
+        ],
+        "value": {
+          "raw": "q",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          344,
           345
         ],
         "value": {
-          "raw": "(>)",
-          "t": {
-            "NoteOptions": {
-              "inner_span": [
-                343,
-                344
-              ]
-            }
-          }
+          "raw": ",",
+          "t": "Punctuation"
         }
       },
       {
@@ -1830,35 +1793,45 @@
           346
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  345,
+                  346
+                ],
+                "value": 2
+              }
+            }
+          }
         }
       },
       {
         "span": [
           346,
-          347
+          349
         ],
         "value": {
-          "raw": "r",
-          "t": "NoteName"
+          "raw": "(>)",
+          "t": {
+            "NoteOptions": {
+              "inner_span": [
+                347,
+                348
+              ]
+            }
+          }
         }
       },
       {
         "span": [
-          347,
+          349,
           350
         ],
         "value": {
-          "raw": "(^)",
-          "t": {
-            "NoteOptions": {
-              "inner_span": [
-                348,
-                349
-              ]
-            }
-          }
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
@@ -1867,14 +1840,41 @@
           351
         ],
         "value": {
+          "raw": "r",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          351,
+          354
+        ],
+        "value": {
+          "raw": "(^)",
+          "t": {
+            "NoteOptions": {
+              "inner_span": [
+                352,
+                353
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          354,
+          355
+        ],
+        "value": {
           "raw": " ",
           "t": "Space"
         }
       },
       {
         "span": [
-          351,
-          352
+          355,
+          356
         ],
         "value": {
           "raw": "s",
@@ -1883,8 +1883,8 @@
       },
       {
         "span": [
-          352,
-          353
+          356,
+          357
         ],
         "value": {
           "raw": "~",
@@ -1893,8 +1893,8 @@
       },
       {
         "span": [
-          353,
-          354
+          357,
+          358
         ],
         "value": {
           "raw": "\n",
@@ -1903,48 +1903,18 @@
       },
       {
         "span": [
-          354,
-          360
+          358,
+          364
         ],
         "value": {
           "raw": "[p2.1]",
           "t": {
             "NoteLeader": {
               "name_span": [
-                355,
-                357
+                359,
+                361
               ],
               "note": {
-                "span": [
-                  358,
-                  359
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          360,
-          362
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          362,
-          363
-        ],
-        "value": {
-          "raw": "1",
-          "t": {
-            "Number": {
-              "n": {
                 "span": [
                   362,
                   363
@@ -1957,32 +1927,12 @@
       },
       {
         "span": [
-          363,
-          364
-        ],
-        "value": {
-          "raw": ":",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
           364,
-          365
-        ],
-        "value": {
-          "raw": "c",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          365,
           366
         ],
         "value": {
-          "raw": ">",
-          "t": "Punctuation"
+          "raw": "  ",
+          "t": "Space"
         }
       },
       {
@@ -1991,8 +1941,18 @@
           367
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  366,
+                  367
+                ],
+                "value": 1
+              }
+            }
+          }
         }
       },
       {
@@ -2001,8 +1961,8 @@
           368
         ],
         "value": {
-          "raw": "d",
-          "t": "NoteName"
+          "raw": ":",
+          "t": "Punctuation"
         }
       },
       {
@@ -2011,8 +1971,8 @@
           369
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "c",
+          "t": "NoteName"
         }
       },
       {
@@ -2021,8 +1981,8 @@
           370
         ],
         "value": {
-          "raw": "e",
-          "t": "NoteName"
+          "raw": ">",
+          "t": "Punctuation"
         }
       },
       {
@@ -2041,7 +2001,7 @@
           372
         ],
         "value": {
-          "raw": "f",
+          "raw": "d",
           "t": "NoteName"
         }
       },
@@ -2051,8 +2011,8 @@
           373
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
@@ -2061,24 +2021,34 @@
           374
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
+          "raw": "e",
+          "t": "NoteName"
         }
       },
       {
         "span": [
           374,
-          442
+          375
         ],
         "value": {
-          "raw": "; Use the 5-JI scale for p2 setting the base pitch to the pitch of d",
-          "t": "Comment"
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
         "span": [
-          442,
-          443
+          375,
+          376
+        ],
+        "value": {
+          "raw": "f",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          376,
+          377
         ],
         "value": {
           "raw": "\n",
@@ -2087,18 +2057,8 @@
       },
       {
         "span": [
-          443,
-          486
-        ],
-        "value": {
-          "raw": "; in its existing, scale, which is default.",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          486,
-          487
+          377,
+          378
         ],
         "value": {
           "raw": "\n",
@@ -2107,18 +2067,58 @@
       },
       {
         "span": [
-          487,
-          491
+          378,
+          445
         ],
         "value": {
-          "raw": "tune",
+          "raw": "; Transpose to set the base pitch to the current pitch of `d`, then",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          445,
+          446
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          446,
+          480
+        ],
+        "value": {
+          "raw": "; switch to the 5-JI scale for p2.",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          480,
+          481
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          481,
+          490
+        ],
+        "value": {
+          "raw": "transpose",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          491,
-          492
+          490,
+          491
         ],
         "value": {
           "raw": "(",
@@ -2127,18 +2127,18 @@
       },
       {
         "span": [
-          492,
-          497
+          491,
+          498
         ],
         "value": {
-          "raw": "scale",
+          "raw": "written",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          497,
-          498
+          498,
+          499
         ],
         "value": {
           "raw": "=",
@@ -2147,16 +2147,16 @@
       },
       {
         "span": [
-          498,
-          504
+          499,
+          502
         ],
         "value": {
-          "raw": "\"5-JI\"",
+          "raw": "\"c\"",
           "t": {
             "String": {
               "inner_span": [
-                499,
-                503
+                500,
+                501
               ]
             }
           }
@@ -2164,8 +2164,8 @@
       },
       {
         "span": [
-          504,
-          505
+          502,
+          503
         ],
         "value": {
           "raw": " ",
@@ -2174,8 +2174,55 @@
       },
       {
         "span": [
-          505,
-          509
+          503,
+          513
+        ],
+        "value": {
+          "raw": "pitch_from",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          513,
+          514
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          514,
+          517
+        ],
+        "value": {
+          "raw": "\"d\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                515,
+                516
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          517,
+          518
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          518,
+          522
         ],
         "value": {
           "raw": "part",
@@ -2184,8 +2231,8 @@
       },
       {
         "span": [
-          509,
-          510
+          522,
+          523
         ],
         "value": {
           "raw": "=",
@@ -2194,16 +2241,16 @@
       },
       {
         "span": [
-          510,
-          514
+          523,
+          527
         ],
         "value": {
           "raw": "\"p2\"",
           "t": {
             "String": {
               "inner_span": [
-                511,
-                513
+                524,
+                526
               ]
             }
           }
@@ -2211,55 +2258,8 @@
       },
       {
         "span": [
-          514,
-          515
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          515,
-          524
-        ],
-        "value": {
-          "raw": "base_note",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          524,
-          525
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          525,
+          527,
           528
-        ],
-        "value": {
-          "raw": "\"d\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                526,
-                527
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          528,
-          529
         ],
         "value": {
           "raw": ")",
@@ -2268,106 +2268,42 @@
       },
       {
         "span": [
-          529,
-          530
+          528,
+          529
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          530,
-          531
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          531,
-          537
-        ],
-        "value": {
-          "raw": "[p1.0]",
-          "t": {
-            "NoteLeader": {
-              "name_span": [
-                532,
-                534
-              ],
-              "note": {
-                "span": [
-                  535,
-                  536
-                ],
-                "value": 0
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          537,
-          539
-        ],
-        "value": {
-          "raw": "  ",
+          "raw": " ",
           "t": "Space"
         }
       },
       {
         "span": [
-          539,
-          540
+          529,
+          538
         ],
         "value": {
-          "raw": "1",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  539,
-                  540
-                ],
-                "value": 1
-              }
-            }
-          }
+          "raw": "use_scale",
+          "t": "Identifier"
         }
       },
       {
         "span": [
-          540,
-          541
+          538,
+          539
         ],
         "value": {
-          "raw": ":",
+          "raw": "(",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          541,
-          542
-        ],
-        "value": {
-          "raw": "p",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          542,
+          539,
           543
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "name",
+          "t": "Identifier"
         }
       },
       {
@@ -2376,132 +2312,72 @@
           544
         ],
         "value": {
-          "raw": "q",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          544,
-          545
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          545,
-          546
-        ],
-        "value": {
-          "raw": "r",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          546,
-          547
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          547,
-          548
-        ],
-        "value": {
-          "raw": "s",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          548,
-          549
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          549,
-          555
-        ],
-        "value": {
-          "raw": "[p2.1]",
-          "t": {
-            "NoteLeader": {
-              "name_span": [
-                550,
-                552
-              ],
-              "note": {
-                "span": [
-                  553,
-                  554
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          555,
-          557
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          557,
-          558
-        ],
-        "value": {
-          "raw": "1",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  557,
-                  558
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          558,
-          559
-        ],
-        "value": {
-          "raw": ":",
+          "raw": "=",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          559,
+          544,
+          550
+        ],
+        "value": {
+          "raw": "\"5-JI\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                545,
+                549
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          550,
+          551
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          551,
+          555
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          555,
+          556
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          556,
           560
         ],
         "value": {
-          "raw": "p",
-          "t": "NoteName"
+          "raw": "\"p2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                557,
+                559
+              ]
+            }
+          }
         }
       },
       {
@@ -2510,8 +2386,8 @@
           561
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": ")",
+          "t": "Punctuation"
         }
       },
       {
@@ -2520,8 +2396,8 @@
           562
         ],
         "value": {
-          "raw": "q",
-          "t": "NoteName"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
@@ -2530,67 +2406,27 @@
           563
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          563,
-          564
-        ],
-        "value": {
-          "raw": "r",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          564,
-          565
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          565,
-          566
-        ],
-        "value": {
-          "raw": "u",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          566,
-          567
-        ],
-        "value": {
           "raw": "\n",
           "t": "Newline"
         }
       },
       {
         "span": [
-          567,
-          573
+          563,
+          569
         ],
         "value": {
-          "raw": "[p3.0]",
+          "raw": "[p1.0]",
           "t": {
             "NoteLeader": {
               "name_span": [
-                568,
-                570
+                564,
+                566
               ],
               "note": {
                 "span": [
-                  571,
-                  572
+                  567,
+                  568
                 ],
                 "value": 0
               }
@@ -2600,11 +2436,61 @@
       },
       {
         "span": [
-          573,
-          575
+          569,
+          571
         ],
         "value": {
           "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          571,
+          572
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  571,
+                  572
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          572,
+          573
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          573,
+          574
+        ],
+        "value": {
+          "raw": "p",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          574,
+          575
+        ],
+        "value": {
+          "raw": " ",
           "t": "Space"
         }
       },
@@ -2614,18 +2500,8 @@
           576
         ],
         "value": {
-          "raw": "1",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  575,
-                  576
-                ],
-                "value": 1
-              }
-            }
-          }
+          "raw": "q",
+          "t": "NoteName"
         }
       },
       {
@@ -2634,8 +2510,8 @@
           577
         ],
         "value": {
-          "raw": ":",
-          "t": "Punctuation"
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
@@ -2644,7 +2520,7 @@
           578
         ],
         "value": {
-          "raw": "a",
+          "raw": "r",
           "t": "NoteName"
         }
       },
@@ -2664,7 +2540,7 @@
           580
         ],
         "value": {
-          "raw": "e",
+          "raw": "s",
           "t": "NoteName"
         }
       },
@@ -2674,43 +2550,27 @@
           581
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
         "span": [
           581,
-          582
+          587
         ],
         "value": {
-          "raw": "~",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          582,
-          583
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          583,
-          584
-        ],
-        "value": {
-          "raw": "1",
+          "raw": "[p2.1]",
           "t": {
-            "Number": {
-              "n": {
+            "NoteLeader": {
+              "name_span": [
+                582,
+                584
+              ],
+              "note": {
                 "span": [
-                  583,
-                  584
+                  585,
+                  586
                 ],
                 "value": 1
               }
@@ -2720,52 +2580,12 @@
       },
       {
         "span": [
-          584,
-          585
-        ],
-        "value": {
-          "raw": "/",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          585,
-          586
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  585,
-                  586
-                ],
-                "value": 2
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          586,
-          587
-        ],
-        "value": {
-          "raw": ":",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
           587,
           589
         ],
         "value": {
-          "raw": "b%",
-          "t": "NoteName"
+          "raw": "  ",
+          "t": "Space"
         }
       },
       {
@@ -2774,17 +2594,37 @@
           590
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  589,
+                  590
+                ],
+                "value": 1
+              }
+            }
+          }
         }
       },
       {
         "span": [
           590,
+          591
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          591,
           592
         ],
         "value": {
-          "raw": "b#",
+          "raw": "p",
           "t": "NoteName"
         }
       },
@@ -2794,14 +2634,98 @@
           593
         ],
         "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          593,
+          594
+        ],
+        "value": {
+          "raw": "q",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          594,
+          595
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          595,
+          596
+        ],
+        "value": {
+          "raw": "r",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          596,
+          597
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          597,
+          598
+        ],
+        "value": {
+          "raw": "u",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          598,
+          599
+        ],
+        "value": {
           "raw": "\n",
           "t": "Newline"
         }
       },
       {
         "span": [
-          593,
-          595
+          599,
+          605
+        ],
+        "value": {
+          "raw": "[p3.0]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                600,
+                602
+              ],
+              "note": {
+                "span": [
+                  603,
+                  604
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          605,
+          607
         ],
         "value": {
           "raw": "  ",
@@ -2810,16 +2734,216 @@
       },
       {
         "span": [
-          595,
-          599
+          607,
+          608
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  607,
+                  608
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          608,
+          609
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          609,
+          610
+        ],
+        "value": {
+          "raw": "a",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          610,
+          611
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          611,
+          612
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          612,
+          613
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          613,
+          614
+        ],
+        "value": {
+          "raw": "~",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          614,
+          615
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          615,
+          616
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  615,
+                  616
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          616,
+          617
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          617,
+          618
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  617,
+                  618
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          618,
+          619
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          619,
+          621
+        ],
+        "value": {
+          "raw": "b%",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          621,
+          622
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          622,
+          624
+        ],
+        "value": {
+          "raw": "b#",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          624,
+          625
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          625,
+          627
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          627,
+          631
         ],
         "value": {
           "raw": "[p3]",
           "t": {
             "DynamicLeader": {
               "name_span": [
-                596,
-                598
+                628,
+                630
               ]
             }
           }
@@ -2827,8 +2951,8 @@
       },
       {
         "span": [
-          599,
-          601
+          631,
+          633
         ],
         "value": {
           "raw": "  ",
@@ -2837,8 +2961,8 @@
       },
       {
         "span": [
-          601,
-          603
+          633,
+          635
         ],
         "value": {
           "raw": "64",
@@ -2846,8 +2970,8 @@
             "Number": {
               "n": {
                 "span": [
-                  601,
-                  603
+                  633,
+                  635
                 ],
                 "value": 64
               }
@@ -2857,8 +2981,8 @@
       },
       {
         "span": [
-          603,
-          604
+          635,
+          636
         ],
         "value": {
           "raw": "@",
@@ -2867,8 +2991,8 @@
       },
       {
         "span": [
-          604,
-          605
+          636,
+          637
         ],
         "value": {
           "raw": "2",
@@ -2876,8 +3000,8 @@
             "Number": {
               "n": {
                 "span": [
-                  604,
-                  605
+                  636,
+                  637
                 ],
                 "value": 2
               }
@@ -2887,8 +3011,8 @@
       },
       {
         "span": [
-          605,
-          606
+          637,
+          638
         ],
         "value": {
           "raw": "<",
@@ -2897,8 +3021,8 @@
       },
       {
         "span": [
-          606,
-          607
+          638,
+          639
         ],
         "value": {
           "raw": " ",
@@ -2907,8 +3031,8 @@
       },
       {
         "span": [
-          607,
-          609
+          639,
+          641
         ],
         "value": {
           "raw": "96",
@@ -2916,8 +3040,8 @@
             "Number": {
               "n": {
                 "span": [
-                  607,
-                  609
+                  639,
+                  641
                 ],
                 "value": 96
               }
@@ -2927,8 +3051,8 @@
       },
       {
         "span": [
-          609,
-          610
+          641,
+          642
         ],
         "value": {
           "raw": "@",
@@ -2937,8 +3061,8 @@
       },
       {
         "span": [
-          610,
-          611
+          642,
+          643
         ],
         "value": {
           "raw": "3",
@@ -2946,8 +3070,8 @@
             "Number": {
               "n": {
                 "span": [
-                  610,
-                  611
+                  642,
+                  643
                 ],
                 "value": 3
               }
@@ -2957,8 +3081,8 @@
       },
       {
         "span": [
-          611,
-          612
+          643,
+          644
         ],
         "value": {
           "raw": "\n",
@@ -2967,8 +3091,8 @@
       },
       {
         "span": [
-          612,
-          613
+          644,
+          645
         ],
         "value": {
           "raw": "\n",
@@ -2977,8 +3101,8 @@
       },
       {
         "span": [
-          613,
-          679
+          645,
+          711
         ],
         "value": {
           "raw": "; Exercise scale degree logic more thoroughly by having notes that",
@@ -2987,8 +3111,8 @@
       },
       {
         "span": [
-          679,
-          680
+          711,
+          712
         ],
         "value": {
           "raw": "\n",
@@ -2997,8 +3121,8 @@
       },
       {
         "span": [
-          680,
-          749
+          712,
+          781
         ],
         "value": {
           "raw": "; extend outside the cycle (beyond b#). This ensures notes are sorted",
@@ -3007,8 +3131,8 @@
       },
       {
         "span": [
-          749,
-          750
+          781,
+          782
         ],
         "value": {
           "raw": "\n",
@@ -3017,8 +3141,8 @@
       },
       {
         "span": [
-          750,
-          784
+          782,
+          816
         ],
         "value": {
           "raw": "; properly. These go up by fifths.",
@@ -3027,8 +3151,8 @@
       },
       {
         "span": [
-          784,
-          785
+          816,
+          817
         ],
         "value": {
           "raw": "\n",
@@ -3037,139 +3161,12 @@
       },
       {
         "span": [
-          785,
-          797
+          817,
+          829
         ],
         "value": {
           "raw": "define_scale",
           "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          797,
-          798
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          798,
-          802
-        ],
-        "value": {
-          "raw": "name",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          802,
-          803
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          803,
-          811
-        ],
-        "value": {
-          "raw": "\"fifths\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                804,
-                810
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          811,
-          812
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          812,
-          823
-        ],
-        "value": {
-          "raw": "cycle_ratio",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          823,
-          824
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          824,
-          825
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  824,
-                  825
-                ],
-                "value": 2
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          825,
-          826
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          826,
-          827
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          827,
-          829
-        ],
-        "value": {
-          "raw": "<<",
-          "t": "ScaleStart"
         }
       },
       {
@@ -3178,534 +3175,14 @@
           830
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          830,
-          833
-        ],
-        "value": {
-          "raw": "   ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          833,
-          834
-        ],
-        "value": {
-          "raw": "1",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  833,
-                  834
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          834,
-          838
-        ],
-        "value": {
-          "raw": "    ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          838,
-          839
-        ],
-        "value": {
-          "raw": "c",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          839,
-          840
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          840,
-          843
-        ],
-        "value": {
-          "raw": "   ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          843,
-          844
-        ],
-        "value": {
-          "raw": "3",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  843,
-                  844
-                ],
-                "value": 3
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          844,
-          845
-        ],
-        "value": {
-          "raw": "/",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          845,
-          846
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  845,
-                  846
-                ],
-                "value": 2
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          846,
-          848
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          848,
-          849
-        ],
-        "value": {
-          "raw": "g",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          849,
-          850
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          850,
-          853
-        ],
-        "value": {
-          "raw": "   ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          853,
-          854
-        ],
-        "value": {
-          "raw": "9",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  853,
-                  854
-                ],
-                "value": 9
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          854,
-          855
-        ],
-        "value": {
-          "raw": "/",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          855,
-          856
-        ],
-        "value": {
-          "raw": "4",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  855,
-                  856
-                ],
-                "value": 4
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          856,
-          858
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          858,
-          859
-        ],
-        "value": {
-          "raw": "d",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          859,
-          861
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          861,
-          867
-        ],
-        "value": {
-          "raw": ";  9/8",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          867,
-          868
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          868,
-          870
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          870,
-          872
-        ],
-        "value": {
-          "raw": "27",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  870,
-                  872
-                ],
-                "value": 27
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          872,
-          873
-        ],
-        "value": {
-          "raw": "/",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          873,
-          874
-        ],
-        "value": {
-          "raw": "8",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  873,
-                  874
-                ],
-                "value": 8
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          874,
-          876
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          876,
-          877
-        ],
-        "value": {
-          "raw": "a",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          877,
-          879
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          879,
-          886
-        ],
-        "value": {
-          "raw": "; 27/16",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          886,
-          887
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          887,
-          889
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          889,
-          891
-        ],
-        "value": {
-          "raw": "81",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  889,
-                  891
-                ],
-                "value": 81
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          891,
-          892
-        ],
-        "value": {
-          "raw": "/",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          892,
-          894
-        ],
-        "value": {
-          "raw": "16",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  892,
-                  894
-                ],
-                "value": 16
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          894,
-          895
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          895,
-          896
-        ],
-        "value": {
-          "raw": "e",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          896,
-          898
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          898,
-          905
-        ],
-        "value": {
-          "raw": "; 81/64",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          905,
-          906
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          906,
-          908
-        ],
-        "value": {
-          "raw": ">>",
-          "t": "ScaleEnd"
-        }
-      },
-      {
-        "span": [
-          908,
-          909
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          909,
-          921
-        ],
-        "value": {
-          "raw": "define_scale",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          921,
-          922
-        ],
-        "value": {
           "raw": "(",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          922,
-          926
+          830,
+          834
         ],
         "value": {
           "raw": "name",
@@ -3714,8 +3191,8 @@
       },
       {
         "span": [
-          926,
-          927
+          834,
+          835
         ],
         "value": {
           "raw": "=",
@@ -3724,16 +3201,16 @@
       },
       {
         "span": [
-          927,
-          937
+          835,
+          843
         ],
         "value": {
-          "raw": "\"fifths-3\"",
+          "raw": "\"fifths\"",
           "t": {
             "String": {
               "inner_span": [
-                928,
-                936
+                836,
+                842
               ]
             }
           }
@@ -3741,8 +3218,8 @@
       },
       {
         "span": [
-          937,
-          938
+          843,
+          844
         ],
         "value": {
           "raw": " ",
@@ -3751,8 +3228,8 @@
       },
       {
         "span": [
-          938,
-          949
+          844,
+          855
         ],
         "value": {
           "raw": "cycle_ratio",
@@ -3761,8 +3238,8 @@
       },
       {
         "span": [
-          949,
-          950
+          855,
+          856
         ],
         "value": {
           "raw": "=",
@@ -3771,168 +3248,8 @@
       },
       {
         "span": [
-          950,
-          951
-        ],
-        "value": {
-          "raw": "3",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  950,
-                  951
-                ],
-                "value": 3
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          951,
-          952
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          952,
-          953
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          953,
-          955
-        ],
-        "value": {
-          "raw": "<<",
-          "t": "ScaleStart"
-        }
-      },
-      {
-        "span": [
-          955,
-          956
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          956,
-          959
-        ],
-        "value": {
-          "raw": "   ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          959,
-          960
-        ],
-        "value": {
-          "raw": "1",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  959,
-                  960
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          960,
-          964
-        ],
-        "value": {
-          "raw": "    ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          964,
-          966
-        ],
-        "value": {
-          "raw": "c!",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          966,
-          967
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          967,
-          970
-        ],
-        "value": {
-          "raw": "   ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          970,
-          971
-        ],
-        "value": {
-          "raw": "1",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  970,
-                  971
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          971,
-          972
-        ],
-        "value": {
-          "raw": "/",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          972,
-          973
+          856,
+          857
         ],
         "value": {
           "raw": "2",
@@ -3940,8 +3257,8 @@
             "Number": {
               "n": {
                 "span": [
-                  972,
-                  973
+                  856,
+                  857
                 ],
                 "value": 2
               }
@@ -3951,48 +3268,38 @@
       },
       {
         "span": [
-          973,
-          975
+          857,
+          858
         ],
         "value": {
-          "raw": "  ",
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          858,
+          859
+        ],
+        "value": {
+          "raw": " ",
           "t": "Space"
         }
       },
       {
         "span": [
-          975,
-          977
+          859,
+          861
         ],
         "value": {
-          "raw": "g!",
-          "t": "NoteName"
+          "raw": "<<",
+          "t": "ScaleStart"
         }
       },
       {
         "span": [
-          977,
-          979
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          979,
-          994
-        ],
-        "value": {
-          "raw": ";  3/2  * cycle",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          994,
-          995
+          861,
+          862
         ],
         "value": {
           "raw": "\n",
@@ -4001,8 +3308,8 @@
       },
       {
         "span": [
-          995,
-          998
+          862,
+          865
         ],
         "value": {
           "raw": "   ",
@@ -4011,8 +3318,158 @@
       },
       {
         "span": [
-          998,
-          999
+          865,
+          866
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  865,
+                  866
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          866,
+          870
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          870,
+          871
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          871,
+          872
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          872,
+          875
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          875,
+          876
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  875,
+                  876
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          876,
+          877
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          877,
+          878
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  877,
+                  878
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          878,
+          880
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          880,
+          881
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          881,
+          882
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          882,
+          885
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          885,
+          886
         ],
         "value": {
           "raw": "9",
@@ -4020,8 +3477,8 @@
             "Number": {
               "n": {
                 "span": [
-                  998,
-                  999
+                  885,
+                  886
                 ],
                 "value": 9
               }
@@ -4031,8 +3488,8 @@
       },
       {
         "span": [
-          999,
-          1000
+          886,
+          887
         ],
         "value": {
           "raw": "/",
@@ -4041,8 +3498,8 @@
       },
       {
         "span": [
-          1000,
-          1001
+          887,
+          888
         ],
         "value": {
           "raw": "4",
@@ -4050,8 +3507,8 @@
             "Number": {
               "n": {
                 "span": [
-                  1000,
-                  1001
+                  887,
+                  888
                 ],
                 "value": 4
               }
@@ -4061,8 +3518,8 @@
       },
       {
         "span": [
-          1001,
-          1003
+          888,
+          890
         ],
         "value": {
           "raw": "  ",
@@ -4071,18 +3528,38 @@
       },
       {
         "span": [
-          1003,
-          1005
+          890,
+          891
         ],
         "value": {
-          "raw": "d!",
+          "raw": "d",
           "t": "NoteName"
         }
       },
       {
         "span": [
-          1005,
-          1006
+          891,
+          893
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          893,
+          899
+        ],
+        "value": {
+          "raw": ";  9/8",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          899,
+          900
         ],
         "value": {
           "raw": "\n",
@@ -4091,8 +3568,8 @@
       },
       {
         "span": [
-          1006,
-          1008
+          900,
+          902
         ],
         "value": {
           "raw": "  ",
@@ -4101,8 +3578,8 @@
       },
       {
         "span": [
-          1008,
-          1010
+          902,
+          904
         ],
         "value": {
           "raw": "27",
@@ -4110,8 +3587,8 @@
             "Number": {
               "n": {
                 "span": [
-                  1008,
-                  1010
+                  902,
+                  904
                 ],
                 "value": 27
               }
@@ -4121,8 +3598,8 @@
       },
       {
         "span": [
-          1010,
-          1011
+          904,
+          905
         ],
         "value": {
           "raw": "/",
@@ -4131,8 +3608,8 @@
       },
       {
         "span": [
-          1011,
-          1012
+          905,
+          906
         ],
         "value": {
           "raw": "8",
@@ -4140,8 +3617,8 @@
             "Number": {
               "n": {
                 "span": [
-                  1011,
-                  1012
+                  905,
+                  906
                 ],
                 "value": 8
               }
@@ -4151,8 +3628,8 @@
       },
       {
         "span": [
-          1012,
-          1014
+          906,
+          908
         ],
         "value": {
           "raw": "  ",
@@ -4161,18 +3638,18 @@
       },
       {
         "span": [
-          1014,
-          1016
+          908,
+          909
         ],
         "value": {
-          "raw": "a!",
+          "raw": "a",
           "t": "NoteName"
         }
       },
       {
         "span": [
-          1016,
-          1018
+          909,
+          911
         ],
         "value": {
           "raw": "  ",
@@ -4181,18 +3658,18 @@
       },
       {
         "span": [
-          1018,
-          1033
+          911,
+          918
         ],
         "value": {
-          "raw": ";  9/8  * cycle",
+          "raw": "; 27/16",
           "t": "Comment"
         }
       },
       {
         "span": [
-          1033,
-          1034
+          918,
+          919
         ],
         "value": {
           "raw": "\n",
@@ -4201,8 +3678,8 @@
       },
       {
         "span": [
-          1034,
-          1036
+          919,
+          921
         ],
         "value": {
           "raw": "  ",
@@ -4211,8 +3688,8 @@
       },
       {
         "span": [
-          1036,
-          1038
+          921,
+          923
         ],
         "value": {
           "raw": "81",
@@ -4220,8 +3697,8 @@
             "Number": {
               "n": {
                 "span": [
-                  1036,
-                  1038
+                  921,
+                  923
                 ],
                 "value": 81
               }
@@ -4231,8 +3708,8 @@
       },
       {
         "span": [
-          1038,
-          1039
+          923,
+          924
         ],
         "value": {
           "raw": "/",
@@ -4241,8 +3718,8 @@
       },
       {
         "span": [
-          1039,
-          1041
+          924,
+          926
         ],
         "value": {
           "raw": "16",
@@ -4250,8 +3727,8 @@
             "Number": {
               "n": {
                 "span": [
-                  1039,
-                  1041
+                  924,
+                  926
                 ],
                 "value": 16
               }
@@ -4261,8 +3738,8 @@
       },
       {
         "span": [
-          1041,
-          1042
+          926,
+          927
         ],
         "value": {
           "raw": " ",
@@ -4271,12 +3748,529 @@
       },
       {
         "span": [
+          927,
+          928
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          928,
+          930
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          930,
+          937
+        ],
+        "value": {
+          "raw": "; 81/64",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          937,
+          938
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          938,
+          940
+        ],
+        "value": {
+          "raw": ">>",
+          "t": "ScaleEnd"
+        }
+      },
+      {
+        "span": [
+          940,
+          941
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          941,
+          953
+        ],
+        "value": {
+          "raw": "define_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          953,
+          954
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          954,
+          958
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          958,
+          959
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          959,
+          969
+        ],
+        "value": {
+          "raw": "\"fifths-3\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                960,
+                968
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          969,
+          970
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          970,
+          981
+        ],
+        "value": {
+          "raw": "cycle_ratio",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          981,
+          982
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          982,
+          983
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  982,
+                  983
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          983,
+          984
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          984,
+          985
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          985,
+          987
+        ],
+        "value": {
+          "raw": "<<",
+          "t": "ScaleStart"
+        }
+      },
+      {
+        "span": [
+          987,
+          988
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          988,
+          991
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          991,
+          992
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  991,
+                  992
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          992,
+          996
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          996,
+          998
+        ],
+        "value": {
+          "raw": "c!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          998,
+          999
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          999,
+          1002
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1002,
+          1003
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1002,
+                  1003
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1003,
+          1004
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1004,
+          1005
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1004,
+                  1005
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1005,
+          1007
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1007,
+          1009
+        ],
+        "value": {
+          "raw": "g!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1009,
+          1011
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1011,
+          1026
+        ],
+        "value": {
+          "raw": ";  3/2  * cycle",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1026,
+          1027
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1027,
+          1030
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1030,
+          1031
+        ],
+        "value": {
+          "raw": "9",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1030,
+                  1031
+                ],
+                "value": 9
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1031,
+          1032
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1032,
+          1033
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1032,
+                  1033
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1033,
+          1035
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1035,
+          1037
+        ],
+        "value": {
+          "raw": "d!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1037,
+          1038
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1038,
+          1040
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1040,
+          1042
+        ],
+        "value": {
+          "raw": "27",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1040,
+                  1042
+                ],
+                "value": 27
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
           1042,
+          1043
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1043,
           1044
         ],
         "value": {
-          "raw": "e!",
-          "t": "NoteName"
+          "raw": "8",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1043,
+                  1044
+                ],
+                "value": 8
+              }
+            }
+          }
         }
       },
       {
@@ -4292,449 +4286,77 @@
       {
         "span": [
           1046,
-          1061
+          1048
         ],
         "value": {
-          "raw": "; 27/16 * cycle",
+          "raw": "a!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1048,
+          1050
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1050,
+          1065
+        ],
+        "value": {
+          "raw": ";  9/8  * cycle",
           "t": "Comment"
         }
       },
       {
         "span": [
-          1061,
-          1062
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1062,
-          1064
-        ],
-        "value": {
-          "raw": ">>",
-          "t": "ScaleEnd"
-        }
-      },
-      {
-        "span": [
-          1064,
-          1065
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
           1065,
-          1069
+          1066
         ],
         "value": {
-          "raw": "tune",
-          "t": "Identifier"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
         "span": [
-          1069,
+          1066,
+          1068
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1068,
           1070
         ],
         "value": {
-          "raw": "(",
-          "t": "Punctuation"
+          "raw": "81",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1068,
+                  1070
+                ],
+                "value": 81
+              }
+            }
+          }
         }
       },
       {
         "span": [
           1070,
-          1075
-        ],
-        "value": {
-          "raw": "scale",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1075,
-          1076
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1076,
-          1084
-        ],
-        "value": {
-          "raw": "\"fifths\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                1077,
-                1083
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1084,
-          1085
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1085,
-          1089
-        ],
-        "value": {
-          "raw": "part",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1089,
-          1090
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1090,
-          1094
-        ],
-        "value": {
-          "raw": "\"p1\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                1091,
-                1093
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1094,
-          1095
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1095,
-          1105
-        ],
-        "value": {
-          "raw": "base_pitch",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1105,
-          1106
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1106,
-          1109
-        ],
-        "value": {
-          "raw": "264",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1106,
-                  1109
-                ],
-                "value": 264
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1109,
-          1110
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1110,
-          1111
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1111,
-          1115
-        ],
-        "value": {
-          "raw": "tune",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1115,
-          1116
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1116,
-          1121
-        ],
-        "value": {
-          "raw": "scale",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1121,
-          1122
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1122,
-          1132
-        ],
-        "value": {
-          "raw": "\"fifths-3\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                1123,
-                1131
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1132,
-          1133
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1133,
-          1137
-        ],
-        "value": {
-          "raw": "part",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1137,
-          1138
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1138,
-          1142
-        ],
-        "value": {
-          "raw": "\"p2\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                1139,
-                1141
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1142,
-          1143
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1143,
-          1153
-        ],
-        "value": {
-          "raw": "base_pitch",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1153,
-          1154
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1154,
-          1157
-        ],
-        "value": {
-          "raw": "264",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1154,
-                  1157
-                ],
-                "value": 264
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1157,
-          1158
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1158,
-          1159
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1159,
-          1165
-        ],
-        "value": {
-          "raw": "[p1.1]",
-          "t": {
-            "NoteLeader": {
-              "name_span": [
-                1160,
-                1162
-              ],
-              "note": {
-                "span": [
-                  1163,
-                  1164
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1165,
-          1166
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1166,
-          1167
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1166,
-                  1167
-                ],
-                "value": 2
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1167,
-          1168
+          1071
         ],
         "value": {
           "raw": "/",
@@ -4743,20 +4365,321 @@
       },
       {
         "span": [
-          1168,
-          1169
+          1071,
+          1073
         ],
         "value": {
-          "raw": "5",
+          "raw": "16",
           "t": {
             "Number": {
               "n": {
                 "span": [
-                  1168,
-                  1169
+                  1071,
+                  1073
                 ],
-                "value": 5
+                "value": 16
               }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1073,
+          1074
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1074,
+          1076
+        ],
+        "value": {
+          "raw": "e!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1076,
+          1078
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1078,
+          1093
+        ],
+        "value": {
+          "raw": "; 27/16 * cycle",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1093,
+          1094
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1094,
+          1096
+        ],
+        "value": {
+          "raw": ">>",
+          "t": "ScaleEnd"
+        }
+      },
+      {
+        "span": [
+          1096,
+          1097
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1097,
+          1106
+        ],
+        "value": {
+          "raw": "use_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1106,
+          1107
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1107,
+          1111
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1111,
+          1112
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1112,
+          1120
+        ],
+        "value": {
+          "raw": "\"fifths\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1113,
+                1119
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1120,
+          1121
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1121,
+          1125
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1125,
+          1126
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1126,
+          1130
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1127,
+                1129
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1130,
+          1131
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1131,
+          1132
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1132,
+          1146
+        ],
+        "value": {
+          "raw": "set_base_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1146,
+          1147
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1147,
+          1155
+        ],
+        "value": {
+          "raw": "absolute",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1155,
+          1156
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1156,
+          1159
+        ],
+        "value": {
+          "raw": "264",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1156,
+                  1159
+                ],
+                "value": 264
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1159,
+          1160
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1160,
+          1164
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1164,
+          1165
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1165,
+          1169
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1166,
+                1168
+              ]
             }
           }
         }
@@ -4767,7 +4690,7 @@
           1170
         ],
         "value": {
-          "raw": ":",
+          "raw": ")",
           "t": "Punctuation"
         }
       },
@@ -4777,108 +4700,18 @@
           1171
         ],
         "value": {
-          "raw": "c",
-          "t": "NoteName"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
         "span": [
           1171,
-          1172
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1172,
-          1173
-        ],
-        "value": {
-          "raw": "d",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          1173,
-          1174
-        ],
-        "value": {
-          "raw": ",",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1174,
-          1175
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1175,
-          1176
-        ],
-        "value": {
-          "raw": "e",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          1176,
-          1177
-        ],
-        "value": {
-          "raw": ",",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1177,
-          1178
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1177,
-                  1178
-                ],
-                "value": 2
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1178,
-          1179
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1179,
           1180
         ],
         "value": {
-          "raw": "g",
-          "t": "NoteName"
+          "raw": "use_scale",
+          "t": "Identifier"
         }
       },
       {
@@ -4887,172 +4720,65 @@
           1181
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "(",
+          "t": "Punctuation"
         }
       },
       {
         "span": [
           1181,
-          1182
+          1185
         ],
         "value": {
-          "raw": "a",
-          "t": "NoteName"
+          "raw": "name",
+          "t": "Identifier"
         }
       },
       {
         "span": [
-          1182,
-          1183
+          1185,
+          1186
         ],
         "value": {
-          "raw": ",",
+          "raw": "=",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          1183,
-          1184
+          1186,
+          1196
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1184,
-          1190
-        ],
-        "value": {
-          "raw": "[p2.1]",
+          "raw": "\"fifths-3\"",
           "t": {
-            "NoteLeader": {
-              "name_span": [
-                1185,
-                1187
-              ],
-              "note": {
-                "span": [
-                  1188,
-                  1189
-                ],
-                "value": 1
-              }
+            "String": {
+              "inner_span": [
+                1187,
+                1195
+              ]
             }
           }
         }
       },
       {
         "span": [
-          1190,
-          1191
+          1196,
+          1197
         ],
         "value": {
           "raw": " ",
           "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1191,
-          1192
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1191,
-                  1192
-                ],
-                "value": 2
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1192,
-          1193
-        ],
-        "value": {
-          "raw": "/",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1193,
-          1194
-        ],
-        "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1193,
-                  1194
-                ],
-                "value": 5
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1194,
-          1195
-        ],
-        "value": {
-          "raw": ":",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1195,
-          1197
-        ],
-        "value": {
-          "raw": "c!",
-          "t": "NoteName"
         }
       },
       {
         "span": [
           1197,
-          1198
-        ],
-        "value": {
-          "raw": "'",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1198,
-          1199
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1199,
           1201
         ],
         "value": {
-          "raw": "a!",
-          "t": "NoteName"
+          "raw": "part",
+          "t": "Identifier"
         }
       },
       {
@@ -5061,46 +4787,23 @@
           1202
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1202,
-          1204
-        ],
-        "value": {
-          "raw": "g!",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          1204,
-          1205
-        ],
-        "value": {
-          "raw": "'",
+          "raw": "=",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          1205,
+          1202,
           1206
         ],
         "value": {
-          "raw": "2",
+          "raw": "\"p2\"",
           "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1205,
-                  1206
-                ],
-                "value": 2
-              }
+            "String": {
+              "inner_span": [
+                1203,
+                1205
+              ]
             }
           }
         }
@@ -5111,24 +4814,14 @@
           1207
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": ")",
+          "t": "Punctuation"
         }
       },
       {
         "span": [
           1207,
-          1209
-        ],
-        "value": {
-          "raw": "e!",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          1209,
-          1210
+          1208
         ],
         "value": {
           "raw": " ",
@@ -5137,18 +4830,483 @@
       },
       {
         "span": [
-          1210,
-          1212
+          1208,
+          1222
         ],
         "value": {
-          "raw": "d!",
+          "raw": "set_base_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1222,
+          1223
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1223,
+          1231
+        ],
+        "value": {
+          "raw": "absolute",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1231,
+          1232
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1232,
+          1235
+        ],
+        "value": {
+          "raw": "264",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1232,
+                  1235
+                ],
+                "value": 264
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1235,
+          1236
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1236,
+          1240
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1240,
+          1241
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1241,
+          1245
+        ],
+        "value": {
+          "raw": "\"p2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1242,
+                1244
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1245,
+          1246
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1246,
+          1247
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1247,
+          1253
+        ],
+        "value": {
+          "raw": "[p1.1]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                1248,
+                1250
+              ],
+              "note": {
+                "span": [
+                  1251,
+                  1252
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1253,
+          1254
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1254,
+          1255
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1254,
+                  1255
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1255,
+          1256
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1256,
+          1257
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1256,
+                  1257
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1257,
+          1258
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1258,
+          1259
+        ],
+        "value": {
+          "raw": "c",
           "t": "NoteName"
         }
       },
       {
         "span": [
-          1212,
-          1213
+          1259,
+          1260
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1260,
+          1261
+        ],
+        "value": {
+          "raw": "d",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1261,
+          1262
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1262,
+          1263
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1263,
+          1264
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1264,
+          1265
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1265,
+          1266
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1265,
+                  1266
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1266,
+          1267
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1267,
+          1268
+        ],
+        "value": {
+          "raw": "g",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1268,
+          1269
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1269,
+          1270
+        ],
+        "value": {
+          "raw": "a",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1270,
+          1271
+        ],
+        "value": {
+          "raw": ",",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1271,
+          1272
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1272,
+          1278
+        ],
+        "value": {
+          "raw": "[p2.1]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                1273,
+                1275
+              ],
+              "note": {
+                "span": [
+                  1276,
+                  1277
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1278,
+          1279
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1279,
+          1280
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1279,
+                  1280
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1280,
+          1281
+        ],
+        "value": {
+          "raw": "/",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1281,
+          1282
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1281,
+                  1282
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1282,
+          1283
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1283,
+          1285
+        ],
+        "value": {
+          "raw": "c!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1285,
+          1286
         ],
         "value": {
           "raw": "'",
@@ -5157,8 +5315,128 @@
       },
       {
         "span": [
-          1213,
-          1214
+          1286,
+          1287
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1287,
+          1289
+        ],
+        "value": {
+          "raw": "a!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1289,
+          1290
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1290,
+          1292
+        ],
+        "value": {
+          "raw": "g!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1292,
+          1293
+        ],
+        "value": {
+          "raw": "'",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1293,
+          1294
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1293,
+                  1294
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1294,
+          1295
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1295,
+          1297
+        ],
+        "value": {
+          "raw": "e!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1297,
+          1298
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1298,
+          1300
+        ],
+        "value": {
+          "raw": "d!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          1300,
+          1301
+        ],
+        "value": {
+          "raw": "'",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1301,
+          1302
         ],
         "value": {
           "raw": "\n",
@@ -5935,18 +6213,18 @@
       {
         "span": [
           294,
-          323
+          327
         ],
         "value": {
-          "raw": "tune(scale=\"5-EDO\" part=\"p1\")",
+          "raw": "use_scale(name=\"5-EDO\" part=\"p1\")",
           "t": {
             "Directive": {
               "name": {
                 "span": [
                   294,
-                  298
+                  303
                 ],
-                "value": "tune"
+                "value": "use_scale"
               },
               "opening_comment": null,
               "params": [
@@ -5955,15 +6233,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        299,
-                        304
+                        304,
+                        308
                       ],
-                      "value": "scale"
+                      "value": "name"
                     },
                     "value": {
                       "span": [
-                        305,
-                        312
+                        309,
+                        316
                       ],
                       "value": {
                         "String": "5-EDO"
@@ -5976,15 +6254,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        313,
-                        317
+                        317,
+                        321
                       ],
                       "value": "part"
                     },
                     "value": {
                       "span": [
-                        318,
-                        322
+                        322,
+                        326
                       ],
                       "value": {
                         "String": "p1"
@@ -5999,8 +6277,8 @@
       },
       {
         "span": [
-          323,
-          324
+          327,
+          328
         ],
         "value": {
           "raw": "\n",
@@ -6009,8 +6287,8 @@
       },
       {
         "span": [
-          324,
-          325
+          328,
+          329
         ],
         "value": {
           "raw": "\n",
@@ -6019,8 +6297,8 @@
       },
       {
         "span": [
-          325,
-          354
+          329,
+          358
         ],
         "value": {
           "raw": "[p1.0]  1:p'2 q,2(>) r(^) s~\n",
@@ -6029,21 +6307,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  325,
-                  331
+                  329,
+                  335
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      326,
-                      328
+                      330,
+                      332
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      329,
-                      330
+                      333,
+                      334
                     ],
                     "value": 0
                   }
@@ -6052,16 +6330,16 @@
               "notes": [
                 {
                   "span": [
-                    333,
-                    338
+                    337,
+                    342
                   ],
                   "value": {
                     "Regular": {
                       "behavior": null,
                       "duration": {
                         "span": [
-                          333,
-                          334
+                          337,
+                          338
                         ],
                         "value": [
                           1,
@@ -6070,15 +6348,15 @@
                       },
                       "name": {
                         "span": [
-                          335,
-                          336
+                          339,
+                          340
                         ],
                         "value": "p"
                       },
                       "octave": {
                         "span": [
-                          336,
-                          338
+                          340,
+                          342
                         ],
                         "value": 2
                       },
@@ -6088,8 +6366,8 @@
                 },
                 {
                   "span": [
-                    339,
-                    344
+                    343,
+                    348
                   ],
                   "value": {
                     "Regular": {
@@ -6097,23 +6375,23 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          339,
-                          340
+                          343,
+                          344
                         ],
                         "value": "q"
                       },
                       "octave": {
                         "span": [
-                          340,
-                          342
+                          344,
+                          346
                         ],
                         "value": -2
                       },
                       "options": [
                         {
                           "span": [
-                            343,
-                            344
+                            347,
+                            348
                           ],
                           "value": "Accent"
                         }
@@ -6123,8 +6401,8 @@
                 },
                 {
                   "span": [
-                    346,
-                    349
+                    350,
+                    353
                   ],
                   "value": {
                     "Regular": {
@@ -6132,8 +6410,8 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          346,
-                          347
+                          350,
+                          351
                         ],
                         "value": "r"
                       },
@@ -6141,8 +6419,8 @@
                       "options": [
                         {
                           "span": [
-                            348,
-                            349
+                            352,
+                            353
                           ],
                           "value": "Marcato"
                         }
@@ -6152,23 +6430,23 @@
                 },
                 {
                   "span": [
-                    351,
-                    353
+                    355,
+                    357
                   ],
                   "value": {
                     "Regular": {
                       "behavior": {
                         "span": [
-                          352,
-                          353
+                          356,
+                          357
                         ],
                         "value": "Sustain"
                       },
                       "duration": null,
                       "name": {
                         "span": [
-                          351,
-                          352
+                          355,
+                          356
                         ],
                         "value": "s"
                       },
@@ -6184,8 +6462,8 @@
       },
       {
         "span": [
-          354,
-          373
+          358,
+          377
         ],
         "value": {
           "raw": "[p2.1]  1:c> d e f\n",
@@ -6194,21 +6472,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  354,
-                  360
+                  358,
+                  364
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      355,
-                      357
+                      359,
+                      361
                     ],
                     "value": "p2"
                   },
                   "note": {
                     "span": [
-                      358,
-                      359
+                      362,
+                      363
                     ],
                     "value": 1
                   }
@@ -6217,22 +6495,22 @@
               "notes": [
                 {
                   "span": [
-                    362,
-                    366
+                    366,
+                    370
                   ],
                   "value": {
                     "Regular": {
                       "behavior": {
                         "span": [
-                          365,
-                          366
+                          369,
+                          370
                         ],
                         "value": "Slide"
                       },
                       "duration": {
                         "span": [
-                          362,
-                          363
+                          366,
+                          367
                         ],
                         "value": [
                           1,
@@ -6241,52 +6519,10 @@
                       },
                       "name": {
                         "span": [
-                          364,
-                          365
+                          368,
+                          369
                         ],
                         "value": "c"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    367,
-                    368
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": null,
-                      "name": {
-                        "span": [
-                          367,
-                          368
-                        ],
-                        "value": "d"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    369,
-                    370
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": null,
-                      "name": {
-                        "span": [
-                          369,
-                          370
-                        ],
-                        "value": "e"
                       },
                       "octave": null,
                       "options": []
@@ -6307,6 +6543,48 @@
                           371,
                           372
                         ],
+                        "value": "d"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    373,
+                    374
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": null,
+                      "name": {
+                        "span": [
+                          373,
+                          374
+                        ],
+                        "value": "e"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    375,
+                    376
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": null,
+                      "name": {
+                        "span": [
+                          375,
+                          376
+                        ],
                         "value": "f"
                       },
                       "octave": null,
@@ -6321,8 +6599,8 @@
       },
       {
         "span": [
-          373,
-          374
+          377,
+          378
         ],
         "value": {
           "raw": "\n",
@@ -6331,18 +6609,18 @@
       },
       {
         "span": [
-          374,
-          442
+          378,
+          445
         ],
         "value": {
-          "raw": "; Use the 5-JI scale for p2 setting the base pitch to the pitch of d",
+          "raw": "; Transpose to set the base pitch to the current pitch of `d`, then",
           "t": "Comment"
         }
       },
       {
         "span": [
-          442,
-          443
+          445,
+          446
         ],
         "value": {
           "raw": "\n",
@@ -6351,18 +6629,18 @@
       },
       {
         "span": [
-          443,
-          486
+          446,
+          480
         ],
         "value": {
-          "raw": "; in its existing, scale, which is default.",
+          "raw": "; switch to the 5-JI scale for p2.",
           "t": "Comment"
         }
       },
       {
         "span": [
-          486,
-          487
+          480,
+          481
         ],
         "value": {
           "raw": "\n",
@@ -6371,19 +6649,19 @@
       },
       {
         "span": [
-          487,
-          529
+          481,
+          528
         ],
         "value": {
-          "raw": "tune(scale=\"5-JI\" part=\"p2\" base_note=\"d\")",
+          "raw": "transpose(written=\"c\" pitch_from=\"d\" part=\"p2\")",
           "t": {
             "Directive": {
               "name": {
                 "span": [
-                  487,
-                  491
+                  481,
+                  490
                 ],
-                "value": "tune"
+                "value": "transpose"
               },
               "opening_comment": null,
               "params": [
@@ -6392,15 +6670,111 @@
                   "kv": {
                     "key": {
                       "span": [
-                        492,
-                        497
+                        491,
+                        498
                       ],
-                      "value": "scale"
+                      "value": "written"
                     },
                     "value": {
                       "span": [
-                        498,
-                        504
+                        499,
+                        502
+                      ],
+                      "value": {
+                        "String": "c"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        503,
+                        513
+                      ],
+                      "value": "pitch_from"
+                    },
+                    "value": {
+                      "span": [
+                        514,
+                        517
+                      ],
+                      "value": {
+                        "String": "d"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        518,
+                        522
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        523,
+                        527
+                      ],
+                      "value": {
+                        "String": "p2"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          528,
+          529
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          529,
+          561
+        ],
+        "value": {
+          "raw": "use_scale(name=\"5-JI\" part=\"p2\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  529,
+                  538
+                ],
+                "value": "use_scale"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        539,
+                        543
+                      ],
+                      "value": "name"
+                    },
+                    "value": {
+                      "span": [
+                        544,
+                        550
                       ],
                       "value": {
                         "String": "5-JI"
@@ -6413,39 +6787,18 @@
                   "kv": {
                     "key": {
                       "span": [
-                        505,
-                        509
+                        551,
+                        555
                       ],
                       "value": "part"
                     },
                     "value": {
                       "span": [
-                        510,
-                        514
+                        556,
+                        560
                       ],
                       "value": {
                         "String": "p2"
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        515,
-                        524
-                      ],
-                      "value": "base_note"
-                    },
-                    "value": {
-                      "span": [
-                        525,
-                        528
-                      ],
-                      "value": {
-                        "String": "d"
                       }
                     }
                   }
@@ -6457,8 +6810,8 @@
       },
       {
         "span": [
-          529,
-          530
+          561,
+          562
         ],
         "value": {
           "raw": "\n",
@@ -6467,8 +6820,8 @@
       },
       {
         "span": [
-          530,
-          531
+          562,
+          563
         ],
         "value": {
           "raw": "\n",
@@ -6477,8 +6830,8 @@
       },
       {
         "span": [
-          531,
-          549
+          563,
+          581
         ],
         "value": {
           "raw": "[p1.0]  1:p q r s\n",
@@ -6487,21 +6840,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  531,
-                  537
+                  563,
+                  569
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      532,
-                      534
+                      564,
+                      566
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      535,
-                      536
+                      567,
+                      568
                     ],
                     "value": 0
                   }
@@ -6510,16 +6863,16 @@
               "notes": [
                 {
                   "span": [
-                    539,
-                    542
+                    571,
+                    574
                   ],
                   "value": {
                     "Regular": {
                       "behavior": null,
                       "duration": {
                         "span": [
-                          539,
-                          540
+                          571,
+                          572
                         ],
                         "value": [
                           1,
@@ -6528,8 +6881,8 @@
                       },
                       "name": {
                         "span": [
-                          541,
-                          542
+                          573,
+                          574
                         ],
                         "value": "p"
                       },
@@ -6538,262 +6891,42 @@
                     }
                   }
                 },
-                {
-                  "span": [
-                    543,
-                    544
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": null,
-                      "name": {
-                        "span": [
-                          543,
-                          544
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    545,
-                    546
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": null,
-                      "name": {
-                        "span": [
-                          545,
-                          546
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    547,
-                    548
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": null,
-                      "name": {
-                        "span": [
-                          547,
-                          548
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          549,
-          567
-        ],
-        "value": {
-          "raw": "[p2.1]  1:p q r u\n",
-          "t": {
-            "NoteLine": {
-              "comment": null,
-              "leader": {
-                "span": [
-                  549,
-                  555
-                ],
-                "value": {
-                  "name": {
-                    "span": [
-                      550,
-                      552
-                    ],
-                    "value": "p2"
-                  },
-                  "note": {
-                    "span": [
-                      553,
-                      554
-                    ],
-                    "value": 1
-                  }
-                }
-              },
-              "notes": [
-                {
-                  "span": [
-                    557,
-                    560
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": {
-                        "span": [
-                          557,
-                          558
-                        ],
-                        "value": [
-                          1,
-                          1
-                        ]
-                      },
-                      "name": {
-                        "span": [
-                          559,
-                          560
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    561,
-                    562
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": null,
-                      "name": {
-                        "span": [
-                          561,
-                          562
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    563,
-                    564
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": null,
-                      "name": {
-                        "span": [
-                          563,
-                          564
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    565,
-                    566
-                  ],
-                  "value": {
-                    "Regular": {
-                      "behavior": null,
-                      "duration": null,
-                      "name": {
-                        "span": [
-                          565,
-                          566
-                        ],
-                        "value": "u"
-                      },
-                      "octave": null,
-                      "options": []
-                    }
-                  }
-                }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          567,
-          593
-        ],
-        "value": {
-          "raw": "[p3.0]  1:a e ~ 1/2:b% b#\n",
-          "t": {
-            "NoteLine": {
-              "comment": null,
-              "leader": {
-                "span": [
-                  567,
-                  573
-                ],
-                "value": {
-                  "name": {
-                    "span": [
-                      568,
-                      570
-                    ],
-                    "value": "p3"
-                  },
-                  "note": {
-                    "span": [
-                      571,
-                      572
-                    ],
-                    "value": 0
-                  }
-                }
-              },
-              "notes": [
                 {
                   "span": [
                     575,
+                    576
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": null,
+                      "name": {
+                        "span": [
+                          575,
+                          576
+                        ],
+                        "value": "q"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    577,
                     578
                   ],
                   "value": {
                     "Regular": {
                       "behavior": null,
-                      "duration": {
-                        "span": [
-                          575,
-                          576
-                        ],
-                        "value": [
-                          1,
-                          1
-                        ]
-                      },
+                      "duration": null,
                       "name": {
                         "span": [
                           577,
                           578
                         ],
-                        "value": "a"
+                        "value": "r"
                       },
                       "octave": null,
                       "options": []
@@ -6814,6 +6947,226 @@
                           579,
                           580
                         ],
+                        "value": "s"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          581,
+          599
+        ],
+        "value": {
+          "raw": "[p2.1]  1:p q r u\n",
+          "t": {
+            "NoteLine": {
+              "comment": null,
+              "leader": {
+                "span": [
+                  581,
+                  587
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      582,
+                      584
+                    ],
+                    "value": "p2"
+                  },
+                  "note": {
+                    "span": [
+                      585,
+                      586
+                    ],
+                    "value": 1
+                  }
+                }
+              },
+              "notes": [
+                {
+                  "span": [
+                    589,
+                    592
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": {
+                        "span": [
+                          589,
+                          590
+                        ],
+                        "value": [
+                          1,
+                          1
+                        ]
+                      },
+                      "name": {
+                        "span": [
+                          591,
+                          592
+                        ],
+                        "value": "p"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    593,
+                    594
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": null,
+                      "name": {
+                        "span": [
+                          593,
+                          594
+                        ],
+                        "value": "q"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    595,
+                    596
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": null,
+                      "name": {
+                        "span": [
+                          595,
+                          596
+                        ],
+                        "value": "r"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    597,
+                    598
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": null,
+                      "name": {
+                        "span": [
+                          597,
+                          598
+                        ],
+                        "value": "u"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          599,
+          625
+        ],
+        "value": {
+          "raw": "[p3.0]  1:a e ~ 1/2:b% b#\n",
+          "t": {
+            "NoteLine": {
+              "comment": null,
+              "leader": {
+                "span": [
+                  599,
+                  605
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      600,
+                      602
+                    ],
+                    "value": "p3"
+                  },
+                  "note": {
+                    "span": [
+                      603,
+                      604
+                    ],
+                    "value": 0
+                  }
+                }
+              },
+              "notes": [
+                {
+                  "span": [
+                    607,
+                    610
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": {
+                        "span": [
+                          607,
+                          608
+                        ],
+                        "value": [
+                          1,
+                          1
+                        ]
+                      },
+                      "name": {
+                        "span": [
+                          609,
+                          610
+                        ],
+                        "value": "a"
+                      },
+                      "octave": null,
+                      "options": []
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    611,
+                    612
+                  ],
+                  "value": {
+                    "Regular": {
+                      "behavior": null,
+                      "duration": null,
+                      "name": {
+                        "span": [
+                          611,
+                          612
+                        ],
                         "value": "e"
                       },
                       "octave": null,
@@ -6823,15 +7176,15 @@
                 },
                 {
                   "span": [
-                    581,
-                    582
+                    613,
+                    614
                   ],
                   "value": {
                     "Hold": {
                       "ch": {
                         "span": [
-                          581,
-                          582
+                          613,
+                          614
                         ],
                         "value": "~"
                       },
@@ -6841,16 +7194,16 @@
                 },
                 {
                   "span": [
-                    583,
-                    589
+                    615,
+                    621
                   ],
                   "value": {
                     "Regular": {
                       "behavior": null,
                       "duration": {
                         "span": [
-                          583,
-                          586
+                          615,
+                          618
                         ],
                         "value": [
                           1,
@@ -6859,8 +7212,8 @@
                       },
                       "name": {
                         "span": [
-                          587,
-                          589
+                          619,
+                          621
                         ],
                         "value": "b%"
                       },
@@ -6871,8 +7224,8 @@
                 },
                 {
                   "span": [
-                    590,
-                    592
+                    622,
+                    624
                   ],
                   "value": {
                     "Regular": {
@@ -6880,8 +7233,8 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          590,
-                          592
+                          622,
+                          624
                         ],
                         "value": "b#"
                       },
@@ -6897,8 +7250,8 @@
       },
       {
         "span": [
-          593,
-          595
+          625,
+          627
         ],
         "value": {
           "raw": "  ",
@@ -6907,8 +7260,8 @@
       },
       {
         "span": [
-          595,
-          612
+          627,
+          644
         ],
         "value": {
           "raw": "[p3]  64@2< 96@3\n",
@@ -6918,29 +7271,29 @@
               "dynamics": [
                 {
                   "span": [
-                    601,
-                    606
+                    633,
+                    638
                   ],
                   "value": {
                     "Regular": {
                       "change": {
                         "span": [
-                          605,
-                          606
+                          637,
+                          638
                         ],
                         "value": "Crescendo"
                       },
                       "level": {
                         "span": [
-                          601,
-                          603
+                          633,
+                          635
                         ],
                         "value": 64
                       },
                       "position": {
                         "span": [
-                          604,
-                          605
+                          636,
+                          637
                         ],
                         "value": [
                           2,
@@ -6952,23 +7305,23 @@
                 },
                 {
                   "span": [
-                    607,
-                    611
+                    639,
+                    643
                   ],
                   "value": {
                     "Regular": {
                       "change": null,
                       "level": {
                         "span": [
-                          607,
-                          609
+                          639,
+                          641
                         ],
                         "value": 96
                       },
                       "position": {
                         "span": [
-                          610,
-                          611
+                          642,
+                          643
                         ],
                         "value": [
                           3,
@@ -6981,14 +7334,14 @@
               ],
               "leader": {
                 "span": [
-                  595,
-                  599
+                  627,
+                  631
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      596,
-                      598
+                      628,
+                      630
                     ],
                     "value": "p3"
                   }
@@ -7000,8 +7353,8 @@
       },
       {
         "span": [
-          612,
-          613
+          644,
+          645
         ],
         "value": {
           "raw": "\n",
@@ -7010,8 +7363,8 @@
       },
       {
         "span": [
-          613,
-          679
+          645,
+          711
         ],
         "value": {
           "raw": "; Exercise scale degree logic more thoroughly by having notes that",
@@ -7020,8 +7373,8 @@
       },
       {
         "span": [
-          679,
-          680
+          711,
+          712
         ],
         "value": {
           "raw": "\n",
@@ -7030,8 +7383,8 @@
       },
       {
         "span": [
-          680,
-          749
+          712,
+          781
         ],
         "value": {
           "raw": "; extend outside the cycle (beyond b#). This ensures notes are sorted",
@@ -7040,8 +7393,8 @@
       },
       {
         "span": [
-          749,
-          750
+          781,
+          782
         ],
         "value": {
           "raw": "\n",
@@ -7050,8 +7403,8 @@
       },
       {
         "span": [
-          750,
-          784
+          782,
+          816
         ],
         "value": {
           "raw": "; properly. These go up by fifths.",
@@ -7060,8 +7413,8 @@
       },
       {
         "span": [
-          784,
-          785
+          816,
+          817
         ],
         "value": {
           "raw": "\n",
@@ -7070,8 +7423,8 @@
       },
       {
         "span": [
-          785,
-          826
+          817,
+          858
         ],
         "value": {
           "raw": "define_scale(name=\"fifths\" cycle_ratio=2)",
@@ -7079,8 +7432,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  785,
-                  797
+                  817,
+                  829
                 ],
                 "value": "define_scale"
               },
@@ -7091,15 +7444,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        798,
-                        802
+                        830,
+                        834
                       ],
                       "value": "name"
                     },
                     "value": {
                       "span": [
-                        803,
-                        811
+                        835,
+                        843
                       ],
                       "value": {
                         "String": "fifths"
@@ -7112,15 +7465,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        812,
-                        823
+                        844,
+                        855
                       ],
                       "value": "cycle_ratio"
                     },
                     "value": {
                       "span": [
-                        824,
-                        825
+                        856,
+                        857
                       ],
                       "value": {
                         "PitchOrNumber": {
@@ -7140,8 +7493,8 @@
       },
       {
         "span": [
-          826,
-          827
+          858,
+          859
         ],
         "value": {
           "raw": " ",
@@ -7150,8 +7503,8 @@
       },
       {
         "span": [
-          827,
-          908
+          859,
+          940
         ],
         "value": {
           "raw": "<<\n   1    c\n   3/2  g\n   9/4  d  ;  9/8\n  27/8  a  ; 27/16\n  81/16 e  ; 81/64\n>>",
@@ -7160,24 +7513,24 @@
               "notes": [
                 {
                   "span": [
-                    833,
-                    839
+                    865,
+                    871
                   ],
                   "value": {
                     "comment": null,
                     "note_names": [
                       {
                         "span": [
-                          838,
-                          839
+                          870,
+                          871
                         ],
                         "value": "c"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        833,
-                        834
+                        865,
+                        866
                       ],
                       "value": {
                         "Integer": [
@@ -7190,24 +7543,24 @@
                 },
                 {
                   "span": [
-                    843,
-                    849
+                    875,
+                    881
                   ],
                   "value": {
                     "comment": null,
                     "note_names": [
                       {
                         "span": [
-                          848,
-                          849
+                          880,
+                          881
                         ],
                         "value": "g"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        843,
-                        846
+                        875,
+                        878
                       ],
                       "value": {
                         "Ratio": [
@@ -7223,15 +7576,15 @@
                 },
                 {
                   "span": [
-                    853,
-                    867
+                    885,
+                    899
                   ],
                   "value": {
                     "comment": {
                       "content": {
                         "span": [
-                          861,
-                          867
+                          893,
+                          899
                         ],
                         "value": ";  9/8"
                       }
@@ -7239,16 +7592,16 @@
                     "note_names": [
                       {
                         "span": [
-                          858,
-                          859
+                          890,
+                          891
                         ],
                         "value": "d"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        853,
-                        856
+                        885,
+                        888
                       ],
                       "value": {
                         "Ratio": [
@@ -7264,15 +7617,15 @@
                 },
                 {
                   "span": [
-                    870,
-                    886
+                    902,
+                    918
                   ],
                   "value": {
                     "comment": {
                       "content": {
                         "span": [
-                          879,
-                          886
+                          911,
+                          918
                         ],
                         "value": "; 27/16"
                       }
@@ -7280,16 +7633,16 @@
                     "note_names": [
                       {
                         "span": [
-                          876,
-                          877
+                          908,
+                          909
                         ],
                         "value": "a"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        870,
-                        874
+                        902,
+                        906
                       ],
                       "value": {
                         "Ratio": [
@@ -7305,15 +7658,15 @@
                 },
                 {
                   "span": [
-                    889,
-                    905
+                    921,
+                    937
                   ],
                   "value": {
                     "comment": {
                       "content": {
                         "span": [
-                          898,
-                          905
+                          930,
+                          937
                         ],
                         "value": "; 81/64"
                       }
@@ -7321,16 +7674,16 @@
                     "note_names": [
                       {
                         "span": [
-                          895,
-                          896
+                          927,
+                          928
                         ],
                         "value": "e"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        889,
-                        894
+                        921,
+                        926
                       ],
                       "value": {
                         "Ratio": [
@@ -7347,8 +7700,8 @@
               ],
               "opening_comment": null,
               "span": [
-                827,
-                829
+                859,
+                861
               ]
             }
           }
@@ -7356,8 +7709,8 @@
       },
       {
         "span": [
-          908,
-          909
+          940,
+          941
         ],
         "value": {
           "raw": "\n",
@@ -7366,8 +7719,8 @@
       },
       {
         "span": [
-          909,
-          952
+          941,
+          984
         ],
         "value": {
           "raw": "define_scale(name=\"fifths-3\" cycle_ratio=3)",
@@ -7375,8 +7728,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  909,
-                  921
+                  941,
+                  953
                 ],
                 "value": "define_scale"
               },
@@ -7387,15 +7740,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        922,
-                        926
+                        954,
+                        958
                       ],
                       "value": "name"
                     },
                     "value": {
                       "span": [
-                        927,
-                        937
+                        959,
+                        969
                       ],
                       "value": {
                         "String": "fifths-3"
@@ -7408,15 +7761,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        938,
-                        949
+                        970,
+                        981
                       ],
                       "value": "cycle_ratio"
                     },
                     "value": {
                       "span": [
-                        950,
-                        951
+                        982,
+                        983
                       ],
                       "value": {
                         "PitchOrNumber": {
@@ -7436,8 +7789,8 @@
       },
       {
         "span": [
-          952,
-          953
+          984,
+          985
         ],
         "value": {
           "raw": " ",
@@ -7446,8 +7799,8 @@
       },
       {
         "span": [
-          953,
-          1064
+          985,
+          1096
         ],
         "value": {
           "raw": "<<\n   1    c!\n   1/2  g!  ;  3/2  * cycle\n   9/4  d!\n  27/8  a!  ;  9/8  * cycle\n  81/16 e!  ; 27/16 * cycle\n>>",
@@ -7456,24 +7809,24 @@
               "notes": [
                 {
                   "span": [
-                    959,
-                    966
+                    991,
+                    998
                   ],
                   "value": {
                     "comment": null,
                     "note_names": [
                       {
                         "span": [
-                          964,
-                          966
+                          996,
+                          998
                         ],
                         "value": "c!"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        959,
-                        960
+                        991,
+                        992
                       ],
                       "value": {
                         "Integer": [
@@ -7486,15 +7839,15 @@
                 },
                 {
                   "span": [
-                    970,
-                    994
+                    1002,
+                    1026
                   ],
                   "value": {
                     "comment": {
                       "content": {
                         "span": [
-                          979,
-                          994
+                          1011,
+                          1026
                         ],
                         "value": ";  3/2  * cycle"
                       }
@@ -7502,16 +7855,16 @@
                     "note_names": [
                       {
                         "span": [
-                          975,
-                          977
+                          1007,
+                          1009
                         ],
                         "value": "g!"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        970,
-                        973
+                        1002,
+                        1005
                       ],
                       "value": {
                         "Ratio": [
@@ -7527,24 +7880,24 @@
                 },
                 {
                   "span": [
-                    998,
-                    1005
+                    1030,
+                    1037
                   ],
                   "value": {
                     "comment": null,
                     "note_names": [
                       {
                         "span": [
-                          1003,
-                          1005
+                          1035,
+                          1037
                         ],
                         "value": "d!"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        998,
-                        1001
+                        1030,
+                        1033
                       ],
                       "value": {
                         "Ratio": [
@@ -7560,15 +7913,15 @@
                 },
                 {
                   "span": [
-                    1008,
-                    1033
+                    1040,
+                    1065
                   ],
                   "value": {
                     "comment": {
                       "content": {
                         "span": [
-                          1018,
-                          1033
+                          1050,
+                          1065
                         ],
                         "value": ";  9/8  * cycle"
                       }
@@ -7576,16 +7929,16 @@
                     "note_names": [
                       {
                         "span": [
-                          1014,
-                          1016
+                          1046,
+                          1048
                         ],
                         "value": "a!"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        1008,
-                        1012
+                        1040,
+                        1044
                       ],
                       "value": {
                         "Ratio": [
@@ -7601,15 +7954,15 @@
                 },
                 {
                   "span": [
-                    1036,
-                    1061
+                    1068,
+                    1093
                   ],
                   "value": {
                     "comment": {
                       "content": {
                         "span": [
-                          1046,
-                          1061
+                          1078,
+                          1093
                         ],
                         "value": "; 27/16 * cycle"
                       }
@@ -7617,16 +7970,16 @@
                     "note_names": [
                       {
                         "span": [
-                          1042,
-                          1044
+                          1074,
+                          1076
                         ],
                         "value": "e!"
                       }
                     ],
                     "pitch": {
                       "span": [
-                        1036,
-                        1041
+                        1068,
+                        1073
                       ],
                       "value": {
                         "Ratio": [
@@ -7643,8 +7996,8 @@
               ],
               "opening_comment": null,
               "span": [
-                953,
-                955
+                985,
+                987
               ]
             }
           }
@@ -7652,8 +8005,8 @@
       },
       {
         "span": [
-          1064,
-          1065
+          1096,
+          1097
         ],
         "value": {
           "raw": "\n",
@@ -7662,19 +8015,19 @@
       },
       {
         "span": [
-          1065,
-          1110
+          1097,
+          1131
         ],
         "value": {
-          "raw": "tune(scale=\"fifths\" part=\"p1\" base_pitch=264)",
+          "raw": "use_scale(name=\"fifths\" part=\"p1\")",
           "t": {
             "Directive": {
               "name": {
                 "span": [
-                  1065,
-                  1069
+                  1097,
+                  1106
                 ],
-                "value": "tune"
+                "value": "use_scale"
               },
               "opening_comment": null,
               "params": [
@@ -7683,15 +8036,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1070,
-                        1075
+                        1107,
+                        1111
                       ],
-                      "value": "scale"
+                      "value": "name"
                     },
                     "value": {
                       "span": [
-                        1076,
-                        1084
+                        1112,
+                        1120
                       ],
                       "value": {
                         "String": "fifths"
@@ -7704,44 +8057,18 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1085,
-                        1089
+                        1121,
+                        1125
                       ],
                       "value": "part"
                     },
                     "value": {
                       "span": [
-                        1090,
-                        1094
+                        1126,
+                        1130
                       ],
                       "value": {
                         "String": "p1"
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1095,
-                        1105
-                      ],
-                      "value": "base_pitch"
-                    },
-                    "value": {
-                      "span": [
-                        1106,
-                        1109
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            264,
-                            "264"
-                          ]
-                        }
                       }
                     }
                   }
@@ -7753,29 +8080,29 @@
       },
       {
         "span": [
-          1110,
-          1111
+          1131,
+          1132
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
         "span": [
-          1111,
-          1158
+          1132,
+          1170
         ],
         "value": {
-          "raw": "tune(scale=\"fifths-3\" part=\"p2\" base_pitch=264)",
+          "raw": "set_base_pitch(absolute=264 part=\"p1\")",
           "t": {
             "Directive": {
               "name": {
                 "span": [
-                  1111,
-                  1115
+                  1132,
+                  1146
                 ],
-                "value": "tune"
+                "value": "set_base_pitch"
               },
               "opening_comment": null,
               "params": [
@@ -7784,15 +8111,95 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1116,
-                        1121
+                        1147,
+                        1155
                       ],
-                      "value": "scale"
+                      "value": "absolute"
                     },
                     "value": {
                       "span": [
-                        1122,
-                        1132
+                        1156,
+                        1159
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            264,
+                            "264"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1160,
+                        1164
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        1165,
+                        1169
+                      ],
+                      "value": {
+                        "String": "p1"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1170,
+          1171
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1171,
+          1207
+        ],
+        "value": {
+          "raw": "use_scale(name=\"fifths-3\" part=\"p2\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1171,
+                  1180
+                ],
+                "value": "use_scale"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1181,
+                        1185
+                      ],
+                      "value": "name"
+                    },
+                    "value": {
+                      "span": [
+                        1186,
+                        1196
                       ],
                       "value": {
                         "String": "fifths-3"
@@ -7805,36 +8212,69 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1133,
-                        1137
+                        1197,
+                        1201
                       ],
                       "value": "part"
                     },
                     "value": {
                       "span": [
-                        1138,
-                        1142
+                        1202,
+                        1206
                       ],
                       "value": {
                         "String": "p2"
                       }
                     }
                   }
-                },
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1207,
+          1208
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1208,
+          1246
+        ],
+        "value": {
+          "raw": "set_base_pitch(absolute=264 part=\"p2\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1208,
+                  1222
+                ],
+                "value": "set_base_pitch"
+              },
+              "opening_comment": null,
+              "params": [
                 {
                   "comment": null,
                   "kv": {
                     "key": {
                       "span": [
-                        1143,
-                        1153
+                        1223,
+                        1231
                       ],
-                      "value": "base_pitch"
+                      "value": "absolute"
                     },
                     "value": {
                       "span": [
-                        1154,
-                        1157
+                        1232,
+                        1235
                       ],
                       "value": {
                         "PitchOrNumber": {
@@ -7846,6 +8286,27 @@
                       }
                     }
                   }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1236,
+                        1240
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        1241,
+                        1245
+                      ],
+                      "value": {
+                        "String": "p2"
+                      }
+                    }
+                  }
                 }
               ]
             }
@@ -7854,8 +8315,8 @@
       },
       {
         "span": [
-          1158,
-          1159
+          1246,
+          1247
         ],
         "value": {
           "raw": "\n",
@@ -7864,8 +8325,8 @@
       },
       {
         "span": [
-          1159,
-          1184
+          1247,
+          1272
         ],
         "value": {
           "raw": "[p1.1] 2/5:c d, e,2 g a,\n",
@@ -7874,21 +8335,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  1159,
-                  1165
+                  1247,
+                  1253
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      1160,
-                      1162
+                      1248,
+                      1250
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      1163,
-                      1164
+                      1251,
+                      1252
                     ],
                     "value": 1
                   }
@@ -7897,16 +8358,16 @@
               "notes": [
                 {
                   "span": [
-                    1166,
-                    1171
+                    1254,
+                    1259
                   ],
                   "value": {
                     "Regular": {
                       "behavior": null,
                       "duration": {
                         "span": [
-                          1166,
-                          1169
+                          1254,
+                          1257
                         ],
                         "value": [
                           2,
@@ -7915,8 +8376,8 @@
                       },
                       "name": {
                         "span": [
-                          1170,
-                          1171
+                          1258,
+                          1259
                         ],
                         "value": "c"
                       },
@@ -7927,8 +8388,8 @@
                 },
                 {
                   "span": [
-                    1172,
-                    1174
+                    1260,
+                    1262
                   ],
                   "value": {
                     "Regular": {
@@ -7936,15 +8397,15 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          1172,
-                          1173
+                          1260,
+                          1261
                         ],
                         "value": "d"
                       },
                       "octave": {
                         "span": [
-                          1173,
-                          1174
+                          1261,
+                          1262
                         ],
                         "value": -1
                       },
@@ -7954,8 +8415,8 @@
                 },
                 {
                   "span": [
-                    1175,
-                    1178
+                    1263,
+                    1266
                   ],
                   "value": {
                     "Regular": {
@@ -7963,15 +8424,15 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          1175,
-                          1176
+                          1263,
+                          1264
                         ],
                         "value": "e"
                       },
                       "octave": {
                         "span": [
-                          1176,
-                          1178
+                          1264,
+                          1266
                         ],
                         "value": -2
                       },
@@ -7981,8 +8442,8 @@
                 },
                 {
                   "span": [
-                    1179,
-                    1180
+                    1267,
+                    1268
                   ],
                   "value": {
                     "Regular": {
@@ -7990,8 +8451,8 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          1179,
-                          1180
+                          1267,
+                          1268
                         ],
                         "value": "g"
                       },
@@ -8002,8 +8463,8 @@
                 },
                 {
                   "span": [
-                    1181,
-                    1183
+                    1269,
+                    1271
                   ],
                   "value": {
                     "Regular": {
@@ -8011,15 +8472,15 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          1181,
-                          1182
+                          1269,
+                          1270
                         ],
                         "value": "a"
                       },
                       "octave": {
                         "span": [
-                          1182,
-                          1183
+                          1270,
+                          1271
                         ],
                         "value": -1
                       },
@@ -8034,8 +8495,8 @@
       },
       {
         "span": [
-          1184,
-          1214
+          1272,
+          1302
         ],
         "value": {
           "raw": "[p2.1] 2/5:c!' a! g!'2 e! d!'\n",
@@ -8044,21 +8505,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  1184,
-                  1190
+                  1272,
+                  1278
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      1185,
-                      1187
+                      1273,
+                      1275
                     ],
                     "value": "p2"
                   },
                   "note": {
                     "span": [
-                      1188,
-                      1189
+                      1276,
+                      1277
                     ],
                     "value": 1
                   }
@@ -8067,16 +8528,16 @@
               "notes": [
                 {
                   "span": [
-                    1191,
-                    1198
+                    1279,
+                    1286
                   ],
                   "value": {
                     "Regular": {
                       "behavior": null,
                       "duration": {
                         "span": [
-                          1191,
-                          1194
+                          1279,
+                          1282
                         ],
                         "value": [
                           2,
@@ -8085,15 +8546,15 @@
                       },
                       "name": {
                         "span": [
-                          1195,
-                          1197
+                          1283,
+                          1285
                         ],
                         "value": "c!"
                       },
                       "octave": {
                         "span": [
-                          1197,
-                          1198
+                          1285,
+                          1286
                         ],
                         "value": 1
                       },
@@ -8103,8 +8564,8 @@
                 },
                 {
                   "span": [
-                    1199,
-                    1201
+                    1287,
+                    1289
                   ],
                   "value": {
                     "Regular": {
@@ -8112,8 +8573,8 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          1199,
-                          1201
+                          1287,
+                          1289
                         ],
                         "value": "a!"
                       },
@@ -8124,8 +8585,8 @@
                 },
                 {
                   "span": [
-                    1202,
-                    1206
+                    1290,
+                    1294
                   ],
                   "value": {
                     "Regular": {
@@ -8133,15 +8594,15 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          1202,
-                          1204
+                          1290,
+                          1292
                         ],
                         "value": "g!"
                       },
                       "octave": {
                         "span": [
-                          1204,
-                          1206
+                          1292,
+                          1294
                         ],
                         "value": 2
                       },
@@ -8151,8 +8612,8 @@
                 },
                 {
                   "span": [
-                    1207,
-                    1209
+                    1295,
+                    1297
                   ],
                   "value": {
                     "Regular": {
@@ -8160,8 +8621,8 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          1207,
-                          1209
+                          1295,
+                          1297
                         ],
                         "value": "e!"
                       },
@@ -8172,8 +8633,8 @@
                 },
                 {
                   "span": [
-                    1210,
-                    1213
+                    1298,
+                    1301
                   ],
                   "value": {
                     "Regular": {
@@ -8181,15 +8642,15 @@
                       "duration": null,
                       "name": {
                         "span": [
-                          1210,
-                          1212
+                          1298,
+                          1300
                         ],
                         "value": "d!"
                       },
                       "octave": {
                         "span": [
-                          1212,
-                          1213
+                          1300,
+                          1301
                         ],
                         "value": 1
                       },
@@ -8207,25 +8668,6 @@
   {
     "Ok": {
       "events": [
-        {
-          "data": {
-            "Tuning": {
-              "parts": [],
-              "tuning": {
-                "base_pitch": "220*^1|4",
-                "scale_name": "default"
-              }
-            }
-          },
-          "span": [
-            0,
-            8
-          ],
-          "time": [
-            0,
-            1
-          ]
-        },
         {
           "data": {
             "NoteOn": {
@@ -8400,27 +8842,6 @@
         },
         {
           "data": {
-            "Tuning": {
-              "parts": [
-                "p1"
-              ],
-              "tuning": {
-                "base_pitch": "220*^1|4",
-                "scale_name": "5-EDO"
-              }
-            }
-          },
-          "span": [
-            294,
-            298
-          ],
-          "time": [
-            4,
-            1
-          ]
-        },
-        {
-          "data": {
             "NoteOn": {
               "note_number": 0,
               "part": "p1",
@@ -8438,8 +8859,8 @@
             }
           },
           "span": [
-            333,
-            338
+            337,
+            342
           ],
           "time": [
             4,
@@ -8465,8 +8886,8 @@
             }
           },
           "span": [
-            362,
-            366
+            366,
+            370
           ],
           "time": [
             4,
@@ -8481,8 +8902,8 @@
             }
           },
           "span": [
-            333,
-            338
+            337,
+            342
           ],
           "time": [
             5,
@@ -8510,8 +8931,8 @@
             }
           },
           "span": [
-            339,
-            344
+            343,
+            348
           ],
           "time": [
             5,
@@ -8526,8 +8947,8 @@
             }
           },
           "span": [
-            362,
-            366
+            366,
+            370
           ],
           "time": [
             5,
@@ -8553,8 +8974,8 @@
             }
           },
           "span": [
-            367,
-            368
+            371,
+            372
           ],
           "time": [
             5,
@@ -8569,8 +8990,8 @@
             }
           },
           "span": [
-            339,
-            344
+            343,
+            348
           ],
           "time": [
             6,
@@ -8598,8 +9019,8 @@
             }
           },
           "span": [
-            346,
-            349
+            350,
+            353
           ],
           "time": [
             6,
@@ -8614,8 +9035,8 @@
             }
           },
           "span": [
-            367,
-            368
+            371,
+            372
           ],
           "time": [
             6,
@@ -8641,8 +9062,8 @@
             }
           },
           "span": [
-            369,
-            370
+            373,
+            374
           ],
           "time": [
             6,
@@ -8657,8 +9078,8 @@
             }
           },
           "span": [
-            346,
-            349
+            350,
+            353
           ],
           "time": [
             7,
@@ -8684,8 +9105,8 @@
             }
           },
           "span": [
-            351,
-            353
+            355,
+            357
           ],
           "time": [
             7,
@@ -8700,8 +9121,8 @@
             }
           },
           "span": [
-            369,
-            370
+            373,
+            374
           ],
           "time": [
             7,
@@ -8727,8 +9148,8 @@
             }
           },
           "span": [
-            371,
-            372
+            375,
+            376
           ],
           "time": [
             7,
@@ -8743,29 +9164,8 @@
             }
           },
           "span": [
-            371,
-            372
-          ],
-          "time": [
-            8,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Tuning": {
-              "parts": [
-                "p2"
-              ],
-              "tuning": {
-                "base_pitch": "220*^5|12",
-                "scale_name": "5-JI"
-              }
-            }
-          },
-          "span": [
-            487,
-            491
+            375,
+            376
           ],
           "time": [
             8,
@@ -8791,8 +9191,8 @@
             }
           },
           "span": [
-            539,
-            542
+            571,
+            574
           ],
           "time": [
             8,
@@ -8818,8 +9218,8 @@
             }
           },
           "span": [
-            557,
-            560
+            589,
+            592
           ],
           "time": [
             8,
@@ -8845,8 +9245,8 @@
             }
           },
           "span": [
-            575,
-            578
+            607,
+            610
           ],
           "time": [
             8,
@@ -8861,8 +9261,8 @@
             }
           },
           "span": [
-            539,
-            542
+            571,
+            574
           ],
           "time": [
             9,
@@ -8888,8 +9288,8 @@
             }
           },
           "span": [
-            543,
-            544
+            575,
+            576
           ],
           "time": [
             9,
@@ -8904,8 +9304,8 @@
             }
           },
           "span": [
-            557,
-            560
+            589,
+            592
           ],
           "time": [
             9,
@@ -8931,8 +9331,8 @@
             }
           },
           "span": [
-            561,
-            562
+            593,
+            594
           ],
           "time": [
             9,
@@ -8947,8 +9347,8 @@
             }
           },
           "span": [
-            575,
-            578
+            607,
+            610
           ],
           "time": [
             9,
@@ -8974,8 +9374,8 @@
             }
           },
           "span": [
-            579,
-            580
+            611,
+            612
           ],
           "time": [
             9,
@@ -8990,8 +9390,8 @@
             }
           },
           "span": [
-            543,
-            544
+            575,
+            576
           ],
           "time": [
             10,
@@ -9017,8 +9417,8 @@
             }
           },
           "span": [
-            545,
-            546
+            577,
+            578
           ],
           "time": [
             10,
@@ -9033,8 +9433,8 @@
             }
           },
           "span": [
-            561,
-            562
+            593,
+            594
           ],
           "time": [
             10,
@@ -9060,8 +9460,8 @@
             }
           },
           "span": [
-            563,
-            564
+            595,
+            596
           ],
           "time": [
             10,
@@ -9076,8 +9476,8 @@
             }
           },
           "span": [
-            579,
-            580
+            611,
+            612
           ],
           "time": [
             10,
@@ -9099,8 +9499,8 @@
             }
           },
           "span": [
-            601,
-            606
+            633,
+            638
           ],
           "time": [
             10,
@@ -9115,8 +9515,8 @@
             }
           },
           "span": [
-            545,
-            546
+            577,
+            578
           ],
           "time": [
             11,
@@ -9142,8 +9542,8 @@
             }
           },
           "span": [
-            547,
-            548
+            579,
+            580
           ],
           "time": [
             11,
@@ -9158,8 +9558,8 @@
             }
           },
           "span": [
-            563,
-            564
+            595,
+            596
           ],
           "time": [
             11,
@@ -9185,8 +9585,8 @@
             }
           },
           "span": [
-            565,
-            566
+            597,
+            598
           ],
           "time": [
             11,
@@ -9212,8 +9612,8 @@
             }
           },
           "span": [
-            583,
-            589
+            615,
+            621
           ],
           "time": [
             11,
@@ -9229,8 +9629,8 @@
             }
           },
           "span": [
-            607,
-            611
+            639,
+            643
           ],
           "time": [
             11,
@@ -9245,8 +9645,8 @@
             }
           },
           "span": [
-            583,
-            589
+            615,
+            621
           ],
           "time": [
             23,
@@ -9272,8 +9672,8 @@
             }
           },
           "span": [
-            590,
-            592
+            622,
+            624
           ],
           "time": [
             23,
@@ -9288,8 +9688,8 @@
             }
           },
           "span": [
-            547,
-            548
+            579,
+            580
           ],
           "time": [
             12,
@@ -9304,8 +9704,8 @@
             }
           },
           "span": [
-            565,
-            566
+            597,
+            598
           ],
           "time": [
             12,
@@ -9320,50 +9720,8 @@
             }
           },
           "span": [
-            590,
-            592
-          ],
-          "time": [
-            12,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Tuning": {
-              "parts": [
-                "p1"
-              ],
-              "tuning": {
-                "base_pitch": "264",
-                "scale_name": "fifths"
-              }
-            }
-          },
-          "span": [
-            1065,
-            1069
-          ],
-          "time": [
-            12,
-            1
-          ]
-        },
-        {
-          "data": {
-            "Tuning": {
-              "parts": [
-                "p2"
-              ],
-              "tuning": {
-                "base_pitch": "264",
-                "scale_name": "fifths-3"
-              }
-            }
-          },
-          "span": [
-            1111,
-            1115
+            622,
+            624
           ],
           "time": [
             12,
@@ -9389,8 +9747,8 @@
             }
           },
           "span": [
-            1166,
-            1171
+            1254,
+            1259
           ],
           "time": [
             12,
@@ -9416,8 +9774,8 @@
             }
           },
           "span": [
-            1191,
-            1198
+            1279,
+            1286
           ],
           "time": [
             12,
@@ -9432,8 +9790,8 @@
             }
           },
           "span": [
-            1166,
-            1171
+            1254,
+            1259
           ],
           "time": [
             62,
@@ -9459,8 +9817,8 @@
             }
           },
           "span": [
-            1172,
-            1174
+            1260,
+            1262
           ],
           "time": [
             62,
@@ -9475,8 +9833,8 @@
             }
           },
           "span": [
-            1191,
-            1198
+            1279,
+            1286
           ],
           "time": [
             62,
@@ -9502,8 +9860,8 @@
             }
           },
           "span": [
-            1199,
-            1201
+            1287,
+            1289
           ],
           "time": [
             62,
@@ -9518,8 +9876,8 @@
             }
           },
           "span": [
-            1172,
-            1174
+            1260,
+            1262
           ],
           "time": [
             64,
@@ -9545,8 +9903,8 @@
             }
           },
           "span": [
-            1175,
-            1178
+            1263,
+            1266
           ],
           "time": [
             64,
@@ -9561,8 +9919,8 @@
             }
           },
           "span": [
-            1199,
-            1201
+            1287,
+            1289
           ],
           "time": [
             64,
@@ -9588,8 +9946,8 @@
             }
           },
           "span": [
-            1202,
-            1206
+            1290,
+            1294
           ],
           "time": [
             64,
@@ -9604,8 +9962,8 @@
             }
           },
           "span": [
-            1175,
-            1178
+            1263,
+            1266
           ],
           "time": [
             66,
@@ -9631,8 +9989,8 @@
             }
           },
           "span": [
-            1179,
-            1180
+            1267,
+            1268
           ],
           "time": [
             66,
@@ -9647,8 +10005,8 @@
             }
           },
           "span": [
-            1202,
-            1206
+            1290,
+            1294
           ],
           "time": [
             66,
@@ -9674,8 +10032,8 @@
             }
           },
           "span": [
-            1207,
-            1209
+            1295,
+            1297
           ],
           "time": [
             66,
@@ -9690,8 +10048,8 @@
             }
           },
           "span": [
-            1179,
-            1180
+            1267,
+            1268
           ],
           "time": [
             68,
@@ -9717,8 +10075,8 @@
             }
           },
           "span": [
-            1181,
-            1183
+            1269,
+            1271
           ],
           "time": [
             68,
@@ -9733,8 +10091,8 @@
             }
           },
           "span": [
-            1207,
-            1209
+            1295,
+            1297
           ],
           "time": [
             68,
@@ -9760,8 +10118,8 @@
             }
           },
           "span": [
-            1210,
-            1213
+            1298,
+            1301
           ],
           "time": [
             68,
@@ -9776,8 +10134,8 @@
             }
           },
           "span": [
-            1181,
-            1183
+            1269,
+            1271
           ],
           "time": [
             14,
@@ -9792,8 +10150,8 @@
             }
           },
           "span": [
-            1210,
-            1213
+            1298,
+            1301
           ],
           "time": [
             14,

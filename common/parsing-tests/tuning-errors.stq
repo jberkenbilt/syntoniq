@@ -19,36 +19,37 @@ define_scale(name="5-JI") <<
 
 [p1.0]  1:c d e f
 
-tune(scale="5-EDO" part="p1")
+use_scale(name="5-EDO" part="p1")
 
 [p1.0]  1:p q r s
 [p2.0]  1:c d e f
 
-; Use the 5-JI scale for p2 setting the base pitch to the pitch of d
-; in its existing, scale, which is default.
-tune(scale="5-JI" part="p2" base_note="d")
+; Transpose to set the base pitch to the current pitch of `d`, then
+; switch to the 5-JI scale for p2.
+transpose(written="c" pitch_from="d" part="p2") use_scale(name="5-JI" part="p2")
 
 [p1.0]  1:p q r s
 [p2.0]  1:p q r u
 
 ; Error: duplicated part
-tune(scale="5-JI" part="p2" part="p2")
+use_scale(name="z" part="p2" part="p2")
+transpose(written="z" pitch_from="z" part="p2" part="p2")
+set_base_pitch(absolute=440 part="p2" part="p2")
 
 ; Error: unknown scale part
-tune(scale="potato" part="p2")
+use_scale(name="potato" part="p2")
 
-; Error: can't tune relative to an unknown note + duplication
-tune(scale="5-JI" part="p2" base_note="d")
+; Error: can't transpose using unknown notes
+transpose(part="p2" written="c" pitch_from="d")
 
 reset_tuning()
 ; Now okay
-tune(scale="5-EDO" base_note="d")
-tune(scale="5-JI" part="p2" base_note="q")
+transpose(written="c" pitch_from="d") use_scale(name="5-EDO")
+transpose(written="p" pitch_from="q" part="p1") use_scale(name="5-JI" part="p2")
 ; p1 doesn't have v
-tune(scale="5-EDO" part="p1" base_note="v")
-; okay -- they both have r
-tune(scale="5-EDO" part="p1" base_note="r")
-tune(scale="5-JI" part="p2" base_note="r")
+transpose(part="p1" written="p" pitch_from="v")
+; okay -- they both have q and r
+transpose(part="p1" part="p2" written="q" pitch_from="r")
 
 [p1.0]  1:p q r s
 [p2.0]  1:p q r s ; s is an error
@@ -57,9 +58,10 @@ reset_tuning(part="p2")
 [p1.0]  1:p q r s
 [p2.0]  1:p q r s ; okay now
 
-tune(scale="5-EDO" part="p1" part="p2" base_factor=^1|19)
-tune(scale="5-EDO" part="p1" part="p2" base_pitch=440)
-tune(scale="default" part="p4")
+use_scale(name="5-EDO" part="p1" part="p2")
+set_base_pitch(part="p1" part="p2" absolute=440)
+set_base_pitch(part="p1" part="p2" relative=^1|19)
+use_scale(name="default" part="p4")
 
 [p1.0]  1:p q r s
 [p2.0]  1:p q r s

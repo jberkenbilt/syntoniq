@@ -17,7 +17,7 @@ define_scale(name="JI1") <<
 15/8  b
 >>
 
-tune(scale="JI1" part="p1")
+use_scale(name="JI1" part="p1")
 [p1.0] 4:c
 [p1.1] 4:e
 [p1.2] 4:g
@@ -34,7 +34,7 @@ tune(scale="JI1" part="p1")
 [p2.0] 4:d'2
 [p2.1] 4:f#'2
 
-tune(scale="JI1" base_note="e" part="p1")
+transpose(written="c" pitch_from="e" part="p1")
 [p1.0] 4:c
 [p1.1] 4:e
 [p1.2] 4:g

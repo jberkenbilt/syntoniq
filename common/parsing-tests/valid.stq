@@ -19,14 +19,14 @@ define_scale(name="5-JI" cycle_ratio=2) <<
 
 [p1.0]  1:c d e' f,
 
-tune(scale="5-EDO" part="p1")
+use_scale(name="5-EDO" part="p1")
 
 [p1.0]  1:p'2 q,2(>) r(^) s~
 [p2.1]  1:c> d e f
 
-; Use the 5-JI scale for p2 setting the base pitch to the pitch of d
-; in its existing, scale, which is default.
-tune(scale="5-JI" part="p2" base_note="d")
+; Transpose to set the base pitch to the current pitch of `d`, then
+; switch to the 5-JI scale for p2.
+transpose(written="c" pitch_from="d" part="p2") use_scale(name="5-JI" part="p2")
 
 [p1.0]  1:p q r s
 [p2.1]  1:p q r u
@@ -50,7 +50,7 @@ define_scale(name="fifths-3" cycle_ratio=3) <<
   27/8  a!  ;  9/8  * cycle
   81/16 e!  ; 27/16 * cycle
 >>
-tune(scale="fifths" part="p1" base_pitch=264)
-tune(scale="fifths-3" part="p2" base_pitch=264)
+use_scale(name="fifths" part="p1") set_base_pitch(absolute=264 part="p1")
+use_scale(name="fifths-3" part="p2") set_base_pitch(absolute=264 part="p2")
 [p1.1] 2/5:c d, e,2 g a,
 [p2.1] 2/5:c!' a! g!'2 e! d!'

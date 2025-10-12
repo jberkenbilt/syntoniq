@@ -13,7 +13,7 @@ use std::sync::{Arc, LazyLock};
 mod directives;
 use crate::parsing::{
     DynamicEvent, NoteOffEvent, NoteOnEvent, NoteValue, Timeline, TimelineData, TimelineEvent,
-    TuningEvent, WithTime,
+    WithTime,
 };
 use crate::pitch::Pitch;
 pub use directives::*;
@@ -626,16 +626,7 @@ impl Score {
             .collect();
         let timeline = Timeline {
             scales: vec![default_scale],
-            events: [Arc::new(TimelineEvent {
-                time: Ratio::from_integer(0),
-                span: s.span,
-                data: TimelineData::Tuning(TuningEvent {
-                    tuning: DEFAULT_TUNING.clone(),
-                    parts: vec![],
-                }),
-            })]
-            .into_iter()
-            .collect(),
+            events: Default::default(),
             time_lcm: 1,
         };
         Self {
@@ -692,7 +683,9 @@ impl Score {
                         .unwrap_or(Ratio::from_integer(2)),
                 });
             }
-            Directive::Tune(x) => self.apply_tuning(diags, x),
+            Directive::UseScale(x) => self.use_scale(diags, x),
+            Directive::Transpose(x) => self.transpose(diags, x),
+            Directive::SetBasePitch(x) => self.set_base_pitch(x),
             Directive::ResetTuning(x) => self.reset_tuning(x),
         }
     }
@@ -801,81 +794,122 @@ impl Score {
             .unwrap_or(DEFAULT_TUNING.clone())
     }
 
-    fn apply_tuning(&mut self, diags: &Diagnostics, directive: Tune) {
-        let Some(scale) = self.scales.get(&directive.scale.value).cloned() else {
-            diags.err(
-                code::TUNE,
-                directive.scale.span,
-                format!("unknown scale '{}'", directive.scale.value),
-            );
-            return;
-        };
+    fn cur_tunings(&mut self, part: &[Spanned<String>]) -> HashMap<String, Arc<Tuning>> {
         // Look up tuning by part for each part we are trying to tune. If no part is specified,
         // this applies to the global tuning. The first part gathers the part names we care
         // about, and the second part gets the effective tuning for the part.
-        let cur_tunings: HashMap<String, Arc<Tuning>> = if directive.part.is_empty() {
+        if part.is_empty() {
             vec![""]
         } else {
-            directive.part.iter().map(|x| x.value.as_ref()).collect()
+            part.iter().map(|x| x.value.as_ref()).collect()
         }
         .into_iter()
         .map(|x| (x.to_string(), self.tuning_for_part(x)))
-        .collect();
+        .collect()
+    }
 
+    fn use_scale(&mut self, diags: &Diagnostics, directive: UseScale) {
+        let Some(scale) = self.scales.get(&directive.name.value).cloned() else {
+            diags.err(
+                code::TUNE,
+                directive.name.span,
+                format!("unknown scale '{}'", directive.name.value),
+            );
+            return;
+        };
+        let cur_tunings = self.cur_tunings(&directive.part);
+        // Keep the same base pitch.
+        let base_pitches: HashMap<String, Pitch> = cur_tunings
+            .iter()
+            .map(|(part, existing)| (part.to_string(), existing.base_pitch.clone()))
+            .collect();
+        self.apply_tuning(Some(&scale.definition.name), cur_tunings, base_pitches);
+    }
+
+    fn note_pitch_in_tuning(
+        &self,
+        diags: &Diagnostics,
+        part: &str,
+        tuning: &Tuning,
+        note: &Spanned<String>,
+    ) -> Pitch {
+        if let Some(scale) = self.scales.get(&tuning.scale_name)
+            && let Some(sd) = scale.notes.get(&note.value)
+        {
+            &sd.base_relative * &tuning.base_pitch
+        } else {
+            diags.err(
+                code::TUNE,
+                note.span,
+                format!(
+                    "note '{}' is not present in scale '{}', which is the current scale for part '{}'",
+                    note.value,
+                    tuning.scale_name,
+                    part,
+                ),
+            );
+            tuning.base_pitch.clone()
+        }
+    }
+
+    fn transpose(&mut self, diags: &Diagnostics, directive: Transpose) {
+        let cur_tunings = self.cur_tunings(&directive.part);
         // Get the base pitch for each part.
-        let base_pitches: HashMap<String, Pitch> = if let Some(p) = &directive.base_pitch {
-            // Use this value for all parts, disregarding the current base pitch.
-            cur_tunings
-                .keys()
-                .map(|part| (part.to_string(), p.value.clone()))
-                .collect()
-        } else if let Some(p) = &directive.base_factor {
-            // Multiply each  existing tuning's base pitch by the factor to get the new one.
-            cur_tunings
-                .iter()
-                .map(|(part, existing)| (part.to_string(), &existing.base_pitch * &p.value))
-                .collect()
-        } else if let Some(n) = &directive.base_note {
+        let base_pitches: HashMap<String, Pitch> = {
             // Make sure the note name is valid in voice
-            let fall_back = &DEFAULT_TUNING.base_pitch;
             cur_tunings
                 .iter()
                 .map(|(part, existing)| {
-                    let p = if let Some(scale) = self.scales.get(&existing.scale_name) &&
-                        let Some(sd) = scale.notes.get(&n.value) {
-                        &sd.base_relative * &existing.base_pitch
-                    } else {
-                        diags.err(
-                            code::TUNE,
-                            n.span,
-                            format!(
-                                "note '{}' is not present in scale '{}', which is the current scale for part '{}'",
-                                n.value,
-                                existing.scale_name,
-                                part,
-                            ),
-                        );
-                        fall_back.clone()
-                    };
-                    (part.clone(), p)
-                }).collect()
-        } else {
-            // Keep the same base pitch.
-            cur_tunings
-                .iter()
-                .map(|(part, existing)| (part.to_string(), existing.base_pitch.clone()))
+                    let written =
+                        self.note_pitch_in_tuning(diags, part, existing, &directive.written);
+                    let from_pitch =
+                        self.note_pitch_in_tuning(diags, part, existing, &directive.pitch_from);
+                    let factor = &from_pitch / &written;
+                    (part.clone(), &existing.base_pitch * &factor)
+                })
                 .collect()
         };
+        self.apply_tuning(None, cur_tunings, base_pitches);
+    }
+
+    fn set_base_pitch(&mut self, directive: SetBasePitch) {
+        let cur_tunings = self.cur_tunings(&directive.part);
+        // Get the base pitch for each part.
+        let base_pitches: HashMap<String, Pitch> = cur_tunings
+            .iter()
+            .map(|(part, existing)| {
+                // Validate checked that exactly one of `absolute` or `relative` was defined.
+                let p = directive
+                    .absolute
+                    .as_ref()
+                    .map(|x| x.value.clone())
+                    .unwrap_or_else(|| {
+                        &existing.base_pitch * &directive.relative.as_ref().unwrap().value
+                    });
+                (part.to_string(), p)
+            })
+            .collect();
+        self.apply_tuning(None, cur_tunings, base_pitches);
+    }
+
+    fn apply_tuning(
+        &mut self,
+        new_scale: Option<&str>,
+        cur_tunings: HashMap<String, Arc<Tuning>>,
+        base_pitches: HashMap<String, Pitch>,
+    ) {
         // Create a tuning for each distinct base pitch with this scale. Then apply the tuning
-        // to each specified part.
+        // to each specified part. It is known that cur_tunings and base_pitches have the same
+        // keys.
         let mut tunings_by_pitch = HashMap::<Pitch, Arc<Tuning>>::new();
         let mut parts_by_pitch = HashMap::<Pitch, Vec<String>>::new();
         for (part, base_pitch) in base_pitches {
+            let existing = cur_tunings[&part].as_ref();
             let tuning = tunings_by_pitch
                 .entry(base_pitch.clone())
                 .or_insert_with(|| {
                     Arc::new(Tuning {
-                        scale_name: scale.definition.name.clone(),
+                        scale_name: new_scale.unwrap_or(&existing.scale_name).to_string(),
                         base_pitch: base_pitch.clone(),
                     })
                 });
@@ -885,45 +919,18 @@ impl Score {
                 .push(part.clone());
             self.tunings.insert(part, tuning.clone());
         }
-        // Add tunings to the timeline.
-        for (pitch, tuning) in tunings_by_pitch {
-            // This is guaranteed to be there since we always added to the two maps together.
-            let parts = parts_by_pitch.get(&pitch).unwrap().to_vec();
-            self.insert_event(
-                self.line_start_time,
-                directive.span,
-                TimelineData::Tuning(TuningEvent { tuning, parts }),
-            );
-        }
     }
 
     fn reset_tuning(&mut self, reset_tuning: ResetTuning) {
         if reset_tuning.part.is_empty() {
             let mut old = HashMap::new();
             mem::swap(&mut old, &mut self.tunings);
-            self.insert_event(
-                self.line_start_time,
-                reset_tuning.span,
-                TimelineData::Tuning(TuningEvent {
-                    tuning: DEFAULT_TUNING.clone(),
-                    parts: old.into_keys().collect(),
-                }),
-            );
         } else {
             let mut parts = Vec::new();
             for p in reset_tuning.part {
                 self.tunings.remove(&p.value);
                 parts.push(p.value.clone());
             }
-            let default_tuning = self.tuning_for_part("");
-            self.insert_event(
-                self.line_start_time,
-                reset_tuning.span,
-                TimelineData::Tuning(TuningEvent {
-                    tuning: default_tuning,
-                    parts,
-                }),
-            );
         }
     }
 

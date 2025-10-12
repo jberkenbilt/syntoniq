@@ -26,7 +26,6 @@ pub enum TimelineData {
     // Keep these in the order in which they should appear in the timeline relative to other
     // events that happen at the same time.
     NoteOff(NoteOffEvent),
-    Tuning(TuningEvent),
     Dynamic(DynamicEvent),
     NoteOn(NoteOnEvent),
 }
@@ -40,12 +39,6 @@ impl<T: Serialize> WithTime<T> {
     pub fn new(time: Ratio<u32>, item: T) -> Self {
         Self { time, item }
     }
-}
-
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct TuningEvent {
-    pub tuning: Arc<Tuning>,
-    pub parts: Vec<String>,
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]

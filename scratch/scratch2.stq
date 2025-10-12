@@ -20,7 +20,7 @@ define_scale(name="17-EDO") <<
 ^16|17 b
 >>
 
-tune(scale="17-EDO")
+use_scale(name="17-EDO")
 [p1.0] 2:~ 1:g, 3:c
 [p1.1] 6:c,2
 

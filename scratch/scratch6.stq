@@ -1,0 +1,48 @@
+syntoniq(version=1)
+
+define_scale(name="JI1") <<
+1     c
+25/12 c#     ; major third above a
+9/8   d
+6/5   e%
+5/4   e
+4/3   f
+11/8  h11    ; 11th harmonic
+45/32 f#     ; major third above d
+3/2   g
+8/5   a%
+5/3   a
+7/4   h7     ; 7th harmonic
+16/9  b%
+15/8  b
+>>
+
+use_scale(name="JI1")
+[p1.0] 1:c
+[p1.1] 1:e
+[p1.2] 1:g
+
+transpose(written="c" pitch_from="e" part="p1")
+[p1.0] 1:c
+[p1.1] 1:e
+[p1.2] 1:g
+
+transpose(written="e" pitch_from="c" part="p1")
+[p1.0] 1:c
+[p1.1] 1:e
+[p1.2] 1:g
+
+set_base_pitch(absolute=264 part="p1")
+[p1.0] 1:c
+[p1.1] 1:e
+[p1.2] 1:g
+
+set_base_pitch(relative=9/8 part="p1")
+[p1.0] 1:c
+[p1.1] 1:e
+[p1.2] 1:g
+
+set_base_pitch(relative=8/9 part="p1")
+[p1.0] 1:c
+[p1.1] 1:e
+[p1.2] 1:g

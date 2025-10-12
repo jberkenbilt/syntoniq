@@ -34,7 +34,7 @@ define_scale(name="31-EDO") <<
 ^30|31 b# c-
 >>
 
-tune(scale="31-EDO" part="p1")
+use_scale(name="31-EDO" part="p1")
 [p1.0] 1/2:c,3 e-,3 g,3 b-,3
 
 [p1.0] 1/2:c,2 e-,2 g,2 b-,2

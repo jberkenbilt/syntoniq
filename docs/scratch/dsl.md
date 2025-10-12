@@ -1,6 +1,8 @@
 # TODO
 
-Check syntoniq/Cargo.toml
+Tempo, instrument assignment, then Reaper. And doc cleanup.
+
+----------
 
 Oseh Shalom as possible JI demo piece: `1:g, c c b%, | 4:c | 1:g, b%, b%, a, | 4:b%, |` ...
 Anything with modulations.
@@ -412,33 +414,6 @@ Examples:
 
 Can only be expressed at the part level.
 
-## Macros
-
-Tentative. Not sure if this is a good idea. Leaning against doing this. The separator syntax is bad.
-
-Single-line macro. `n` is the number of parameters and `,` is the separator. Within the macro, `$n` is replaced by the argument.
-```
-$name(n,) { .... }
-```
-
-Example:
-```
-; define
-$transpose(1,) { tune(base_note=$1) }
-; invoke
-$transpose(e)
-```
-
-Multi-line macros are the same but are defined as
-```
-$name(n,) {
-...
-}
-```
-and the invocation of a multi-line macro must be on a line by itself.
-
-Macros may call other macros and are lexically expanded from top down. They can only reference previously defined macros. Macros may not define macros.
-
 ## Parts
 
 A part maps (approximately) to a track for MIDI and an instrument for csound. In some cases, a part may have to be represented by more than one MIDI track, and it may often be possible to use the same csound instrument for more than one part.
@@ -451,30 +426,26 @@ The first directive must be `syntoniq(version=n)`. This is a file format version
 
 Tuning
 ```
-tune(base_pitch=... base_note=... base_factor=... scale=... part=...)
+use_scale(name="..." part="...")
+set_base_pitch(absolute=... relative=... part=...)
+transpose(written="..." pitch_from="..." part=...)
 reset_tuning(part=...)
 ```
 * Default tuning is 12-EDO with the base pitch of `220*1|4`
-* At most one of `base_pitch`, `base_note`, or `base_factor` is allowed
-* `base_pitch` sets the base pitch of the scale to an absolute pitch
-* `base_note` sets the base pitch to a specified note in the *current* scale
-* `base_factor` sets the base pitch by adjusting relative to the current scale's base pitch
-* `scale` sets the new scale
+* For set_base_pitch, exactly one of `absolute` or `relative` is required.
+* `absolute` sets the base pitch of the scale to an absolute pitch
+* `relative` sets the base pitch by adjusting relative to the current base pitch
+* Transpose transposes the tuning so that the note named by `written` will have the pitch previously assigned to the note named in `pitch_from`.
+  * `transpose(written="d" pitch_from=c")` would transpose down a whole step in 12-EDO.
 * When no parts are specified, this sets the default tuning. If one or more parts are specified, it sets the tuning for the specified parts.
 * `reset_tuning`: with no parts, resets all tunings. With parts, it resets each part's tuning to use the default tuning. There is no way to reset the default tuning without clearing the tuning table. If you need it, `tune(scale="default")` will do it.
 
-Tentative: not sure whether to do `note_shift`. It will be tricky to implement, surprising with non-EDO tunings, and cognitively difficult to use. It only matters for MIDI.
-```
-note_shift(up=... down=...)
-```
-to just generate a different note without retuning. This is like an isomorphic notation, useful where 12-tone intervals aren't portable. For example, transposing up a step in 17-EDO, the C..E interval is 6 steps, but the D..F# interval is only 5 steps. Using `note_shift(up=3)` and then using `c` and `e` would generate `d` and `g%`, for the correct interval step size without requiring a retuning.
-
 Examples:
 ```
-tune(scale="17-EDO" base_note="e")
-tune(base_factor="*2|17")
-tune(scale="17-EDO" base_pitch=264)
-note_shift(up=1)
+transpose(written="c" pitch_from="3")
+use_scale(scale="17-EDO")
+set_base_pitch(relative="*2|17")
+set_base_pitch(absolute=264 part="p1")
 ```
 
 # Tempo

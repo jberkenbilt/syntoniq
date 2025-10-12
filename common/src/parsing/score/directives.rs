@@ -49,37 +49,72 @@ impl DefineScale {
 }
 
 #[derive(FromRawDirective)]
-/// Set tuning for some voices. At most one of base_pitch, base_factor, or
-/// base_note may be specified. If no parts are specified, this changes the
-/// tuning used for parts that have no specified tuning.
-pub struct Tune {
+/// Change the scale for the specified parts. If no parts are specified, change the scale used
+/// by parts with no explicit scale. This creates a tuning with the specified scale and the current
+/// base pitch.
+pub struct UseScale {
     pub span: Span,
-    /// The name of the scale
-    pub scale: Spanned<String>,
+    /// Scale name
+    pub name: Spanned<String>,
     /// Which parts the tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<String>>,
-    /// Set the absolute base pitch of the scale
-    pub base_pitch: Option<Spanned<Pitch>>,
-    /// Set the base pitch of the scale as a factor of the prior tuning's base pitch
-    pub base_factor: Option<Spanned<Pitch>>,
-    /// Set the base pitch of the scale to the given note in the prior tuning
-    pub base_note: Option<Spanned<String>>,
 }
-impl Tune {
+impl UseScale {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_unique(diags, &self.part);
-        let n = [
-            self.base_pitch.is_some(),
-            self.base_factor.is_some(),
-            self.base_note.is_some(),
-        ]
-        .into_iter()
-        .fold(0usize, |x, v| x + if v { 1 } else { 0 });
-        if n > 1 {
+    }
+}
+
+#[derive(FromRawDirective)]
+/// Change the base pitch of the scale in a way that makes the new pitch of `written` equal to the
+/// current pitch of `pitch_from`. For example, you could transpose up a whole step in 12-TET with
+/// `transpose(written="c" pitch_from="d")`. This method of specifying transposition is easily
+/// reversible even in non-EDO tunings by simply swapping `written` and `pitch_from`. This can be
+/// applied to multiple parts or to the default tuning. The parts do not all have to be using the
+/// same scale as long as they are all using scales that have both named notes.
+pub struct Transpose {
+    pub span: Span,
+    /// Name of note used as anchor pitch for transposition. In the new tuning, this note will have
+    /// the pitch that the note in `pitch_from` has before the transposition.
+    pub written: Spanned<String>,
+    /// Name of the note in the existing tuning whose pitch will be given to the `written` note
+    /// after transposition.
+    pub pitch_from: Spanned<String>,
+    /// Which parts the tune; if not specified, all parts are tuned
+    pub part: Vec<Spanned<String>>,
+}
+impl Transpose {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        score_helpers::check_unique(diags, &self.part);
+    }
+}
+
+#[derive(FromRawDirective)]
+/// Change the base pitch of the current tuning for the named parts, or if no parts are named, for
+/// the default tuning. If `absolute`, use the pitch as the absolute base pitch. If `relative`,
+/// multiply the base pitch by the given factor. Example: `set_base_pitch(relative="^1|12")` would
+/// transpose the tuning up one 12-TET half step. Only one of `absolute` or `relative` may be
+/// given.
+pub struct SetBasePitch {
+    pub span: Span,
+    /// Set the base pitch of the current tuning to this absolute pitch value
+    pub absolute: Option<Spanned<Pitch>>,
+    /// Multiply the base pitch of the current tuning by the specified factor
+    pub relative: Option<Spanned<Pitch>>,
+    /// Which parts the tune; if not specified, all parts are tuned
+    pub part: Vec<Spanned<String>>,
+}
+impl SetBasePitch {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        score_helpers::check_unique(diags, &self.part);
+        let n = [self.absolute.is_some(), self.relative.is_some()]
+            .into_iter()
+            .fold(0usize, |x, v| x + if v { 1 } else { 0 });
+        if n != 1 {
             diags.err(
                 code::TUNE,
                 self.span,
-                "at most one of base_pitch, base_factor, or base_note may be specified",
+                "exactly one of absolute or relative must be specified",
             );
         }
     }
@@ -103,6 +138,8 @@ impl ResetTuning {
 pub enum Directive {
     Syntoniq(Syntoniq),
     DefineScale(DefineScale),
-    Tune(Tune),
+    UseScale(UseScale),
+    Transpose(Transpose),
+    SetBasePitch(SetBasePitch),
     ResetTuning(ResetTuning),
 }

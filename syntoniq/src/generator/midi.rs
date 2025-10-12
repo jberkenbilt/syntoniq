@@ -631,13 +631,6 @@ impl<'a> MidiGenerator<'a> {
                         eprintln!("TODO: warn about unexpected note")
                     }
                 }
-                TimelineData::Tuning(_) => {
-                    // We don't need to process this. We get all the tuning information up front
-                    // based on tuning information in each note. This could be useful in the future
-                    // if we ever decide to implement real-time tuning changes. In the initial
-                    // design, the tuning is fixed for a channel, which makes it possible to sustain
-                    // notes in one channel while playing notes in a different one.
-                }
                 TimelineData::Dynamic(e) => {
                     let part_channels = self
                         .part_channels
