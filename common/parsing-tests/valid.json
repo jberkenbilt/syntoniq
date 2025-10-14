@@ -9204,6 +9204,7 @@
                 "behavior": null,
                 "note_name": "c",
                 "options": [],
+                "text": "1:c",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9247,6 +9248,7 @@
                 "behavior": null,
                 "note_name": "d",
                 "options": [],
+                "text": "d",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9290,6 +9292,7 @@
                 "behavior": null,
                 "note_name": "e",
                 "options": [],
+                "text": "e'",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9333,6 +9336,7 @@
                 "behavior": null,
                 "note_name": "f",
                 "options": [],
+                "text": "f,",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9376,6 +9380,7 @@
                 "behavior": null,
                 "note_name": "p",
                 "options": [],
+                "text": "1:p'2",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "5-EDO"
@@ -9403,6 +9408,7 @@
                 "behavior": "Slide",
                 "note_name": "c",
                 "options": [],
+                "text": "1:c>",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9448,6 +9454,7 @@
                 "options": [
                   "Accent"
                 ],
+                "text": "q,2(>",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "5-EDO"
@@ -9491,6 +9498,7 @@
                 "behavior": null,
                 "note_name": "d",
                 "options": [],
+                "text": "d",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9536,6 +9544,7 @@
                 "options": [
                   "Marcato"
                 ],
+                "text": "r(^",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "5-EDO"
@@ -9579,6 +9588,7 @@
                 "behavior": null,
                 "note_name": "e",
                 "options": [],
+                "text": "e",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9622,6 +9632,7 @@
                 "behavior": "Sustain",
                 "note_name": "s",
                 "options": [],
+                "text": "s~",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "5-EDO"
@@ -9665,6 +9676,7 @@
                 "behavior": null,
                 "note_name": "f",
                 "options": [],
+                "text": "f",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9708,6 +9720,7 @@
                 "behavior": null,
                 "note_name": "p",
                 "options": [],
+                "text": "1:p",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "5-EDO"
@@ -9735,6 +9748,7 @@
                 "behavior": null,
                 "note_name": "p",
                 "options": [],
+                "text": "1:p",
                 "tuning": {
                   "base_pitch": "220*^5|12",
                   "scale_name": "5-JI"
@@ -9762,6 +9776,7 @@
                 "behavior": null,
                 "note_name": "a",
                 "options": [],
+                "text": "1:a",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9833,6 +9848,7 @@
                 "behavior": null,
                 "note_name": "q",
                 "options": [],
+                "text": "q",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "5-EDO"
@@ -9876,6 +9892,7 @@
                 "behavior": null,
                 "note_name": "q",
                 "options": [],
+                "text": "q",
                 "tuning": {
                   "base_pitch": "220*^5|12",
                   "scale_name": "5-JI"
@@ -9919,6 +9936,7 @@
                 "behavior": null,
                 "note_name": "e",
                 "options": [],
+                "text": "e",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -9962,6 +9980,7 @@
                 "behavior": null,
                 "note_name": "r",
                 "options": [],
+                "text": "r",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "5-EDO"
@@ -10005,6 +10024,7 @@
                 "behavior": null,
                 "note_name": "r",
                 "options": [],
+                "text": "r",
                 "tuning": {
                   "base_pitch": "220*^5|12",
                   "scale_name": "5-JI"
@@ -10048,7 +10068,8 @@
                 ]
               },
               "part": "p3",
-              "start_level": 64
+              "start_level": 64,
+              "text": "64@2<"
             }
           },
           "span": [
@@ -10087,6 +10108,7 @@
                 "behavior": null,
                 "note_name": "s",
                 "options": [],
+                "text": "s",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "5-EDO"
@@ -10130,6 +10152,7 @@
                 "behavior": null,
                 "note_name": "u",
                 "options": [],
+                "text": "u",
                 "tuning": {
                   "base_pitch": "220*^5|12",
                   "scale_name": "5-JI"
@@ -10157,6 +10180,7 @@
                 "behavior": null,
                 "note_name": "b%",
                 "options": [],
+                "text": "1/2:b%",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -10178,7 +10202,8 @@
             "Dynamic": {
               "end_level": null,
               "part": "p3",
-              "start_level": 96
+              "start_level": 96,
+              "text": "96@3"
             }
           },
           "span": [
@@ -10217,6 +10242,7 @@
                 "behavior": null,
                 "note_name": "b#",
                 "options": [],
+                "text": "b#",
                 "tuning": {
                   "base_pitch": "220*^1|4",
                   "scale_name": "default"
@@ -10292,6 +10318,7 @@
                 "behavior": null,
                 "note_name": "c",
                 "options": [],
+                "text": "2/5:c",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths"
@@ -10319,6 +10346,7 @@
                 "behavior": null,
                 "note_name": "c!",
                 "options": [],
+                "text": "2/5:c!'",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths-3"
@@ -10362,6 +10390,7 @@
                 "behavior": null,
                 "note_name": "d",
                 "options": [],
+                "text": "d,",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths"
@@ -10405,6 +10434,7 @@
                 "behavior": null,
                 "note_name": "a!",
                 "options": [],
+                "text": "a!",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths-3"
@@ -10448,6 +10478,7 @@
                 "behavior": null,
                 "note_name": "e",
                 "options": [],
+                "text": "e,2",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths"
@@ -10491,6 +10522,7 @@
                 "behavior": null,
                 "note_name": "g!",
                 "options": [],
+                "text": "g!'2",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths-3"
@@ -10534,6 +10566,7 @@
                 "behavior": null,
                 "note_name": "g",
                 "options": [],
+                "text": "g",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths"
@@ -10577,6 +10610,7 @@
                 "behavior": null,
                 "note_name": "e!",
                 "options": [],
+                "text": "e!",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths-3"
@@ -10620,6 +10654,7 @@
                 "behavior": null,
                 "note_name": "a",
                 "options": [],
+                "text": "a,",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths"
@@ -10663,6 +10698,7 @@
                 "behavior": null,
                 "note_name": "d!",
                 "options": [],
+                "text": "d!'",
                 "tuning": {
                   "base_pitch": "264",
                   "scale_name": "fifths-3"

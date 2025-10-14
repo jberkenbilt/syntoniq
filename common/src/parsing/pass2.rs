@@ -15,6 +15,7 @@ use crate::to_anyhow;
 use anyhow::anyhow;
 use num_rational::Ratio;
 use serde::Serialize;
+use std::borrow::Cow;
 use std::fmt::{Debug, Display, Formatter};
 use winnow::combinator::{alt, delimited, eof, fail, opt, peek, preceded, separated, terminated};
 use winnow::token::one_of;
@@ -29,20 +30,20 @@ use winnow::{Parser, combinator};
 // reference to the input type and returns a `winnow::Result` is a parser, and most of the basic
 // combinators work with those. Search for Pass2 Step 2.
 type Input2<'a, 's> = &'a [Token1<'s>];
-pub type Token2<'s> = Spanned<Token<'s, Pass2>>;
+pub type Token2<'s> = Spanned<Token<'s, Pass2<'s>>>;
 
 #[derive(Serialize, Debug, Clone)]
-pub enum Pass2 {
+pub enum Pass2<'s> {
     // Space, comments
     Space,
     Newline,
     Comment,
-    Directive(RawDirective),
-    NoteLine(NoteLine),
-    DynamicLine(DynamicLine),
-    ScaleBlock(ScaleBlock),
+    Directive(RawDirective<'s>),
+    NoteLine(NoteLine<'s>),
+    DynamicLine(DynamicLine<'s>),
+    ScaleBlock(ScaleBlock<'s>),
 }
-impl Display for Pass2 {
+impl<'s> Display for Pass2<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Pass2::Directive(x) => write!(f, "Directive{{{x}}}"),
@@ -80,7 +81,7 @@ fn optional_space(input: &mut Input2) -> winnow::Result<()> {
         .map(|_| ())
 }
 
-fn comment(input: &mut Input2) -> winnow::Result<Comment> {
+fn comment<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Comment<'s>> {
     preceded(
         optional_space,
         one_of(|x: Token1| matches!(x.value.t, Pass1::Comment)),
@@ -105,7 +106,7 @@ fn character(ch: char) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<char
     }
 }
 
-fn note_name() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<String>> {
+fn note_name<'s>() -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<&'s str>> {
     move |input| {
         one_of(|x: Token1| matches!(x.value.t, Pass1::NoteName))
             .parse_next(input)
@@ -328,7 +329,7 @@ fn pitch_or_number(
     }
 }
 
-fn identifier<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
+fn identifier<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<&'s str>> {
     one_of(|x: Token1| matches!(x.value.t, Pass1::Identifier))
         .parse_next(input)
         .map(|t| Spanned::new(t.span, t.value.raw))
@@ -346,7 +347,9 @@ fn scale_end<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> 
         .map(|t| Spanned::new(t.span, t.value.raw))
 }
 
-fn string(_diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<String>> {
+fn string<'s>(
+    _diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Cow<'s, str>>> {
     move |input| {
         one_of(Pass1::is_string)
             .parse_next(input)
@@ -354,9 +357,9 @@ fn string(_diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spa
     }
 }
 
-fn param_value(
+fn param_value<'s>(
     diags: &Diagnostics,
-) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<ParamValue>> {
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<ParamValue<'s>>> {
     move |input| {
         alt((
             string(diags).map(|x| ParamValue::String(x.value)),
@@ -368,7 +371,9 @@ fn param_value(
     }
 }
 
-fn param_kv(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<ParamKV> {
+fn param_kv<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<ParamKV<'s>> {
     move |input| {
         (
             terminated(
@@ -382,7 +387,7 @@ fn param_kv(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Pa
     }
 }
 
-fn param_separator(input: &mut Input2) -> winnow::Result<Option<Comment>> {
+fn param_separator<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Option<Comment<'s>>> {
     alt((
         terminated(comment, newline).map(Some),
         preceded(optional_space, newline).map(|_| None),
@@ -391,9 +396,9 @@ fn param_separator(input: &mut Input2) -> winnow::Result<Option<Comment>> {
     .parse_next(input)
 }
 
-fn directive(
+fn directive<'s>(
     diags: &Diagnostics,
-) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<RawDirective>> {
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<RawDirective<'s>>> {
     // Pass2 Step 5: this is an example of how our parsers look in Pass 2. Because we can't directly
     // return opaque types that implement some kind of Parser2, as we did with Parser1 in pass 1 (we
     // could maybe do it, but it would be lots of extra trait implementations, and as of initial
@@ -527,7 +532,9 @@ fn note_behavior() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<NoteBeha
     }
 }
 
-fn hold(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Note>> {
+fn hold<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Note<'s>>> {
     |input| {
         (
             opt(terminated(ratio(diags), character(':'))),
@@ -545,7 +552,9 @@ fn bar_check() -> impl FnMut(&mut Input2) -> winnow::Result<Span> {
     |input| character('|').parse_next(input).map(|c| c.span)
 }
 
-fn regular_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Note>> {
+fn regular_note<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Note<'s>>> {
     |input| {
         (
             opt(terminated(ratio(diags), character(':'))),
@@ -581,7 +590,9 @@ fn regular_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resul
     }
 }
 
-fn note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Note>> {
+fn note<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Note<'s>>> {
     move |input| {
         alt((
             regular_note(diags),
@@ -593,7 +604,7 @@ fn note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanne
     }
 }
 
-fn note_leader() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<NoteLeader>> {
+fn note_leader<'s>() -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<NoteLeader<'s>>> {
     // Pass 2 Step 9: inner spans. To keep Pass1 tokens copiable and to keep them from containing
     // multiple slices to the same input source (which would require the `Pass1` type to have a
     // namespace parameter), some Pass1 tokens contain inner spans. The inner spans are always
@@ -644,7 +655,9 @@ fn require_spaces<T: Debug + Serialize>(
         .collect()
 }
 
-fn note_line(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<NoteLine>> {
+fn note_line<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<NoteLine<'s>>> {
     move |input| {
         (
             note_leader(),
@@ -737,7 +750,8 @@ fn dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spa
     }
 }
 
-fn dynamic_leader() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<DynamicLeader>> {
+fn dynamic_leader<'s>()
+-> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<DynamicLeader<'s>>> {
     move |input| {
         one_of(Pass1::is_dynamic_leader)
             .parse_next(input)
@@ -756,9 +770,9 @@ fn dynamic_leader() -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<Dynamic
     }
 }
 
-fn dynamic_line(
+fn dynamic_line<'s>(
     diags: &Diagnostics,
-) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<DynamicLine>> {
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<DynamicLine<'s>>> {
     move |input| {
         (
             dynamic_leader(),
@@ -784,9 +798,9 @@ fn dynamic_line(
     }
 }
 
-fn scale_note(
+fn scale_note<'s>(
     diags: &Diagnostics,
-) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<ScaleNote>> {
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<ScaleNote<'s>>> {
     |input| {
         let r1: Spanned<ScaleNote> = terminated(
             (
@@ -823,9 +837,9 @@ fn scale_note(
     }
 }
 
-fn scale_block(
+fn scale_block<'s>(
     diags: &Diagnostics,
-) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<ScaleBlock>> {
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<ScaleBlock<'s>>> {
     |input| {
         (
             scale_start,
@@ -1013,11 +1027,11 @@ fn consume_one<T>(items: &mut &[T]) {
     }
 }
 
-fn promote<'s>(lt: &Token1<'s>, t: Pass2) -> Token2<'s> {
+fn promote<'s>(lt: &Token1<'s>, t: Pass2<'s>) -> Token2<'s> {
     Token::new_spanned(lt.value.raw, lt.span, t)
 }
 
-fn promote_and_consume_first<'s>(input: &mut Input2<'_, 's>, t: Pass2) -> Token2<'s> {
+fn promote_and_consume_first<'s>(input: &mut Input2<'_, 's>, t: Pass2<'s>) -> Token2<'s> {
     let tok = promote(&input[0], t);
     consume_one(input);
     tok

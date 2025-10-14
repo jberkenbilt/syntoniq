@@ -2,8 +2,8 @@ use clap::CommandFactory;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 use log::LevelFilter;
-use std::env;
 use std::path::PathBuf;
+use std::{env, fs, process};
 use syntoniq::generator;
 use syntoniq::generator::GenerateOptions;
 use syntoniq_common::parsing;
@@ -39,7 +39,7 @@ enum Commands {
     },
 }
 
-fn main() -> anyhow::Result<()> {
+fn run() -> anyhow::Result<()> {
     let cli = Cli::parse();
     let mut log_builder = env_logger::builder();
     if env::var("RUST_LOG").is_err() {
@@ -55,10 +55,19 @@ fn main() -> anyhow::Result<()> {
         }
         Commands::Generate(options) => generator::run(options),
         Commands::Dump { score } => {
-            let timeline = syntoniq::parse(&score)?;
+            let data = fs::read(&score)?;
+            let src = str::from_utf8(&data)?;
+            let timeline = syntoniq::parse(&score.display().to_string(), src)?;
             println!("{}", serde_json::to_string_pretty(&timeline)?);
             Ok(())
         }
         Commands::Doc => parsing::show_help(),
+    }
+}
+
+fn main() {
+    if let Err(e) = run() {
+        eprintln!("error: {e}");
+        process::exit(2);
     }
 }

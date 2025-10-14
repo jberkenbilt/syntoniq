@@ -11,13 +11,17 @@ use crate::parsing::pass2::{Pass2, Token2};
 use crate::parsing::score::{Directive, FromRawDirective, Score};
 use crate::parsing::{Timeline, pass2};
 
-fn check_init(tokens: &[Token2], diags: &Diagnostics) -> Option<(usize, Score)> {
+fn check_init<'s>(
+    src: &'s str,
+    tokens: &[Token2],
+    diags: &Diagnostics,
+) -> Option<(usize, Score<'s>)> {
     for (i, tok) in tokens.iter().enumerate() {
         match &tok.value.t {
             Pass2::Space | Pass2::Newline | Pass2::Comment => continue,
             Pass2::Directive(raw) if raw.name.value == "syntoniq" => {
                 if let Some(Directive::Syntoniq(x)) = Directive::from_raw(diags, raw) {
-                    return Some((i + 1, Score::new(x)));
+                    return Some((i + 1, Score::new(src, x)));
                 }
                 break;
             }
@@ -36,10 +40,10 @@ fn is_space(t: &Pass2) -> bool {
     matches!(t, Pass2::Space | Pass2::Comment | Pass2::Newline)
 }
 
-pub fn parse3<'s>(src: &'s str) -> Result<Timeline, Diagnostics> {
+pub fn parse3<'s>(src: &'s str) -> Result<Timeline<'s>, Diagnostics> {
     let tokens = pass2::parse2(src)?;
     let diags = Diagnostics::new();
-    let Some((skip, mut score)) = check_init(&tokens, &diags) else {
+    let Some((skip, mut score)) = check_init(src, &tokens, &diags) else {
         return Err(diags);
     };
 

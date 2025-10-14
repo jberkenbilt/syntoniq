@@ -63,11 +63,33 @@ fn test_string_literal() -> anyhow::Result<()> {
     let x = parse_string_literal("\"salad");
     assert!(!x.unwrap_err().has_errors());
 
+    // Show how Cow works. Various cloning of borrows Cows keeps them borrowed.
+    let s = "str".to_string();
+    let moo = Cow::Borrowed(&s);
+    let oink = moo.clone();
+    assert!(matches!(oink, Cow::Borrowed(_)));
+    let neigh = &moo;
+    let oink = neigh.clone();
+    assert!(matches!(oink, Cow::Borrowed(_)));
+
+    let (s, rest) =
+        parse_string_literal(r#""string with π but no backslashes"w"#).map_err(to_anyhow)?;
+    assert_eq!(s.value.raw, r#""string with π but no backslashes""#);
+    assert_eq!(rest, "w");
+    let s = Pass1::get_string(&s).unwrap();
+    assert_eq!(
+        s,
+        Spanned::new(1..34, Cow::Borrowed(r#"string with π but no backslashes"#))
+    );
+
     let (s, rest) = parse_string_literal(r#""string with \"π\" and \\"w"#).map_err(to_anyhow)?;
     assert_eq!(s.value.raw, r#""string with \"π\" and \\""#);
     assert_eq!(rest, "w");
     let s = Pass1::get_string(&s).unwrap();
-    assert_eq!(s, Spanned::new(1..26, r#"string with "π" and \"#));
+    assert_eq!(
+        s,
+        Spanned::new(1..26, Cow::Owned(r#"string with "π" and \"#.to_string()))
+    );
 
     let e = parse_string_literal("\"invalid π \\quoted and\\🥔\n in the middle\"")
         .unwrap_err()

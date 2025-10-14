@@ -3,17 +3,18 @@ use crate::parsing::model::{Param, ParamValue, Spanned};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
+use std::borrow::Cow;
 use std::collections::HashMap;
 use std::fmt::Debug;
 use std::hash::Hash;
 
-pub trait CheckValue: Sized {
-    fn check_value(p: &ParamValue) -> Result<Self, impl AsRef<str>>;
+pub trait CheckValue<'s>: Sized {
+    fn check_value(p: &ParamValue<'s>) -> Result<Self, impl AsRef<str>>;
 }
 
-pub fn check_value<T>(diags: &Diagnostics, d_name: &str, p: &Param) -> Option<Spanned<T>>
+pub fn check_value<'s, T>(diags: &Diagnostics, d_name: &str, p: &Param<'s>) -> Option<Spanned<T>>
 where
-    T: CheckValue + Serialize + Debug,
+    T: CheckValue<'s> + Serialize + Debug,
 {
     let k = &p.kv.key;
     let v = &p.kv.value;
@@ -30,27 +31,27 @@ where
     }
 }
 
-impl CheckValue for u32 {
+impl<'s> CheckValue<'s> for u32 {
     fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
         pv.try_as_int().ok_or("should be an integer")
     }
 }
 
-impl CheckValue for Ratio<u32> {
+impl<'s> CheckValue<'s> for Ratio<u32> {
     fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
         pv.try_as_ratio()
             .ok_or("should be a rational number or decimal")
     }
 }
 
-impl CheckValue for Pitch {
+impl<'s> CheckValue<'s> for Pitch {
     fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
         pv.try_as_pitch().cloned().ok_or("should be an pitch")
     }
 }
 
-impl CheckValue for String {
-    fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
+impl<'s> CheckValue<'s> for Cow<'s, str> {
+    fn check_value(pv: &ParamValue<'s>) -> Result<Self, impl AsRef<str>> {
         pv.try_as_string().cloned().ok_or("should be a string")
     }
 }
@@ -67,7 +68,7 @@ pub fn check_unique<T: Debug + Serialize + Eq + Hash>(diags: &Diagnostics, items
     }
 }
 
-pub fn check_part(diags: &Diagnostics, items: &[Spanned<String>]) {
+pub fn check_part(diags: &Diagnostics, items: &[Spanned<Cow<'_, str>>]) {
     check_unique(diags, items);
     for i in items {
         if i.value.is_empty() {

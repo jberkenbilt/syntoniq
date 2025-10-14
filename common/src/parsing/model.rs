@@ -1,6 +1,7 @@
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::{Serialize, Serializer};
+use std::borrow::Cow;
 use std::env;
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Index;
@@ -121,6 +122,16 @@ impl<T: Debug + Serialize> Spanned<T> {
     pub fn value(self) -> T {
         self.value
     }
+
+    pub fn as_ref<U: Debug + Serialize + ?Sized>(&self) -> Spanned<&U>
+    where
+        T: AsRef<U>,
+    {
+        Spanned::<&U> {
+            span: self.span,
+            value: self.value.as_ref(),
+        }
+    }
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
@@ -174,11 +185,11 @@ impl PitchOrNumber {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub enum ParamValue {
+pub enum ParamValue<'s> {
     PitchOrNumber(PitchOrNumber),
-    String(String),
+    String(Cow<'s, str>),
 }
-impl Display for ParamValue {
+impl<'s> Display for ParamValue<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             ParamValue::PitchOrNumber(pr) => Display::fmt(pr, f),
@@ -187,7 +198,7 @@ impl Display for ParamValue {
     }
 }
 
-impl ParamValue {
+impl<'s> ParamValue<'s> {
     pub fn try_as_pitch(&self) -> Option<&Pitch> {
         match self {
             ParamValue::PitchOrNumber(pr) => Some(pr.as_pitch()),
@@ -209,7 +220,7 @@ impl ParamValue {
         }
     }
 
-    pub fn try_as_string(&self) -> Option<&String> {
+    pub fn try_as_string(&self) -> Option<&Cow<'s, str>> {
         match self {
             ParamValue::PitchOrNumber(_r) => None,
             ParamValue::String(s) => Some(s),
@@ -218,10 +229,10 @@ impl ParamValue {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct Comment {
-    pub content: Spanned<String>,
+pub struct Comment<'s> {
+    pub content: Spanned<&'s str>,
 }
-impl Display for Comment {
+impl<'s> Display for Comment<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{{")?;
         color!(f, 248, "{}", self.content.value)?;
@@ -230,11 +241,11 @@ impl Display for Comment {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ParamKV {
-    pub key: Spanned<String>,
-    pub value: Spanned<ParamValue>,
+pub struct ParamKV<'s> {
+    pub key: Spanned<&'s str>,
+    pub value: Spanned<ParamValue<'s>>,
 }
-impl Display for ParamKV {
+impl<'s> Display for ParamKV<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 88, "{}", self.key.value,)?;
         color!(f, 55, "=")?;
@@ -243,11 +254,11 @@ impl Display for ParamKV {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct Param {
-    pub kv: ParamKV,
-    pub comment: Option<Comment>,
+pub struct Param<'s> {
+    pub kv: ParamKV<'s>,
+    pub comment: Option<Comment<'s>>,
 }
-impl Display for Param {
+impl<'s> Display for Param<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&self.kv, f)?;
         if let Some(comment) = &self.comment {
@@ -258,12 +269,12 @@ impl Display for Param {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct RawDirective {
-    pub opening_comment: Option<Comment>,
-    pub name: Spanned<String>,
-    pub params: Vec<Param>,
+pub struct RawDirective<'s> {
+    pub opening_comment: Option<Comment<'s>>,
+    pub name: Spanned<&'s str>,
+    pub params: Vec<Param<'s>>,
 }
-impl Display for RawDirective {
+impl<'s> Display for RawDirective<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 39, "{}(", self.name.value)?;
         if let Some(comment) = &self.opening_comment {
@@ -283,10 +294,10 @@ impl Display for RawDirective {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct DynamicLeader {
-    pub name: Spanned<String>,
+pub struct DynamicLeader<'s> {
+    pub name: Spanned<&'s str>,
 }
-impl Display for DynamicLeader {
+impl<'s> Display for DynamicLeader<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
         color!(f, 98, "{}", self.name.value)?;
@@ -295,11 +306,11 @@ impl Display for DynamicLeader {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct NoteLeader {
-    pub name: Spanned<String>,
+pub struct NoteLeader<'s> {
+    pub name: Spanned<&'s str>,
     pub note: Spanned<u32>,
 }
-impl Display for NoteLeader {
+impl<'s> Display for NoteLeader<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
         color!(f, 98, "{}.{}", self.name.value, self.note.value)?;
@@ -336,14 +347,14 @@ impl Display for NoteBehavior {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct RegularNote {
+pub struct RegularNote<'s> {
     pub duration: Option<Spanned<Ratio<u32>>>,
-    pub name: Spanned<String>,
+    pub name: Spanned<&'s str>,
     pub octave: Option<Spanned<i8>>,
     pub options: Vec<Spanned<NoteOption>>,
     pub behavior: Option<Spanned<NoteBehavior>>,
 }
-impl Display for RegularNote {
+impl<'s> Display for RegularNote<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if let Some(x) = self.duration {
             color!(f, 3, "{}", x.value)?;
@@ -389,12 +400,12 @@ impl Display for Hold {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub enum Note {
-    Regular(RegularNote),
+pub enum Note<'s> {
+    Regular(RegularNote<'s>),
     Hold(Hold),
     BarCheck(Span),
 }
-impl Display for Note {
+impl<'s> Display for Note<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Note::Regular(x) => write!(f, "{x}"),
@@ -451,12 +462,12 @@ impl Display for Dynamic {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct DynamicLine {
-    pub leader: Spanned<DynamicLeader>,
+pub struct DynamicLine<'s> {
+    pub leader: Spanned<DynamicLeader<'s>>,
     pub dynamics: Vec<Spanned<Dynamic>>,
-    pub comment: Option<Comment>,
+    pub comment: Option<Comment<'s>>,
 }
-impl Display for DynamicLine {
+impl<'s> Display for DynamicLine<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.leader.value)?;
         for i in &self.dynamics {
@@ -470,12 +481,12 @@ impl Display for DynamicLine {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct NoteLine {
-    pub leader: Spanned<NoteLeader>,
-    pub notes: Vec<Spanned<Note>>,
-    pub comment: Option<Comment>,
+pub struct NoteLine<'s> {
+    pub leader: Spanned<NoteLeader<'s>>,
+    pub notes: Vec<Spanned<Note<'s>>>,
+    pub comment: Option<Comment<'s>>,
 }
-impl Display for NoteLine {
+impl<'s> Display for NoteLine<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.leader.value)?;
         for i in &self.notes {
@@ -489,12 +500,12 @@ impl Display for NoteLine {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ScaleNote {
+pub struct ScaleNote<'s> {
     pub pitch: Spanned<PitchOrNumber>,
-    pub note_names: Vec<Spanned<String>>,
-    pub comment: Option<Comment>,
+    pub note_names: Vec<Spanned<&'s str>>,
+    pub comment: Option<Comment<'s>>,
 }
-impl Display for ScaleNote {
+impl<'s> Display for ScaleNote<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&self.pitch.value, f)?;
         for name in &self.note_names {
@@ -508,12 +519,12 @@ impl Display for ScaleNote {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ScaleBlock {
+pub struct ScaleBlock<'s> {
     pub span: Span,
-    pub opening_comment: Option<Comment>,
-    pub notes: Vec<Spanned<ScaleNote>>,
+    pub opening_comment: Option<Comment<'s>>,
+    pub notes: Vec<Spanned<ScaleNote<'s>>>,
 }
-impl Display for ScaleBlock {
+impl<'s> Display for ScaleBlock<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "<<")?;
         if let Some(comment) = &self.opening_comment {
@@ -606,7 +617,7 @@ mod tests {
 
     #[test]
     fn test_param_value() {
-        let pv = ParamValue::String("a".to_string());
+        let pv = ParamValue::String("a".into());
         assert!(pv.try_as_int().is_none());
         assert!(pv.try_as_ratio().is_none());
         assert!(pv.try_as_pitch().is_none());

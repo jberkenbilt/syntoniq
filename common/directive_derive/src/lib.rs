@@ -93,6 +93,10 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
             // Special case
             continue;
         }
+        if *field_name == "_s" {
+            inits.push(quote! { _s: &(), });
+            continue;
+        }
         let field_type = &f.ty;
         let option_type = option_inner_type("Option", field_type);
         let vec_type = option_inner_type("Vec", field_type);
@@ -193,8 +197,8 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
     }
 
     quote! {
-        impl FromRawDirective for #top_name {
-            fn from_raw(diags: &Diagnostics, d: &RawDirective) -> Option<Self> {
+        impl<'s> FromRawDirective<'s> for #top_name<'s> {
+            fn from_raw(diags: &Diagnostics, d: &RawDirective<'s>) -> Option<Self> {
                 let mut params_seen = HashSet::new();
                 #(#var_decls)*
                 for p in &d.params {
@@ -245,7 +249,13 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
         let variant = &v.ident;
         let field = v.fields.iter().next().unwrap();
         let field_type = &field.ty;
-        let directive_name = field_type.to_token_stream().to_string().to_snake_case();
+        let directive_name = field_type
+            .to_token_stream()
+            .into_iter()
+            .next()
+            .unwrap()
+            .to_string()
+            .to_snake_case();
         match_arms.push(quote! {
             #directive_name => {
                 Some(#top_name::#variant(<#field_type as FromRawDirective>::from_raw(diags, d)?))
@@ -257,8 +267,8 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
     }
 
     quote! {
-        impl FromRawDirective for #top_name {
-            fn from_raw(diags: &Diagnostics, d: &RawDirective) -> Option<Self> {
+        impl<'s> FromRawDirective<'s> for #top_name<'s> {
+            fn from_raw(diags: &Diagnostics, d: &RawDirective<'s>) -> Option<Self> {
                 match d.name.value.as_ref() {
                     #(#match_arms)*
                     _ => {

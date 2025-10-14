@@ -6,6 +6,7 @@ use midly::{
 };
 use num_integer::Integer;
 use num_rational::Ratio;
+use std::borrow::Cow;
 use std::cell::RefCell;
 use std::cmp;
 use std::collections::btree_map::Entry;
@@ -52,8 +53,8 @@ use syntoniq_common::pitch::Pitch;
 //     tuning because of the channel.
 
 #[derive(Debug, PartialOrd, PartialEq, Eq, Ord, Hash)]
-struct NoteKey {
-    part: String,
+struct NoteKey<'s> {
+    part: &'s str,
     note: u32,
 }
 struct PlayedNote {
@@ -75,20 +76,20 @@ struct TrackPortChannel {
     channel: u4,
 }
 
-struct MidiGenerator<'a> {
-    arena: &'a Arena,
-    timeline: &'a Timeline,
-    scales_by_name: BTreeMap<&'a str, &'a Scale>,
+struct MidiGenerator<'s> {
+    arena: &'s Arena,
+    timeline: &'s Timeline<'s>,
+    scales_by_name: BTreeMap<Cow<'s, str>, &'s Scale<'s>>,
     track_last_time: RefCell<BTreeMap<usize, u28>>,
     ticks_per_beat: u15,
     micros_per_beat: u24,
-    last_played: BTreeMap<NoteKey, PlayedNote>,
-    tuning_data: BTreeMap<&'a Tuning, Vec<TuningData>>,
-    channel_data: BTreeMap<ChannelKey<'a>, PortChannel>,
-    part_channels: BTreeMap<&'a str, BTreeSet<TrackPortChannel>>,
-    track_data: BTreeMap<TrackKey<'a>, usize>,
-    tracks: Vec<Vec<TrackEvent<'a>>>,
-    smf: Option<Smf<'a>>,
+    last_played: BTreeMap<NoteKey<'s>, PlayedNote>,
+    tuning_data: BTreeMap<&'s Tuning<'s>, Vec<TuningData>>,
+    channel_data: BTreeMap<ChannelKey<'s>, PortChannel>,
+    part_channels: BTreeMap<&'s str, BTreeSet<TrackPortChannel>>,
+    track_data: BTreeMap<TrackKey<'s>, usize>,
+    tracks: Vec<Vec<TrackEvent<'s>>>,
+    smf: Option<Smf<'s>>,
 }
 
 #[derive(Debug)]
@@ -273,8 +274,8 @@ fn bpm_to_micros_per_beat(bpm: Ratio<u32>) -> anyhow::Result<u24> {
     u24::try_from(micros_per_beat).ok_or_else(|| anyhow!("overflow calculating tempo"))
 }
 
-impl<'a> MidiGenerator<'a> {
-    fn new(timeline: &'a Timeline, arena: &'a Arena) -> anyhow::Result<Self> {
+impl<'s> MidiGenerator<'s> {
+    fn new(timeline: &'s Timeline, arena: &'s Arena) -> anyhow::Result<Self> {
         // Pick a timing that accommodates 2, 3, 5, and 7 as well as anything used by the score.
         let ticks_per_beat = u16::try_from(num_integer::lcm(timeline.time_lcm, 210))
             .ok()
@@ -284,7 +285,7 @@ impl<'a> MidiGenerator<'a> {
         let scales_by_name = timeline
             .scales
             .iter()
-            .map(|s| (s.definition.name.as_str(), s.as_ref()))
+            .map(|s| (s.definition.name.clone(), s.as_ref()))
             .collect();
         Ok(Self {
             arena,
@@ -332,7 +333,7 @@ impl<'a> MidiGenerator<'a> {
         Ok(result)
     }
 
-    fn tuning_for_note(&'a self, key: &'a Tuning, note: i32) -> anyhow::Result<&'a TuningData> {
+    fn tuning_for_note(&'s self, key: &'s Tuning<'s>, note: i32) -> anyhow::Result<&'s TuningData> {
         let data = self
             .tuning_data
             .get(key)
@@ -345,7 +346,7 @@ impl<'a> MidiGenerator<'a> {
     fn get_all_tunings(&mut self) -> anyhow::Result<()> {
         // A given tuning may have up to 128 notes (midi note numbers 0 through 127). For each
         // scale, figure the range of notes used, and divide into tunings.
-        let mut tunings: BTreeMap<&Tuning, NoteRange> = BTreeMap::new();
+        let mut tunings: BTreeMap<&Tuning<'s>, NoteRange> = BTreeMap::new();
         for event in &self.timeline.events {
             let TimelineData::NoteOn(note_event) = &event.data else {
                 continue;
@@ -361,7 +362,7 @@ impl<'a> MidiGenerator<'a> {
         }
         // Divide tunings up so they contain no more than 128 notes. Then assign offsets and
         // channels to each tuning.
-        let mut tunings: Vec<(&Tuning, NoteRange)> = tunings
+        let mut tunings: Vec<(&Tuning<'s>, NoteRange)> = tunings
             .into_iter()
             .filter(|(tuning, range)| {
                 // Filter out the default MIDI tuning
@@ -404,7 +405,7 @@ impl<'a> MidiGenerator<'a> {
                 &note_event.value.tuning,
                 note_event.value.absolute_scale_degree,
             )?;
-            let score_part = note_event.part.as_str();
+            let score_part = note_event.part;
             channel_users.insert(ChannelKey {
                 score_part,
                 raw_tuning: tuning.raw_program,
@@ -562,8 +563,8 @@ impl<'a> MidiGenerator<'a> {
 
     fn dump_tuning(
         &self,
-        arena: &'a Arena,
-        track: &mut Vec<TrackEvent<'a>>,
+        arena: &'s Arena,
+        track: &mut Vec<TrackEvent<'s>>,
         tuning: &Tuning,
         data: &TuningData,
         use_banks: bool,
@@ -597,7 +598,7 @@ impl<'a> MidiGenerator<'a> {
         // This is the actual pitch calculation logic.
         let &scale = self
             .scales_by_name
-            .get(tuning.scale_name.as_str())
+            .get(&tuning.scale_name)
             .ok_or_else(|| anyhow!("unknown scale in dump_tuning"))?;
         // Get basic information about the scale.
         let degrees = scale.pitches.len() as i32;
@@ -677,7 +678,7 @@ impl<'a> MidiGenerator<'a> {
         });
     }
 
-    fn volume_event(tpc: TrackPortChannel, delta: u28, value: u7) -> TrackEvent<'a> {
+    fn volume_event(tpc: TrackPortChannel, delta: u28, value: u7) -> TrackEvent<'s> {
         TrackEvent {
             delta,
             kind: TrackEventKind::Midi {
@@ -690,13 +691,14 @@ impl<'a> MidiGenerator<'a> {
         }
     }
 
-    fn generate(mut self) -> anyhow::Result<Smf<'a>> {
+    fn generate(mut self) -> anyhow::Result<Smf<'s>> {
         self.analyze()?;
         self.init_output()?;
         self.dump_tunings()?;
 
         let mut events: BTreeSet<_> = self.timeline.events.iter().cloned().collect();
         let mut last_event_time = events.first().unwrap().time;
+        // TODO: capture `?` and attach span on the way out so we can print a good message.
         while let Some(event) = events.pop_first() {
             // We have to track last event time as we go since events may be inserted into the
             // even stream during processing.
@@ -725,7 +727,7 @@ impl<'a> MidiGenerator<'a> {
                 }
                 TimelineData::NoteOff(e) => {
                     let note_key = NoteKey {
-                        part: e.part.clone(),
+                        part: e.part,
                         note: e.note_number,
                     };
                     if let Some(last_on) = self.last_played.remove(&note_key) {
@@ -738,7 +740,7 @@ impl<'a> MidiGenerator<'a> {
                 TimelineData::Dynamic(e) => {
                     let part_channels = self
                         .part_channels
-                        .get(e.part.as_str())
+                        .get(e.part)
                         .ok_or_else(|| anyhow!("unable to get part channels"))?;
                     for &tpc in part_channels {
                         let delta = self.get_delta(tpc.track, event.time)?;
@@ -760,7 +762,8 @@ impl<'a> MidiGenerator<'a> {
                                     time,
                                     span: event.span,
                                     data: TimelineData::Dynamic(DynamicEvent {
-                                        part: e.part.clone(),
+                                        text: e.text,
+                                        part: e.part,
                                         start_level: level,
                                         end_level: None,
                                     }),
@@ -771,7 +774,7 @@ impl<'a> MidiGenerator<'a> {
                 }
                 TimelineData::NoteOn(e) => {
                     let note_key = NoteKey {
-                        part: e.part.clone(),
+                        part: e.part,
                         note: e.note_number,
                     };
                     if let Some(last_on) = self.last_played.remove(&note_key) {
@@ -781,7 +784,7 @@ impl<'a> MidiGenerator<'a> {
                     }
                     let tuning_data =
                         self.tuning_for_note(&e.value.tuning, e.value.absolute_scale_degree)?;
-                    let score_part = e.part.as_str();
+                    let score_part = e.part;
                     let port_channel = self
                         .channel_data
                         .get(&ChannelKey {

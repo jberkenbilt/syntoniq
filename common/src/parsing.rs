@@ -68,7 +68,7 @@ use crate::parsing::diagnostics::Diagnostics;
 use crate::parsing::score::{Directive, FromRawDirective};
 pub use timeline::*;
 
-pub fn parse(input: &str) -> Result<Timeline, Diagnostics> {
+pub fn parse<'s>(input: &'s str) -> Result<Timeline<'s>, Diagnostics> {
     pass3::parse3(input)
 }
 

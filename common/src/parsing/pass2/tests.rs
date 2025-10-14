@@ -1,10 +1,11 @@
 use super::*;
 use crate::parsing::diagnostics::Diagnostic;
 use crate::parsing::pass1::parse1;
+use std::borrow::Cow;
 
 macro_rules! make_parser2 {
     ($f:ident, $p:ident, $r:ty) => {
-        fn $f(s: &str) -> Result<($r, &str), Diagnostics> {
+        fn $f<'s>(s: &'s str) -> Result<($r, &'s str), Diagnostics> {
             let tokens = parse1(s)?;
             let mut input = tokens.as_slice();
             let diags = Diagnostics::new();
@@ -27,9 +28,9 @@ make_parser2!(parse_ratio, ratio, Spanned<Ratio<u32>>);
 make_parser2!(parse_ratio_or_zero, ratio_or_zero, Spanned<Ratio<u32>>);
 make_parser2!(parse_exponent, exponent, Factor);
 make_parser2!(parse_pitch, pitch_or_number, Spanned<PitchOrNumber>);
-make_parser2!(parse_string, string, Spanned<String>);
-make_parser2!(parse_param_kv, param_kv, ParamKV);
-make_parser2!(parse_directive, directive, Spanned<RawDirective>);
+make_parser2!(parse_string, string, Spanned<Cow<'s, str>>);
+make_parser2!(parse_param_kv, param_kv, ParamKV<'s>);
+make_parser2!(parse_directive, directive, Spanned<RawDirective<'s>>);
 make_parser2!(parse_octave, octave, Spanned<i8>);
 
 #[test]
@@ -223,7 +224,7 @@ fn test_param() -> anyhow::Result<()> {
         s,
         ParamKV {
             key: Spanned::new(0..6, "potato"),
-            value: Spanned::new(9..16, ParamValue::String("salad".to_string())),
+            value: Spanned::new(9..16, ParamValue::String(Cow::Borrowed("salad"))),
         }
     );
     assert_eq!(rest, "!");
@@ -256,7 +257,7 @@ fn test_directive() -> anyhow::Result<()> {
                 Param {
                     kv: ParamKV {
                         key: Spanned::new(22..27, "scale"),
-                        value: Spanned::new(28..36, ParamValue::String("17-EDO".to_string())),
+                        value: Spanned::new(28..36, ParamValue::String(Cow::Borrowed("17-EDO"))),
                     },
                     comment: None,
                 }
@@ -311,7 +312,7 @@ fn test_directive() -> anyhow::Result<()> {
                 Param {
                     kv: ParamKV {
                         key: Spanned::new(88..93, "three"),
-                        value: Spanned::new(96..105, ParamValue::String("π+🥔".to_string())),
+                        value: Spanned::new(96..105, ParamValue::String(Cow::Borrowed("π+🥔"))),
                     },
                     comment: None
                 },

@@ -3,33 +3,34 @@ use crate::parsing::score::{Scale, Tuning};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
+use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet};
 use std::sync::Arc;
 
 #[derive(Serialize)]
-pub struct Timeline {
-    pub events: BTreeSet<Arc<TimelineEvent>>,
-    pub scales: Vec<Arc<Scale>>,
-    pub midi_instruments: BTreeMap<String, MidiInstrumentNumber>,
+pub struct Timeline<'s> {
+    pub events: BTreeSet<Arc<TimelineEvent<'s>>>,
+    pub scales: Vec<Arc<Scale<'s>>>,
+    pub midi_instruments: BTreeMap<Cow<'s, str>, MidiInstrumentNumber>,
     /// Least common multiple of time denominators, useful for computing ticks per beat
     pub time_lcm: u32,
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct TimelineEvent {
+pub struct TimelineEvent<'s> {
     pub time: Ratio<u32>,
     pub span: Span,
-    pub data: TimelineData,
+    pub data: TimelineData<'s>,
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub enum TimelineData {
+pub enum TimelineData<'s> {
     // Keep these in the order in which they should appear in the timeline relative to other
     // events that happen at the same time.
     Tempo(TempoEvent),
-    NoteOff(NoteOffEvent),
-    Dynamic(DynamicEvent),
-    NoteOn(NoteOnEvent),
+    NoteOff(NoteOffEvent<'s>),
+    Dynamic(DynamicEvent<'s>),
+    NoteOn(NoteOnEvent<'s>),
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
@@ -44,22 +45,23 @@ impl<T: Serialize> WithTime<T> {
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct NoteOnEvent {
-    pub part: String,
+pub struct NoteOnEvent<'s> {
+    pub part: &'s str,
     pub note_number: u32,
-    pub value: NoteValue,
+    pub value: NoteValue<'s>,
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct NoteOffEvent {
-    pub part: String,
+pub struct NoteOffEvent<'s> {
+    pub part: &'s str,
     pub note_number: u32,
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct NoteValue {
-    pub note_name: String,
-    pub tuning: Arc<Tuning>,
+pub struct NoteValue<'s> {
+    pub text: &'s str,
+    pub note_name: &'s str,
+    pub tuning: Tuning<'s>,
     pub absolute_pitch: Pitch,
     /// Scale degrees from base pitch; add to 60 to get tuned MIDI note number
     pub absolute_scale_degree: i32,
@@ -68,8 +70,9 @@ pub struct NoteValue {
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct DynamicEvent {
-    pub part: String,
+pub struct DynamicEvent<'s> {
+    pub text: &'s str,
+    pub part: &'s str,
     pub start_level: u8,
     pub end_level: Option<WithTime<u8>>,
 }

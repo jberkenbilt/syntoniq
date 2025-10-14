@@ -13,6 +13,7 @@ use crate::parsing::diagnostics::{Diagnostics, code};
 use crate::parsing::model;
 use crate::parsing::model::{Span, Spanned, Token};
 use serde::Serialize;
+use std::borrow::Cow;
 use std::fmt::{Display, Formatter};
 use winnow::combinator::{alt, delimited, fail, preceded};
 use winnow::error::{ContextError, StrContext};
@@ -123,19 +124,24 @@ impl Pass1 {
         matches!(t.value.t, Pass1::String { .. })
     }
 
-    pub fn get_string(t: &Token1) -> Option<Spanned<String>> {
+    pub fn get_string<'s>(t: &Token1<'s>) -> Option<Spanned<Cow<'s, str>>> {
         match t.value.t {
             Pass1::String { inner_span } => {
-                let mut keep = true;
-                let s: String = t.value.raw[inner_span.relative_to(t.span)]
-                    .chars()
-                    .filter(|c| {
-                        // Skip any backslash not preceded by a backslash.
-                        keep = !keep || *c != '\\';
-                        keep
-                    })
-                    .collect();
-                Some(Spanned::new(inner_span, s))
+                let inner = &t.value.raw[inner_span.relative_to(t.span)];
+                if inner.find('\\').is_some() {
+                    let mut keep = true;
+                    let s: String = t.value.raw[inner_span.relative_to(t.span)]
+                        .chars()
+                        .filter(|c| {
+                            // Skip any backslash not preceded by a backslash.
+                            keep = !keep || *c != '\\';
+                            keep
+                        })
+                        .collect();
+                    Some(Spanned::new(inner_span, Cow::Owned(s)))
+                } else {
+                    Some(Spanned::new(inner_span, Cow::Borrowed(inner)))
+                }
             }
             _ => None,
         }

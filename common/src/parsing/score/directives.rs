@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 // -*- fill-column: 80 -*-
 use crate::parsing::diagnostics::{Diagnostics, code};
 use crate::parsing::model::{Span, Spanned};
@@ -9,20 +10,21 @@ use directive_derive::FromRawDirective;
 use num_rational::Ratio;
 use std::io;
 
-pub trait FromRawDirective: Sized {
-    fn from_raw(diags: &Diagnostics, d: &RawDirective) -> Option<Self>;
+pub trait FromRawDirective<'s>: Sized {
+    fn from_raw(diags: &Diagnostics, d: &RawDirective<'s>) -> Option<Self>;
     fn show_help(w: &mut impl io::Write) -> io::Result<()>;
 }
 
 #[derive(FromRawDirective)]
 /// Set the syntoniq file format version. This must be the first functional item
 /// in the file.
-pub struct Syntoniq {
+pub struct Syntoniq<'s> {
+    pub _s: &'s (),
     pub span: Span,
     /// syntoniq file format version; supported value: 1
     pub version: Spanned<u32>,
 }
-impl Syntoniq {
+impl<'s> Syntoniq<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         if self.version.value != 1 {
             diags.err(
@@ -37,14 +39,14 @@ impl Syntoniq {
 #[derive(FromRawDirective)]
 /// Define a scale. The scale called "default" is pre-defined and corresponds to
 /// 12-EDO.
-pub struct DefineScale {
+pub struct DefineScale<'s> {
     pub span: Span,
     /// scale name
-    pub name: Spanned<String>,
+    pub name: Spanned<Cow<'s, str>>,
     /// ratio to be applied by the octave marker; default is 2 (one octave)
     pub cycle_ratio: Option<Spanned<Ratio<u32>>>,
 }
-impl DefineScale {
+impl<'s> DefineScale<'s> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 
@@ -52,14 +54,14 @@ impl DefineScale {
 /// Change the scale for the specified parts. If no parts are specified, change the scale used
 /// by parts with no explicit scale. This creates a tuning with the specified scale and the current
 /// base pitch.
-pub struct UseScale {
+pub struct UseScale<'s> {
     pub span: Span,
     /// Scale name
-    pub name: Spanned<String>,
+    pub name: Spanned<Cow<'s, str>>,
     /// Which parts the tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<String>>,
+    pub part: Vec<Spanned<Cow<'s, str>>>,
 }
-impl UseScale {
+impl<'s> UseScale<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
     }
@@ -72,18 +74,18 @@ impl UseScale {
 /// reversible even in non-EDO tunings by simply swapping `written` and `pitch_from`. This can be
 /// applied to multiple parts or to the default tuning. The parts do not all have to be using the
 /// same scale as long as they are all using scales that have both named notes.
-pub struct Transpose {
+pub struct Transpose<'s> {
     pub span: Span,
     /// Name of note used as anchor pitch for transposition. In the new tuning, this note will have
     /// the pitch that the note in `pitch_from` has before the transposition.
-    pub written: Spanned<String>,
+    pub written: Spanned<Cow<'s, str>>,
     /// Name of the note in the existing tuning whose pitch will be given to the `written` note
     /// after transposition.
-    pub pitch_from: Spanned<String>,
+    pub pitch_from: Spanned<Cow<'s, str>>,
     /// Which parts the tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<String>>,
+    pub part: Vec<Spanned<Cow<'s, str>>>,
 }
-impl Transpose {
+impl<'s> Transpose<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
     }
@@ -95,16 +97,16 @@ impl Transpose {
 /// multiply the base pitch by the given factor. Example: `set_base_pitch(relative="^1|12")` would
 /// transpose the tuning up one 12-TET half step. Only one of `absolute` or `relative` may be
 /// given.
-pub struct SetBasePitch {
+pub struct SetBasePitch<'s> {
     pub span: Span,
     /// Set the base pitch of the current tuning to this absolute pitch value
     pub absolute: Option<Spanned<Pitch>>,
     /// Multiply the base pitch of the current tuning by the specified factor
     pub relative: Option<Spanned<Pitch>>,
     /// Which parts the tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<String>>,
+    pub part: Vec<Spanned<Cow<'s, str>>>,
 }
-impl SetBasePitch {
+impl<'s> SetBasePitch<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
         let n = [self.absolute.is_some(), self.relative.is_some()]
@@ -123,12 +125,13 @@ impl SetBasePitch {
 #[derive(FromRawDirective)]
 /// Reset tuning. If no parts are specified, clears all tunings. Otherwise,
 /// resets the tuning for each specified part to use the global tuning.
-pub struct ResetTuning {
+pub struct ResetTuning<'s> {
+    pub _s: &'s (),
     pub span: Span,
     /// Which parts the tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<String>>,
+    pub part: Vec<Spanned<Cow<'s, str>>>,
 }
-impl ResetTuning {
+impl<'s> ResetTuning<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
     }
@@ -138,16 +141,17 @@ impl ResetTuning {
 /// Set the MIDI instrument number for zero or more parts. If no part is specified, this becomes
 /// the default instrument for all parts without a specific instrument. It is an error to name
 /// a part that doesn't appear somewhere in the score.
-pub struct MidiInstrument {
+pub struct MidiInstrument<'s> {
+    pub _s: &'s (),
     pub span: Span,
     /// Midi instrument number from 1 to 128
     pub instrument: Spanned<u32>,
     /// Optional bank number from 1 to 16384
     pub bank: Option<Spanned<u32>>,
     /// Which parts use this instrument; if not specified, all unassigned parts use it
-    pub part: Vec<Spanned<String>>,
+    pub part: Vec<Spanned<Cow<'s, str>>>,
 }
-impl MidiInstrument {
+impl<'s> MidiInstrument<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
         // User-facing numbers are 1-based. We will store as 0-based internally.
@@ -172,7 +176,8 @@ impl MidiInstrument {
 
 #[derive(FromRawDirective)]
 /// Set tempo, with possible accelerando or rallentando (gradual change).
-pub struct Tempo {
+pub struct Tempo<'s> {
+    pub _s: &'s (),
     pub span: Span,
     /// Tempo in beats per minute
     pub bpm: Spanned<Ratio<u32>>,
@@ -185,7 +190,7 @@ pub struct Tempo {
     /// Must appear with `end_bpm` to indicate the duration of a gradual tempo change.
     pub duration: Option<Spanned<Ratio<u32>>>,
 }
-impl Tempo {
+impl<'s> Tempo<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         let n = [self.end_bpm.is_some(), self.duration.is_some()]
             .into_iter()
@@ -201,13 +206,13 @@ impl Tempo {
 }
 
 #[derive(FromRawDirective)]
-pub enum Directive {
-    Syntoniq(Syntoniq),
-    DefineScale(DefineScale),
-    UseScale(UseScale),
-    Transpose(Transpose),
-    SetBasePitch(SetBasePitch),
-    ResetTuning(ResetTuning),
-    MidiInstrument(MidiInstrument),
-    Tempo(Tempo),
+pub enum Directive<'s> {
+    Syntoniq(Syntoniq<'s>),
+    DefineScale(DefineScale<'s>),
+    UseScale(UseScale<'s>),
+    Transpose(Transpose<'s>),
+    SetBasePitch(SetBasePitch<'s>),
+    ResetTuning(ResetTuning<'s>),
+    MidiInstrument(MidiInstrument<'s>),
+    Tempo(Tempo<'s>),
 }
