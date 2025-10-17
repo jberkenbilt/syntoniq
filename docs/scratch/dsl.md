@@ -1,6 +1,25 @@
 # TODO
 
-csound, marks, repeats, doc cleanup.
+* Add a per-part amplitude factor for MIDI
+* Mark and copy:
+  * `mark(label="a")`
+  * `copy(from="a" to="b" times=3)`
+  * should create and copy timeline events
+* Articulation adjustment directives:
+  * four factors: default of each plus modifier for each option
+    * default velocity (72)
+    * accent velocity (96)
+    * marcato velocity (108)
+    * staccato shorten amount (1/4 beat)
+  * Can be applied globally or at the part level
+* MIDI:
+  * generate tuning files for midi by port and channel
+  * generate summaries of part -> track/port/channel, etc.
+* Doc cleanup
+
+Note: not tested: > 127 tunings, > 16 channels, sound font banks, a few more minor cases
+
+Muse about printed notation hints. We could potentially generate MusicXML, LillyPond, or add enough metadata to the timeline JSON dump that someone could do their own notation from it.
 
 ----------
 

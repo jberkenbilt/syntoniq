@@ -3,7 +3,7 @@ midi_instrument(instrument=23)
 
 define_scale(name="JI1") <<
 1     c
-25/12 c#     ; major third above a
+25/24 c#     ; major third above a
 9/8   d
 6/5   e%
 5/4   e
@@ -23,26 +23,31 @@ use_scale(name="JI1")
 [p1.1] 1:e
 [p1.2] 1:g
 
+; Transpose by note
 transpose(written="c" pitch_from="e" part="p1")
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
+; Reverse by note
 transpose(written="e" pitch_from="c" part="p1")
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
+; Absolute pitch (a tiny bit higher)
 set_base_pitch(absolute=264 part="p1")
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
+; Relative pitch
 set_base_pitch(relative=9/8 part="p1")
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
+; Reverse relative pitch
 set_base_pitch(relative=8/9 part="p1")
 [p1.0] 1:c
 [p1.1] 1:e

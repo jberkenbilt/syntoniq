@@ -670,7 +670,7 @@ impl<'s> MidiGenerator<'s> {
         self.dump_tunings()?;
 
         let mut events: BTreeSet<_> = self.timeline.events.iter().cloned().collect();
-        let mut last_event_time = events.first().unwrap().time;
+        let mut last_event_time = Ratio::from_integer(0);
         // TODO: capture `?` and attach span on the way out so we can print a good message.
         while let Some(event) = events.pop_first() {
             // We have to track last event time as we go since events may be inserted into the
@@ -864,7 +864,7 @@ pub(crate) fn generate(timeline: &Timeline, out: impl AsRef<Path>) -> anyhow::Re
     let g = MidiGenerator::new(timeline, &arena)?;
     let smf = g.generate()?;
     smf.save(&out)?;
-    println!("output written to {}", out.as_ref().display());
+    println!("MIDI output written to {}", out.as_ref().display());
     Ok(())
 }
 

@@ -25,3 +25,5 @@ pub fn cli_completions<G: Generator>(generator: G, cmd: &mut Command) {
         &mut io::stdout(),
     );
 }
+
+pub mod test_helpers;

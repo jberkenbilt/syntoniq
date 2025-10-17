@@ -62,26 +62,12 @@ use crate::parsing::model::Spanned;
 use crate::parsing::pass1::parse1;
 use crate::parsing::pass2::parse2;
 use crate::parsing::pass3::parse3;
+use crate::test_helpers;
 use serde::Serialize;
 use serde_json::json;
 use std::fmt::{Debug, Display};
 use std::fs;
 use std::fs::File;
-use std::path::{Path, PathBuf};
-
-fn get_stq_files(dir: impl AsRef<Path>) -> anyhow::Result<Vec<PathBuf>> {
-    let paths = fs::read_dir(dir)?
-        .filter_map(|entry| {
-            let path = entry.ok()?.path();
-            if path.display().to_string().ends_with(".stq") {
-                Some(path)
-            } else {
-                None
-            }
-        })
-        .collect();
-    Ok(paths)
-}
 
 fn check_spans<T: Debug + Serialize>(exp_end: usize, tokens: &[Spanned<T>]) -> Vec<String> {
     let mut errors = Vec::new();
@@ -118,10 +104,10 @@ fn check_output<T: Debug + Serialize>(
 }
 
 #[test]
-fn test_pass2() -> anyhow::Result<()> {
+fn test_parser() -> anyhow::Result<()> {
     // This is designed to fail if anything failed but to run all the tests and produce useful
     // output for analysis.
-    let paths = get_stq_files("parsing-tests")?;
+    let paths = test_helpers::get_stq_files("parsing-tests")?;
     let mut errors = Vec::<String>::new();
     for p in paths {
         let in_data = String::from_utf8(fs::read(&p)?)?;

@@ -1,4 +1,5 @@
 syntoniq(version=1)
+midi_instrument(instrument=57)
 
 define_scale(name="31-EDO") <<
  ^0|31 c
@@ -33,6 +34,9 @@ define_scale(name="31-EDO") <<
 ^29|31 c% b+
 ^30|31 b# c-
 >>
+
+; Play notes in too many octaves for a single tuning program. This
+; should go up in neutral thirds for 7 octaves.
 
 use_scale(name="31-EDO" part="p1")
 [p1.0] 1/2:c,3 e-,3 g,3 b-,3

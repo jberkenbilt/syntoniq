@@ -1,0 +1,10 @@
+syntoniq(version=1)
+midi_instrument(instrument=23)
+
+; The note `c` sounds twice. The bottom note stays on when the top
+; pitch changes, exercising that turning off one occurrence doesn't
+; mess up the other one. `c` turns off after 4 beats. `e` stays on
+; continuously for six beats, exercising that chained sustains work.
+
+[p1.0] 2:c 2:e~ e~ e~
+[p1.1] 4:c      ~

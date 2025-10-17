@@ -40,6 +40,8 @@ use_scale(name="31-EDO" part="p1")
 [p1.0] 2:e e-
 [p1.1] 2:g g+
 
+; Gradual increase in tempo
+
 tempo(bpm=72 start_time=1 end_bpm=108 duration=4)
 [p1.0] 10:c,
 [p1.1] 1:~ 9:g,

@@ -2,8 +2,7 @@ use clap::CommandFactory;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 use log::LevelFilter;
-use std::path::PathBuf;
-use std::{env, fs, process};
+use std::{env, process};
 use syntoniq::generator;
 use syntoniq::generator::GenerateOptions;
 use syntoniq_common::parsing;
@@ -24,12 +23,6 @@ enum Commands {
     /// Generate Csound and/or MIDI output. If no output is specified, this just parses the score
     /// and reports errors, if any.
     Generate(GenerateOptions),
-    /// Show the timeline as JSON
-    Dump {
-        /// Name of syntoniq score file
-        #[arg(long)]
-        score: PathBuf,
-    },
     /// Show built-in documentation
     Doc,
     /// Generate shell completion
@@ -37,6 +30,8 @@ enum Commands {
         /// shell
         shell: Shell,
     },
+    /// Write built-in CSound template to standard output
+    CsoundTemplate,
 }
 
 fn run() -> anyhow::Result<()> {
@@ -53,14 +48,11 @@ fn run() -> anyhow::Result<()> {
             syntoniq_common::cli_completions(shell, &mut cmd);
             Ok(())
         }
-        Commands::Generate(options) => generator::run(options),
-        Commands::Dump { score } => {
-            let data = fs::read(&score)?;
-            let src = str::from_utf8(&data)?;
-            let timeline = syntoniq::parse(&score.display().to_string(), src)?;
-            println!("{}", serde_json::to_string_pretty(&timeline)?);
+        Commands::CsoundTemplate => {
+            print!("{}", generator::CSOUND_TEMPLATE);
             Ok(())
         }
+        Commands::Generate(options) => generator::run(options),
         Commands::Doc => parsing::show_help(),
     }
 }
@@ -68,6 +60,7 @@ fn run() -> anyhow::Result<()> {
 fn main() {
     if let Err(e) = run() {
         eprintln!("error: {e}");
+        eprintln!("run 'syntoniq doc' for built-in documentation");
         process::exit(2);
     }
 }

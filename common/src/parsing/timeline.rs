@@ -5,7 +5,6 @@ use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet};
-use std::fmt::{Display, Formatter};
 use std::sync::Arc;
 
 #[derive(Serialize)]
@@ -28,7 +27,7 @@ pub struct TimelineEvent<'s> {
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub enum TimelineData<'s> {
     // Keep these in the order in which they should appear in the timeline relative to other
-    // events that happen at the same time.
+    // events that happen at the same time and span. (Unusual.)
     Tempo(TempoEvent),
     Dynamic(DynamicEvent<'s>),
     Note(NoteEvent<'s>),
@@ -90,11 +89,12 @@ pub enum CsoundInstrumentId<'s> {
     Number(u32),
     Name(Cow<'s, str>),
 }
-impl<'s> Display for CsoundInstrumentId<'s> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+impl<'s> CsoundInstrumentId<'s> {
+    pub fn output(&self, note: Option<String>) -> String {
+        let note = note.map(|x| format!(".{x}")).unwrap_or_default();
         match self {
-            CsoundInstrumentId::Number(n) => write!(f, "{n}"),
-            CsoundInstrumentId::Name(s) => write!(f, "\"{s}\""),
+            CsoundInstrumentId::Number(n) => format!("{n}{note}"),
+            CsoundInstrumentId::Name(s) => format!("\"{s}{note}\""),
         }
     }
 }

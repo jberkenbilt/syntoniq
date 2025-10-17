@@ -1,0 +1,8 @@
+syntoniq(version=1)
+midi_instrument(instrument=71)
+
+; Fade from 0 to full volume and back to 0. The second pitch is not
+; heard. For MIDI, this requires an instrument whose volume is allowed
+; to change.
+[p1.0] 8:c 1:d
+[p1] 0@0< 127@4> 0@8
