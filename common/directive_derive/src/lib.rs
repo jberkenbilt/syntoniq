@@ -12,8 +12,6 @@ use syn::{
 };
 use syn::{DataEnum, parse_macro_input};
 
-// TODO: use doc strings to generate help
-
 // This function was initially AI-generated. Given a type, and wrapper type X, if the type is X<T>,
 // it returns Some(T).
 fn option_inner_type<'a>(outer: &'static str, ty: &'a Type) -> Option<&'a Type> {
@@ -207,7 +205,6 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
                     let v = &p.kv.value;
                     #(#arg_checks)*
                     if !handled {
-                        // TODO: refer user to help
                         diags.err(
                             code::UNKNOWN_DIRECTIVE_PARAM,
                             p.kv.key.span,
@@ -272,7 +269,6 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
                 match d.name.value.as_ref() {
                     #(#match_arms)*
                     _ => {
-                        // TODO: refer to help
                         diags.err(
                             code::UNKNOWN_DIRECTIVE,
                             d.name.span,

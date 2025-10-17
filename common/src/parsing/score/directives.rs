@@ -1,4 +1,3 @@
-use std::borrow::Cow;
 // -*- fill-column: 80 -*-
 use crate::parsing::diagnostics::{Diagnostics, code};
 use crate::parsing::model::{Span, Spanned};
@@ -8,6 +7,7 @@ use crate::parsing::score_helpers;
 use crate::pitch::Pitch;
 use directive_derive::FromRawDirective;
 use num_rational::Ratio;
+use std::borrow::Cow;
 use std::io;
 
 pub trait FromRawDirective<'s>: Sized {
@@ -126,7 +126,6 @@ impl<'s> SetBasePitch<'s> {
 /// Reset tuning. If no parts are specified, clears all tunings. Otherwise,
 /// resets the tuning for each specified part to use the global tuning.
 pub struct ResetTuning<'s> {
-    pub _s: &'s (),
     pub span: Span,
     /// Which parts the tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Cow<'s, str>>>,
@@ -142,7 +141,6 @@ impl<'s> ResetTuning<'s> {
 /// the default instrument for all parts without a specific instrument. It is an error to name
 /// a part that doesn't appear somewhere in the score.
 pub struct MidiInstrument<'s> {
-    pub _s: &'s (),
     pub span: Span,
     /// Midi instrument number from 1 to 128
     pub instrument: Spanned<u32>,
@@ -169,6 +167,36 @@ impl<'s> MidiInstrument<'s> {
                 code::MIDI,
                 bank.span,
                 "bank numbers must be between 1 and 16384",
+            );
+        }
+    }
+}
+
+#[derive(FromRawDirective)]
+/// Set the CSound instrument number or name for zero or more parts. If no part is specified, this
+/// becomes the default instrument for all parts without a specific instrument. It is an error to
+/// name a part that doesn't appear somewhere in the score. You must specify exactly one of number
+/// or name.
+pub struct CsoundInstrument<'s> {
+    pub span: Span,
+    /// CSound instrument number
+    pub number: Option<Spanned<u32>>,
+    /// Optional bank number from 1 to 16384
+    pub name: Option<Spanned<Cow<'s, str>>>,
+    /// Which parts use this instrument; if not specified, all unassigned parts use it
+    pub part: Vec<Spanned<Cow<'s, str>>>,
+}
+impl<'s> CsoundInstrument<'s> {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        score_helpers::check_part(diags, &self.part);
+        let n = [self.number.is_some(), self.name.is_some()]
+            .into_iter()
+            .fold(0usize, |x, v| x + if v { 1 } else { 0 });
+        if n != 1 {
+            diags.err(
+                code::USAGE,
+                self.span,
+                "exactly one of 'number' or 'name' must be present",
             );
         }
     }
@@ -214,5 +242,6 @@ pub enum Directive<'s> {
     SetBasePitch(SetBasePitch<'s>),
     ResetTuning(ResetTuning<'s>),
     MidiInstrument(MidiInstrument<'s>),
+    CsoundInstrument(CsoundInstrument<'s>),
     Tempo(Tempo<'s>),
 }

@@ -10634,17 +10634,17 @@
       {
         "span": [
           1835,
-          1840
+          1852
         ],
         "value": {
-          "raw": "tempo",
+          "raw": "csound_instrument",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          1840,
-          1841
+          1852,
+          1853
         ],
         "value": {
           "raw": "(",
@@ -10653,102 +10653,12 @@
       },
       {
         "span": [
-          1841,
-          1844
-        ],
-        "value": {
-          "raw": "bpm",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1844,
-          1845
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1845,
-          1846
-        ],
-        "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1845,
-                  1846
-                ],
-                "value": 5
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1846,
-          1847
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1847,
-          1854
-        ],
-        "value": {
-          "raw": "end_bpm",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1854,
-          1855
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1855,
-          1856
-        ],
-        "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1855,
-                  1856
-                ],
-                "value": 5
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          1856,
+          1853,
           1857
         ],
         "value": {
-          "raw": ")",
-          "t": "Punctuation"
+          "raw": "part",
+          "t": "Identifier"
         }
       },
       {
@@ -10757,98 +10667,55 @@
           1858
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          1858,
-          1863
-        ],
-        "value": {
-          "raw": "tempo",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1863,
-          1864
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1864,
-          1867
-        ],
-        "value": {
-          "raw": "bpm",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1867,
-          1868
-        ],
-        "value": {
           "raw": "=",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          1868,
-          1869
+          1858,
+          1860
         ],
         "value": {
-          "raw": "5",
+          "raw": "\"\"",
           "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  1868,
-                  1869
-                ],
-                "value": 5
-              }
+            "String": {
+              "inner_span": [
+                1859,
+                1859
+              ]
             }
           }
         }
       },
       {
         "span": [
-          1869,
-          1870
+          1860,
+          1861
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": ")",
+          "t": "Punctuation"
         }
       },
       {
         "span": [
-          1870,
-          1878
+          1861,
+          1862
         ],
         "value": {
-          "raw": "duration",
-          "t": "Identifier"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
         "span": [
-          1878,
+          1862,
           1879
         ],
         "value": {
-          "raw": "=",
-          "t": "Punctuation"
+          "raw": "csound_instrument",
+          "t": "Identifier"
         }
       },
       {
@@ -10857,13 +10724,775 @@
           1880
         ],
         "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1880,
+          1884
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1884,
+          1885
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1885,
+          1893
+        ],
+        "value": {
+          "raw": "\"potato\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1886,
+                1892
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1893,
+          1894
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1894,
+          1900
+        ],
+        "value": {
+          "raw": "number",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1900,
+          1901
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1901,
+          1903
+        ],
+        "value": {
+          "raw": "12",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  1901,
+                  1903
+                ],
+                "value": 12
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1903,
+          1904
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1904,
+          1905
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1905,
+          1922
+        ],
+        "value": {
+          "raw": "csound_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1922,
+          1923
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1923,
+          1927
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1927,
+          1928
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1928,
+          1936
+        ],
+        "value": {
+          "raw": "\"potato\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1929,
+                1935
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1936,
+          1937
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1937,
+          1938
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1938,
+          1955
+        ],
+        "value": {
+          "raw": "csound_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1955,
+          1956
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1956,
+          1960
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1960,
+          1961
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1961,
+          1969
+        ],
+        "value": {
+          "raw": "\"potato\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1962,
+                1968
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1969,
+          1970
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1970,
+          1971
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1971,
+          1982
+        ],
+        "value": {
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1982,
+          1983
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1983,
+          2000
+        ],
+        "value": {
+          "raw": "csound_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2000,
+          2001
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2001,
+          2005
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2005,
+          2006
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2006,
+          2010
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2007,
+                2009
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2010,
+          2011
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2011,
+          2017
+        ],
+        "value": {
+          "raw": "number",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2017,
+          2018
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2018,
+          2019
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2018,
+                  2019
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2019,
+          2020
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2020,
+          2021
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2021,
+          2038
+        ],
+        "value": {
+          "raw": "csound_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2038,
+          2039
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2039,
+          2043
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2043,
+          2044
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2044,
+          2048
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2045,
+                2047
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2048,
+          2049
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2049,
+          2055
+        ],
+        "value": {
+          "raw": "number",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2055,
+          2056
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2056,
+          2057
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2056,
+                  2057
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2057,
+          2058
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2058,
+          2059
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2059,
+          2070
+        ],
+        "value": {
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2070,
+          2071
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2071,
+          2088
+        ],
+        "value": {
+          "raw": "csound_instrument",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2088,
+          2089
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2089,
+          2093
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2093,
+          2094
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2094,
+          2099
+        ],
+        "value": {
+          "raw": "\"p29\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2095,
+                2098
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2099,
+          2100
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2100,
+          2106
+        ],
+        "value": {
+          "raw": "number",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2106,
+          2107
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2107,
+          2108
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2107,
+                  2108
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2108,
+          2109
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2109,
+          2110
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2110,
+          2124
+        ],
+        "value": {
+          "raw": "; unknown part",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2124,
+          2125
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2125,
+          2126
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2126,
+          2131
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2131,
+          2132
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2132,
+          2135
+        ],
+        "value": {
+          "raw": "bpm",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2135,
+          2136
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2136,
+          2137
+        ],
+        "value": {
           "raw": "5",
           "t": {
             "Number": {
               "n": {
                 "span": [
-                  1879,
-                  1880
+                  2136,
+                  2137
                 ],
                 "value": 5
               }
@@ -10873,88 +11502,28 @@
       },
       {
         "span": [
-          1880,
-          1881
+          2137,
+          2138
         ],
         "value": {
-          "raw": ")",
-          "t": "Punctuation"
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
         "span": [
-          1881,
-          1882
+          2138,
+          2145
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1882,
-          1883
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1883,
-          1943
-        ],
-        "value": {
-          "raw": "; unresolved define_scale must be the last thing in the file",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          1943,
-          1944
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          1944,
-          1956
-        ],
-        "value": {
-          "raw": "define_scale",
+          "raw": "end_bpm",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          1956,
-          1957
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          1957,
-          1961
-        ],
-        "value": {
-          "raw": "name",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          1961,
-          1962
+          2145,
+          2146
         ],
         "value": {
           "raw": "=",
@@ -10963,25 +11532,28 @@
       },
       {
         "span": [
-          1962,
-          1968
+          2146,
+          2147
         ],
         "value": {
-          "raw": "\"oops\"",
+          "raw": "5",
           "t": {
-            "String": {
-              "inner_span": [
-                1963,
-                1967
-              ]
+            "Number": {
+              "n": {
+                "span": [
+                  2146,
+                  2147
+                ],
+                "value": 5
+              }
             }
           }
         }
       },
       {
         "span": [
-          1968,
-          1969
+          2147,
+          2148
         ],
         "value": {
           "raw": ")",
@@ -10990,8 +11562,245 @@
       },
       {
         "span": [
-          1969,
-          1970
+          2148,
+          2149
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2149,
+          2154
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2154,
+          2155
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2155,
+          2158
+        ],
+        "value": {
+          "raw": "bpm",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2158,
+          2159
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2159,
+          2160
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2159,
+                  2160
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2160,
+          2161
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2161,
+          2169
+        ],
+        "value": {
+          "raw": "duration",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2169,
+          2170
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2170,
+          2171
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2170,
+                  2171
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2171,
+          2172
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2172,
+          2173
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2173,
+          2174
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2174,
+          2234
+        ],
+        "value": {
+          "raw": "; unresolved define_scale must be the last thing in the file",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2234,
+          2235
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2235,
+          2247
+        ],
+        "value": {
+          "raw": "define_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2247,
+          2248
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2248,
+          2252
+        ],
+        "value": {
+          "raw": "name",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2252,
+          2253
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2253,
+          2259
+        ],
+        "value": {
+          "raw": "\"oops\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2254,
+                2258
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2259,
+          2260
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2260,
+          2261
         ],
         "value": {
           "raw": "\n",
@@ -18055,18 +18864,18 @@
       {
         "span": [
           1835,
-          1857
+          1861
         ],
         "value": {
-          "raw": "tempo(bpm=5 end_bpm=5)",
+          "raw": "csound_instrument(part=\"\")",
           "t": {
             "Directive": {
               "name": {
                 "span": [
                   1835,
-                  1840
+                  1852
                 ],
-                "value": "tempo"
+                "value": "csound_instrument"
               },
               "opening_comment": null,
               "params": [
@@ -18075,23 +18884,72 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1841,
-                        1844
+                        1853,
+                        1857
                       ],
-                      "value": "bpm"
+                      "value": "part"
                     },
                     "value": {
                       "span": [
-                        1845,
-                        1846
+                        1858,
+                        1860
                       ],
                       "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            5,
-                            "5"
-                          ]
-                        }
+                        "String": ""
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1861,
+          1862
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1862,
+          1904
+        ],
+        "value": {
+          "raw": "csound_instrument(name=\"potato\" number=12)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1862,
+                  1879
+                ],
+                "value": "csound_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1880,
+                        1884
+                      ],
+                      "value": "name"
+                    },
+                    "value": {
+                      "span": [
+                        1885,
+                        1893
+                      ],
+                      "value": {
+                        "String": "potato"
                       }
                     }
                   }
@@ -18101,21 +18959,21 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1847,
-                        1854
+                        1894,
+                        1900
                       ],
-                      "value": "end_bpm"
+                      "value": "number"
                     },
                     "value": {
                       "span": [
-                        1855,
-                        1856
+                        1901,
+                        1903
                       ],
                       "value": {
                         "PitchOrNumber": {
                           "Integer": [
-                            5,
-                            "5"
+                            12,
+                            "12"
                           ]
                         }
                       }
@@ -18129,8 +18987,116 @@
       },
       {
         "span": [
-          1857,
-          1858
+          1904,
+          1905
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1905,
+          1937
+        ],
+        "value": {
+          "raw": "csound_instrument(name=\"potato\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1905,
+                  1922
+                ],
+                "value": "csound_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1923,
+                        1927
+                      ],
+                      "value": "name"
+                    },
+                    "value": {
+                      "span": [
+                        1928,
+                        1936
+                      ],
+                      "value": {
+                        "String": "potato"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1937,
+          1938
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1938,
+          1970
+        ],
+        "value": {
+          "raw": "csound_instrument(name=\"potato\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1938,
+                  1955
+                ],
+                "value": "csound_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        1956,
+                        1960
+                      ],
+                      "value": "name"
+                    },
+                    "value": {
+                      "span": [
+                        1961,
+                        1969
+                      ],
+                      "value": {
+                        "String": "potato"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1970,
+          1971
         ],
         "value": {
           "raw": " ",
@@ -18139,17 +19105,327 @@
       },
       {
         "span": [
-          1858,
-          1881
+          1971,
+          1982
         ],
         "value": {
-          "raw": "tempo(bpm=5 duration=5)",
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1982,
+          1983
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1983,
+          2020
+        ],
+        "value": {
+          "raw": "csound_instrument(part=\"p1\" number=3)",
           "t": {
             "Directive": {
               "name": {
                 "span": [
-                  1858,
-                  1863
+                  1983,
+                  2000
+                ],
+                "value": "csound_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        2001,
+                        2005
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        2006,
+                        2010
+                      ],
+                      "value": {
+                        "String": "p1"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        2011,
+                        2017
+                      ],
+                      "value": "number"
+                    },
+                    "value": {
+                      "span": [
+                        2018,
+                        2019
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            3,
+                            "3"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2020,
+          2021
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2021,
+          2058
+        ],
+        "value": {
+          "raw": "csound_instrument(part=\"p1\" number=3)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2021,
+                  2038
+                ],
+                "value": "csound_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        2039,
+                        2043
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        2044,
+                        2048
+                      ],
+                      "value": {
+                        "String": "p1"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        2049,
+                        2055
+                      ],
+                      "value": "number"
+                    },
+                    "value": {
+                      "span": [
+                        2056,
+                        2057
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            3,
+                            "3"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2058,
+          2059
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2059,
+          2070
+        ],
+        "value": {
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2070,
+          2071
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2071,
+          2109
+        ],
+        "value": {
+          "raw": "csound_instrument(part=\"p29\" number=3)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2071,
+                  2088
+                ],
+                "value": "csound_instrument"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        2089,
+                        2093
+                      ],
+                      "value": "part"
+                    },
+                    "value": {
+                      "span": [
+                        2094,
+                        2099
+                      ],
+                      "value": {
+                        "String": "p29"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        2100,
+                        2106
+                      ],
+                      "value": "number"
+                    },
+                    "value": {
+                      "span": [
+                        2107,
+                        2108
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            3,
+                            "3"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2109,
+          2110
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2110,
+          2124
+        ],
+        "value": {
+          "raw": "; unknown part",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2124,
+          2125
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2125,
+          2126
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2126,
+          2148
+        ],
+        "value": {
+          "raw": "tempo(bpm=5 end_bpm=5)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2126,
+                  2131
                 ],
                 "value": "tempo"
               },
@@ -18160,15 +19436,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1864,
-                        1867
+                        2132,
+                        2135
                       ],
                       "value": "bpm"
                     },
                     "value": {
                       "span": [
-                        1868,
-                        1869
+                        2136,
+                        2137
                       ],
                       "value": {
                         "PitchOrNumber": {
@@ -18186,15 +19462,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1870,
-                        1878
+                        2138,
+                        2145
                       ],
-                      "value": "duration"
+                      "value": "end_bpm"
                     },
                     "value": {
                       "span": [
-                        1879,
-                        1880
+                        2146,
+                        2147
                       ],
                       "value": {
                         "PitchOrNumber": {
@@ -18214,8 +19490,93 @@
       },
       {
         "span": [
-          1881,
-          1882
+          2148,
+          2149
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2149,
+          2172
+        ],
+        "value": {
+          "raw": "tempo(bpm=5 duration=5)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2149,
+                  2154
+                ],
+                "value": "tempo"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        2155,
+                        2158
+                      ],
+                      "value": "bpm"
+                    },
+                    "value": {
+                      "span": [
+                        2159,
+                        2160
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            5,
+                            "5"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        2161,
+                        2169
+                      ],
+                      "value": "duration"
+                    },
+                    "value": {
+                      "span": [
+                        2170,
+                        2171
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            5,
+                            "5"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2172,
+          2173
         ],
         "value": {
           "raw": "\n",
@@ -18224,8 +19585,8 @@
       },
       {
         "span": [
-          1882,
-          1883
+          2173,
+          2174
         ],
         "value": {
           "raw": "\n",
@@ -18234,8 +19595,8 @@
       },
       {
         "span": [
-          1883,
-          1943
+          2174,
+          2234
         ],
         "value": {
           "raw": "; unresolved define_scale must be the last thing in the file",
@@ -18244,8 +19605,8 @@
       },
       {
         "span": [
-          1943,
-          1944
+          2234,
+          2235
         ],
         "value": {
           "raw": "\n",
@@ -18254,8 +19615,8 @@
       },
       {
         "span": [
-          1944,
-          1969
+          2235,
+          2260
         ],
         "value": {
           "raw": "define_scale(name=\"oops\")",
@@ -18263,8 +19624,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  1944,
-                  1956
+                  2235,
+                  2247
                 ],
                 "value": "define_scale"
               },
@@ -18275,15 +19636,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        1957,
-                        1961
+                        2248,
+                        2252
                       ],
                       "value": "name"
                     },
                     "value": {
                       "span": [
-                        1962,
-                        1968
+                        2253,
+                        2259
                       ],
                       "value": {
                         "String": "oops"
@@ -18298,8 +19659,8 @@
       },
       {
         "span": [
-          1969,
-          1970
+          2260,
+          2261
         ],
         "value": {
           "raw": "\n",
@@ -18953,8 +20314,79 @@
           "context": [],
           "message": {
             "span": [
+              1858,
+              1860
+            ],
+            "value": "a part name may not be empty"
+          }
+        },
+        {
+          "code": "E1020 general usage",
+          "context": [],
+          "message": {
+            "span": [
               1835,
-              1840
+              1852
+            ],
+            "value": "exactly one of 'number' or 'name' must be present"
+          }
+        },
+        {
+          "code": "E1020 general usage",
+          "context": [],
+          "message": {
+            "span": [
+              1862,
+              1879
+            ],
+            "value": "exactly one of 'number' or 'name' must be present"
+          }
+        },
+        {
+          "code": "E1023 MIDI-specific error",
+          "context": [
+            {
+              "span": [
+                1905,
+                1922
+              ],
+              "value": "here is the previous occurrence"
+            }
+          ],
+          "message": {
+            "span": [
+              1938,
+              1955
+            ],
+            "value": "a default CSound instrument has already been specified"
+          }
+        },
+        {
+          "code": "E1023 MIDI-specific error",
+          "context": [
+            {
+              "span": [
+                2006,
+                2010
+              ],
+              "value": "here is the previous occurrence"
+            }
+          ],
+          "message": {
+            "span": [
+              2021,
+              2038
+            ],
+            "value": "a CSound instrument for part 'p1' has already been specified"
+          }
+        },
+        {
+          "code": "E1020 general usage",
+          "context": [],
+          "message": {
+            "span": [
+              2126,
+              2131
             ],
             "value": "'end_bpm' and 'duration' must either both be present or both be absent"
           }
@@ -18964,8 +20396,8 @@
           "context": [],
           "message": {
             "span": [
-              1858,
-              1863
+              2149,
+              2154
             ],
             "value": "'end_bpm' and 'duration' must either both be present or both be absent"
           }
@@ -18997,8 +20429,8 @@
           "context": [],
           "message": {
             "span": [
-              1962,
-              1968
+              2253,
+              2259
             ],
             "value": "this scale definition was incomplete at EOF"
           }

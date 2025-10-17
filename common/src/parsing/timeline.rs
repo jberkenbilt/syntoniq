@@ -5,6 +5,7 @@ use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::{BTreeMap, BTreeSet};
+use std::fmt::{Display, Formatter};
 use std::sync::Arc;
 
 #[derive(Serialize)]
@@ -12,6 +13,7 @@ pub struct Timeline<'s> {
     pub events: BTreeSet<Arc<TimelineEvent<'s>>>,
     pub scales: Vec<Arc<Scale<'s>>>,
     pub midi_instruments: BTreeMap<Cow<'s, str>, MidiInstrumentNumber>,
+    pub csound_instruments: BTreeMap<Cow<'s, str>, CsoundInstrumentId<'s>>,
     /// Least common multiple of time denominators, useful for computing ticks per beat
     pub time_lcm: u32,
 }
@@ -81,6 +83,20 @@ pub struct DynamicEvent<'s> {
 pub struct MidiInstrumentNumber {
     pub bank: u16,
     pub instrument: u8,
+}
+
+#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
+pub enum CsoundInstrumentId<'s> {
+    Number(u32),
+    Name(Cow<'s, str>),
+}
+impl<'s> Display for CsoundInstrumentId<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            CsoundInstrumentId::Number(n) => write!(f, "{n}"),
+            CsoundInstrumentId::Name(s) => write!(f, "\"{s}\""),
+        }
+    }
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]

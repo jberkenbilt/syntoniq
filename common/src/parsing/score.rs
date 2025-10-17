@@ -13,8 +13,8 @@ use std::sync::{Arc, LazyLock};
 
 mod directives;
 use crate::parsing::{
-    DynamicEvent, MidiInstrumentNumber, NoteOffEvent, NoteOnEvent, NoteValue, TempoEvent, Timeline,
-    TimelineData, TimelineEvent, WithTime,
+    CsoundInstrumentId, DynamicEvent, MidiInstrumentNumber, NoteOffEvent, NoteOnEvent, NoteValue,
+    TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, score_helpers,
 };
 use crate::pitch::Pitch;
 pub use directives::*;
@@ -31,6 +31,7 @@ pub struct Score<'s> {
     pending_dynamic_changes: HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
     line_start_time: Ratio<u32>,
     midi_instruments: HashMap<Cow<'s, str>, Span>,
+    csound_instruments: HashMap<Cow<'s, str>, Span>,
     known_parts: HashSet<Cow<'s, str>>,
     timeline: Timeline<'s>,
 }
@@ -642,6 +643,7 @@ impl<'s> Score<'s> {
             scales: vec![default_scale],
             events: Default::default(),
             midi_instruments: Default::default(),
+            csound_instruments: Default::default(),
             time_lcm: 1,
         };
         Self {
@@ -655,6 +657,7 @@ impl<'s> Score<'s> {
             pending_dynamic_changes: Default::default(),
             line_start_time: Ratio::from_integer(0),
             midi_instruments: Default::default(),
+            csound_instruments: Default::default(),
             known_parts: Default::default(),
             timeline,
         }
@@ -706,6 +709,7 @@ impl<'s> Score<'s> {
             Directive::SetBasePitch(x) => self.set_base_pitch(x),
             Directive::ResetTuning(x) => self.reset_tuning(x),
             Directive::MidiInstrument(x) => self.midi_instrument(diags, x),
+            Directive::CsoundInstrument(x) => self.csound_instrument(diags, x),
             Directive::Tempo(x) => self.tempo(x),
         }
     }
@@ -971,35 +975,33 @@ impl<'s> Score<'s> {
         // Validate has checked ranges.
         let instrument = (directive.instrument.value - 1) as u8;
         let bank = directive.bank.map(|x| x.value - 1).unwrap_or(0) as u16;
-        let part_spans: Vec<(Cow<'s, str>, Span)> = if directive.part.is_empty() {
-            vec![(Cow::Borrowed(""), directive.span)]
-        } else {
-            directive
-                .part
-                .iter()
-                .map(|p| (p.value.clone(), p.span))
-                .collect()
-        };
         let midi_instrument = MidiInstrumentNumber { bank, instrument };
-        for (part, span) in part_spans {
-            if let Some(old) = self.midi_instruments.insert(part.clone(), span) {
-                let what = if part.is_empty() {
-                    "default MIDI instrument".to_string()
-                } else {
-                    format!("MIDI instrument for part '{part}'")
-                };
-                diags.push(
-                    Diagnostic::new(
-                        code::MIDI,
-                        directive.span,
-                        format!("a {what} has already been specified"),
-                    )
-                    .with_context(old, "here is the previous occurrence"),
-                );
-            } else {
-                self.timeline.midi_instruments.insert(part, midi_instrument);
-            }
-        }
+        score_helpers::check_duplicate_by_part(
+            diags,
+            "MIDI instrument",
+            directive.part.as_slice(),
+            directive.span,
+            &mut self.midi_instruments,
+            midi_instrument,
+            &mut self.timeline.midi_instruments,
+        );
+    }
+
+    fn csound_instrument(&mut self, diags: &Diagnostics, directive: CsoundInstrument<'s>) {
+        // Validate has assured that exactly one of `name` or `number` is defined.
+        let instrument = directive
+            .name
+            .map(|x| CsoundInstrumentId::Name(x.value))
+            .unwrap_or_else(|| CsoundInstrumentId::Number(directive.number.unwrap().value));
+        score_helpers::check_duplicate_by_part(
+            diags,
+            "CSound instrument",
+            directive.part.as_slice(),
+            directive.span,
+            &mut self.csound_instruments,
+            instrument,
+            &mut self.timeline.csound_instruments,
+        );
     }
 
     pub fn tempo(&mut self, directive: Tempo<'s>) {

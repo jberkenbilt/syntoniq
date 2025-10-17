@@ -9173,6 +9173,7 @@
   },
   {
     "Ok": {
+      "csound_instruments": {},
       "events": [
         {
           "data": {
