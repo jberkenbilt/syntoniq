@@ -91,7 +91,7 @@ pub enum Pass1 {
     String { inner_span: Span },
     NoteLeader { name_span: Span, note: Spanned<u32> },
     DynamicLeader { name_span: Span },
-    NoteOptions { inner_span: Span },
+    Articulation { inner_span: Span },
     NoteName,
     ScaleStart,
     ScaleEnd,
@@ -103,7 +103,7 @@ impl Display for Pass1 {
             Pass1::String { inner_span } => write!(f, "String:{inner_span}"),
             Pass1::NoteLeader { name_span, note } => write!(f, "NoteLeader:{name_span}/{note}"),
             Pass1::DynamicLeader { name_span } => write!(f, "DynamicLeader:{name_span}"),
-            Pass1::NoteOptions { inner_span } => write!(f, "NoteOptions:{inner_span}"),
+            Pass1::Articulation { inner_span } => write!(f, "Articulation:{inner_span}"),
             _ => write!(f, "{self:?}"),
         }
     }
@@ -169,13 +169,13 @@ impl Pass1 {
         }
     }
 
-    pub fn is_note_options(t: Token1) -> bool {
-        matches!(t.value.t, Pass1::NoteOptions { .. })
+    pub fn is_articulation(t: Token1) -> bool {
+        matches!(t.value.t, Pass1::Articulation { .. })
     }
 
-    pub fn get_note_options(t: &Token1) -> Option<Span> {
+    pub fn get_articulation(t: &Token1) -> Option<Span> {
         match t.value.t {
-            Pass1::NoteOptions { inner_span } => Some(inner_span),
+            Pass1::Articulation { inner_span } => Some(inner_span),
             _ => None,
         }
     }
@@ -414,10 +414,10 @@ fn dynamic_leader<'s>() -> impl Parser1<'s> {
     )
 }
 
-fn note_options<'s>() -> impl Parser1<'s> {
+fn articulation<'s>() -> impl Parser1<'s> {
     parse1_token(
         delimited('(', take_until(0.., ')').with_span(), ')'),
-        |_raw, _span, (_, inner_span)| Pass1::NoteOptions {
+        |_raw, _span, (_, inner_span)| Pass1::Articulation {
             inner_span: inner_span.into(),
         },
     )
@@ -558,7 +558,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
                     _ => None,
                 },
                 LexState::NoteLine => match ch {
-                    '(' => parse_next!(note_options()),
+                    '(' => parse_next!(articulation()),
                     x if NOTE_PUNCTUATION.contains(x) => parse_next!(punctuation()),
                     x if AsChar::is_alpha(x) => parse_next!(note_name()),
                     _ => None,

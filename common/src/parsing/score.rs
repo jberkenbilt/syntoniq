@@ -1,19 +1,19 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
-    Dynamic, DynamicChange, DynamicLeader, DynamicLine, Note, NoteBehavior, NoteLeader, NoteLine,
-    RawDirective, RegularDynamic, ScaleBlock, Span, Spanned,
+    Articulation, Dynamic, DynamicChange, DynamicLeader, DynamicLine, Note, NoteLeader, NoteLine,
+    RawDirective, RegularDynamic, RegularNote, ScaleBlock, Span, Spanned,
 };
 use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
-use std::mem;
 use std::sync::{Arc, LazyLock};
+use std::{cmp, mem};
 
 mod directives;
 use crate::parsing::{
-    CsoundInstrumentId, DynamicEvent, MidiInstrumentNumber, NoteOffEvent, NoteOnEvent, NoteValue,
+    CsoundInstrumentId, DynamicEvent, MidiInstrumentNumber, NoteEvent, NoteValue, PartNote,
     TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, score_helpers,
 };
 use crate::pitch::Pitch;
@@ -29,6 +29,8 @@ pub struct Score<'s> {
     /// empty string key is default tuning
     tunings: HashMap<Cow<'s, str>, Tuning<'s>>,
     pending_dynamic_changes: HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
+    pending_notes: HashMap<PartNote<'s>, WithTime<Spanned<NoteEvent<'s>>>>,
+    pending_tempo: Option<WithTime<Spanned<TempoEvent>>>,
     line_start_time: Ratio<u32>,
     midi_instruments: HashMap<Cow<'s, str>, Span>,
     csound_instruments: HashMap<Cow<'s, str>, Span>,
@@ -158,7 +160,7 @@ impl<'s> Scale<'s> {
     }
 }
 
-#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
+#[derive(Serialize, Debug, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 pub struct Tuning<'s> {
     pub scale_name: Cow<'s, str>,
     pub base_pitch: Pitch,
@@ -270,6 +272,91 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
         }
     }
 
+    fn adjust_velocity_and_time(
+        &mut self,
+        r_note: &RegularNote<'s>,
+        start_time: Ratio<u32>,
+        value: &mut NoteValue<'s>,
+    ) {
+        let mut velocity: u8 = 72;
+        let mut seen = HashSet::new();
+        let sustained = r_note.sustained.is_some();
+        let mut shorten: Ratio<u32> = Ratio::from_integer(0);
+        for o in &r_note.articulation {
+            if !seen.insert(o.value) && !matches!(o.value, Articulation::Shorten) {
+                self.diags
+                    .err(code::SCORE, o.span, "accent marks may not be duplicated");
+            }
+            match o.value {
+                Articulation::Accent => {
+                    if seen.contains(&Articulation::Marcato) {
+                        self.diags
+                            .err(code::SCORE, o.span, "accent may not appear with marcato");
+                    }
+                    velocity = cmp::max(velocity, 96);
+                }
+                Articulation::Marcato => {
+                    if seen.contains(&Articulation::Accent) {
+                        self.diags
+                            .err(code::SCORE, o.span, "marcato may not appear with accent");
+                    }
+                    velocity = cmp::max(velocity, 108);
+                }
+                Articulation::Shorten => {
+                    // TODO: Make this amount configurable
+                    shorten += Ratio::new(1, 4);
+                    if sustained {
+                        self.diags.err(
+                            code::SCORE,
+                            o.span,
+                            "shorten may not appear with a sustained note",
+                        );
+                    }
+                }
+            }
+        }
+        value.velocity = velocity;
+        if sustained {
+            // Signal that we don't know the end time yet.
+            value.adjusted_end_time = Ratio::from_integer(0);
+        } else {
+            let mut duration = value.end_time - start_time;
+            let min_duration = cmp::min(duration, Ratio::new(1, 4));
+            if duration - min_duration > shorten {
+                duration -= shorten;
+            } else {
+                duration = min_duration;
+            }
+            value.adjusted_end_time = start_time + duration;
+        };
+    }
+
+    fn get_or_complete_pending_note(
+        &mut self,
+        part_note: &PartNote<'s>,
+        r_note: &RegularNote<'s>,
+        absolute_pitch: &Pitch,
+    ) -> Option<WithTime<Spanned<NoteEvent<'s>>>> {
+        // If there is a pending note and the current note is not explicitly articulated and has
+        // the same absolute pitch, then the current note is tied to the previous note. Otherwise,
+        // any pending note must be completed with its adjusted duration set to the full note
+        // duration (a slur). We don't care if the tuning changed as long as the pitch is the same.
+        // This way, we can pivot tunings in the middle of a tied pivot note.
+        let mut pending = self.score.pending_notes.remove(part_note)?;
+        let prev = &mut pending.item.value.value;
+        if &prev.absolute_pitch == absolute_pitch
+            && !r_note
+                .articulation
+                .iter()
+                .any(|x| matches!(x.value, Articulation::Accent | Articulation::Marcato))
+        {
+            return Some(pending);
+        }
+        // Complete the last note, setting its adjusted duration to the full note length.
+        self.score.insert_note(pending);
+        None
+    }
+
     fn validate_note_line(&mut self, line: &NoteLine<'s>) {
         self.score
             .known_parts
@@ -331,39 +418,45 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                     }
                     let absolute_scale_degree =
                         scale_degree.degree + (cycle as i32 * scale.pitches.len() as i32);
-                    //TODO: There are currently no checks on `slide` behavior (e.g. that the last
-                    // note isn't a slide) or representation of the slide duration. When we add a
-                    // directive to configure that, we can come back to that issue.
-                    let value = NoteValue {
-                        text: &self.score.src[note.span],
-                        note_name,
-                        tuning: tuning.clone(),
-                        absolute_pitch,
-                        absolute_scale_degree,
-                        options: r_note.options.iter().cloned().map(Spanned::value).collect(),
-                        behavior: r_note.behavior.map(Spanned::value),
-                    };
-                    self.score.insert_event(
-                        time,
-                        note.span,
-                        TimelineData::NoteOn(NoteOnEvent {
-                            part,
-                            note_number,
-                            value,
-                        }),
-                    );
-                    if let Some(behavior) = r_note.behavior
-                        && behavior.value == NoteBehavior::Sustain
-                    {
-                        // Don't generate a note off event.
+                    let end_time = time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats);
+                    let part_note = PartNote { part, note_number };
+                    // At this moment, there may be a pending sustained note that this note may
+                    // be tied to, and this note may itself be sustained. If there is a pending
+                    // note and we are tied to it, extend the pending note and work with it.
+                    // Otherwise, complete any pending note and create a new one for the current
+                    // note. Then, if this note is sustained, save it; otherwise, add it to the
+                    // timeline.
+                    let mut pending = self
+                        .get_or_complete_pending_note(&part_note, r_note, &absolute_pitch)
+                        .map(|mut p| {
+                            // Extend the note's end time to cover this note.
+                            p.item.value.value.end_time = end_time;
+                            p
+                        })
+                        .unwrap_or_else(|| {
+                            // There is no pending note, so make a new one.
+                            let value = NoteValue {
+                                text: &self.score.src[note.span],
+                                note_name,
+                                tuning: tuning.clone(),
+                                absolute_pitch,
+                                absolute_scale_degree,
+                                velocity: 0,
+                                end_time,
+                                adjusted_end_time: Ratio::from_integer(0),
+                            };
+                            WithTime::new(
+                                time,
+                                Spanned::new(note.span, NoteEvent { part_note, value }),
+                            )
+                        });
+                    self.adjust_velocity_and_time(r_note, time, &mut pending.item.value.value);
+                    // If the current note is sustained, what we have is still pending. Otherwise,
+                    // add it to the timeline.
+                    if r_note.sustained.is_some() {
+                        self.score.pending_notes.insert(part_note, pending);
                     } else {
-                        //TODO: consider how long we want a note to sound. For now, just sound
-                        // for the entire note duration.
-                        self.score.insert_event(
-                            time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats),
-                            note.span,
-                            TimelineData::NoteOff(NoteOffEvent { part, note_number }),
-                        );
+                        self.score.insert_note(pending);
                     }
                 } else {
                     self.diags.err(
@@ -519,23 +612,23 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                             DynamicChange::Crescendo => {
                                 if r.level.value <= last_level.value {
                                     self.diags.push(
-                                        Diagnostic::new(
-                                            code::SCORE,
-                                            r.level.span,
-                                            "this dynamic level must be larger than the previous one, which contained a crescendo",
-                                        ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
-                                    );
+                                    Diagnostic::new(
+                                        code::SCORE,
+                                        r.level.span,
+                                        "this dynamic level must be larger than the previous one, which contained a crescendo",
+                                    ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
+                                );
                                 }
                             }
                             DynamicChange::Diminuendo => {
                                 if r.level.value >= last_level.value {
                                     self.diags.push(
-                                        Diagnostic::new(
-                                            code::SCORE,
-                                            r.level.span,
-                                            "this dynamic level must be less than the previous one, which contained a diminuendo",
-                                        ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
-                                    );
+                                    Diagnostic::new(
+                                        code::SCORE,
+                                        r.level.span,
+                                        "this dynamic level must be less than the previous one, which contained a diminuendo",
+                                    ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
+                                );
                                 }
                             }
                         }
@@ -646,6 +739,16 @@ impl<'s> Score<'s> {
             csound_instruments: Default::default(),
             time_lcm: 1,
         };
+        let pending_tempo = Some(WithTime::new(
+            Ratio::from_integer(0),
+            Spanned::new(
+                0..1,
+                TempoEvent {
+                    bpm: Ratio::from_integer(72),
+                    end_bpm: None,
+                },
+            ),
+        ));
         Self {
             src,
             _version: s.version.value,
@@ -655,6 +758,8 @@ impl<'s> Score<'s> {
             score_blocks: Default::default(),
             tunings: Default::default(),
             pending_dynamic_changes: Default::default(),
+            pending_notes: Default::default(),
+            pending_tempo,
             line_start_time: Ratio::from_integer(0),
             midi_instruments: Default::default(),
             csound_instruments: Default::default(),
@@ -675,6 +780,17 @@ impl<'s> Score<'s> {
         self.timeline
             .events
             .insert(Arc::new(TimelineEvent { time, span, data }));
+    }
+
+    fn insert_note(&mut self, mut note: WithTime<Spanned<NoteEvent<'s>>>) {
+        if note.item.value.value.adjusted_end_time == Ratio::from_integer(0) {
+            note.item.value.value.adjusted_end_time = note.item.value.value.end_time;
+        }
+        self.insert_event(
+            note.time,
+            note.item.span,
+            TimelineData::Note(note.item.value),
+        );
     }
 
     fn update_time_lcm(&mut self, beats: Ratio<u32>) {
@@ -793,6 +909,9 @@ impl<'s> Score<'s> {
         let Some(sb) = self.pending_score_block.take() else {
             return;
         };
+        if let Some(t) = self.pending_tempo.take() {
+            self.insert_event(t.time, t.item.span, TimelineData::Tempo(t.item.value))
+        }
         if sb.note_lines.is_empty() {
             // No point in doing anything
             diags.err(
@@ -1015,17 +1134,25 @@ impl<'s> Score<'s> {
             let end_time = directive.duration.unwrap().value + start_time;
             WithTime::new(end_time, level.value)
         });
-        self.insert_event(
+        self.pending_tempo = Some(WithTime::new(
             start_time,
-            directive.span,
-            TimelineData::Tempo(TempoEvent {
-                bpm: directive.bpm.value,
-                end_bpm,
-            }),
-        );
+            Spanned::new(
+                directive.span,
+                TempoEvent {
+                    bpm: directive.bpm.value,
+                    end_bpm,
+                },
+            ),
+        ));
     }
 
     pub fn do_final_checks(&mut self, diags: &Diagnostics) {
+        // Complete any pending notes.
+        let mut pending_notes = HashMap::new();
+        mem::swap(&mut pending_notes, &mut self.pending_notes);
+        for pending in pending_notes.into_values() {
+            self.insert_note(pending);
+        }
         for (part, &span) in &self.midi_instruments {
             if !part.is_empty() && !self.known_parts.contains(part) {
                 diags.err(code::MIDI, span, "this part never appeared in the score");

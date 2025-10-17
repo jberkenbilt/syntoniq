@@ -14,7 +14,6 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::ops::Range;
 use std::path::Path;
 use std::sync::Arc;
-use syntoniq_common::parsing::model::NoteOption;
 use syntoniq_common::parsing::score::{Scale, Tuning};
 use syntoniq_common::parsing::{DynamicEvent, TempoEvent, Timeline, TimelineData, TimelineEvent};
 use syntoniq_common::pitch::Pitch;
@@ -52,17 +51,6 @@ use syntoniq_common::pitch::Pitch;
 //   - The note will have the correct instrument and MIDI port because of the track and the correct
 //     tuning because of the channel.
 
-#[derive(Debug, PartialOrd, PartialEq, Eq, Ord, Hash)]
-struct NoteKey<'s> {
-    part: &'s str,
-    note: u32,
-}
-struct PlayedNote {
-    track: usize,
-    channel: u4,
-    key: u7,
-}
-
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct PortChannel {
     midi_port: u7,
@@ -83,7 +71,6 @@ struct MidiGenerator<'s> {
     track_last_time: RefCell<BTreeMap<usize, u28>>,
     ticks_per_beat: u15,
     micros_per_beat: u24,
-    last_played: BTreeMap<NoteKey<'s>, PlayedNote>,
     tuning_data: BTreeMap<&'s Tuning<'s>, Vec<TuningData>>,
     channel_data: BTreeMap<ChannelKey<'s>, PortChannel>,
     part_channels: BTreeMap<&'s str, BTreeSet<TrackPortChannel>>,
@@ -294,7 +281,6 @@ impl<'s> MidiGenerator<'s> {
             track_last_time: Default::default(),
             ticks_per_beat,
             micros_per_beat,
-            last_played: Default::default(),
             tuning_data: Default::default(),
             channel_data: Default::default(),
             part_channels: Default::default(),
@@ -348,7 +334,7 @@ impl<'s> MidiGenerator<'s> {
         // scale, figure the range of notes used, and divide into tunings.
         let mut tunings: BTreeMap<&Tuning<'s>, NoteRange> = BTreeMap::new();
         for event in &self.timeline.events {
-            let TimelineData::NoteOn(note_event) = &event.data else {
+            let TimelineData::Note(note_event) = &event.data else {
                 continue;
             };
             let scale_degree = note_event.value.absolute_scale_degree;
@@ -398,14 +384,14 @@ impl<'s> MidiGenerator<'s> {
 
         let mut channel_users: BTreeSet<ChannelKey> = BTreeSet::new();
         for event in &self.timeline.events {
-            let TimelineData::NoteOn(note_event) = &event.data else {
+            let TimelineData::Note(note_event) = &event.data else {
                 continue;
             };
             let tuning = self.tuning_for_note(
                 &note_event.value.tuning,
                 note_event.value.absolute_scale_degree,
             )?;
-            let score_part = note_event.part;
+            let score_part = note_event.part_note.part;
             channel_users.insert(ChannelKey {
                 score_part,
                 raw_tuning: tuning.raw_program,
@@ -665,19 +651,6 @@ impl<'s> MidiGenerator<'s> {
         Ok(())
     }
 
-    fn turn_off_last_note(&mut self, last_on: &PlayedNote, delta: u28) {
-        self.tracks[last_on.track].push(TrackEvent {
-            delta,
-            kind: TrackEventKind::Midi {
-                channel: last_on.channel,
-                message: MidiMessage::NoteOff {
-                    key: last_on.key,
-                    vel: 0.into(),
-                },
-            },
-        });
-    }
-
     fn volume_event(tpc: TrackPortChannel, delta: u28, value: u7) -> TrackEvent<'s> {
         TrackEvent {
             delta,
@@ -725,18 +698,6 @@ impl<'s> MidiGenerator<'s> {
                         }
                     }
                 }
-                TimelineData::NoteOff(e) => {
-                    let note_key = NoteKey {
-                        part: e.part,
-                        note: e.note_number,
-                    };
-                    if let Some(last_on) = self.last_played.remove(&note_key) {
-                        let delta = self.get_delta(last_on.track, event.time)?;
-                        self.turn_off_last_note(&last_on, delta);
-                    } else {
-                        eprintln!("TODO: warn about unexpected note")
-                    }
-                }
                 TimelineData::Dynamic(e) => {
                     let part_channels = self
                         .part_channels
@@ -772,19 +733,10 @@ impl<'s> MidiGenerator<'s> {
                         }
                     }
                 }
-                TimelineData::NoteOn(e) => {
-                    let note_key = NoteKey {
-                        part: e.part,
-                        note: e.note_number,
-                    };
-                    if let Some(last_on) = self.last_played.remove(&note_key) {
-                        // Turn this note off. This would happen if the note were sustained.
-                        let delta = self.get_delta(last_on.track, event.time)?;
-                        self.turn_off_last_note(&last_on, delta);
-                    }
+                TimelineData::Note(e) => {
                     let tuning_data =
                         self.tuning_for_note(&e.value.tuning, e.value.absolute_scale_degree)?;
-                    let score_part = e.part;
+                    let score_part = e.part_note.part;
                     let port_channel = self
                         .channel_data
                         .get(&ChannelKey {
@@ -802,35 +754,41 @@ impl<'s> MidiGenerator<'s> {
                         .get(&track_key)
                         .cloned()
                         .ok_or_else(|| anyhow!("unable to get track for note"))?;
-                    let delta = self.get_delta(track, event.time)?;
                     let key = u8::try_from(e.value.absolute_scale_degree + tuning_data.midi_offset)
                         .ok()
                         .and_then(u7::try_from)
                         .ok_or_else(|| {
                             anyhow!("internal error: {}: note out of range", event.span)
                         })?;
-                    self.last_played.insert(
-                        note_key,
-                        PlayedNote {
-                            track,
-                            channel: port_channel.channel,
-                            key,
-                        },
-                    );
-                    let mut vel: u7 = 72.into();
-                    for o in &e.value.options {
-                        match o {
-                            NoteOption::Accent => vel = cmp::max(vel, 96.into()),
-                            NoteOption::Marcato => vel = cmp::max(vel, 108.into()),
-                        }
+                    let velocity = u7::try_from(e.value.velocity)
+                        .ok_or_else(|| anyhow!("overflow getting velocity"))?;
+                    let delta = self.get_delta(track, event.time)?;
+                    if velocity == 0 {
+                        self.tracks[track].push(TrackEvent {
+                            delta,
+                            kind: TrackEventKind::Midi {
+                                channel: port_channel.channel,
+                                message: MidiMessage::NoteOff { key, vel: velocity },
+                            },
+                        });
+                    } else {
+                        self.tracks[track].push(TrackEvent {
+                            delta,
+                            kind: TrackEventKind::Midi {
+                                channel: port_channel.channel,
+                                message: MidiMessage::NoteOn { key, vel: velocity },
+                            },
+                        });
+                        // Generate an event to turn the note off. Use velocity 0 as a signal.
+                        let mut off = e.clone();
+                        off.value.velocity = 0;
+                        let off_event = Arc::new(TimelineEvent {
+                            time: e.value.adjusted_end_time,
+                            span: event.span,
+                            data: TimelineData::Note(off),
+                        });
+                        events.insert(off_event);
                     }
-                    self.tracks[track].push(TrackEvent {
-                        delta,
-                        kind: TrackEventKind::Midi {
-                            channel: port_channel.channel,
-                            message: MidiMessage::NoteOn { key, vel },
-                        },
-                    })
                 }
             }
         }

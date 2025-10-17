@@ -318,30 +318,18 @@ impl<'s> Display for NoteLeader<'s> {
     }
 }
 
-#[derive(Serialize, Debug, Clone, Copy, PartialOrd, PartialEq, Ord, Eq)]
-pub enum NoteOption {
+#[derive(Serialize, Debug, Clone, Copy, PartialOrd, PartialEq, Ord, Eq, Hash)]
+pub enum Articulation {
     Accent,
     Marcato,
+    Shorten,
 }
-impl Display for NoteOption {
+impl Display for Articulation {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            NoteOption::Accent => write!(f, ">"),
-            NoteOption::Marcato => write!(f, "^"),
-        }
-    }
-}
-
-#[derive(Serialize, Debug, Clone, Copy, PartialOrd, PartialEq, Ord, Eq)]
-pub enum NoteBehavior {
-    Sustain,
-    Slide,
-}
-impl Display for NoteBehavior {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            NoteBehavior::Sustain => write!(f, "~"),
-            NoteBehavior::Slide => write!(f, ">"),
+            Articulation::Accent => write!(f, ">"),
+            Articulation::Marcato => write!(f, "^"),
+            Articulation::Shorten => write!(f, "."),
         }
     }
 }
@@ -351,8 +339,8 @@ pub struct RegularNote<'s> {
     pub duration: Option<Spanned<Ratio<u32>>>,
     pub name: Spanned<&'s str>,
     pub octave: Option<Spanned<i8>>,
-    pub options: Vec<Spanned<NoteOption>>,
-    pub behavior: Option<Spanned<NoteBehavior>>,
+    pub articulation: Vec<Spanned<Articulation>>,
+    pub sustained: Option<Span>,
 }
 impl<'s> Display for RegularNote<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -367,15 +355,15 @@ impl<'s> Display for RegularNote<'s> {
                 x => color!(f, 4, "'{x}")?,
             }
         }
-        if !self.options.is_empty() {
+        if !self.articulation.is_empty() {
             color!(f, 55, "(")?;
-            for i in &self.options {
+            for i in &self.articulation {
                 color!(f, 4, "{}", i.value)?;
             }
             color!(f, 55, ")")?;
         }
-        if let Some(x) = self.behavior {
-            color!(f, 4, "{}", x.value)?;
+        if self.sustained.is_some() {
+            color!(f, 4, "~")?;
         }
         Ok(())
     }

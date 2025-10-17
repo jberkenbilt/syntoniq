@@ -2926,7 +2926,7 @@
         "value": {
           "raw": "(>)",
           "t": {
-            "NoteOptions": {
+            "Articulation": {
               "inner_span": [
                 581,
                 582
@@ -3282,20 +3282,10 @@
       {
         "span": [
           679,
-          680
-        ],
-        "value": {
-          "raw": ">",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          680,
           683
         ],
         "value": {
-          "raw": "   ",
+          "raw": "    ",
           "t": "Space"
         }
       },
@@ -6390,7 +6380,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           526,
@@ -6409,7 +6399,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6420,7 +6410,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6430,7 +6420,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6441,7 +6431,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6451,7 +6441,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6462,7 +6452,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6472,7 +6462,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6483,7 +6473,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6493,7 +6483,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6504,7 +6494,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6514,7 +6504,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6525,7 +6515,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6535,7 +6525,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6546,7 +6536,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6556,7 +6546,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6579,7 +6569,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6589,7 +6579,7 @@
                         "value": "f"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6600,7 +6590,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6610,7 +6600,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6621,7 +6611,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6631,7 +6621,7 @@
                         "value": "f"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6642,7 +6632,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6652,7 +6642,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6663,7 +6653,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6673,7 +6663,7 @@
                         "value": "f"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6684,7 +6674,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6694,7 +6684,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6705,7 +6695,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6715,18 +6705,26 @@
                         "value": "f"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
                 {
                   "span": [
                     579,
-                    582
+                    583
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [
+                        {
+                          "span": [
+                            581,
+                            582
+                          ],
+                          "value": "Accent"
+                        }
+                      ],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6736,15 +6734,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": [
-                        {
-                          "span": [
-                            581,
-                            582
-                          ],
-                          "value": "Accent"
-                        }
-                      ]
+                      "sustained": null
                     }
                   }
                 }
@@ -6779,7 +6769,7 @@
           688
         ],
         "value": {
-          "raw": "[p1.1]    1:d   c   d   c     |      e   1/2:d e   d e>   d~ e\n",
+          "raw": "[p1.1]    1:d   c   d   c     |      e   1/2:d e   d e    d~ e\n",
           "t": {
             "NoteLine": {
               "comment": null,
@@ -6813,7 +6803,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           635,
@@ -6832,7 +6822,7 @@
                         "value": "d"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6843,7 +6833,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6853,7 +6843,7 @@
                         "value": "c"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6864,7 +6854,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6874,7 +6864,7 @@
                         "value": "d"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6885,7 +6875,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6895,7 +6885,7 @@
                         "value": "c"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6918,7 +6908,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6928,7 +6918,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6939,7 +6929,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           666,
@@ -6958,7 +6948,7 @@
                         "value": "d"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6969,7 +6959,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -6979,7 +6969,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -6990,7 +6980,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -7000,24 +6990,18 @@
                         "value": "d"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
                 {
                   "span": [
                     678,
-                    680
+                    679
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": {
-                        "span": [
-                          679,
-                          680
-                        ],
-                        "value": "Slide"
-                      },
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -7027,7 +7011,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -7038,13 +7022,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": {
-                        "span": [
-                          684,
-                          685
-                        ],
-                        "value": "Sustain"
-                      },
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -7054,7 +7032,10 @@
                         "value": "d"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": [
+                        684,
+                        685
+                      ]
                     }
                   }
                 },
@@ -7065,7 +7046,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -7075,7 +7056,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 }
@@ -7151,7 +7132,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           706,
@@ -7176,7 +7157,7 @@
                         ],
                         "value": -1
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -7187,7 +7168,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -7203,7 +7184,7 @@
                         ],
                         "value": -1
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -7226,7 +7207,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           723,
@@ -7251,7 +7232,7 @@
                         ],
                         "value": 2
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -7262,7 +7243,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -7278,7 +7259,7 @@
                         ],
                         "value": -2
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 }
@@ -7401,7 +7382,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -7417,7 +7398,7 @@
                         ],
                         "value": -1
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 }
@@ -7505,7 +7486,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           857,
@@ -7530,7 +7511,7 @@
                         ],
                         "value": -1
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -7541,7 +7522,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           871,
@@ -7566,7 +7547,7 @@
                         ],
                         "value": -1
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -7577,7 +7558,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           876,
@@ -7602,7 +7583,7 @@
                         ],
                         "value": -1
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -7613,7 +7594,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -7629,7 +7610,7 @@
                         ],
                         "value": -1
                       },
-                      "options": []
+                      "sustained": null
                     }
                   }
                 }

@@ -30,7 +30,7 @@ fn for_coverage() {
     assert!(Pass1::get_number(&t).is_none());
     assert!(Pass1::get_dynamic_leader(&t).is_none());
     assert!(Pass1::get_note_leader(&t).is_none());
-    assert!(Pass1::get_note_options(&t).is_none());
+    assert!(Pass1::get_articulation(&t).is_none());
     assert!(Pass1::get_string(&t).is_none());
 }
 

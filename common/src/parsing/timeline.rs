@@ -1,4 +1,4 @@
-use crate::parsing::model::{NoteBehavior, NoteOption, Span};
+use crate::parsing::model::Span;
 use crate::parsing::score::{Scale, Tuning};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
@@ -30,12 +30,11 @@ pub enum TimelineData<'s> {
     // Keep these in the order in which they should appear in the timeline relative to other
     // events that happen at the same time.
     Tempo(TempoEvent),
-    NoteOff(NoteOffEvent<'s>),
     Dynamic(DynamicEvent<'s>),
-    NoteOn(NoteOnEvent<'s>),
+    Note(NoteEvent<'s>),
 }
 
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Debug, PartialOrd, PartialEq, Ord, Eq)]
 pub struct WithTime<T: Serialize> {
     pub time: Ratio<u32>,
     pub item: T,
@@ -46,20 +45,20 @@ impl<T: Serialize> WithTime<T> {
     }
 }
 
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct NoteOnEvent<'s> {
+#[derive(Serialize, Debug, Clone, Copy, PartialOrd, PartialEq, Ord, Eq, Hash)]
+pub struct PartNote<'s> {
     pub part: &'s str,
     pub note_number: u32,
+}
+
+#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
+pub struct NoteEvent<'s> {
+    #[serde(flatten)]
+    pub part_note: PartNote<'s>,
     pub value: NoteValue<'s>,
 }
 
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
-pub struct NoteOffEvent<'s> {
-    pub part: &'s str,
-    pub note_number: u32,
-}
-
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
 pub struct NoteValue<'s> {
     pub text: &'s str,
     pub note_name: &'s str,
@@ -67,8 +66,9 @@ pub struct NoteValue<'s> {
     pub absolute_pitch: Pitch,
     /// Scale degrees from base pitch; add to 60 to get tuned MIDI note number
     pub absolute_scale_degree: i32,
-    pub options: Vec<NoteOption>,
-    pub behavior: Option<NoteBehavior>,
+    pub velocity: u8,
+    pub end_time: Ratio<u32>,
+    pub adjusted_end_time: Ratio<u32>,
 }
 
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
@@ -99,7 +99,7 @@ impl<'s> Display for CsoundInstrumentId<'s> {
     }
 }
 
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Debug, PartialOrd, PartialEq, Ord, Eq)]
 pub struct TempoEvent {
     pub bpm: Ratio<u32>,
     pub end_bpm: Option<WithTime<Ratio<u32>>>,

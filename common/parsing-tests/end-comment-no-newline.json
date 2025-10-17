@@ -163,7 +163,7 @@
         "value": {
           "raw": "(>)",
           "t": {
-            "NoteOptions": {
+            "Articulation": {
               "inner_span": [
                 18,
                 19
@@ -414,7 +414,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           8,
@@ -433,7 +433,7 @@
                         "value": "e"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -444,13 +444,15 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": {
-                        "span": [
-                          20,
-                          21
-                        ],
-                        "value": "Sustain"
-                      },
+                      "articulation": [
+                        {
+                          "span": [
+                            18,
+                            19
+                          ],
+                          "value": "Accent"
+                        }
+                      ],
                       "duration": null,
                       "name": {
                         "span": [
@@ -466,14 +468,9 @@
                         ],
                         "value": -3
                       },
-                      "options": [
-                        {
-                          "span": [
-                            18,
-                            19
-                          ],
-                          "value": "Accent"
-                        }
+                      "sustained": [
+                        20,
+                        21
                       ]
                     }
                   }
@@ -524,7 +521,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": {
                         "span": [
                           31,
@@ -543,7 +540,7 @@
                         "value": "c#+"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -554,7 +551,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -564,7 +561,7 @@
                         "value": "f"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 },
@@ -575,7 +572,7 @@
                   ],
                   "value": {
                     "Regular": {
-                      "behavior": null,
+                      "articulation": [],
                       "duration": null,
                       "name": {
                         "span": [
@@ -585,7 +582,7 @@
                         "value": "g"
                       },
                       "octave": null,
-                      "options": []
+                      "sustained": null
                     }
                   }
                 }
