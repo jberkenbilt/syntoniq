@@ -1,4 +1,4 @@
-use anyhow::anyhow;
+use anyhow::{anyhow, bail};
 use num_rational::Ratio;
 use std::collections::btree_map::Entry;
 use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
@@ -251,6 +251,9 @@ impl<'s> CSoundGenerator<'s> {
                         self.content.push_str(&pending_val.command);
                         self.last_note_count.insert(part_number, pending_val);
                     }
+                    if event.time > e.value.adjusted_end_time {
+                        bail!("end time is in the past")
+                    }
                     let duration =
                         ratio_to_rounded_float(e.value.adjusted_end_time - event.time, 3);
                     if e.value.velocity > 0 {
@@ -260,6 +263,7 @@ impl<'s> CSoundGenerator<'s> {
                         off_event.value.velocity = 0;
                         events.insert(Arc::new(TimelineEvent {
                             time: e.value.adjusted_end_time,
+                            repeat_depth: event.repeat_depth,
                             span: event.span,
                             data: TimelineData::Note(off_event),
                         }));
@@ -271,6 +275,18 @@ impl<'s> CSoundGenerator<'s> {
                             &format!("i {instr} {time} {duration} {part_number} {freq} {velocity} ; {note_text} @{offset}\n"),
                         );
                     }
+                }
+                TimelineData::Mark(e) => {
+                    self.content
+                        .push_str(&format!("; mark '{}' @'{}\n", e.label, event.span));
+                }
+                TimelineData::RepeatStart(e) => {
+                    self.content
+                        .push_str(&format!("; repeat start '{}' @'{}\n", e.label, event.span));
+                }
+                TimelineData::RepeatEnd(e) => {
+                    self.content
+                        .push_str(&format!("; repeat end '{}' @'{}\n", e.label, event.span));
                 }
             }
         }

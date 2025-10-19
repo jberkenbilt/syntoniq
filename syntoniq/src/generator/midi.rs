@@ -606,18 +606,24 @@ impl<'s> MidiGenerator<'s> {
             pitch0 *= &cycle_factor;
             cycle -= 1;
         }
+        //TODO: overflow detection is a little shaky. There are likely conditions that will
+        // cause pitch overflow/underflow conditions or very sparse scales are crazy base pitches.
+        let mut hit_max = false;
         for i in 0..128 {
             let pitch = &pitch0 * &scale.pitches[degree as usize];
             let mut v = pitch.midi_tuning().unwrap_or_else(|| {
                 if i < data.midi_offset {
                     vec![0; 3]
                 } else {
+                    // No more cycle advances will happen -- from here, we'll keep repeating
+                    // pitch classes in the top octave.
+                    hit_max = true;
                     vec![127; 3]
                 }
             });
             dump.append(&mut v);
             degree = (degree + 1) % degrees;
-            if degree == 0 {
+            if degree == 0 && !hit_max {
                 pitch0 *= &cycle_factor;
             }
         }
@@ -692,6 +698,7 @@ impl<'s> MidiGenerator<'s> {
                         for (time, bpm) in ramp_rational(e.bpm, end_bpm, event.time, duration) {
                             events.insert(Arc::new(TimelineEvent {
                                 time,
+                                repeat_depth: event.repeat_depth,
                                 span: event.span,
                                 data: TimelineData::Tempo(TempoEvent { bpm, end_bpm: None }),
                             }));
@@ -721,6 +728,7 @@ impl<'s> MidiGenerator<'s> {
                                     event.time + (Ratio::new(ticks, total_ticks) * total_time);
                                 events.insert(Arc::new(TimelineEvent {
                                     time,
+                                    repeat_depth: event.repeat_depth,
                                     span: event.span,
                                     data: TimelineData::Dynamic(DynamicEvent {
                                         text: e.text,
@@ -784,12 +792,16 @@ impl<'s> MidiGenerator<'s> {
                         off.value.velocity = 0;
                         let off_event = Arc::new(TimelineEvent {
                             time: e.value.adjusted_end_time,
+                            repeat_depth: event.repeat_depth,
                             span: event.span,
                             data: TimelineData::Note(off),
                         });
                         events.insert(off_event);
                     }
                 }
+                TimelineData::Mark(_)
+                | TimelineData::RepeatStart(_)
+                | TimelineData::RepeatEnd(_) => {}
             }
         }
         let deltas: Vec<_> = (0..self.tracks.len())

@@ -29,11 +29,13 @@ use_scale(name="5-EDO" part="p1")
 ; switch to the 5-JI scale for p2.
 transpose(written="c" pitch_from="d" part="p2") use_scale(name="5-JI" part="p2")
 
+mark(label="a")
 tempo(bpm=72 start_time=1 end_bpm=96 duration=2)
 [p1.0]  1:p q r s
 [p2.1]  1:p q r u
 [p3.0]  1:a e ~ 1/2:b% b#
   [p3]  64@2< 96@3
+mark(label="b")
 
 ; Exercise scale degree logic more thoroughly by having notes that
 ; extend outside the cycle (beyond b#). This ensures notes are sorted
@@ -56,3 +58,5 @@ use_scale(name="fifths" part="p1") set_base_pitch(absolute=264 part="p1")
 use_scale(name="fifths-3" part="p2") set_base_pitch(absolute=264 part="p2")
 [p1.1] 2/5:c d, e,2 1/5:g~ g 2/5:a,
 [p2.1] 2/5:c!' a! g!'2 e! d!'
+
+repeat(start="a" end="b")

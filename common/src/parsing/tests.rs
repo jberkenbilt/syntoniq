@@ -54,6 +54,7 @@ and the source file in the next window."
     (other-window -1)
   )
 )
+(keymap-global-set "<f9>" #'highlight-next-span)
 ```
 */
 

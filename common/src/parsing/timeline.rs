@@ -20,25 +20,57 @@ pub struct Timeline<'s> {
 #[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
 pub struct TimelineEvent<'s> {
     pub time: Ratio<u32>,
+    pub repeat_depth: usize,
     pub span: Span,
     pub data: TimelineData<'s>,
 }
+impl<'s> TimelineEvent<'s> {
+    pub fn copy_for_repeat(&self, delta: Ratio<u32>) -> Arc<Self> {
+        let mut data = self.data.clone();
+        match &mut data {
+            TimelineData::Tempo(e) => {
+                if let Some(x) = e.end_bpm.as_mut() {
+                    x.time += delta;
+                }
+            }
+            TimelineData::Dynamic(e) => {
+                if let Some(x) = e.end_level.as_mut() {
+                    x.time += delta;
+                }
+            }
+            TimelineData::Note(e) => {
+                e.value.adjusted_end_time += delta;
+                e.value.end_time += delta;
+            }
+            TimelineData::Mark(_) | TimelineData::RepeatStart(_) | TimelineData::RepeatEnd(_) => {}
+        };
+        Arc::new(Self {
+            time: self.time + delta,
+            repeat_depth: self.repeat_depth + 1,
+            span: self.span,
+            data,
+        })
+    }
+}
 
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq)]
 pub enum TimelineData<'s> {
     // Keep these in the order in which they should appear in the timeline relative to other
     // events that happen at the same time and span. (Unusual.)
     Tempo(TempoEvent),
     Dynamic(DynamicEvent<'s>),
     Note(NoteEvent<'s>),
+    Mark(MarkEvent<'s>),
+    RepeatStart(MarkEvent<'s>),
+    RepeatEnd(MarkEvent<'s>),
 }
 
-#[derive(Serialize, Debug, PartialOrd, PartialEq, Ord, Eq)]
-pub struct WithTime<T: Serialize> {
+#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
+pub struct WithTime<T: Serialize + Clone> {
     pub time: Ratio<u32>,
     pub item: T,
 }
-impl<T: Serialize> WithTime<T> {
+impl<T: Serialize + Clone> WithTime<T> {
     pub fn new(time: Ratio<u32>, item: T) -> Self {
         Self { time, item }
     }
@@ -70,7 +102,7 @@ pub struct NoteValue<'s> {
     pub adjusted_end_time: Ratio<u32>,
 }
 
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq)]
 pub struct DynamicEvent<'s> {
     pub text: &'s str,
     pub part: &'s str,
@@ -99,8 +131,40 @@ impl<'s> CsoundInstrumentId<'s> {
     }
 }
 
-#[derive(Serialize, Debug, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
 pub struct TempoEvent {
     pub bpm: Ratio<u32>,
     pub end_bpm: Option<WithTime<Ratio<u32>>>,
+}
+
+#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
+pub struct MarkEvent<'s> {
+    pub label: Cow<'s, str>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::collections::Bound::Included;
+
+    #[test]
+    fn btree_set_iterator_behavior() {
+        // This test is to demonstrate how to use BTreeSet to copy a range of items.
+        let mut s: BTreeSet<(i32, i32)> = Default::default();
+        s.insert((2, 1));
+        s.insert((1, 2));
+        let mark1 = (3, 1);
+        s.insert(mark1);
+        s.insert((2, 2)); // before mark1
+        s.insert((4, 1)); // after mark1
+        let mark2 = (5, 1);
+        s.insert(mark2);
+        s.insert((4, 2)); // after mark1, before mark2
+        s.insert((6, 2)); // after mark2
+        let iter = s.range((Included(mark1), Included(mark2)));
+        assert_eq!(
+            iter.cloned().collect::<Vec<_>>(),
+            [(3, 1), (4, 1), (4, 2), (5, 1)]
+        );
+    }
 }

@@ -1,0 +1,22 @@
+syntoniq(version=1)
+
+; mark/repeat errors
+
+mark(label="a")
+
+[p1.0]  4:c~
+[p1.1]  4:e
+[p1] 32@2<
+
+mark(label="b")
+
+[p1.0]  4:c
+[p1.1]  4:e
+[p1] 96@2
+
+repeat(start="b" end="a") ; end precedes start
+repeat(start="a" end="a") ; end equals start
+repeat(start="a" end="c") ; unknown end
+repeat(start="c" end="a") ; unknown start
+repeat(start="a" end="b") ; unresolved ties and dynamics
+repeat(start="a" end="b") ; error messages should repeat

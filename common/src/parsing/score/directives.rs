@@ -203,7 +203,7 @@ impl<'s> CsoundInstrument<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Set tempo, with possible accelerando or rallentando (gradual change).
+/// Set tempo, with possible accelerando or ritardando (gradual change).
 pub struct Tempo<'s> {
     pub _s: &'s (),
     pub span: Span,
@@ -234,6 +234,35 @@ impl<'s> Tempo<'s> {
 }
 
 #[derive(FromRawDirective)]
+/// Mark a moment in the score. The mark may be used for repeats or to generate a subset of musical
+/// output. There are no restrictions around the placement of marks, but there are restrictions
+/// on what marks may be used as repeat delimiters. See the `repeat` directive.
+pub struct Mark<'s> {
+    pub span: Span,
+    /// The mark's label
+    pub label: Spanned<Cow<'s, str>>,
+}
+impl<'s> Mark<'s> {
+    pub fn validate(&mut self, _diags: &Diagnostics) {}
+}
+
+#[derive(FromRawDirective)]
+/// Repeat a section of the timeline delimited by two marks. The start mark must strictly precede
+/// the end mark. No tied notes or pending dynamic changes may be unresolved at the point of the
+/// end mark.
+pub struct Repeat<'s> {
+    pub span: Span,
+    /// Label of mark at the beginning of the repeated section
+    pub start: Spanned<Cow<'s, str>>,
+    /// Label of mark at the end of the repeated section
+    pub end: Spanned<Cow<'s, str>>,
+    pub times: Option<Spanned<u32>>,
+}
+impl<'s> Repeat<'s> {
+    pub fn validate(&mut self, _diags: &Diagnostics) {}
+}
+
+#[derive(FromRawDirective)]
 pub enum Directive<'s> {
     Syntoniq(Syntoniq<'s>),
     DefineScale(DefineScale<'s>),
@@ -244,4 +273,6 @@ pub enum Directive<'s> {
     MidiInstrument(MidiInstrument<'s>),
     CsoundInstrument(CsoundInstrument<'s>),
     Tempo(Tempo<'s>),
+    Mark(Mark<'s>),
+    Repeat(Repeat<'s>),
 }

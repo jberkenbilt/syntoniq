@@ -1,0 +1,3090 @@
+[
+  {
+    "Ok": [
+      {
+        "span": [
+          0,
+          8
+        ],
+        "value": {
+          "raw": "syntoniq",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          8,
+          9
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          9,
+          16
+        ],
+        "value": {
+          "raw": "version",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          16,
+          17
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          17,
+          18
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  17,
+                  18
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          18,
+          19
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          19,
+          20
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          20,
+          21
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          21,
+          41
+        ],
+        "value": {
+          "raw": "; mark/repeat errors",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          41,
+          42
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          42,
+          43
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          43,
+          47
+        ],
+        "value": {
+          "raw": "mark",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          47,
+          48
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          48,
+          53
+        ],
+        "value": {
+          "raw": "label",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          53,
+          54
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          54,
+          57
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                55,
+                56
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          57,
+          58
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          58,
+          59
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          59,
+          60
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          60,
+          66
+        ],
+        "value": {
+          "raw": "[p1.0]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                61,
+                63
+              ],
+              "note": {
+                "span": [
+                  64,
+                  65
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          66,
+          68
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          68,
+          69
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  68,
+                  69
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          69,
+          70
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          70,
+          71
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          71,
+          72
+        ],
+        "value": {
+          "raw": "~",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          72,
+          73
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          73,
+          79
+        ],
+        "value": {
+          "raw": "[p1.1]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                74,
+                76
+              ],
+              "note": {
+                "span": [
+                  77,
+                  78
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          79,
+          81
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          81,
+          82
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  81,
+                  82
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          82,
+          83
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          83,
+          84
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          84,
+          85
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          85,
+          89
+        ],
+        "value": {
+          "raw": "[p1]",
+          "t": {
+            "DynamicLeader": {
+              "name_span": [
+                86,
+                88
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          89,
+          90
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          90,
+          92
+        ],
+        "value": {
+          "raw": "32",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  90,
+                  92
+                ],
+                "value": 32
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          92,
+          93
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          93,
+          94
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  93,
+                  94
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          94,
+          95
+        ],
+        "value": {
+          "raw": "<",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          95,
+          96
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          96,
+          97
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          97,
+          101
+        ],
+        "value": {
+          "raw": "mark",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          101,
+          102
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          102,
+          107
+        ],
+        "value": {
+          "raw": "label",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          107,
+          108
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          108,
+          111
+        ],
+        "value": {
+          "raw": "\"b\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                109,
+                110
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          111,
+          112
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          112,
+          113
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          113,
+          114
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          114,
+          120
+        ],
+        "value": {
+          "raw": "[p1.0]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                115,
+                117
+              ],
+              "note": {
+                "span": [
+                  118,
+                  119
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          120,
+          122
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          122,
+          123
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  122,
+                  123
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          123,
+          124
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          124,
+          125
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          125,
+          126
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          126,
+          132
+        ],
+        "value": {
+          "raw": "[p1.1]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                127,
+                129
+              ],
+              "note": {
+                "span": [
+                  130,
+                  131
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          132,
+          134
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          134,
+          135
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  134,
+                  135
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          135,
+          136
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          136,
+          137
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          137,
+          138
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          138,
+          142
+        ],
+        "value": {
+          "raw": "[p1]",
+          "t": {
+            "DynamicLeader": {
+              "name_span": [
+                139,
+                141
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          142,
+          143
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          143,
+          145
+        ],
+        "value": {
+          "raw": "96",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  143,
+                  145
+                ],
+                "value": 96
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          145,
+          146
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          146,
+          147
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  146,
+                  147
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          147,
+          148
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          148,
+          149
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          149,
+          155
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          155,
+          156
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          156,
+          161
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          161,
+          162
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          162,
+          165
+        ],
+        "value": {
+          "raw": "\"b\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                163,
+                164
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          165,
+          166
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          166,
+          169
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          169,
+          170
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          170,
+          173
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                171,
+                172
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          173,
+          174
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          174,
+          175
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          175,
+          195
+        ],
+        "value": {
+          "raw": "; end precedes start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          195,
+          196
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          196,
+          202
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          202,
+          203
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          203,
+          208
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          208,
+          209
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          209,
+          212
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                210,
+                211
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          212,
+          213
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          213,
+          216
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          216,
+          217
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          217,
+          220
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                218,
+                219
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          220,
+          221
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          221,
+          222
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          222,
+          240
+        ],
+        "value": {
+          "raw": "; end equals start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          240,
+          241
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          241,
+          247
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          247,
+          248
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          248,
+          253
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          253,
+          254
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          254,
+          257
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                255,
+                256
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          257,
+          258
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          258,
+          261
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          261,
+          262
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          262,
+          265
+        ],
+        "value": {
+          "raw": "\"c\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                263,
+                264
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          265,
+          266
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          266,
+          267
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          267,
+          280
+        ],
+        "value": {
+          "raw": "; unknown end",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          280,
+          281
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          281,
+          287
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          287,
+          288
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          288,
+          293
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          293,
+          294
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          294,
+          297
+        ],
+        "value": {
+          "raw": "\"c\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                295,
+                296
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          297,
+          298
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          298,
+          301
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          301,
+          302
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          302,
+          305
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                303,
+                304
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          305,
+          306
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          306,
+          307
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          307,
+          322
+        ],
+        "value": {
+          "raw": "; unknown start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          322,
+          323
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          323,
+          329
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          329,
+          330
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          330,
+          335
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          335,
+          336
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          336,
+          339
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                337,
+                338
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          339,
+          340
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          340,
+          343
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          343,
+          344
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          344,
+          347
+        ],
+        "value": {
+          "raw": "\"b\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                345,
+                346
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          347,
+          348
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          348,
+          349
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          349,
+          379
+        ],
+        "value": {
+          "raw": "; unresolved ties and dynamics",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          379,
+          380
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          380,
+          386
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          386,
+          387
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          387,
+          392
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          392,
+          393
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          393,
+          396
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                394,
+                395
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          396,
+          397
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          397,
+          400
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          400,
+          401
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          401,
+          404
+        ],
+        "value": {
+          "raw": "\"b\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                402,
+                403
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          404,
+          405
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          405,
+          406
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          406,
+          436
+        ],
+        "value": {
+          "raw": "; error messages should repeat",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          436,
+          437
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      }
+    ]
+  },
+  {
+    "Ok": [
+      {
+        "span": [
+          0,
+          19
+        ],
+        "value": {
+          "raw": "syntoniq(version=1)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  0,
+                  8
+                ],
+                "value": "syntoniq"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        9,
+                        16
+                      ],
+                      "value": "version"
+                    },
+                    "value": {
+                      "span": [
+                        17,
+                        18
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          19,
+          20
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          20,
+          21
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          21,
+          41
+        ],
+        "value": {
+          "raw": "; mark/repeat errors",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          41,
+          42
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          42,
+          43
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          43,
+          58
+        ],
+        "value": {
+          "raw": "mark(label=\"a\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  43,
+                  47
+                ],
+                "value": "mark"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        48,
+                        53
+                      ],
+                      "value": "label"
+                    },
+                    "value": {
+                      "span": [
+                        54,
+                        57
+                      ],
+                      "value": {
+                        "String": "a"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          58,
+          59
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          59,
+          60
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          60,
+          73
+        ],
+        "value": {
+          "raw": "[p1.0]  4:c~\n",
+          "t": {
+            "NoteLine": {
+              "comment": null,
+              "leader": {
+                "span": [
+                  60,
+                  66
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      61,
+                      63
+                    ],
+                    "value": "p1"
+                  },
+                  "note": {
+                    "span": [
+                      64,
+                      65
+                    ],
+                    "value": 0
+                  }
+                }
+              },
+              "notes": [
+                {
+                  "span": [
+                    68,
+                    72
+                  ],
+                  "value": {
+                    "Regular": {
+                      "articulation": [],
+                      "duration": {
+                        "span": [
+                          68,
+                          69
+                        ],
+                        "value": [
+                          4,
+                          1
+                        ]
+                      },
+                      "name": {
+                        "span": [
+                          70,
+                          71
+                        ],
+                        "value": "c"
+                      },
+                      "octave": null,
+                      "sustained": [
+                        71,
+                        72
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          73,
+          85
+        ],
+        "value": {
+          "raw": "[p1.1]  4:e\n",
+          "t": {
+            "NoteLine": {
+              "comment": null,
+              "leader": {
+                "span": [
+                  73,
+                  79
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      74,
+                      76
+                    ],
+                    "value": "p1"
+                  },
+                  "note": {
+                    "span": [
+                      77,
+                      78
+                    ],
+                    "value": 1
+                  }
+                }
+              },
+              "notes": [
+                {
+                  "span": [
+                    81,
+                    84
+                  ],
+                  "value": {
+                    "Regular": {
+                      "articulation": [],
+                      "duration": {
+                        "span": [
+                          81,
+                          82
+                        ],
+                        "value": [
+                          4,
+                          1
+                        ]
+                      },
+                      "name": {
+                        "span": [
+                          83,
+                          84
+                        ],
+                        "value": "e"
+                      },
+                      "octave": null,
+                      "sustained": null
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          85,
+          96
+        ],
+        "value": {
+          "raw": "[p1] 32@2<\n",
+          "t": {
+            "DynamicLine": {
+              "comment": null,
+              "dynamics": [
+                {
+                  "span": [
+                    90,
+                    95
+                  ],
+                  "value": {
+                    "Regular": {
+                      "change": {
+                        "span": [
+                          94,
+                          95
+                        ],
+                        "value": "Crescendo"
+                      },
+                      "level": {
+                        "span": [
+                          90,
+                          92
+                        ],
+                        "value": 32
+                      },
+                      "position": {
+                        "span": [
+                          93,
+                          94
+                        ],
+                        "value": [
+                          2,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              ],
+              "leader": {
+                "span": [
+                  85,
+                  89
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      86,
+                      88
+                    ],
+                    "value": "p1"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          96,
+          97
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          97,
+          112
+        ],
+        "value": {
+          "raw": "mark(label=\"b\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  97,
+                  101
+                ],
+                "value": "mark"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        102,
+                        107
+                      ],
+                      "value": "label"
+                    },
+                    "value": {
+                      "span": [
+                        108,
+                        111
+                      ],
+                      "value": {
+                        "String": "b"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          112,
+          113
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          113,
+          114
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          114,
+          126
+        ],
+        "value": {
+          "raw": "[p1.0]  4:c\n",
+          "t": {
+            "NoteLine": {
+              "comment": null,
+              "leader": {
+                "span": [
+                  114,
+                  120
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      115,
+                      117
+                    ],
+                    "value": "p1"
+                  },
+                  "note": {
+                    "span": [
+                      118,
+                      119
+                    ],
+                    "value": 0
+                  }
+                }
+              },
+              "notes": [
+                {
+                  "span": [
+                    122,
+                    125
+                  ],
+                  "value": {
+                    "Regular": {
+                      "articulation": [],
+                      "duration": {
+                        "span": [
+                          122,
+                          123
+                        ],
+                        "value": [
+                          4,
+                          1
+                        ]
+                      },
+                      "name": {
+                        "span": [
+                          124,
+                          125
+                        ],
+                        "value": "c"
+                      },
+                      "octave": null,
+                      "sustained": null
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          126,
+          138
+        ],
+        "value": {
+          "raw": "[p1.1]  4:e\n",
+          "t": {
+            "NoteLine": {
+              "comment": null,
+              "leader": {
+                "span": [
+                  126,
+                  132
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      127,
+                      129
+                    ],
+                    "value": "p1"
+                  },
+                  "note": {
+                    "span": [
+                      130,
+                      131
+                    ],
+                    "value": 1
+                  }
+                }
+              },
+              "notes": [
+                {
+                  "span": [
+                    134,
+                    137
+                  ],
+                  "value": {
+                    "Regular": {
+                      "articulation": [],
+                      "duration": {
+                        "span": [
+                          134,
+                          135
+                        ],
+                        "value": [
+                          4,
+                          1
+                        ]
+                      },
+                      "name": {
+                        "span": [
+                          136,
+                          137
+                        ],
+                        "value": "e"
+                      },
+                      "octave": null,
+                      "sustained": null
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          138,
+          148
+        ],
+        "value": {
+          "raw": "[p1] 96@2\n",
+          "t": {
+            "DynamicLine": {
+              "comment": null,
+              "dynamics": [
+                {
+                  "span": [
+                    143,
+                    147
+                  ],
+                  "value": {
+                    "Regular": {
+                      "change": null,
+                      "level": {
+                        "span": [
+                          143,
+                          145
+                        ],
+                        "value": 96
+                      },
+                      "position": {
+                        "span": [
+                          146,
+                          147
+                        ],
+                        "value": [
+                          2,
+                          1
+                        ]
+                      }
+                    }
+                  }
+                }
+              ],
+              "leader": {
+                "span": [
+                  138,
+                  142
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      139,
+                      141
+                    ],
+                    "value": "p1"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          148,
+          149
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          149,
+          174
+        ],
+        "value": {
+          "raw": "repeat(start=\"b\" end=\"a\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  149,
+                  155
+                ],
+                "value": "repeat"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        156,
+                        161
+                      ],
+                      "value": "start"
+                    },
+                    "value": {
+                      "span": [
+                        162,
+                        165
+                      ],
+                      "value": {
+                        "String": "b"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        166,
+                        169
+                      ],
+                      "value": "end"
+                    },
+                    "value": {
+                      "span": [
+                        170,
+                        173
+                      ],
+                      "value": {
+                        "String": "a"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          174,
+          175
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          175,
+          195
+        ],
+        "value": {
+          "raw": "; end precedes start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          195,
+          196
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          196,
+          221
+        ],
+        "value": {
+          "raw": "repeat(start=\"a\" end=\"a\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  196,
+                  202
+                ],
+                "value": "repeat"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        203,
+                        208
+                      ],
+                      "value": "start"
+                    },
+                    "value": {
+                      "span": [
+                        209,
+                        212
+                      ],
+                      "value": {
+                        "String": "a"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        213,
+                        216
+                      ],
+                      "value": "end"
+                    },
+                    "value": {
+                      "span": [
+                        217,
+                        220
+                      ],
+                      "value": {
+                        "String": "a"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          221,
+          222
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          222,
+          240
+        ],
+        "value": {
+          "raw": "; end equals start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          240,
+          241
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          241,
+          266
+        ],
+        "value": {
+          "raw": "repeat(start=\"a\" end=\"c\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  241,
+                  247
+                ],
+                "value": "repeat"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        248,
+                        253
+                      ],
+                      "value": "start"
+                    },
+                    "value": {
+                      "span": [
+                        254,
+                        257
+                      ],
+                      "value": {
+                        "String": "a"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        258,
+                        261
+                      ],
+                      "value": "end"
+                    },
+                    "value": {
+                      "span": [
+                        262,
+                        265
+                      ],
+                      "value": {
+                        "String": "c"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          266,
+          267
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          267,
+          280
+        ],
+        "value": {
+          "raw": "; unknown end",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          280,
+          281
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          281,
+          306
+        ],
+        "value": {
+          "raw": "repeat(start=\"c\" end=\"a\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  281,
+                  287
+                ],
+                "value": "repeat"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        288,
+                        293
+                      ],
+                      "value": "start"
+                    },
+                    "value": {
+                      "span": [
+                        294,
+                        297
+                      ],
+                      "value": {
+                        "String": "c"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        298,
+                        301
+                      ],
+                      "value": "end"
+                    },
+                    "value": {
+                      "span": [
+                        302,
+                        305
+                      ],
+                      "value": {
+                        "String": "a"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          306,
+          307
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          307,
+          322
+        ],
+        "value": {
+          "raw": "; unknown start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          322,
+          323
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          323,
+          348
+        ],
+        "value": {
+          "raw": "repeat(start=\"a\" end=\"b\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  323,
+                  329
+                ],
+                "value": "repeat"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        330,
+                        335
+                      ],
+                      "value": "start"
+                    },
+                    "value": {
+                      "span": [
+                        336,
+                        339
+                      ],
+                      "value": {
+                        "String": "a"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        340,
+                        343
+                      ],
+                      "value": "end"
+                    },
+                    "value": {
+                      "span": [
+                        344,
+                        347
+                      ],
+                      "value": {
+                        "String": "b"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          348,
+          349
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          349,
+          379
+        ],
+        "value": {
+          "raw": "; unresolved ties and dynamics",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          379,
+          380
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          380,
+          405
+        ],
+        "value": {
+          "raw": "repeat(start=\"a\" end=\"b\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  380,
+                  386
+                ],
+                "value": "repeat"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        387,
+                        392
+                      ],
+                      "value": "start"
+                    },
+                    "value": {
+                      "span": [
+                        393,
+                        396
+                      ],
+                      "value": {
+                        "String": "a"
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        397,
+                        400
+                      ],
+                      "value": "end"
+                    },
+                    "value": {
+                      "span": [
+                        401,
+                        404
+                      ],
+                      "value": {
+                        "String": "b"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          405,
+          406
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          406,
+          436
+        ],
+        "value": {
+          "raw": "; error messages should repeat",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          436,
+          437
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      }
+    ]
+  },
+  {
+    "Err": {
+      "list": [
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                108,
+                111
+              ],
+              "value": "here is the start"
+            },
+            {
+              "span": [
+                54,
+                57
+              ],
+              "value": "here is the end"
+            }
+          ],
+          "message": {
+            "span": [
+              149,
+              155
+            ],
+            "value": "for this repeat, the start mark does not precede the end mark"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                54,
+                57
+              ],
+              "value": "here is the start"
+            },
+            {
+              "span": [
+                54,
+                57
+              ],
+              "value": "here is the end"
+            }
+          ],
+          "message": {
+            "span": [
+              196,
+              202
+            ],
+            "value": "for this repeat, the start mark does not precede the end mark"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              262,
+              265
+            ],
+            "value": "mark 'c' is unknown"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              294,
+              297
+            ],
+            "value": "mark 'c' is unknown"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                68,
+                72
+              ],
+              "value": "this tie is unresolved"
+            }
+          ],
+          "message": {
+            "span": [
+              323,
+              329
+            ],
+            "value": "notes may not be tied across repeats"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                90,
+                95
+              ],
+              "value": "this dynamic change is unresolved"
+            }
+          ],
+          "message": {
+            "span": [
+              323,
+              329
+            ],
+            "value": "dynamic changes may not carry across repeats"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                68,
+                72
+              ],
+              "value": "this tie is unresolved"
+            }
+          ],
+          "message": {
+            "span": [
+              380,
+              386
+            ],
+            "value": "notes may not be tied across repeats"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                90,
+                95
+              ],
+              "value": "this dynamic change is unresolved"
+            }
+          ],
+          "message": {
+            "span": [
+              380,
+              386
+            ],
+            "value": "dynamic changes may not carry across repeats"
+          }
+        }
+      ]
+    }
+  }
+]

@@ -1,10 +1,10 @@
 # TODO
 
-* Add a per-part amplitude factor for MIDI
-* Mark and copy:
-  * `mark(label="a")`
-  * `copy(from="a" to="b" times=3)`
-  * should create and copy timeline events
+* Add CLI for start/end at mark
+* Improve tempo logic
+  * Detect overlapping accel/rit
+  * Detect accel/rit in flight at repeat bounary
+* CSound: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation adjustment directives:
   * four factors: default of each plus modifier for each option
     * default velocity (72)
@@ -16,6 +16,11 @@
   * generate tuning files for midi by port and channel
   * generate summaries of part -> track/port/channel, etc.
 * Doc cleanup
+
+Recommended timidity:
+```
+timidity -A100,100a
+```
 
 Note: not tested: > 127 tunings, > 16 channels, sound font banks, a few more minor cases
 
@@ -609,11 +614,10 @@ use_instrument(name=... part=...) ; default or within a part
 
 ```
 mark(name="x")
-repeat(from="mark1" to="mark2")
-skip_repeats()
+repeat(start="mark1" end="mark2")
 ```
 
-It would be useful to be able to play from a mark to another mark, probably just as command-line arguments (`--start-at-mark`, `--end-at-mark`). We can maintain full state so notes that are still on are playing, etc.
+It would be useful to be able to play from a mark to another mark, probably just as command-line arguments (`--start-at-mark`, `--end-at-mark`, `--skip-repeats`). We can maintain full state so notes that are still on are playing, etc.
 
 It would be useful to be able to generate data about time and/or beat offsets for lines and marks.
 

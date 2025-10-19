@@ -1,0 +1,28 @@
+syntoniq(version=1)
+
+tempo(bpm=120)
+
+; Intro
+[p1.0] 1:g f d
+
+; Verse
+mark(label="verse-start") ; wraps verse+chorus
+[p1.0] 1:c e g f e d | c e g 2:c 1:~
+
+; Chorus
+mark(label="chorus-main-start")
+[p1.0] 1:c e g
+mark(label="chorus-main-end")
+; First ending
+[p1.0] 2:a 1:~
+; Second time
+repeat(start="chorus-main-start" end="chorus-main-end")
+; Second ending
+[p1.0] 2:c 1:~
+mark(label="verse-end")
+
+; Repeat verse+chorus
+repeat(start="verse-start" end="verse-end")
+
+; End
+[p1.0] 2:g 1:g f e d | 4:c

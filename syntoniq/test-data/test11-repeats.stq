@@ -1,0 +1,58 @@
+syntoniq(version=1)
+
+define_scale(name="alt") <<
+  ^0|12 p
+  ^7|12 q
+>>
+
+tempo(bpm=45)
+
+; D major
+[p1.0] 1:d  ~
+[p1.1] 1:f# ~
+[p1.2] 1:a  ~
+
+; Repeated section -- ensure pitches match first and second time
+
+mark(label="a")
+use_scale(name="alt" part="p1")
+; low c, middle c
+[p1.0] 1:p,
+[p2.0] 1:c
+
+reset_tuning()
+; e minor
+[p1.0] 1:e
+[p1.1] 1:g
+[p1.2] 1:b
+
+; low g, middle g
+use_scale(name="alt")
+[p1.0] 1:q,
+[p2.0] 1:q
+mark(label="b")
+
+use_scale(name="default" part="p2")
+; middle g, high g
+[p1.0] 1:~ q  ~
+[p2.0] 1:~ g' ~
+
+; Do repeat. Notes inside are still fine, and outer area's tuning are
+; intact.
+
+mark(label="c")
+repeat(start="a" end="b")
+
+; middle c, high c
+[p1.0] 1:~ p  ~
+[p2.0] 1:~ c' ~
+mark(label="d")
+
+; Repeat the whole thing again, including the ending c pair.
+repeat(start="c" end="d")
+
+; End the whole thing with a new interval.
+
+; low c, middle c
+[p1.0] 1:p,
+[p2.0] 1:c

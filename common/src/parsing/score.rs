@@ -7,14 +7,15 @@ use crate::parsing::model::{
 use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
+use std::collections::Bound::Excluded;
 use std::collections::{HashMap, HashSet};
 use std::sync::{Arc, LazyLock};
 use std::{cmp, mem};
 
 mod directives;
 use crate::parsing::{
-    CsoundInstrumentId, DynamicEvent, MidiInstrumentNumber, NoteEvent, NoteValue, PartNote,
-    TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, score_helpers,
+    CsoundInstrumentId, DynamicEvent, MarkEvent, MidiInstrumentNumber, NoteEvent, NoteValue,
+    PartNote, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, score_helpers,
 };
 use crate::pitch::Pitch;
 pub use directives::*;
@@ -35,7 +36,14 @@ pub struct Score<'s> {
     midi_instruments: HashMap<Cow<'s, str>, Span>,
     csound_instruments: HashMap<Cow<'s, str>, Span>,
     known_parts: HashSet<Cow<'s, str>>,
+    marks: HashMap<Cow<'s, str>, MarkData<'s>>,
     timeline: Timeline<'s>,
+}
+
+pub struct MarkData<'s> {
+    event: Arc<TimelineEvent<'s>>,
+    pending_dynamic_changes: HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
+    pending_notes: HashMap<PartNote<'s>, WithTime<Spanned<NoteEvent<'s>>>>,
 }
 
 #[derive(Serialize)]
@@ -612,23 +620,23 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                             DynamicChange::Crescendo => {
                                 if r.level.value <= last_level.value {
                                     self.diags.push(
-                                    Diagnostic::new(
-                                        code::SCORE,
-                                        r.level.span,
-                                        "this dynamic level must be larger than the previous one, which contained a crescendo",
-                                    ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
-                                );
+                                        Diagnostic::new(
+                                            code::SCORE,
+                                            r.level.span,
+                                            "this dynamic level must be larger than the previous one, which contained a crescendo",
+                                        ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
+                                    );
                                 }
                             }
                             DynamicChange::Diminuendo => {
                                 if r.level.value >= last_level.value {
                                     self.diags.push(
-                                    Diagnostic::new(
-                                        code::SCORE,
-                                        r.level.span,
-                                        "this dynamic level must be less than the previous one, which contained a diminuendo",
-                                    ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
-                                );
+                                        Diagnostic::new(
+                                            code::SCORE,
+                                            r.level.span,
+                                            "this dynamic level must be less than the previous one, which contained a diminuendo",
+                                        ).with_context(last_change_ref.item.span, "here is the previous dynamic for this part")
+                                    );
                                 }
                             }
                         }
@@ -764,6 +772,7 @@ impl<'s> Score<'s> {
             midi_instruments: Default::default(),
             csound_instruments: Default::default(),
             known_parts: Default::default(),
+            marks: Default::default(),
             timeline,
         }
     }
@@ -777,9 +786,13 @@ impl<'s> Score<'s> {
     }
 
     fn insert_event(&mut self, time: Ratio<u32>, span: Span, data: TimelineData<'s>) {
-        self.timeline
-            .events
-            .insert(Arc::new(TimelineEvent { time, span, data }));
+        // This is not the only way items get inserted into the timeline.
+        self.timeline.events.insert(Arc::new(TimelineEvent {
+            time,
+            repeat_depth: 0,
+            span,
+            data,
+        }));
     }
 
     fn insert_note(&mut self, mut note: WithTime<Spanned<NoteEvent<'s>>>) {
@@ -827,6 +840,8 @@ impl<'s> Score<'s> {
             Directive::MidiInstrument(x) => self.midi_instrument(diags, x),
             Directive::CsoundInstrument(x) => self.csound_instrument(diags, x),
             Directive::Tempo(x) => self.tempo(x),
+            Directive::Mark(x) => self.mark(diags, x),
+            Directive::Repeat(x) => self.repeat(diags, x),
         }
     }
 
@@ -1079,8 +1094,7 @@ impl<'s> Score<'s> {
 
     fn reset_tuning(&mut self, reset_tuning: ResetTuning<'s>) {
         if reset_tuning.part.is_empty() {
-            let mut old = HashMap::new();
-            mem::swap(&mut old, &mut self.tunings);
+            self.tunings.clear();
         } else {
             let mut parts = Vec::new();
             for p in reset_tuning.part {
@@ -1146,10 +1160,121 @@ impl<'s> Score<'s> {
         ));
     }
 
+    pub fn mark(&mut self, diags: &Diagnostics, directive: Mark<'s>) {
+        let event = Arc::new(TimelineEvent {
+            time: self.line_start_time,
+            repeat_depth: 0,
+            span: directive.label.span,
+            data: TimelineData::Mark(MarkEvent {
+                label: directive.label.value.clone(),
+            }),
+        });
+        let mark_data = MarkData {
+            event: event.clone(),
+            pending_dynamic_changes: self.pending_dynamic_changes.clone(),
+            pending_notes: self.pending_notes.clone(),
+        };
+        if let Some(old) = self.marks.insert(directive.label.value.clone(), mark_data) {
+            diags.push(
+                Diagnostic::new(
+                    code::USAGE,
+                    directive.label.span,
+                    format!("mark '{}' has already appeared", directive.label.value),
+                )
+                .with_context(old.event.span, "here is the previous occurrence"),
+            );
+        }
+        self.timeline.events.insert(event);
+    }
+
+    pub fn repeat(&mut self, diags: &Diagnostics, directive: Repeat<'s>) {
+        let start = self.marks.get(&directive.start.value);
+        let end = self.marks.get(&directive.end.value);
+        for (mark, param) in [(start, &directive.start), (end, &directive.end)] {
+            if mark.is_none() {
+                diags.err(
+                    code::SCORE,
+                    param.span,
+                    format!("mark '{}' is unknown", param.value),
+                );
+            }
+        }
+        let Some(start) = start else {
+            return;
+        };
+        let Some(end) = end else {
+            return;
+        };
+        if !end.pending_notes.is_empty() {
+            let mut err = Diagnostic::new(
+                code::SCORE,
+                directive.span,
+                "notes may not be tied across repeats",
+            );
+            for note in end.pending_notes.values() {
+                err = err.with_context(note.item.span, "this tie is unresolved");
+            }
+            diags.push(err);
+        }
+        if !end.pending_dynamic_changes.is_empty() {
+            let mut err = Diagnostic::new(
+                code::SCORE,
+                directive.span,
+                "dynamic changes may not carry across repeats",
+            );
+            for note in end.pending_dynamic_changes.values() {
+                err = err.with_context(note.item.span, "this dynamic change is unresolved");
+            }
+            diags.push(err);
+        }
+        // TODO: check pending tempo changes?
+        if start.event.time >= end.event.time {
+            diags.push(
+                Diagnostic::new(
+                    code::SCORE,
+                    directive.span,
+                    "for this repeat, the start mark does not precede the end mark",
+                )
+                .with_context(start.event.span, "here is the start")
+                .with_context(end.event.span, "here is the end"),
+            );
+            // No point in further work at this point.
+            return;
+        }
+        let start = start.event.clone();
+        let end = end.event.clone();
+        // Copy timeline events, adjusting the time.
+        let duration = end.time - start.time;
+        let delta = self.line_start_time - start.time;
+        self.insert_event(
+            self.line_start_time,
+            directive.start.span,
+            TimelineData::RepeatStart(MarkEvent {
+                label: directive.start.value,
+            }),
+        );
+        let to_copy: Vec<_> = self
+            .timeline
+            .events
+            .range((Excluded(start), Excluded(end)))
+            .cloned()
+            .collect();
+        for event in to_copy {
+            self.timeline.events.insert(event.copy_for_repeat(delta));
+        }
+        self.line_start_time += duration;
+        self.insert_event(
+            self.line_start_time,
+            directive.end.span,
+            TimelineData::RepeatEnd(MarkEvent {
+                label: directive.end.value,
+            }),
+        );
+    }
+
     pub fn do_final_checks(&mut self, diags: &Diagnostics) {
         // Complete any pending notes.
-        let mut pending_notes = HashMap::new();
-        mem::swap(&mut pending_notes, &mut self.pending_notes);
+        let pending_notes = mem::take(&mut self.pending_notes);
         for pending in pending_notes.into_values() {
             self.insert_note(pending);
         }
