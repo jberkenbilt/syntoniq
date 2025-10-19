@@ -7,10 +7,12 @@ tempo(bpm=120)
 
 ; Verse
 mark(label="verse-start") ; wraps verse+chorus
+tempo(bpm=150 end_bpm=160 duration=6)
 [p1.0] 1:c e g f e d | c e g 2:c 1:~
 
 ; Chorus
 mark(label="chorus-main-start")
+tempo(bpm=180)
 [p1.0] 1:c e g
 mark(label="chorus-main-end")
 ; First ending

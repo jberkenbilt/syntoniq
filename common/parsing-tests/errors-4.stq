@@ -1,9 +1,14 @@
 syntoniq(version=1)
 
+; nested tempo
+
+tempo(bpm=60 end_bpm=80 duration=2)
+tempo(bpm=90 start_time=1) ; overlaps by a beat
+
 ; mark/repeat errors
 
 mark(label="a")
-
+tempo(bpm=60 start_time=3 end_bpm=80 duration=2.5) ; extends a beat past "b"
 [p1.0]  4:c~
 [p1.1]  4:e
 [p1] 32@2<

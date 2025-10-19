@@ -32,6 +32,7 @@ pub struct Score<'s> {
     pending_dynamic_changes: HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
     pending_notes: HashMap<PartNote<'s>, WithTime<Spanned<NoteEvent<'s>>>>,
     pending_tempo: Option<WithTime<Spanned<TempoEvent>>>,
+    tempo_in_flight_until: Option<Spanned<Ratio<u32>>>,
     line_start_time: Ratio<u32>,
     midi_instruments: HashMap<Cow<'s, str>, Span>,
     csound_instruments: HashMap<Cow<'s, str>, Span>,
@@ -768,6 +769,7 @@ impl<'s> Score<'s> {
             pending_dynamic_changes: Default::default(),
             pending_notes: Default::default(),
             pending_tempo,
+            tempo_in_flight_until: None,
             line_start_time: Ratio::from_integer(0),
             midi_instruments: Default::default(),
             csound_instruments: Default::default(),
@@ -839,7 +841,7 @@ impl<'s> Score<'s> {
             Directive::ResetTuning(x) => self.reset_tuning(x),
             Directive::MidiInstrument(x) => self.midi_instrument(diags, x),
             Directive::CsoundInstrument(x) => self.csound_instrument(diags, x),
-            Directive::Tempo(x) => self.tempo(x),
+            Directive::Tempo(x) => self.tempo(diags, x),
             Directive::Mark(x) => self.mark(diags, x),
             Directive::Repeat(x) => self.repeat(diags, x),
         }
@@ -1137,15 +1139,33 @@ impl<'s> Score<'s> {
         );
     }
 
-    pub fn tempo(&mut self, directive: Tempo<'s>) {
+    pub fn tempo(&mut self, diags: &Diagnostics, directive: Tempo<'s>) {
         let offset = directive
             .start_time
             .map(Spanned::value)
             .unwrap_or(Ratio::from_integer(0));
         let start_time = self.line_start_time + offset;
+        if let Some(in_flight) = self.tempo_in_flight_until.as_ref() {
+            if in_flight.value > start_time {
+                let remaining = in_flight.value - start_time;
+                diags.push(
+                    Diagnostic::new(
+                        code::SCORE,
+                        directive.span,
+                        format!(
+                            "a tempo change is already in flight; beats until done: {remaining}"
+                        ),
+                    )
+                    .with_context(in_flight.span, "here is the previous tempo directive"),
+                );
+            } else {
+                self.tempo_in_flight_until.take();
+            }
+        }
         // Validate has verified that end_level and duration are both present or both absent.
         let end_bpm = directive.end_bpm.map(|level| {
             let end_time = directive.duration.unwrap().value + start_time;
+            self.tempo_in_flight_until = Some(Spanned::new(directive.span, end_time));
             WithTime::new(end_time, level.value)
         });
         self.pending_tempo = Some(WithTime::new(
@@ -1246,6 +1266,7 @@ impl<'s> Score<'s> {
         // Copy timeline events, adjusting the time.
         let duration = end.time - start.time;
         let delta = self.line_start_time - start.time;
+        let end_time = self.line_start_time + duration;
         self.insert_event(
             self.line_start_time,
             directive.start.span,
@@ -1260,16 +1281,31 @@ impl<'s> Score<'s> {
             .cloned()
             .collect();
         for event in to_copy {
-            self.timeline.events.insert(event.copy_for_repeat(delta));
+            let new_event = event.copy_for_repeat(delta);
+            if let TimelineData::Tempo(tempo) = &new_event.data
+                && let Some(end_bpm) = &tempo.end_bpm
+                && end_bpm.time > end_time
+            {
+                let over_by = end_bpm.time - end_time;
+                diags.push(Diagnostic::new(
+                    code::SCORE,
+                    directive.end.span,
+                    "a tempo change started inside the repeated sections extends beyond the end of the section")
+                    .with_context(
+                        new_event.span,
+                        format!("this tempo change exceeds the end of the repeated section; beats over: {over_by}")
+                    ));
+            }
+            self.timeline.events.insert(new_event);
         }
-        self.line_start_time += duration;
         self.insert_event(
-            self.line_start_time,
+            end_time,
             directive.end.span,
             TimelineData::RepeatEnd(MarkEvent {
                 label: directive.end.value,
             }),
         );
+        self.line_start_time += duration;
     }
 
     pub fn do_final_checks(&mut self, diags: &Diagnostics) {

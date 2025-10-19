@@ -94,21 +94,41 @@
       {
         "span": [
           21,
-          41
+          35
         ],
         "value": {
-          "raw": "; mark/repeat errors",
+          "raw": "; nested tempo",
           "t": "Comment"
         }
       },
       {
         "span": [
-          41,
-          42
+          35,
+          36
         ],
         "value": {
           "raw": "\n",
           "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          36,
+          37
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          37,
+          42
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "Identifier"
         }
       },
       {
@@ -117,44 +137,24 @@
           43
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          43,
-          47
-        ],
-        "value": {
-          "raw": "mark",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          47,
-          48
-        ],
-        "value": {
           "raw": "(",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          48,
-          53
+          43,
+          46
         ],
         "value": {
-          "raw": "label",
+          "raw": "bpm",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          53,
-          54
+          46,
+          47
         ],
         "value": {
           "raw": "=",
@@ -163,19 +163,42 @@
       },
       {
         "span": [
-          54,
+          47,
+          49
+        ],
+        "value": {
+          "raw": "60",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  47,
+                  49
+                ],
+                "value": 60
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          49,
+          50
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          50,
           57
         ],
         "value": {
-          "raw": "\"a\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                55,
-                56
-              ]
-            }
-          }
+          "raw": "end_bpm",
+          "t": "Identifier"
         }
       },
       {
@@ -184,82 +207,48 @@
           58
         ],
         "value": {
-          "raw": ")",
+          "raw": "=",
           "t": "Punctuation"
         }
       },
       {
         "span": [
           58,
-          59
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          59,
           60
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
+          "raw": "80",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  58,
+                  60
+                ],
+                "value": 80
+              }
+            }
+          }
         }
       },
       {
         "span": [
           60,
-          66
+          61
         ],
         "value": {
-          "raw": "[p1.0]",
-          "t": {
-            "NoteLeader": {
-              "name_span": [
-                61,
-                63
-              ],
-              "note": {
-                "span": [
-                  64,
-                  65
-                ],
-                "value": 0
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          66,
-          68
-        ],
-        "value": {
-          "raw": "  ",
+          "raw": " ",
           "t": "Space"
         }
       },
       {
         "span": [
-          68,
+          61,
           69
         ],
         "value": {
-          "raw": "4",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  68,
-                  69
-                ],
-                "value": 4
-              }
-            }
-          }
+          "raw": "duration",
+          "t": "Identifier"
         }
       },
       {
@@ -268,7 +257,7 @@
           70
         ],
         "value": {
-          "raw": ":",
+          "raw": "=",
           "t": "Punctuation"
         }
       },
@@ -278,8 +267,18 @@
           71
         ],
         "value": {
-          "raw": "c",
-          "t": "NoteName"
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  70,
+                  71
+                ],
+                "value": 2
+              }
+            }
+          }
         }
       },
       {
@@ -288,7 +287,7 @@
           72
         ],
         "value": {
-          "raw": "~",
+          "raw": ")",
           "t": "Punctuation"
         }
       },
@@ -305,55 +304,31 @@
       {
         "span": [
           73,
+          78
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          78,
           79
         ],
         "value": {
-          "raw": "[p1.1]",
-          "t": {
-            "NoteLeader": {
-              "name_span": [
-                74,
-                76
-              ],
-              "note": {
-                "span": [
-                  77,
-                  78
-                ],
-                "value": 1
-              }
-            }
-          }
+          "raw": "(",
+          "t": "Punctuation"
         }
       },
       {
         "span": [
           79,
-          81
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          81,
           82
         ],
         "value": {
-          "raw": "4",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  81,
-                  82
-                ],
-                "value": 4
-              }
-            }
-          }
+          "raw": "bpm",
+          "t": "Identifier"
         }
       },
       {
@@ -362,51 +337,34 @@
           83
         ],
         "value": {
-          "raw": ":",
+          "raw": "=",
           "t": "Punctuation"
         }
       },
       {
         "span": [
           83,
-          84
-        ],
-        "value": {
-          "raw": "e",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          84,
           85
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          85,
-          89
-        ],
-        "value": {
-          "raw": "[p1]",
+          "raw": "90",
           "t": {
-            "DynamicLeader": {
-              "name_span": [
-                86,
-                88
-              ]
+            "Number": {
+              "n": {
+                "span": [
+                  83,
+                  85
+                ],
+                "value": 90
+              }
             }
           }
         }
       },
       {
         "span": [
-          89,
-          90
+          85,
+          86
         ],
         "value": {
           "raw": " ",
@@ -415,72 +373,12 @@
       },
       {
         "span": [
-          90,
-          92
-        ],
-        "value": {
-          "raw": "32",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  90,
-                  92
-                ],
-                "value": 32
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          92,
-          93
-        ],
-        "value": {
-          "raw": "@",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          93,
-          94
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  93,
-                  94
-                ],
-                "value": 2
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          94,
-          95
-        ],
-        "value": {
-          "raw": "<",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          95,
+          86,
           96
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
+          "raw": "start_time",
+          "t": "Identifier"
         }
       },
       {
@@ -489,198 +387,23 @@
           97
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          97,
-          101
-        ],
-        "value": {
-          "raw": "mark",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          101,
-          102
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          102,
-          107
-        ],
-        "value": {
-          "raw": "label",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          107,
-          108
-        ],
-        "value": {
           "raw": "=",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          108,
-          111
+          97,
+          98
         ],
         "value": {
-          "raw": "\"b\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                109,
-                110
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          111,
-          112
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          112,
-          113
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          113,
-          114
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          114,
-          120
-        ],
-        "value": {
-          "raw": "[p1.0]",
-          "t": {
-            "NoteLeader": {
-              "name_span": [
-                115,
-                117
-              ],
-              "note": {
-                "span": [
-                  118,
-                  119
-                ],
-                "value": 0
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          120,
-          122
-        ],
-        "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          122,
-          123
-        ],
-        "value": {
-          "raw": "4",
+          "raw": "1",
           "t": {
             "Number": {
               "n": {
                 "span": [
-                  122,
-                  123
-                ],
-                "value": 4
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          123,
-          124
-        ],
-        "value": {
-          "raw": ":",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          124,
-          125
-        ],
-        "value": {
-          "raw": "c",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          125,
-          126
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          126,
-          132
-        ],
-        "value": {
-          "raw": "[p1.1]",
-          "t": {
-            "NoteLeader": {
-              "name_span": [
-                127,
-                129
-              ],
-              "note": {
-                "span": [
-                  130,
-                  131
+                  97,
+                  98
                 ],
                 "value": 1
               }
@@ -690,58 +413,38 @@
       },
       {
         "span": [
-          132,
-          134
+          98,
+          99
         ],
         "value": {
-          "raw": "  ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          134,
-          135
-        ],
-        "value": {
-          "raw": "4",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  134,
-                  135
-                ],
-                "value": 4
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          135,
-          136
-        ],
-        "value": {
-          "raw": ":",
+          "raw": ")",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          136,
-          137
+          99,
+          100
         ],
         "value": {
-          "raw": "e",
-          "t": "NoteName"
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
         "span": [
-          137,
-          138
+          100,
+          120
+        ],
+        "value": {
+          "raw": "; overlaps by a beat",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          120,
+          121
         ],
         "value": {
           "raw": "\n",
@@ -750,19 +453,22 @@
       },
       {
         "span": [
-          138,
+          121,
+          122
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          122,
           142
         ],
         "value": {
-          "raw": "[p1]",
-          "t": {
-            "DynamicLeader": {
-              "name_span": [
-                139,
-                141
-              ]
-            }
-          }
+          "raw": "; mark/repeat errors",
+          "t": "Comment"
         }
       },
       {
@@ -771,68 +477,28 @@
           143
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
         "span": [
           143,
-          145
-        ],
-        "value": {
-          "raw": "96",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  143,
-                  145
-                ],
-                "value": 96
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          145,
-          146
-        ],
-        "value": {
-          "raw": "@",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          146,
-          147
-        ],
-        "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  146,
-                  147
-                ],
-                "value": 2
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          147,
-          148
+          144
         ],
         "value": {
           "raw": "\n",
           "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          144,
+          148
+        ],
+        "value": {
+          "raw": "mark",
+          "t": "Identifier"
         }
       },
       {
@@ -841,44 +507,24 @@
           149
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          149,
-          155
-        ],
-        "value": {
-          "raw": "repeat",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          155,
-          156
-        ],
-        "value": {
           "raw": "(",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          156,
-          161
+          149,
+          154
         ],
         "value": {
-          "raw": "start",
+          "raw": "label",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          161,
-          162
+          154,
+          155
         ],
         "value": {
           "raw": "=",
@@ -887,19 +533,49 @@
       },
       {
         "span": [
-          162,
-          165
+          155,
+          158
         ],
         "value": {
-          "raw": "\"b\"",
+          "raw": "\"a\"",
           "t": {
             "String": {
               "inner_span": [
-                163,
-                164
+                156,
+                157
               ]
             }
           }
+        }
+      },
+      {
+        "span": [
+          158,
+          159
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          159,
+          160
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          160,
+          165
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "Identifier"
         }
       },
       {
@@ -908,8 +584,8 @@
           166
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
+          "raw": "(",
+          "t": "Punctuation"
         }
       },
       {
@@ -918,7 +594,7 @@
           169
         ],
         "value": {
-          "raw": "end",
+          "raw": "bpm",
           "t": "Identifier"
         }
       },
@@ -935,34 +611,27 @@
       {
         "span": [
           170,
-          173
+          172
         ],
         "value": {
-          "raw": "\"a\"",
+          "raw": "60",
           "t": {
-            "String": {
-              "inner_span": [
-                171,
-                172
-              ]
+            "Number": {
+              "n": {
+                "span": [
+                  170,
+                  172
+                ],
+                "value": 60
+              }
             }
           }
         }
       },
       {
         "span": [
-          173,
-          174
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          174,
-          175
+          172,
+          173
         ],
         "value": {
           "raw": " ",
@@ -971,52 +640,152 @@
       },
       {
         "span": [
-          175,
-          195
+          173,
+          183
         ],
         "value": {
-          "raw": "; end precedes start",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          195,
-          196
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          196,
-          202
-        ],
-        "value": {
-          "raw": "repeat",
+          "raw": "start_time",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          202,
-          203
+          183,
+          184
         ],
         "value": {
-          "raw": "(",
+          "raw": "=",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          203,
+          184,
+          185
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  184,
+                  185
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          185,
+          186
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          186,
+          193
+        ],
+        "value": {
+          "raw": "end_bpm",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          193,
+          194
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          194,
+          196
+        ],
+        "value": {
+          "raw": "80",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  194,
+                  196
+                ],
+                "value": 80
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          196,
+          197
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          197,
+          205
+        ],
+        "value": {
+          "raw": "duration",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          205,
+          206
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          206,
+          207
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  206,
+                  207
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          207,
           208
         ],
         "value": {
-          "raw": "start",
-          "t": "Identifier"
+          "raw": ".",
+          "t": "Punctuation"
         }
       },
       {
@@ -1025,78 +794,24 @@
           209
         ],
         "value": {
-          "raw": "=",
-          "t": "Punctuation"
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  208,
+                  209
+                ],
+                "value": 5
+              }
+            }
+          }
         }
       },
       {
         "span": [
           209,
-          212
-        ],
-        "value": {
-          "raw": "\"a\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                210,
-                211
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          212,
-          213
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          213,
-          216
-        ],
-        "value": {
-          "raw": "end",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          216,
-          217
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          217,
-          220
-        ],
-        "value": {
-          "raw": "\"a\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                218,
-                219
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          220,
-          221
+          210
         ],
         "value": {
           "raw": ")",
@@ -1105,8 +820,8 @@
       },
       {
         "span": [
-          221,
-          222
+          210,
+          211
         ],
         "value": {
           "raw": " ",
@@ -1115,18 +830,18 @@
       },
       {
         "span": [
-          222,
-          240
+          211,
+          236
         ],
         "value": {
-          "raw": "; end equals start",
+          "raw": "; extends a beat past \"b\"",
           "t": "Comment"
         }
       },
       {
         "span": [
-          240,
-          241
+          236,
+          237
         ],
         "value": {
           "raw": "\n",
@@ -1135,12 +850,66 @@
       },
       {
         "span": [
-          241,
+          237,
+          243
+        ],
+        "value": {
+          "raw": "[p1.0]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                238,
+                240
+              ],
+              "note": {
+                "span": [
+                  241,
+                  242
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          243,
+          245
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          245,
+          246
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  245,
+                  246
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          246,
           247
         ],
         "value": {
-          "raw": "repeat",
-          "t": "Identifier"
+          "raw": ":",
+          "t": "Punctuation"
         }
       },
       {
@@ -1149,65 +918,102 @@
           248
         ],
         "value": {
-          "raw": "(",
-          "t": "Punctuation"
+          "raw": "c",
+          "t": "NoteName"
         }
       },
       {
         "span": [
           248,
-          253
+          249
         ],
         "value": {
-          "raw": "start",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          253,
-          254
-        ],
-        "value": {
-          "raw": "=",
+          "raw": "~",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          254,
-          257
+          249,
+          250
         ],
         "value": {
-          "raw": "\"a\"",
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          250,
+          256
+        ],
+        "value": {
+          "raw": "[p1.1]",
           "t": {
-            "String": {
-              "inner_span": [
-                255,
-                256
-              ]
+            "NoteLeader": {
+              "name_span": [
+                251,
+                253
+              ],
+              "note": {
+                "span": [
+                  254,
+                  255
+                ],
+                "value": 1
+              }
             }
           }
         }
       },
       {
         "span": [
-          257,
+          256,
           258
         ],
         "value": {
-          "raw": " ",
+          "raw": "  ",
           "t": "Space"
         }
       },
       {
         "span": [
           258,
+          259
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  258,
+                  259
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          259,
+          260
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          260,
           261
         ],
         "value": {
-          "raw": "end",
-          "t": "Identifier"
+          "raw": "e",
+          "t": "NoteName"
         }
       },
       {
@@ -1216,35 +1022,25 @@
           262
         ],
         "value": {
-          "raw": "=",
-          "t": "Punctuation"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
         "span": [
           262,
-          265
-        ],
-        "value": {
-          "raw": "\"c\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                263,
-                264
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          265,
           266
         ],
         "value": {
-          "raw": ")",
-          "t": "Punctuation"
+          "raw": "[p1]",
+          "t": {
+            "DynamicLeader": {
+              "name_span": [
+                263,
+                265
+              ]
+            }
+          }
         }
       },
       {
@@ -1260,17 +1056,67 @@
       {
         "span": [
           267,
-          280
+          269
         ],
         "value": {
-          "raw": "; unknown end",
-          "t": "Comment"
+          "raw": "32",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  267,
+                  269
+                ],
+                "value": 32
+              }
+            }
+          }
         }
       },
       {
         "span": [
-          280,
-          281
+          269,
+          270
+        ],
+        "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          270,
+          271
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  270,
+                  271
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          271,
+          272
+        ],
+        "value": {
+          "raw": "<",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          272,
+          273
         ],
         "value": {
           "raw": "\n",
@@ -1279,18 +1125,28 @@
       },
       {
         "span": [
-          281,
-          287
+          273,
+          274
         ],
         "value": {
-          "raw": "repeat",
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          274,
+          278
+        ],
+        "value": {
+          "raw": "mark",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          287,
-          288
+          278,
+          279
         ],
         "value": {
           "raw": "(",
@@ -1299,18 +1155,18 @@
       },
       {
         "span": [
-          288,
-          293
+          279,
+          284
         ],
         "value": {
-          "raw": "start",
+          "raw": "label",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          293,
-          294
+          284,
+          285
         ],
         "value": {
           "raw": "=",
@@ -1319,16 +1175,16 @@
       },
       {
         "span": [
-          294,
-          297
+          285,
+          288
         ],
         "value": {
-          "raw": "\"c\"",
+          "raw": "\"b\"",
           "t": {
             "String": {
               "inner_span": [
-                295,
-                296
+                286,
+                287
               ]
             }
           }
@@ -1336,22 +1192,96 @@
       },
       {
         "span": [
-          297,
-          298
+          288,
+          289
         ],
         "value": {
-          "raw": " ",
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          289,
+          290
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          290,
+          291
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          291,
+          297
+        ],
+        "value": {
+          "raw": "[p1.0]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                292,
+                294
+              ],
+              "note": {
+                "span": [
+                  295,
+                  296
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          297,
+          299
+        ],
+        "value": {
+          "raw": "  ",
           "t": "Space"
         }
       },
       {
         "span": [
-          298,
+          299,
+          300
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  299,
+                  300
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          300,
           301
         ],
         "value": {
-          "raw": "end",
-          "t": "Identifier"
+          "raw": ":",
+          "t": "Punctuation"
         }
       },
       {
@@ -1360,22 +1290,116 @@
           302
         ],
         "value": {
-          "raw": "=",
-          "t": "Punctuation"
+          "raw": "c",
+          "t": "NoteName"
         }
       },
       {
         "span": [
           302,
-          305
+          303
         ],
         "value": {
-          "raw": "\"a\"",
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          303,
+          309
+        ],
+        "value": {
+          "raw": "[p1.1]",
           "t": {
-            "String": {
-              "inner_span": [
-                303,
-                304
+            "NoteLeader": {
+              "name_span": [
+                304,
+                306
+              ],
+              "note": {
+                "span": [
+                  307,
+                  308
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          309,
+          311
+        ],
+        "value": {
+          "raw": "  ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          311,
+          312
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  311,
+                  312
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          312,
+          313
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          313,
+          314
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          314,
+          315
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          315,
+          319
+        ],
+        "value": {
+          "raw": "[p1]",
+          "t": {
+            "DynamicLeader": {
+              "name_span": [
+                316,
+                318
               ]
             }
           }
@@ -1383,18 +1407,8 @@
       },
       {
         "span": [
-          305,
-          306
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          306,
-          307
+          319,
+          320
         ],
         "value": {
           "raw": " ",
@@ -1403,12 +1417,22 @@
       },
       {
         "span": [
-          307,
+          320,
           322
         ],
         "value": {
-          "raw": "; unknown start",
-          "t": "Comment"
+          "raw": "96",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  320,
+                  322
+                ],
+                "value": 96
+              }
+            }
+          }
         }
       },
       {
@@ -1417,14 +1441,54 @@
           323
         ],
         "value": {
+          "raw": "@",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          323,
+          324
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  323,
+                  324
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          324,
+          325
+        ],
+        "value": {
           "raw": "\n",
           "t": "Newline"
         }
       },
       {
         "span": [
-          323,
-          329
+          325,
+          326
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          326,
+          332
         ],
         "value": {
           "raw": "repeat",
@@ -1433,8 +1497,8 @@
       },
       {
         "span": [
-          329,
-          330
+          332,
+          333
         ],
         "value": {
           "raw": "(",
@@ -1443,8 +1507,8 @@
       },
       {
         "span": [
-          330,
-          335
+          333,
+          338
         ],
         "value": {
           "raw": "start",
@@ -1453,8 +1517,8 @@
       },
       {
         "span": [
-          335,
-          336
+          338,
+          339
         ],
         "value": {
           "raw": "=",
@@ -1463,16 +1527,16 @@
       },
       {
         "span": [
-          336,
-          339
+          339,
+          342
         ],
         "value": {
-          "raw": "\"a\"",
+          "raw": "\"b\"",
           "t": {
             "String": {
               "inner_span": [
-                337,
-                338
+                340,
+                341
               ]
             }
           }
@@ -1480,8 +1544,8 @@
       },
       {
         "span": [
-          339,
-          340
+          342,
+          343
         ],
         "value": {
           "raw": " ",
@@ -1490,8 +1554,8 @@
       },
       {
         "span": [
-          340,
-          343
+          343,
+          346
         ],
         "value": {
           "raw": "end",
@@ -1500,8 +1564,8 @@
       },
       {
         "span": [
-          343,
-          344
+          346,
+          347
         ],
         "value": {
           "raw": "=",
@@ -1510,16 +1574,16 @@
       },
       {
         "span": [
-          344,
-          347
+          347,
+          350
         ],
         "value": {
-          "raw": "\"b\"",
+          "raw": "\"a\"",
           "t": {
             "String": {
               "inner_span": [
-                345,
-                346
+                348,
+                349
               ]
             }
           }
@@ -1527,8 +1591,8 @@
       },
       {
         "span": [
-          347,
-          348
+          350,
+          351
         ],
         "value": {
           "raw": ")",
@@ -1537,8 +1601,8 @@
       },
       {
         "span": [
-          348,
-          349
+          351,
+          352
         ],
         "value": {
           "raw": " ",
@@ -1547,12 +1611,32 @@
       },
       {
         "span": [
-          349,
+          352,
+          372
+        ],
+        "value": {
+          "raw": "; end precedes start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          372,
+          373
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          373,
           379
         ],
         "value": {
-          "raw": "; unresolved ties and dynamics",
-          "t": "Comment"
+          "raw": "repeat",
+          "t": "Identifier"
         }
       },
       {
@@ -1561,34 +1645,14 @@
           380
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          380,
-          386
-        ],
-        "value": {
-          "raw": "repeat",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          386,
-          387
-        ],
-        "value": {
           "raw": "(",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          387,
-          392
+          380,
+          385
         ],
         "value": {
           "raw": "start",
@@ -1597,8 +1661,8 @@
       },
       {
         "span": [
-          392,
-          393
+          385,
+          386
         ],
         "value": {
           "raw": "=",
@@ -1607,16 +1671,16 @@
       },
       {
         "span": [
-          393,
-          396
+          386,
+          389
         ],
         "value": {
           "raw": "\"a\"",
           "t": {
             "String": {
               "inner_span": [
-                394,
-                395
+                387,
+                388
               ]
             }
           }
@@ -1624,8 +1688,8 @@
       },
       {
         "span": [
-          396,
-          397
+          389,
+          390
         ],
         "value": {
           "raw": " ",
@@ -1634,8 +1698,8 @@
       },
       {
         "span": [
-          397,
-          400
+          390,
+          393
         ],
         "value": {
           "raw": "end",
@@ -1644,8 +1708,8 @@
       },
       {
         "span": [
-          400,
-          401
+          393,
+          394
         ],
         "value": {
           "raw": "=",
@@ -1654,16 +1718,16 @@
       },
       {
         "span": [
-          401,
-          404
+          394,
+          397
         ],
         "value": {
-          "raw": "\"b\"",
+          "raw": "\"a\"",
           "t": {
             "String": {
               "inner_span": [
-                402,
-                403
+                395,
+                396
               ]
             }
           }
@@ -1671,8 +1735,8 @@
       },
       {
         "span": [
-          404,
-          405
+          397,
+          398
         ],
         "value": {
           "raw": ")",
@@ -1681,8 +1745,8 @@
       },
       {
         "span": [
-          405,
-          406
+          398,
+          399
         ],
         "value": {
           "raw": " ",
@@ -1691,8 +1755,584 @@
       },
       {
         "span": [
-          406,
-          436
+          399,
+          417
+        ],
+        "value": {
+          "raw": "; end equals start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          417,
+          418
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          418,
+          424
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          424,
+          425
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          425,
+          430
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          430,
+          431
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          431,
+          434
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                432,
+                433
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          434,
+          435
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          435,
+          438
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          438,
+          439
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          439,
+          442
+        ],
+        "value": {
+          "raw": "\"c\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                440,
+                441
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          442,
+          443
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          443,
+          444
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          444,
+          457
+        ],
+        "value": {
+          "raw": "; unknown end",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          457,
+          458
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          458,
+          464
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          464,
+          465
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          465,
+          470
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          470,
+          471
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          471,
+          474
+        ],
+        "value": {
+          "raw": "\"c\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                472,
+                473
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          474,
+          475
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          475,
+          478
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          478,
+          479
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          479,
+          482
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                480,
+                481
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          482,
+          483
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          483,
+          484
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          484,
+          499
+        ],
+        "value": {
+          "raw": "; unknown start",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          499,
+          500
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          500,
+          506
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          506,
+          507
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          507,
+          512
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          512,
+          513
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          513,
+          516
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                514,
+                515
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          516,
+          517
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          517,
+          520
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          520,
+          521
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          521,
+          524
+        ],
+        "value": {
+          "raw": "\"b\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                522,
+                523
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          524,
+          525
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          525,
+          526
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          526,
+          556
+        ],
+        "value": {
+          "raw": "; unresolved ties and dynamics",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          556,
+          557
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          557,
+          563
+        ],
+        "value": {
+          "raw": "repeat",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          563,
+          564
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          564,
+          569
+        ],
+        "value": {
+          "raw": "start",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          569,
+          570
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          570,
+          573
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                571,
+                572
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          573,
+          574
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          574,
+          577
+        ],
+        "value": {
+          "raw": "end",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          577,
+          578
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          578,
+          581
+        ],
+        "value": {
+          "raw": "\"b\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                579,
+                580
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          581,
+          582
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          582,
+          583
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          583,
+          613
         ],
         "value": {
           "raw": "; error messages should repeat",
@@ -1701,8 +2341,8 @@
       },
       {
         "span": [
-          436,
-          437
+          613,
+          614
         ],
         "value": {
           "raw": "\n",
@@ -1785,7 +2425,263 @@
       {
         "span": [
           21,
-          41
+          35
+        ],
+        "value": {
+          "raw": "; nested tempo",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          35,
+          36
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          36,
+          37
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          37,
+          72
+        ],
+        "value": {
+          "raw": "tempo(bpm=60 end_bpm=80 duration=2)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  37,
+                  42
+                ],
+                "value": "tempo"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        43,
+                        46
+                      ],
+                      "value": "bpm"
+                    },
+                    "value": {
+                      "span": [
+                        47,
+                        49
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            60,
+                            "60"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        50,
+                        57
+                      ],
+                      "value": "end_bpm"
+                    },
+                    "value": {
+                      "span": [
+                        58,
+                        60
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            80,
+                            "80"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        61,
+                        69
+                      ],
+                      "value": "duration"
+                    },
+                    "value": {
+                      "span": [
+                        70,
+                        71
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            2,
+                            "2"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          72,
+          73
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          73,
+          99
+        ],
+        "value": {
+          "raw": "tempo(bpm=90 start_time=1)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  73,
+                  78
+                ],
+                "value": "tempo"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        79,
+                        82
+                      ],
+                      "value": "bpm"
+                    },
+                    "value": {
+                      "span": [
+                        83,
+                        85
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            90,
+                            "90"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        86,
+                        96
+                      ],
+                      "value": "start_time"
+                    },
+                    "value": {
+                      "span": [
+                        97,
+                        98
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            1,
+                            "1"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          99,
+          100
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          100,
+          120
+        ],
+        "value": {
+          "raw": "; overlaps by a beat",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          120,
+          121
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          121,
+          122
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          122,
+          142
         ],
         "value": {
           "raw": "; mark/repeat errors",
@@ -1794,8 +2690,8 @@
       },
       {
         "span": [
-          41,
-          42
+          142,
+          143
         ],
         "value": {
           "raw": "\n",
@@ -1804,8 +2700,8 @@
       },
       {
         "span": [
-          42,
-          43
+          143,
+          144
         ],
         "value": {
           "raw": "\n",
@@ -1814,8 +2710,8 @@
       },
       {
         "span": [
-          43,
-          58
+          144,
+          159
         ],
         "value": {
           "raw": "mark(label=\"a\")",
@@ -1823,8 +2719,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  43,
-                  47
+                  144,
+                  148
                 ],
                 "value": "mark"
               },
@@ -1835,15 +2731,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        48,
-                        53
+                        149,
+                        154
                       ],
                       "value": "label"
                     },
                     "value": {
                       "span": [
-                        54,
-                        57
+                        155,
+                        158
                       ],
                       "value": {
                         "String": "a"
@@ -1858,8 +2754,8 @@
       },
       {
         "span": [
-          58,
-          59
+          159,
+          160
         ],
         "value": {
           "raw": "\n",
@@ -1868,8 +2764,158 @@
       },
       {
         "span": [
-          59,
-          60
+          160,
+          210
+        ],
+        "value": {
+          "raw": "tempo(bpm=60 start_time=3 end_bpm=80 duration=2.5)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  160,
+                  165
+                ],
+                "value": "tempo"
+              },
+              "opening_comment": null,
+              "params": [
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        166,
+                        169
+                      ],
+                      "value": "bpm"
+                    },
+                    "value": {
+                      "span": [
+                        170,
+                        172
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            60,
+                            "60"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        173,
+                        183
+                      ],
+                      "value": "start_time"
+                    },
+                    "value": {
+                      "span": [
+                        184,
+                        185
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            3,
+                            "3"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        186,
+                        193
+                      ],
+                      "value": "end_bpm"
+                    },
+                    "value": {
+                      "span": [
+                        194,
+                        196
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Integer": [
+                            80,
+                            "80"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "comment": null,
+                  "kv": {
+                    "key": {
+                      "span": [
+                        197,
+                        205
+                      ],
+                      "value": "duration"
+                    },
+                    "value": {
+                      "span": [
+                        206,
+                        209
+                      ],
+                      "value": {
+                        "PitchOrNumber": {
+                          "Ratio": [
+                            [
+                              5,
+                              2
+                            ],
+                            "5/2"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          210,
+          211
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          211,
+          236
+        ],
+        "value": {
+          "raw": "; extends a beat past \"b\"",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          236,
+          237
         ],
         "value": {
           "raw": "\n",
@@ -1878,8 +2924,8 @@
       },
       {
         "span": [
-          60,
-          73
+          237,
+          250
         ],
         "value": {
           "raw": "[p1.0]  4:c~\n",
@@ -1888,21 +2934,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  60,
-                  66
+                  237,
+                  243
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      61,
-                      63
+                      238,
+                      240
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      64,
-                      65
+                      241,
+                      242
                     ],
                     "value": 0
                   }
@@ -1911,16 +2957,16 @@
               "notes": [
                 {
                   "span": [
-                    68,
-                    72
+                    245,
+                    249
                   ],
                   "value": {
                     "Regular": {
                       "articulation": [],
                       "duration": {
                         "span": [
-                          68,
-                          69
+                          245,
+                          246
                         ],
                         "value": [
                           4,
@@ -1929,15 +2975,15 @@
                       },
                       "name": {
                         "span": [
-                          70,
-                          71
+                          247,
+                          248
                         ],
                         "value": "c"
                       },
                       "octave": null,
                       "sustained": [
-                        71,
-                        72
+                        248,
+                        249
                       ]
                     }
                   }
@@ -1949,8 +2995,8 @@
       },
       {
         "span": [
-          73,
-          85
+          250,
+          262
         ],
         "value": {
           "raw": "[p1.1]  4:e\n",
@@ -1959,21 +3005,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  73,
-                  79
+                  250,
+                  256
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      74,
-                      76
+                      251,
+                      253
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      77,
-                      78
+                      254,
+                      255
                     ],
                     "value": 1
                   }
@@ -1982,16 +3028,16 @@
               "notes": [
                 {
                   "span": [
-                    81,
-                    84
+                    258,
+                    261
                   ],
                   "value": {
                     "Regular": {
                       "articulation": [],
                       "duration": {
                         "span": [
-                          81,
-                          82
+                          258,
+                          259
                         ],
                         "value": [
                           4,
@@ -2000,8 +3046,8 @@
                       },
                       "name": {
                         "span": [
-                          83,
-                          84
+                          260,
+                          261
                         ],
                         "value": "e"
                       },
@@ -2017,8 +3063,8 @@
       },
       {
         "span": [
-          85,
-          96
+          262,
+          273
         ],
         "value": {
           "raw": "[p1] 32@2<\n",
@@ -2028,29 +3074,29 @@
               "dynamics": [
                 {
                   "span": [
-                    90,
-                    95
+                    267,
+                    272
                   ],
                   "value": {
                     "Regular": {
                       "change": {
                         "span": [
-                          94,
-                          95
+                          271,
+                          272
                         ],
                         "value": "Crescendo"
                       },
                       "level": {
                         "span": [
-                          90,
-                          92
+                          267,
+                          269
                         ],
                         "value": 32
                       },
                       "position": {
                         "span": [
-                          93,
-                          94
+                          270,
+                          271
                         ],
                         "value": [
                           2,
@@ -2063,14 +3109,14 @@
               ],
               "leader": {
                 "span": [
-                  85,
-                  89
+                  262,
+                  266
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      86,
-                      88
+                      263,
+                      265
                     ],
                     "value": "p1"
                   }
@@ -2082,8 +3128,8 @@
       },
       {
         "span": [
-          96,
-          97
+          273,
+          274
         ],
         "value": {
           "raw": "\n",
@@ -2092,8 +3138,8 @@
       },
       {
         "span": [
-          97,
-          112
+          274,
+          289
         ],
         "value": {
           "raw": "mark(label=\"b\")",
@@ -2101,8 +3147,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  97,
-                  101
+                  274,
+                  278
                 ],
                 "value": "mark"
               },
@@ -2113,15 +3159,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        102,
-                        107
+                        279,
+                        284
                       ],
                       "value": "label"
                     },
                     "value": {
                       "span": [
-                        108,
-                        111
+                        285,
+                        288
                       ],
                       "value": {
                         "String": "b"
@@ -2136,8 +3182,8 @@
       },
       {
         "span": [
-          112,
-          113
+          289,
+          290
         ],
         "value": {
           "raw": "\n",
@@ -2146,8 +3192,8 @@
       },
       {
         "span": [
-          113,
-          114
+          290,
+          291
         ],
         "value": {
           "raw": "\n",
@@ -2156,8 +3202,8 @@
       },
       {
         "span": [
-          114,
-          126
+          291,
+          303
         ],
         "value": {
           "raw": "[p1.0]  4:c\n",
@@ -2166,21 +3212,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  114,
-                  120
+                  291,
+                  297
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      115,
-                      117
+                      292,
+                      294
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      118,
-                      119
+                      295,
+                      296
                     ],
                     "value": 0
                   }
@@ -2189,16 +3235,16 @@
               "notes": [
                 {
                   "span": [
-                    122,
-                    125
+                    299,
+                    302
                   ],
                   "value": {
                     "Regular": {
                       "articulation": [],
                       "duration": {
                         "span": [
-                          122,
-                          123
+                          299,
+                          300
                         ],
                         "value": [
                           4,
@@ -2207,8 +3253,8 @@
                       },
                       "name": {
                         "span": [
-                          124,
-                          125
+                          301,
+                          302
                         ],
                         "value": "c"
                       },
@@ -2224,8 +3270,8 @@
       },
       {
         "span": [
-          126,
-          138
+          303,
+          315
         ],
         "value": {
           "raw": "[p1.1]  4:e\n",
@@ -2234,21 +3280,21 @@
               "comment": null,
               "leader": {
                 "span": [
-                  126,
-                  132
+                  303,
+                  309
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      127,
-                      129
+                      304,
+                      306
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      130,
-                      131
+                      307,
+                      308
                     ],
                     "value": 1
                   }
@@ -2257,16 +3303,16 @@
               "notes": [
                 {
                   "span": [
-                    134,
-                    137
+                    311,
+                    314
                   ],
                   "value": {
                     "Regular": {
                       "articulation": [],
                       "duration": {
                         "span": [
-                          134,
-                          135
+                          311,
+                          312
                         ],
                         "value": [
                           4,
@@ -2275,8 +3321,8 @@
                       },
                       "name": {
                         "span": [
-                          136,
-                          137
+                          313,
+                          314
                         ],
                         "value": "e"
                       },
@@ -2292,8 +3338,8 @@
       },
       {
         "span": [
-          138,
-          148
+          315,
+          325
         ],
         "value": {
           "raw": "[p1] 96@2\n",
@@ -2303,23 +3349,23 @@
               "dynamics": [
                 {
                   "span": [
-                    143,
-                    147
+                    320,
+                    324
                   ],
                   "value": {
                     "Regular": {
                       "change": null,
                       "level": {
                         "span": [
-                          143,
-                          145
+                          320,
+                          322
                         ],
                         "value": 96
                       },
                       "position": {
                         "span": [
-                          146,
-                          147
+                          323,
+                          324
                         ],
                         "value": [
                           2,
@@ -2332,14 +3378,14 @@
               ],
               "leader": {
                 "span": [
-                  138,
-                  142
+                  315,
+                  319
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      139,
-                      141
+                      316,
+                      318
                     ],
                     "value": "p1"
                   }
@@ -2351,8 +3397,8 @@
       },
       {
         "span": [
-          148,
-          149
+          325,
+          326
         ],
         "value": {
           "raw": "\n",
@@ -2361,8 +3407,8 @@
       },
       {
         "span": [
-          149,
-          174
+          326,
+          351
         ],
         "value": {
           "raw": "repeat(start=\"b\" end=\"a\")",
@@ -2370,8 +3416,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  149,
-                  155
+                  326,
+                  332
                 ],
                 "value": "repeat"
               },
@@ -2382,15 +3428,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        156,
-                        161
+                        333,
+                        338
                       ],
                       "value": "start"
                     },
                     "value": {
                       "span": [
-                        162,
-                        165
+                        339,
+                        342
                       ],
                       "value": {
                         "String": "b"
@@ -2403,15 +3449,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        166,
-                        169
+                        343,
+                        346
                       ],
                       "value": "end"
                     },
                     "value": {
                       "span": [
-                        170,
-                        173
+                        347,
+                        350
                       ],
                       "value": {
                         "String": "a"
@@ -2426,8 +3472,8 @@
       },
       {
         "span": [
-          174,
-          175
+          351,
+          352
         ],
         "value": {
           "raw": " ",
@@ -2436,8 +3482,8 @@
       },
       {
         "span": [
-          175,
-          195
+          352,
+          372
         ],
         "value": {
           "raw": "; end precedes start",
@@ -2446,8 +3492,8 @@
       },
       {
         "span": [
-          195,
-          196
+          372,
+          373
         ],
         "value": {
           "raw": "\n",
@@ -2456,8 +3502,8 @@
       },
       {
         "span": [
-          196,
-          221
+          373,
+          398
         ],
         "value": {
           "raw": "repeat(start=\"a\" end=\"a\")",
@@ -2465,8 +3511,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  196,
-                  202
+                  373,
+                  379
                 ],
                 "value": "repeat"
               },
@@ -2477,15 +3523,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        203,
-                        208
+                        380,
+                        385
                       ],
                       "value": "start"
                     },
                     "value": {
                       "span": [
-                        209,
-                        212
+                        386,
+                        389
                       ],
                       "value": {
                         "String": "a"
@@ -2498,15 +3544,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        213,
-                        216
+                        390,
+                        393
                       ],
                       "value": "end"
                     },
                     "value": {
                       "span": [
-                        217,
-                        220
+                        394,
+                        397
                       ],
                       "value": {
                         "String": "a"
@@ -2521,8 +3567,8 @@
       },
       {
         "span": [
-          221,
-          222
+          398,
+          399
         ],
         "value": {
           "raw": " ",
@@ -2531,8 +3577,8 @@
       },
       {
         "span": [
-          222,
-          240
+          399,
+          417
         ],
         "value": {
           "raw": "; end equals start",
@@ -2541,8 +3587,8 @@
       },
       {
         "span": [
-          240,
-          241
+          417,
+          418
         ],
         "value": {
           "raw": "\n",
@@ -2551,8 +3597,8 @@
       },
       {
         "span": [
-          241,
-          266
+          418,
+          443
         ],
         "value": {
           "raw": "repeat(start=\"a\" end=\"c\")",
@@ -2560,8 +3606,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  241,
-                  247
+                  418,
+                  424
                 ],
                 "value": "repeat"
               },
@@ -2572,15 +3618,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        248,
-                        253
+                        425,
+                        430
                       ],
                       "value": "start"
                     },
                     "value": {
                       "span": [
-                        254,
-                        257
+                        431,
+                        434
                       ],
                       "value": {
                         "String": "a"
@@ -2593,15 +3639,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        258,
-                        261
+                        435,
+                        438
                       ],
                       "value": "end"
                     },
                     "value": {
                       "span": [
-                        262,
-                        265
+                        439,
+                        442
                       ],
                       "value": {
                         "String": "c"
@@ -2616,8 +3662,8 @@
       },
       {
         "span": [
-          266,
-          267
+          443,
+          444
         ],
         "value": {
           "raw": " ",
@@ -2626,8 +3672,8 @@
       },
       {
         "span": [
-          267,
-          280
+          444,
+          457
         ],
         "value": {
           "raw": "; unknown end",
@@ -2636,8 +3682,8 @@
       },
       {
         "span": [
-          280,
-          281
+          457,
+          458
         ],
         "value": {
           "raw": "\n",
@@ -2646,8 +3692,8 @@
       },
       {
         "span": [
-          281,
-          306
+          458,
+          483
         ],
         "value": {
           "raw": "repeat(start=\"c\" end=\"a\")",
@@ -2655,8 +3701,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  281,
-                  287
+                  458,
+                  464
                 ],
                 "value": "repeat"
               },
@@ -2667,15 +3713,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        288,
-                        293
+                        465,
+                        470
                       ],
                       "value": "start"
                     },
                     "value": {
                       "span": [
-                        294,
-                        297
+                        471,
+                        474
                       ],
                       "value": {
                         "String": "c"
@@ -2688,15 +3734,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        298,
-                        301
+                        475,
+                        478
                       ],
                       "value": "end"
                     },
                     "value": {
                       "span": [
-                        302,
-                        305
+                        479,
+                        482
                       ],
                       "value": {
                         "String": "a"
@@ -2711,8 +3757,8 @@
       },
       {
         "span": [
-          306,
-          307
+          483,
+          484
         ],
         "value": {
           "raw": " ",
@@ -2721,8 +3767,8 @@
       },
       {
         "span": [
-          307,
-          322
+          484,
+          499
         ],
         "value": {
           "raw": "; unknown start",
@@ -2731,8 +3777,8 @@
       },
       {
         "span": [
-          322,
-          323
+          499,
+          500
         ],
         "value": {
           "raw": "\n",
@@ -2741,8 +3787,8 @@
       },
       {
         "span": [
-          323,
-          348
+          500,
+          525
         ],
         "value": {
           "raw": "repeat(start=\"a\" end=\"b\")",
@@ -2750,8 +3796,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  323,
-                  329
+                  500,
+                  506
                 ],
                 "value": "repeat"
               },
@@ -2762,15 +3808,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        330,
-                        335
+                        507,
+                        512
                       ],
                       "value": "start"
                     },
                     "value": {
                       "span": [
-                        336,
-                        339
+                        513,
+                        516
                       ],
                       "value": {
                         "String": "a"
@@ -2783,15 +3829,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        340,
-                        343
+                        517,
+                        520
                       ],
                       "value": "end"
                     },
                     "value": {
                       "span": [
-                        344,
-                        347
+                        521,
+                        524
                       ],
                       "value": {
                         "String": "b"
@@ -2806,8 +3852,8 @@
       },
       {
         "span": [
-          348,
-          349
+          525,
+          526
         ],
         "value": {
           "raw": " ",
@@ -2816,8 +3862,8 @@
       },
       {
         "span": [
-          349,
-          379
+          526,
+          556
         ],
         "value": {
           "raw": "; unresolved ties and dynamics",
@@ -2826,8 +3872,8 @@
       },
       {
         "span": [
-          379,
-          380
+          556,
+          557
         ],
         "value": {
           "raw": "\n",
@@ -2836,8 +3882,8 @@
       },
       {
         "span": [
-          380,
-          405
+          557,
+          582
         ],
         "value": {
           "raw": "repeat(start=\"a\" end=\"b\")",
@@ -2845,8 +3891,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  380,
-                  386
+                  557,
+                  563
                 ],
                 "value": "repeat"
               },
@@ -2857,15 +3903,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        387,
-                        392
+                        564,
+                        569
                       ],
                       "value": "start"
                     },
                     "value": {
                       "span": [
-                        393,
-                        396
+                        570,
+                        573
                       ],
                       "value": {
                         "String": "a"
@@ -2878,15 +3924,15 @@
                   "kv": {
                     "key": {
                       "span": [
-                        397,
-                        400
+                        574,
+                        577
                       ],
                       "value": "end"
                     },
                     "value": {
                       "span": [
-                        401,
-                        404
+                        578,
+                        581
                       ],
                       "value": {
                         "String": "b"
@@ -2901,8 +3947,8 @@
       },
       {
         "span": [
-          405,
-          406
+          582,
+          583
         ],
         "value": {
           "raw": " ",
@@ -2911,8 +3957,8 @@
       },
       {
         "span": [
-          406,
-          436
+          583,
+          613
         ],
         "value": {
           "raw": "; error messages should repeat",
@@ -2921,8 +3967,8 @@
       },
       {
         "span": [
-          436,
-          437
+          613,
+          614
         ],
         "value": {
           "raw": "\n",
@@ -2939,23 +3985,42 @@
           "context": [
             {
               "span": [
-                108,
-                111
+                37,
+                42
+              ],
+              "value": "here is the previous tempo directive"
+            }
+          ],
+          "message": {
+            "span": [
+              73,
+              78
+            ],
+            "value": "a tempo change is already in flight; beats until done: 1"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                285,
+                288
               ],
               "value": "here is the start"
             },
             {
               "span": [
-                54,
-                57
+                155,
+                158
               ],
               "value": "here is the end"
             }
           ],
           "message": {
             "span": [
-              149,
-              155
+              326,
+              332
             ],
             "value": "for this repeat, the start mark does not precede the end mark"
           }
@@ -2965,23 +4030,23 @@
           "context": [
             {
               "span": [
-                54,
-                57
+                155,
+                158
               ],
               "value": "here is the start"
             },
             {
               "span": [
-                54,
-                57
+                155,
+                158
               ],
               "value": "here is the end"
             }
           ],
           "message": {
             "span": [
-              196,
-              202
+              373,
+              379
             ],
             "value": "for this repeat, the start mark does not precede the end mark"
           }
@@ -2991,8 +4056,8 @@
           "context": [],
           "message": {
             "span": [
-              262,
-              265
+              439,
+              442
             ],
             "value": "mark 'c' is unknown"
           }
@@ -3002,8 +4067,8 @@
           "context": [],
           "message": {
             "span": [
-              294,
-              297
+              471,
+              474
             ],
             "value": "mark 'c' is unknown"
           }
@@ -3013,16 +4078,16 @@
           "context": [
             {
               "span": [
-                68,
-                72
+                245,
+                249
               ],
               "value": "this tie is unresolved"
             }
           ],
           "message": {
             "span": [
-              323,
-              329
+              500,
+              506
             ],
             "value": "notes may not be tied across repeats"
           }
@@ -3032,16 +4097,16 @@
           "context": [
             {
               "span": [
-                90,
-                95
+                267,
+                272
               ],
               "value": "this dynamic change is unresolved"
             }
           ],
           "message": {
             "span": [
-              323,
-              329
+              500,
+              506
             ],
             "value": "dynamic changes may not carry across repeats"
           }
@@ -3051,16 +4116,35 @@
           "context": [
             {
               "span": [
-                68,
-                72
+                160,
+                165
+              ],
+              "value": "this tempo change exceeds the end of the repeated section; beats over: 3/2"
+            }
+          ],
+          "message": {
+            "span": [
+              521,
+              524
+            ],
+            "value": "a tempo change started inside the repeated sections extends beyond the end of the section"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                245,
+                249
               ],
               "value": "this tie is unresolved"
             }
           ],
           "message": {
             "span": [
-              380,
-              386
+              557,
+              563
             ],
             "value": "notes may not be tied across repeats"
           }
@@ -3070,18 +4154,37 @@
           "context": [
             {
               "span": [
-                90,
-                95
+                267,
+                272
               ],
               "value": "this dynamic change is unresolved"
             }
           ],
           "message": {
             "span": [
-              380,
-              386
+              557,
+              563
             ],
             "value": "dynamic changes may not carry across repeats"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [
+            {
+              "span": [
+                160,
+                165
+              ],
+              "value": "this tempo change exceeds the end of the repeated section; beats over: 3/2"
+            }
+          ],
+          "message": {
+            "span": [
+              578,
+              581
+            ],
+            "value": "a tempo change started inside the repeated sections extends beyond the end of the section"
           }
         }
       ]
