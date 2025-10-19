@@ -1,0 +1,48 @@
+syntoniq(version=1)
+
+; Start off in regular 12-TET. No tuning/scale directives are needed.
+
+;; TEMP
+define_scale(name="JI1") <<
+  1      c
+  25/24  c#     ; major third above a
+  10/9   d     ;  9/8    d
+  6/5    e%
+  5/4    e
+  4/3    f
+  11/8   h11    ; 11th harmonic
+  45/32  f#     ; major third above d
+  3/2    g
+  8/5    a%
+  5/3    a
+  7/4    h7     ; 7th harmonic
+  16/9   b%
+  15/8   b
+>>
+use_scale(name="JI1")
+
+tempo(bpm=70)
+
+[p1.1] 1:c' a   f d
+[p1.2] 2:c      ~
+[p2.1] 2:a,   2:b%,
+[p2.2] 2:c,   2:d,
+[p2.3] 2:f,2  1:f,2 g,2
+
+mark(label="a")
+[p1.1] 1/2:c' c' a a 1:f  d
+[p1.2] 2:~           1:e  c
+[p2.1] 1:b, a,       2:a,
+[p2.2] 1:e, e,         2:f,
+[p2.3] 2:a,2           d,2
+
+mark(label="b")
+[p1.1] 1/2:f d f g 3/2:a 1/2:g
+[p2.1] 1:d    c       2:b%,
+[p2.2] 1:f,   f,         2:f,
+[p2.3] 1:b%,2 a,2 2:g,2
+
+[p1.1] 1/2:f d g f 2:d
+[p2.1] 1:d,    b%,     2:a,
+[p2.2] 1:g,2   e,      2:f,
+[p2.3] 2:c,2  2:d,2

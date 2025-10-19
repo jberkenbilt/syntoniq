@@ -1,0 +1,7 @@
+[book]
+authors = ["Jay Berkenbilt"]
+language = "en"
+src = "src"
+title = "Syntoniq Manual"
+[output.html]
+mathjax-support = true
