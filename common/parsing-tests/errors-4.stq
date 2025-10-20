@@ -15,9 +15,9 @@ tempo(bpm=60 start_time=3 end_bpm=80 duration=2.5) ; extends a beat past "b"
 
 mark(label="b")
 
-[p1.0]  4:c
-[p1.1]  4:e
-[p1] 96@2
+[p1.0]  2:c 2:c
+[p1.1]  2:e 2:e~
+[p1] 96@2 32@3<
 
 repeat(start="b" end="a") ; end precedes start
 repeat(start="a" end="a") ; end equals start
@@ -25,3 +25,7 @@ repeat(start="a" end="c") ; unknown end
 repeat(start="c" end="a") ; unknown start
 repeat(start="a" end="b") ; unresolved ties and dynamics
 repeat(start="a" end="b") ; error messages should repeat
+
+[p1.0]  4:c
+[p1.1]  4:e
+[p1] 64@1

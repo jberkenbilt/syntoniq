@@ -34,7 +34,7 @@ pub mod code {
     pub const MIDI: &str = "E1023 MIDI-specific error";
 }
 
-#[derive(Serialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Diagnostic {
     pub code: &'static str,
     pub message: Spanned<String>,
@@ -71,7 +71,7 @@ impl Diagnostic {
 pub struct Diagnostics {
     pub list: RefCell<Vec<Diagnostic>>,
     #[serde(skip)]
-    pub seen: RefCell<HashSet<(&'static str, Spanned<String>)>>,
+    pub seen: RefCell<HashSet<Diagnostic>>,
 }
 impl Diagnostics {
     pub fn new() -> Self {
@@ -116,7 +116,7 @@ impl Diagnostics {
     }
 
     pub fn push(&self, d: Diagnostic) {
-        if self.seen.borrow_mut().insert((d.code, d.message.clone())) {
+        if self.seen.borrow_mut().insert(d.clone()) {
             self.list.borrow_mut().push(d)
         }
     }

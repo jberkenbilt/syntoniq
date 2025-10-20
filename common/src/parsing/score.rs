@@ -1207,6 +1207,33 @@ impl<'s> Score<'s> {
         self.timeline.events.insert(event);
     }
 
+    fn check_pending_over_repeat(
+        diags: &Diagnostics,
+        span: Span,
+        pending_notes: &HashMap<PartNote<'s>, WithTime<Spanned<NoteEvent<'s>>>>,
+        pending_dynamic_changes: &HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
+    ) {
+        if !pending_notes.is_empty() {
+            let mut err =
+                Diagnostic::new(code::SCORE, span, "notes may not be tied across repeats");
+            for note in pending_notes.values() {
+                err = err.with_context(note.item.span, "this tie is unresolved");
+            }
+            diags.push(err);
+        }
+        if !pending_dynamic_changes.is_empty() {
+            let mut err = Diagnostic::new(
+                code::SCORE,
+                span,
+                "dynamic changes may not carry across repeats",
+            );
+            for note in pending_dynamic_changes.values() {
+                err = err.with_context(note.item.span, "this dynamic change is unresolved");
+            }
+            diags.push(err);
+        }
+    }
+
     pub fn repeat(&mut self, diags: &Diagnostics, directive: Repeat<'s>) {
         let start = self.marks.get(&directive.start.value);
         let end = self.marks.get(&directive.end.value);
@@ -1225,29 +1252,6 @@ impl<'s> Score<'s> {
         let Some(end) = end else {
             return;
         };
-        if !end.pending_notes.is_empty() {
-            let mut err = Diagnostic::new(
-                code::SCORE,
-                directive.span,
-                "notes may not be tied across repeats",
-            );
-            for note in end.pending_notes.values() {
-                err = err.with_context(note.item.span, "this tie is unresolved");
-            }
-            diags.push(err);
-        }
-        if !end.pending_dynamic_changes.is_empty() {
-            let mut err = Diagnostic::new(
-                code::SCORE,
-                directive.span,
-                "dynamic changes may not carry across repeats",
-            );
-            for note in end.pending_dynamic_changes.values() {
-                err = err.with_context(note.item.span, "this dynamic change is unresolved");
-            }
-            diags.push(err);
-        }
-        // TODO: check pending tempo changes?
         if start.event.time >= end.event.time {
             diags.push(
                 Diagnostic::new(
@@ -1261,6 +1265,18 @@ impl<'s> Score<'s> {
             // No point in further work at this point.
             return;
         }
+        Self::check_pending_over_repeat(
+            diags,
+            directive.span,
+            &end.pending_notes,
+            &end.pending_dynamic_changes,
+        );
+        Self::check_pending_over_repeat(
+            diags,
+            directive.span,
+            &self.pending_notes,
+            &self.pending_dynamic_changes,
+        );
         let start = start.event.clone();
         let end = end.event.clone();
         // Copy timeline events, adjusting the time.
