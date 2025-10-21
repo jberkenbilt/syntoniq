@@ -3,5 +3,10 @@ cd $(dirname $0)
 # Avoid creating junk when running this right after a coverage build.
 export LLVM_PROFILE_FILE="$PWD/../../.grcov/%p-%m.profraw"
 for i in *.stq; do
-    ../../target/debug/tokenize $i --json >| ${i/.stq/.json}
+    options_file=${i/.stq/.options.json}
+    options=
+    if [ -f $options_file ]; then
+        options="--parser-options $options_file"
+    fi
+    ../../target/debug/tokenize $options $i --json >| ${i/.stq/.json}
 done

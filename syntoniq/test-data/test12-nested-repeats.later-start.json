@@ -7,16 +7,12 @@
       ],
       "repeat_depth": 0,
       "span": [
-        21,
-        26
+        484,
+        497
       ],
       "data": {
-        "Tempo": {
-          "bpm": [
-            120,
-            1
-          ],
-          "end_bpm": null
+        "RepeatStart": {
+          "label": "verse-start"
         }
       }
     },
@@ -25,131 +21,7 @@
         0,
         1
       ],
-      "repeat_depth": 0,
-      "span": [
-        52,
-        55
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|6",
-            "absolute_scale_degree": 7,
-            "velocity": 72,
-            "end_time": [
-              1,
-              1
-            ],
-            "adjusted_end_time": [
-              1,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        1,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        56,
-        57
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "f",
-            "note_name": "f",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^2|3",
-            "absolute_scale_degree": 5,
-            "velocity": 72,
-            "end_time": [
-              2,
-              1
-            ],
-            "adjusted_end_time": [
-              2,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        2,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        58,
-        59
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "d",
-            "note_name": "d",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|12",
-            "absolute_scale_degree": 2,
-            "velocity": 72,
-            "end_time": [
-              3,
-              1
-            ],
-            "adjusted_end_time": [
-              3,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        3,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        80,
-        93
-      ],
-      "data": {
-        "Mark": {
-          "label": "verse-start"
-        }
-      }
-    },
-    {
-      "time": [
-        3,
-        1
-      ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         116,
         121
@@ -162,7 +34,7 @@
           ],
           "end_bpm": {
             "time": [
-              9,
+              6,
               1
             ],
             "item": [
@@ -175,10 +47,10 @@
     },
     {
       "time": [
-        3,
+        0,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         161,
         164
@@ -198,6 +70,114 @@
             "absolute_scale_degree": 0,
             "velocity": 72,
             "end_time": [
+              1,
+              1
+            ],
+            "adjusted_end_time": [
+              1,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        1,
+        1
+      ],
+      "repeat_depth": 1,
+      "span": [
+        165,
+        166
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "e",
+            "note_name": "e",
+            "tuning": {
+              "scale_name": "default",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^7|12",
+            "absolute_scale_degree": 4,
+            "velocity": 72,
+            "end_time": [
+              2,
+              1
+            ],
+            "adjusted_end_time": [
+              2,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        2,
+        1
+      ],
+      "repeat_depth": 1,
+      "span": [
+        167,
+        168
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "g",
+            "note_name": "g",
+            "tuning": {
+              "scale_name": "default",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^5|6",
+            "absolute_scale_degree": 7,
+            "velocity": 72,
+            "end_time": [
+              3,
+              1
+            ],
+            "adjusted_end_time": [
+              3,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        3,
+        1
+      ],
+      "repeat_depth": 1,
+      "span": [
+        169,
+        170
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "f",
+            "note_name": "f",
+            "tuning": {
+              "scale_name": "default",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^2|3",
+            "absolute_scale_degree": 5,
+            "velocity": 72,
+            "end_time": [
               4,
               1
             ],
@@ -214,10 +194,10 @@
         4,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
-        165,
-        166
+        171,
+        172
       ],
       "data": {
         "Note": {
@@ -250,24 +230,24 @@
         5,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
-        167,
-        168
+        173,
+        174
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "g",
-            "note_name": "g",
+            "text": "d",
+            "note_name": "d",
             "tuning": {
               "scale_name": "default",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^5|6",
-            "absolute_scale_degree": 7,
+            "absolute_pitch": "220*^5|12",
+            "absolute_scale_degree": 2,
             "velocity": 72,
             "end_time": [
               6,
@@ -286,24 +266,24 @@
         6,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
-        169,
-        170
+        177,
+        178
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "f",
-            "note_name": "f",
+            "text": "c",
+            "note_name": "c",
             "tuning": {
               "scale_name": "default",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^2|3",
-            "absolute_scale_degree": 5,
+            "absolute_pitch": "220*^1|4",
+            "absolute_scale_degree": 0,
             "velocity": 72,
             "end_time": [
               7,
@@ -322,10 +302,10 @@
         7,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
-        171,
-        172
+        179,
+        180
       ],
       "data": {
         "Note": {
@@ -358,115 +338,7 @@
         8,
         1
       ],
-      "repeat_depth": 0,
-      "span": [
-        173,
-        174
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "d",
-            "note_name": "d",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|12",
-            "absolute_scale_degree": 2,
-            "velocity": 72,
-            "end_time": [
-              9,
-              1
-            ],
-            "adjusted_end_time": [
-              9,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        9,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        177,
-        178
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^1|4",
-            "absolute_scale_degree": 0,
-            "velocity": 72,
-            "end_time": [
-              10,
-              1
-            ],
-            "adjusted_end_time": [
-              10,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        10,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        179,
-        180
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^7|12",
-            "absolute_scale_degree": 4,
-            "velocity": 72,
-            "end_time": [
-              11,
-              1
-            ],
-            "adjusted_end_time": [
-              11,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        11,
-        1
-      ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         181,
         182
@@ -486,11 +358,11 @@
             "absolute_scale_degree": 7,
             "velocity": 72,
             "end_time": [
-              12,
+              9,
               1
             ],
             "adjusted_end_time": [
-              12,
+              9,
               1
             ]
           }
@@ -499,10 +371,10 @@
     },
     {
       "time": [
-        12,
+        9,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         183,
         186
@@ -522,11 +394,11 @@
             "absolute_scale_degree": 0,
             "velocity": 72,
             "end_time": [
-              14,
+              11,
               1
             ],
             "adjusted_end_time": [
-              14,
+              11,
               1
             ]
           }
@@ -535,10 +407,10 @@
     },
     {
       "time": [
-        15,
+        12,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         212,
         231
@@ -551,10 +423,10 @@
     },
     {
       "time": [
-        15,
+        12,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         233,
         238
@@ -571,10 +443,10 @@
     },
     {
       "time": [
-        15,
+        12,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         255,
         258
@@ -594,11 +466,11 @@
             "absolute_scale_degree": 0,
             "velocity": 72,
             "end_time": [
-              16,
+              13,
               1
             ],
             "adjusted_end_time": [
-              16,
+              13,
               1
             ]
           }
@@ -607,10 +479,10 @@
     },
     {
       "time": [
-        16,
+        13,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         259,
         260
@@ -630,11 +502,11 @@
             "absolute_scale_degree": 4,
             "velocity": 72,
             "end_time": [
-              17,
+              14,
               1
             ],
             "adjusted_end_time": [
-              17,
+              14,
               1
             ]
           }
@@ -643,10 +515,10 @@
     },
     {
       "time": [
-        17,
+        14,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         261,
         262
@@ -666,11 +538,11 @@
             "absolute_scale_degree": 7,
             "velocity": 72,
             "end_time": [
-              18,
+              15,
               1
             ],
             "adjusted_end_time": [
-              18,
+              15,
               1
             ]
           }
@@ -679,10 +551,10 @@
     },
     {
       "time": [
-        18,
+        15,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         274,
         291
@@ -695,10 +567,10 @@
     },
     {
       "time": [
-        18,
+        15,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         315,
         318
@@ -718,11 +590,11 @@
             "absolute_scale_degree": 9,
             "velocity": 72,
             "end_time": [
-              20,
+              17,
               1
             ],
             "adjusted_end_time": [
-              20,
+              17,
               1
             ]
           }
@@ -731,10 +603,10 @@
     },
     {
       "time": [
-        21,
+        18,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         350,
         369
@@ -747,10 +619,10 @@
     },
     {
       "time": [
-        21,
+        18,
         1
       ],
-      "repeat_depth": 1,
+      "repeat_depth": 2,
       "span": [
         233,
         238
@@ -767,10 +639,10 @@
     },
     {
       "time": [
-        21,
+        18,
         1
       ],
-      "repeat_depth": 1,
+      "repeat_depth": 2,
       "span": [
         255,
         258
@@ -790,11 +662,11 @@
             "absolute_scale_degree": 0,
             "velocity": 72,
             "end_time": [
-              22,
+              19,
               1
             ],
             "adjusted_end_time": [
-              22,
+              19,
               1
             ]
           }
@@ -803,10 +675,10 @@
     },
     {
       "time": [
-        22,
+        19,
         1
       ],
-      "repeat_depth": 1,
+      "repeat_depth": 2,
       "span": [
         259,
         260
@@ -826,11 +698,11 @@
             "absolute_scale_degree": 4,
             "velocity": 72,
             "end_time": [
-              23,
+              20,
               1
             ],
             "adjusted_end_time": [
-              23,
+              20,
               1
             ]
           }
@@ -839,10 +711,10 @@
     },
     {
       "time": [
-        23,
+        20,
         1
       ],
-      "repeat_depth": 1,
+      "repeat_depth": 2,
       "span": [
         261,
         262
@@ -862,11 +734,11 @@
             "absolute_scale_degree": 7,
             "velocity": 72,
             "end_time": [
-              24,
+              21,
               1
             ],
             "adjusted_end_time": [
-              24,
+              21,
               1
             ]
           }
@@ -875,10 +747,10 @@
     },
     {
       "time": [
-        24,
+        21,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         374,
         391
@@ -891,10 +763,10 @@
     },
     {
       "time": [
-        24,
+        21,
         1
       ],
-      "repeat_depth": 0,
+      "repeat_depth": 1,
       "span": [
         416,
         419
@@ -914,6 +786,74 @@
             "absolute_scale_degree": 0,
             "velocity": 72,
             "end_time": [
+              23,
+              1
+            ],
+            "adjusted_end_time": [
+              23,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        24,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        502,
+        513
+      ],
+      "data": {
+        "RepeatEnd": {
+          "label": "verse-end"
+        }
+      }
+    },
+    {
+      "time": [
+        24,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        533,
+        541
+      ],
+      "data": {
+        "Mark": {
+          "label": "ending"
+        }
+      }
+    },
+    {
+      "time": [
+        24,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        550,
+        553
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "2:g",
+            "note_name": "g",
+            "tuning": {
+              "scale_name": "default",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^5|6",
+            "absolute_scale_degree": 7,
+            "velocity": 72,
+            "end_time": [
               26,
               1
             ],
@@ -927,59 +867,34 @@
     },
     {
       "time": [
-        27,
+        26,
         1
       ],
       "repeat_depth": 0,
       "span": [
-        435,
-        446
+        554,
+        557
       ],
       "data": {
-        "Mark": {
-          "label": "verse-end"
-        }
-      }
-    },
-    {
-      "time": [
-        27,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        484,
-        497
-      ],
-      "data": {
-        "RepeatStart": {
-          "label": "verse-start"
-        }
-      }
-    },
-    {
-      "time": [
-        27,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        116,
-        121
-      ],
-      "data": {
-        "Tempo": {
-          "bpm": [
-            150,
-            1
-          ],
-          "end_bpm": {
-            "time": [
-              33,
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "1:g",
+            "note_name": "g",
+            "tuning": {
+              "scale_name": "default",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^5|6",
+            "absolute_scale_degree": 7,
+            "velocity": 72,
+            "end_time": [
+              27,
               1
             ],
-            "item": [
-              160,
+            "adjusted_end_time": [
+              27,
               1
             ]
           }
@@ -991,24 +906,24 @@
         27,
         1
       ],
-      "repeat_depth": 1,
+      "repeat_depth": 0,
       "span": [
-        161,
-        164
+        558,
+        559
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "1:c",
-            "note_name": "c",
+            "text": "f",
+            "note_name": "f",
             "tuning": {
               "scale_name": "default",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^1|4",
-            "absolute_scale_degree": 0,
+            "absolute_pitch": "220*^2|3",
+            "absolute_scale_degree": 5,
             "velocity": 72,
             "end_time": [
               28,
@@ -1027,10 +942,10 @@
         28,
         1
       ],
-      "repeat_depth": 1,
+      "repeat_depth": 0,
       "span": [
-        165,
-        166
+        560,
+        561
       ],
       "data": {
         "Note": {
@@ -1063,862 +978,6 @@
         29,
         1
       ],
-      "repeat_depth": 1,
-      "span": [
-        167,
-        168
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|6",
-            "absolute_scale_degree": 7,
-            "velocity": 72,
-            "end_time": [
-              30,
-              1
-            ],
-            "adjusted_end_time": [
-              30,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        30,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        169,
-        170
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "f",
-            "note_name": "f",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^2|3",
-            "absolute_scale_degree": 5,
-            "velocity": 72,
-            "end_time": [
-              31,
-              1
-            ],
-            "adjusted_end_time": [
-              31,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        31,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        171,
-        172
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^7|12",
-            "absolute_scale_degree": 4,
-            "velocity": 72,
-            "end_time": [
-              32,
-              1
-            ],
-            "adjusted_end_time": [
-              32,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        32,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        173,
-        174
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "d",
-            "note_name": "d",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|12",
-            "absolute_scale_degree": 2,
-            "velocity": 72,
-            "end_time": [
-              33,
-              1
-            ],
-            "adjusted_end_time": [
-              33,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        33,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        177,
-        178
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^1|4",
-            "absolute_scale_degree": 0,
-            "velocity": 72,
-            "end_time": [
-              34,
-              1
-            ],
-            "adjusted_end_time": [
-              34,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        34,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        179,
-        180
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^7|12",
-            "absolute_scale_degree": 4,
-            "velocity": 72,
-            "end_time": [
-              35,
-              1
-            ],
-            "adjusted_end_time": [
-              35,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        35,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        181,
-        182
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|6",
-            "absolute_scale_degree": 7,
-            "velocity": 72,
-            "end_time": [
-              36,
-              1
-            ],
-            "adjusted_end_time": [
-              36,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        36,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        183,
-        186
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "2:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^1|4",
-            "absolute_scale_degree": 0,
-            "velocity": 72,
-            "end_time": [
-              38,
-              1
-            ],
-            "adjusted_end_time": [
-              38,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        39,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        212,
-        231
-      ],
-      "data": {
-        "Mark": {
-          "label": "chorus-main-start"
-        }
-      }
-    },
-    {
-      "time": [
-        39,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        233,
-        238
-      ],
-      "data": {
-        "Tempo": {
-          "bpm": [
-            180,
-            1
-          ],
-          "end_bpm": null
-        }
-      }
-    },
-    {
-      "time": [
-        39,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        255,
-        258
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^1|4",
-            "absolute_scale_degree": 0,
-            "velocity": 72,
-            "end_time": [
-              40,
-              1
-            ],
-            "adjusted_end_time": [
-              40,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        40,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        259,
-        260
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^7|12",
-            "absolute_scale_degree": 4,
-            "velocity": 72,
-            "end_time": [
-              41,
-              1
-            ],
-            "adjusted_end_time": [
-              41,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        41,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        261,
-        262
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|6",
-            "absolute_scale_degree": 7,
-            "velocity": 72,
-            "end_time": [
-              42,
-              1
-            ],
-            "adjusted_end_time": [
-              42,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        42,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        274,
-        291
-      ],
-      "data": {
-        "Mark": {
-          "label": "chorus-main-end"
-        }
-      }
-    },
-    {
-      "time": [
-        42,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        315,
-        318
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "2:a",
-            "note_name": "a",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "440",
-            "absolute_scale_degree": 9,
-            "velocity": 72,
-            "end_time": [
-              44,
-              1
-            ],
-            "adjusted_end_time": [
-              44,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        45,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        350,
-        369
-      ],
-      "data": {
-        "RepeatStart": {
-          "label": "chorus-main-start"
-        }
-      }
-    },
-    {
-      "time": [
-        45,
-        1
-      ],
-      "repeat_depth": 2,
-      "span": [
-        233,
-        238
-      ],
-      "data": {
-        "Tempo": {
-          "bpm": [
-            180,
-            1
-          ],
-          "end_bpm": null
-        }
-      }
-    },
-    {
-      "time": [
-        45,
-        1
-      ],
-      "repeat_depth": 2,
-      "span": [
-        255,
-        258
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^1|4",
-            "absolute_scale_degree": 0,
-            "velocity": 72,
-            "end_time": [
-              46,
-              1
-            ],
-            "adjusted_end_time": [
-              46,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        46,
-        1
-      ],
-      "repeat_depth": 2,
-      "span": [
-        259,
-        260
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^7|12",
-            "absolute_scale_degree": 4,
-            "velocity": 72,
-            "end_time": [
-              47,
-              1
-            ],
-            "adjusted_end_time": [
-              47,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        47,
-        1
-      ],
-      "repeat_depth": 2,
-      "span": [
-        261,
-        262
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|6",
-            "absolute_scale_degree": 7,
-            "velocity": 72,
-            "end_time": [
-              48,
-              1
-            ],
-            "adjusted_end_time": [
-              48,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        48,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        374,
-        391
-      ],
-      "data": {
-        "RepeatEnd": {
-          "label": "chorus-main-end"
-        }
-      }
-    },
-    {
-      "time": [
-        48,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        416,
-        419
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "2:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^1|4",
-            "absolute_scale_degree": 0,
-            "velocity": 72,
-            "end_time": [
-              50,
-              1
-            ],
-            "adjusted_end_time": [
-              50,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        51,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        502,
-        513
-      ],
-      "data": {
-        "RepeatEnd": {
-          "label": "verse-end"
-        }
-      }
-    },
-    {
-      "time": [
-        51,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        533,
-        541
-      ],
-      "data": {
-        "Mark": {
-          "label": "ending"
-        }
-      }
-    },
-    {
-      "time": [
-        51,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        550,
-        553
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "2:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|6",
-            "absolute_scale_degree": 7,
-            "velocity": 72,
-            "end_time": [
-              53,
-              1
-            ],
-            "adjusted_end_time": [
-              53,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        53,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        554,
-        557
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^5|6",
-            "absolute_scale_degree": 7,
-            "velocity": 72,
-            "end_time": [
-              54,
-              1
-            ],
-            "adjusted_end_time": [
-              54,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        54,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        558,
-        559
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "f",
-            "note_name": "f",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^2|3",
-            "absolute_scale_degree": 5,
-            "velocity": 72,
-            "end_time": [
-              55,
-              1
-            ],
-            "adjusted_end_time": [
-              55,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        55,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        560,
-        561
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "default",
-              "base_pitch": "220*^1|4"
-            },
-            "absolute_pitch": "220*^7|12",
-            "absolute_scale_degree": 4,
-            "velocity": 72,
-            "end_time": [
-              56,
-              1
-            ],
-            "adjusted_end_time": [
-              56,
-              1
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        56,
-        1
-      ],
       "repeat_depth": 0,
       "span": [
         562,
@@ -1939,11 +998,11 @@
             "absolute_scale_degree": 2,
             "velocity": 72,
             "end_time": [
-              57,
+              30,
               1
             ],
             "adjusted_end_time": [
-              57,
+              30,
               1
             ]
           }
@@ -1952,7 +1011,7 @@
     },
     {
       "time": [
-        57,
+        30,
         1
       ],
       "repeat_depth": 0,
@@ -1975,11 +1034,11 @@
             "absolute_scale_degree": 0,
             "velocity": 72,
             "end_time": [
-              61,
+              34,
               1
             ],
             "adjusted_end_time": [
-              61,
+              34,
               1
             ]
           }

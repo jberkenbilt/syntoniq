@@ -17,7 +17,7 @@ pub struct Timeline<'s> {
     pub time_lcm: u32,
 }
 
-#[derive(Serialize, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Debug, PartialOrd, PartialEq, Ord, Eq)]
 pub struct TimelineEvent<'s> {
     pub time: Ratio<u32>,
     pub repeat_depth: usize,
@@ -25,35 +25,51 @@ pub struct TimelineEvent<'s> {
     pub data: TimelineData<'s>,
 }
 impl<'s> TimelineEvent<'s> {
-    pub fn copy_for_repeat(&self, delta: Ratio<u32>) -> Arc<Self> {
+    fn add_or_subtract(v: &mut Ratio<u32>, delta: &Ratio<u32>, subtract: bool) {
+        if subtract {
+            *v -= delta;
+        } else {
+            *v += delta;
+        }
+    }
+
+    pub fn copy_with_time_delta(&self, delta: Ratio<u32>, subtract: bool) -> Self {
         let mut data = self.data.clone();
         match &mut data {
             TimelineData::Tempo(e) => {
                 if let Some(x) = e.end_bpm.as_mut() {
-                    x.time += delta;
+                    Self::add_or_subtract(&mut x.time, &delta, subtract);
                 }
             }
             TimelineData::Dynamic(e) => {
                 if let Some(x) = e.end_level.as_mut() {
-                    x.time += delta;
+                    Self::add_or_subtract(&mut x.time, &delta, subtract);
                 }
             }
             TimelineData::Note(e) => {
-                e.value.adjusted_end_time += delta;
-                e.value.end_time += delta;
+                Self::add_or_subtract(&mut e.value.adjusted_end_time, &delta, subtract);
+                Self::add_or_subtract(&mut e.value.end_time, &delta, subtract);
             }
             TimelineData::Mark(_) | TimelineData::RepeatStart(_) | TimelineData::RepeatEnd(_) => {}
         };
-        Arc::new(Self {
-            time: self.time + delta,
-            repeat_depth: self.repeat_depth + 1,
+        let mut new_time = self.time;
+        Self::add_or_subtract(&mut new_time, &delta, subtract);
+        Self {
+            time: new_time,
+            repeat_depth: self.repeat_depth,
             span: self.span,
             data,
-        })
+        }
+    }
+
+    pub fn copy_for_repeat(&self, delta: Ratio<u32>) -> Self {
+        let mut event = self.copy_with_time_delta(delta, false);
+        event.repeat_depth += 1;
+        event
     }
 }
 
-#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Debug, Clone, PartialOrd, PartialEq, Ord, Eq)]
 pub enum TimelineData<'s> {
     // Keep these in the order in which they should appear in the timeline relative to other
     // events that happen at the same time and span. (Unusual.)
@@ -102,7 +118,7 @@ pub struct NoteValue<'s> {
     pub adjusted_end_time: Ratio<u32>,
 }
 
-#[derive(Serialize, Clone, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Serialize, Debug, Clone, PartialOrd, PartialEq, Ord, Eq)]
 pub struct DynamicEvent<'s> {
     pub text: &'s str,
     pub part: &'s str,
@@ -135,6 +151,15 @@ impl<'s> CsoundInstrumentId<'s> {
 pub struct TempoEvent {
     pub bpm: Ratio<u32>,
     pub end_bpm: Option<WithTime<Ratio<u32>>>,
+}
+
+impl TempoEvent {
+    pub(crate) fn adjust(&mut self, factor: Ratio<u32>) {
+        self.bpm *= factor;
+        if let Some(end) = self.end_bpm.as_mut() {
+            end.item *= factor;
+        }
+    }
 }
 
 #[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]

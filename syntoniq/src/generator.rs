@@ -2,6 +2,7 @@ use anyhow::bail;
 use clap::Parser;
 use std::fs;
 use std::path::PathBuf;
+use syntoniq_common::parsing;
 use syntoniq_common::parsing::Timeline;
 
 mod csound;
@@ -29,6 +30,8 @@ pub struct GenerateOptions {
     /// You can also use a previous output as a template to just replace the generated portion.
     #[arg(long)]
     csound_template: Option<PathBuf>,
+    #[command(flatten)]
+    parse_options: parsing::Options,
 }
 
 fn generate_json(timeline: &Timeline, json_file: PathBuf) -> anyhow::Result<()> {
@@ -41,7 +44,11 @@ pub fn run(options: GenerateOptions) -> anyhow::Result<()> {
     let data = fs::read(&options.score)?;
     let score_file = options.score.display();
     let src = str::from_utf8(&data)?;
-    let timeline = crate::parse(&options.score.display().to_string(), src)?;
+    let timeline = crate::parse(
+        &options.score.display().to_string(),
+        src,
+        &options.parse_options,
+    )?;
     println!("syntoniq score '{}' is valid", options.score.display());
     let mut errors = Vec::new();
     if let Some(json_file) = options.json

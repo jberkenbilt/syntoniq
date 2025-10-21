@@ -9,7 +9,7 @@
 use crate::parsing::diagnostics::{Diagnostics, code};
 use crate::parsing::pass2::{Pass2, Token2};
 use crate::parsing::score::{Directive, FromRawDirective, Score};
-use crate::parsing::{Timeline, pass2};
+use crate::parsing::{Options, Timeline, pass2};
 
 fn check_init<'s>(
     src: &'s str,
@@ -40,7 +40,7 @@ fn is_space(t: &Pass2) -> bool {
     matches!(t, Pass2::Space | Pass2::Comment | Pass2::Newline)
 }
 
-pub fn parse3<'s>(src: &'s str) -> Result<Timeline<'s>, Diagnostics> {
+pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<Timeline<'s>, Diagnostics> {
     let tokens = pass2::parse2(src)?;
     let diags = Diagnostics::new();
     let Some((skip, mut score)) = check_init(src, &tokens, &diags) else {
@@ -100,6 +100,7 @@ pub fn parse3<'s>(src: &'s str) -> Result<Timeline<'s>, Diagnostics> {
     }
     score.handle_score_block(&diags);
     score.do_final_checks(&diags);
+    score.post_process(&diags, options);
     if diags.has_errors() {
         Err(diags)
     } else {

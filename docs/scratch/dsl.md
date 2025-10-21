@@ -1,6 +1,5 @@
 # TODO
 
-* Add CLI for start/end at mark
 * CSound: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation adjustment directives:
   * four factors: default of each plus modifier for each option

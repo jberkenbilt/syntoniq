@@ -64,12 +64,31 @@ pub mod pass3;
 pub mod score;
 pub(crate) mod score_helpers;
 mod timeline;
+
 use crate::parsing::diagnostics::Diagnostics;
 use crate::parsing::score::{Directive, FromRawDirective};
+use clap::Parser;
+use serde::Deserialize;
 pub use timeline::*;
 
-pub fn parse<'s>(input: &'s str) -> Result<Timeline<'s>, Diagnostics> {
-    pass3::parse3(input)
+#[derive(Default, Deserialize, Parser)]
+pub struct Options {
+    /// If specified, start generated output from the given mark
+    #[arg(long)]
+    pub start_mark: Option<String>,
+    /// If specified, end generated output from the given mark
+    #[arg(long)]
+    pub end_mark: Option<String>,
+    /// Skip all repeats
+    #[arg(long)]
+    pub skip_repeats: bool,
+    /// Generate output at the given percentage of the specified tempos
+    #[arg(long)]
+    pub tempo_percent: Option<u32>,
+}
+
+pub fn parse<'s>(input: &'s str, options: &Options) -> Result<Timeline<'s>, Diagnostics> {
+    pass3::parse3(input, options)
 }
 
 pub fn show_help() -> anyhow::Result<()> {

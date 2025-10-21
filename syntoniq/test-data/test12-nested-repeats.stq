@@ -27,4 +27,5 @@ mark(label="verse-end")
 repeat(start="verse-start" end="verse-end")
 
 ; End
+mark(label="ending")
 [p1.0] 2:g 1:g f e d | 4:c

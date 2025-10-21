@@ -58,6 +58,7 @@ and the source file in the next window."
 ```
 */
 
+use crate::parsing::Options;
 use crate::parsing::diagnostics::Diagnostics;
 use crate::parsing::model::Spanned;
 use crate::parsing::pass1::parse1;
@@ -69,6 +70,7 @@ use serde_json::json;
 use std::fmt::{Debug, Display};
 use std::fs;
 use std::fs::File;
+use std::path::PathBuf;
 
 fn check_spans<T: Debug + Serialize>(exp_end: usize, tokens: &[Spanned<T>]) -> Vec<String> {
     let mut errors = Vec::new();
@@ -116,6 +118,7 @@ fn test_parser() -> anyhow::Result<()> {
         let in_len = in_data.len();
         let path = p.display();
         let exp = p.to_str().unwrap().replace(".stq", ".json");
+        let options = exp.replace(".json", ".options.json");
         let exp_value: serde_json::Value = serde_json::from_reader(File::open(&exp)?)?;
 
         // Pass 1
@@ -134,7 +137,10 @@ fn test_parser() -> anyhow::Result<()> {
         };
         if is_ok {
             // Pass 3
-            let r = parse3(&in_data);
+            let options = fs::read(PathBuf::from(&options))
+                .map(|data| serde_json::from_slice::<Options>(&data).unwrap())
+                .unwrap_or_default();
+            let r = parse3(&in_data, &options);
             results.push(json!(&r));
         }
 
@@ -146,7 +152,8 @@ fn test_parser() -> anyhow::Result<()> {
         }
     }
     if !errors.is_empty() {
-        eprintln!("Run ./target/debug/tokenize file.stq --json to generate output for comparison");
+        eprintln!("Run ./target/debug/tokenize file.stq --json to generate output for comparison.");
+        eprintln!("Use --options-file if needed.");
         eprintln!("See also ./common/parsing-tests/refresh");
         for e in errors {
             eprintln!("ERROR: {e}");
