@@ -123,13 +123,12 @@ impl<'s> CSoundGenerator<'s> {
 
     fn compute_tempo(&mut self) -> anyhow::Result<()> {
         let mut points = Vec::new();
-        let mut last_was_change = false;
         for event in &self.timeline.events {
             let TimelineData::Tempo(e) = &event.data else {
                 continue;
             };
             let time = ratio_to_rounded_float(event.time, 3);
-            if !last_was_change && let Some(prev) = points.last().cloned() {
+            if let Some(prev) = points.last().cloned() {
                 // Repeat the previous tempo at the current time to effect an instantaneous tempo
                 // change
                 points.push(time.clone());
@@ -139,15 +138,11 @@ impl<'s> CSoundGenerator<'s> {
             let bpm = ratio_to_rounded_float(e.bpm, 3);
             points.push(time);
             points.push(bpm);
-            match &e.end_bpm {
-                None => last_was_change = false,
-                Some(v) => {
-                    last_was_change = true;
-                    let time = ratio_to_rounded_float(v.time, 3);
-                    let bpm = ratio_to_rounded_float(v.item, 3);
-                    points.push(time);
-                    points.push(bpm);
-                }
+            if let Some(v) = &e.end_bpm {
+                let time = ratio_to_rounded_float(v.time, 3);
+                let bpm = ratio_to_rounded_float(v.item, 3);
+                points.push(time);
+                points.push(bpm);
             }
         }
         if points.is_empty() {

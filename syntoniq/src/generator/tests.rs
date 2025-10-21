@@ -81,6 +81,7 @@ fn test_options() -> anyhow::Result<()> {
     fs::create_dir_all(&temp_dir)?;
     let test_cases = [
         (
+            "test12-nested-repeats",
             "explicit-default",
             Options {
                 start_mark: None,
@@ -90,6 +91,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "only-tempo-percent",
             Options {
                 start_mark: None,
@@ -99,6 +101,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "tempo-no-repeats",
             Options {
                 start_mark: None,
@@ -108,6 +111,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "start-end-tempo-no-repeats",
             Options {
                 start_mark: Some("chorus-main-start".to_string()),
@@ -117,6 +121,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "start-end",
             Options {
                 start_mark: Some("chorus-main-start".to_string()),
@@ -126,6 +131,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "start-only",
             Options {
                 start_mark: Some("chorus-main-start".to_string()),
@@ -135,6 +141,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "end-only",
             Options {
                 start_mark: None,
@@ -144,6 +151,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "later-start",
             Options {
                 start_mark: Some("verse-end".to_string()),
@@ -153,6 +161,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "end-near-start",
             Options {
                 start_mark: None,
@@ -162,6 +171,7 @@ fn test_options() -> anyhow::Result<()> {
             },
         ),
         (
+            "test12-nested-repeats",
             "start-near-end",
             Options {
                 start_mark: Some("ending".to_string()),
@@ -170,10 +180,39 @@ fn test_options() -> anyhow::Result<()> {
                 tempo_percent: None,
             },
         ),
+        (
+            "test13-tempo-span-start-mark",
+            "in-flight-tempo",
+            Options {
+                start_mark: Some("a".to_string()),
+                end_mark: None,
+                skip_repeats: false,
+                tempo_percent: None,
+            },
+        ),
+        (
+            "test13-tempo-span-start-mark",
+            "hidden-tempo",
+            Options {
+                start_mark: Some("b".to_string()),
+                end_mark: None,
+                skip_repeats: false,
+                tempo_percent: None,
+            },
+        ),
+        (
+            "test13-tempo-span-start-mark",
+            "hidden-tempo-no-repeats",
+            Options {
+                start_mark: Some("b".to_string()),
+                end_mark: None,
+                skip_repeats: true,
+                tempo_percent: None,
+            },
+        ),
     ];
 
-    for (name, parse_options) in test_cases {
-        let base = "test12-nested-repeats";
+    for (base, name, parse_options) in test_cases {
         let outfile = |suf: &str| Path::join(&temp_dir, format!("{base}.{name}.{suf}"));
         let orig_file = |suf: &str| format!("test-data/{base}.{suf}");
         let exp_file = |suf: &str| format!("test-data/{base}.{name}.{suf}");

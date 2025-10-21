@@ -13,7 +13,10 @@ pub struct Timeline<'s> {
     pub scales: Vec<Arc<Scale<'s>>>,
     pub midi_instruments: BTreeMap<Cow<'s, str>, MidiInstrumentNumber>,
     pub csound_instruments: BTreeMap<Cow<'s, str>, CsoundInstrumentId<'s>>,
-    /// Least common multiple of time denominators, useful for computing ticks per beat
+    /// Least common multiple of time denominators, useful for computing ticks per beat. Callers
+    /// should not count on 100% of denominators being a factor, but all denominators of note and
+    /// duration values will be. This means you should take the numerator of the floor of the
+    /// product of this and a time value if you need an integer.
     pub time_lcm: u32,
 }
 

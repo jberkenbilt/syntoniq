@@ -1,0 +1,53 @@
+syntoniq(version=1)
+
+; First tempo event is not at 0. Tempo starts at default 72 bpm, then
+; slows down on beat 2, which is half way through the score block and
+; is in flight at mark "a". Note changes correspond to tempo changes
+; except where noted.
+
+tempo(bpm=20 start_time=2 duration=6 end_bpm=300)
+
+[p1.0] 1/2:c c c c d d d d
+
+mark(label="a")
+[p1.0] 1/2:d d d d d d d d | d d d d d d d d
+
+; The tempo changes between "a" and "b".
+
+mark(label="a1")
+; This appears first in the file but later in time, so we get a 60, then a 90.
+tempo(bpm=90 start_time=1)
+tempo(bpm=60)
+[p1.0] 1/2:e e f f
+mark(label="a2")
+
+; When we start at "b", we get the 90 bpm tempo set in "a".
+mark(label="b")
+[p1.0] 1/2:f f f f
+
+; Slow down to 60 again, then repeat. The repeated section brings the
+; tempo back to 90. This happens even when we skip repeats.
+tempo(bpm=60)
+[p1.0] 1/2:g g g g
+
+repeat(start="a1" end="a2")
+
+mark(label="c")
+;; This is at 90.
+[p1.0] 1/2:a a a a
+;; Set tempo right at the end
+tempo(bpm=180)
+mark(label="d")
+
+;; The second set of `a` notes is at 180
+repeat(start="c" end="d")
+
+;; This would at 180, but immediately override it.
+tempo(bpm=90)
+
+; pause so we have two back-to-back tempo events with different times
+; in the timeline.
+[p1.0] 1:~
+
+tempo(bpm=60)
+[p1.0] 1/2:b b b b

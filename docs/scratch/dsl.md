@@ -1,5 +1,17 @@
 # TODO
 
+Bugs
+* No comment line or blank lines in scale definition
+* Polyphony for csound doesn't work correctly when splitting parts to use simultaneous tunings. We need something else...perhaps polyphony groups that default to instrument or maybe that default to global but you can assign parts to polyphony groups along with instruments. Maybe csound_instrument takes an optional polyphony group parameter?
+
+nerds.de loopbe1 -- windows virtual midi port
+
+Plan:
+* Evaluate Ableton Live and Bitwig
+* Create a live MIDI output mode for Syntoniq
+* Evaluate the MPE output from HexBoard and see how it differs from what I was trying to do
+
+
 * CSound: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation adjustment directives:
   * four factors: default of each plus modifier for each option
@@ -16,6 +28,7 @@
 Recommended timidity:
 ```
 timidity -A100,100a
+timidity -x "bank 0\n 0 %font \"/home/ejb/tmp/local/z/a.sf2\" amp=127 pan=0" --output-mono -A100,100a /tmp/a.midi
 ```
 
 Note: not tested: > 127 tunings, > 16 channels, sound font banks, a few more minor cases

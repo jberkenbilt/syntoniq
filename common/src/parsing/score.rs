@@ -922,13 +922,24 @@ impl<'s> Score<'s> {
         self.current_score_block().dynamic_lines.push(line);
     }
 
+    fn handle_pending_tempo(&mut self, new_tempo: Option<WithTime<Spanned<TempoEvent>>>) {
+        if let Some(t) = self.pending_tempo.take() {
+            let insert_pending = match &new_tempo {
+                None => true,
+                Some(new) => new.time != t.time,
+            };
+            if insert_pending {
+                self.insert_event(t.time, t.item.span, TimelineData::Tempo(t.item.value))
+            }
+        }
+        self.pending_tempo = new_tempo;
+    }
+
     pub fn handle_score_block(&mut self, diags: &Diagnostics) {
         let Some(sb) = self.pending_score_block.take() else {
             return;
         };
-        if let Some(t) = self.pending_tempo.take() {
-            self.insert_event(t.time, t.item.span, TimelineData::Tempo(t.item.value))
-        }
+        self.handle_pending_tempo(None);
         if sb.note_lines.is_empty() {
             // No point in doing anything
             diags.err(
@@ -1168,7 +1179,7 @@ impl<'s> Score<'s> {
             self.tempo_in_flight_until = Some(Spanned::new(directive.span, end_time));
             WithTime::new(end_time, level.value)
         });
-        self.pending_tempo = Some(WithTime::new(
+        self.handle_pending_tempo(Some(WithTime::new(
             start_time,
             Spanned::new(
                 directive.span,
@@ -1177,7 +1188,7 @@ impl<'s> Score<'s> {
                     end_bpm,
                 },
             ),
-        ));
+        )));
     }
 
     pub fn mark(&mut self, diags: &Diagnostics, directive: Mark<'s>) {
@@ -1302,6 +1313,11 @@ impl<'s> Score<'s> {
                 && let Some(end_bpm) = &tempo.end_bpm
                 && end_bpm.time > end_time
             {
+                // If this check is relaxed, it will have implications around mark/repeat. Study
+                // the code in post_process carefully, and remember about Self::effective_tempo.
+                // We would have to split tempo changes up around boundaries most likely. It's
+                // probably better from an application design standpoint to not allow it as it would
+                // be confusing for users in addition to being logically complex to code.
                 let over_by = end_bpm.time - end_time;
                 diags.push(Diagnostic::new(
                     code::SCORE,
@@ -1435,6 +1451,7 @@ impl<'s> Score<'s> {
         }
         let mut found_end = options.end_mark.is_none();
         let mut last_event_time = Ratio::from_integer(0);
+        // Set into effect any tempo that would have been effective at this point in the timeline.
         let mut current_tempo = pending_tempo.map(|(timeline_event, tempo_event)| {
             let mut new_pending_tempo =
                 Self::effective_tempo(&tempo_event, timeline_event.time, delta);
@@ -1450,16 +1467,22 @@ impl<'s> Score<'s> {
         });
         for event in iter {
             let mut new_event = event.copy_with_time_delta(delta, true);
-            if let TimelineData::Tempo(e) = &mut new_event.data {
-                e.adjust(tempo_factor);
-                current_tempo = Some(Arc::new(new_event));
-                continue;
-            }
             if options.skip_repeats
                 && (event.repeat_depth > 0 || matches!(event.data, TimelineData::RepeatEnd(_)))
             {
                 // Skip repeated passages and advanced delta so we don't have silence.
                 delta += new_event.time - last_event_time;
+                // Re-compute time with new delta.
+                new_event = event.copy_with_time_delta(delta, true);
+                if let TimelineData::Tempo(e) = &mut new_event.data {
+                    // Keep track of tempo events inside skipped repeats, but don't insert
+                    // anything. Regular validation logic ensures tempo changes that start inside
+                    // repeated sections also finish within them, so we don't need in-flight
+                    // computations.
+                    e.adjust(tempo_factor);
+                    current_tempo = Some(Arc::new(new_event));
+                    continue;
+                }
                 continue;
             }
             match &mut new_event.data {
@@ -1483,7 +1506,17 @@ impl<'s> Score<'s> {
                         self.timeline.events.insert(e);
                     }
                 }
-                TimelineData::Tempo(_) | TimelineData::Dynamic(_) | TimelineData::RepeatEnd(_) => {}
+                TimelineData::Tempo(e) => {
+                    e.adjust(tempo_factor);
+                    if let Some(t) = current_tempo.take()
+                        && t.time != new_event.time
+                    {
+                        self.timeline.events.insert(t);
+                    }
+                    let save = new_event.copy_with_time_delta(Ratio::from_integer(0), false);
+                    current_tempo = Some(Arc::new(save));
+                }
+                TimelineData::Dynamic(_) | TimelineData::RepeatEnd(_) => {}
             }
             last_event_time = new_event.time;
             self.timeline.events.insert(Arc::new(new_event));
