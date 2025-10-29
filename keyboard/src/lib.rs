@@ -1,5 +1,6 @@
 pub mod config;
 pub mod controller;
+#[cfg(feature = "csound")]
 pub mod csound;
 pub mod engine;
 pub mod events;

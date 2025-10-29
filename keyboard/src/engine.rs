@@ -1,4 +1,6 @@
 use crate::config::Config;
+#[cfg(feature = "csound")]
+use crate::csound;
 #[cfg(test)]
 use crate::events::TestEvent;
 use crate::events::{
@@ -8,7 +10,7 @@ use crate::events::{
 };
 use crate::layout::{HorizVert, Layout, RowCol};
 use crate::scale::{Note, ScaleType};
-use crate::{controller, csound, events, midi_player};
+use crate::{controller, events, midi_player};
 use anyhow::{anyhow, bail};
 use chrono::SubsecRound;
 use std::collections::{HashMap, HashSet};
@@ -23,6 +25,7 @@ mod tests;
 pub enum SoundType {
     None,
     Midi,
+    #[cfg(feature = "csound")]
     Csound,
 }
 
@@ -786,7 +789,6 @@ pub async fn run(
         transient_state: Default::default(),
     };
     let rx2 = events_rx.resubscribe();
-    let tx2 = events_tx.clone();
     match sound_type {
         SoundType::None => {}
         SoundType::Midi => {
@@ -796,7 +798,9 @@ pub async fn run(
                 };
             });
         }
+        #[cfg(feature = "csound")]
         SoundType::Csound => {
+            let tx2 = events_tx.clone();
             tokio::spawn(async move {
                 if let Err(e) = csound::run_csound(rx2, tx2).await {
                     log::error!("csound player error: {e}");

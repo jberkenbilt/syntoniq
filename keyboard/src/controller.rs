@@ -1,6 +1,6 @@
 use crate::events;
 use crate::events::{Color, Event, KeyEvent, LightEvent, LightMode, PressureEvent, UpgradedSender};
-use anyhow::anyhow;
+use anyhow::bail;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
 use midly::MidiMessage;
 use midly::live::LiveEvent;
@@ -17,17 +17,31 @@ struct Device {
 
 pub struct Controller;
 
-fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::Port> {
-    ports
-        .ports()
-        .into_iter()
-        .find(|p| {
-            ports
-                .port_name(p)
-                .map(|n| n.contains(name))
-                .unwrap_or(false)
-        })
-        .ok_or(anyhow!("no port found containing '{name}'"))
+pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::Port> {
+    let mut port_names = Vec::new();
+    let result = ports.ports().into_iter().find(|p| {
+        ports
+            .port_name(p)
+            .inspect(|n| {
+                port_names.push(n.clone());
+            })
+            .map(|n| n.contains(name))
+            .unwrap_or(false)
+    });
+    match result {
+        None => {
+            if port_names.is_empty() {
+                eprintln!("no valid ports found");
+            } else {
+                eprintln!("Valid ports:");
+                for p in port_names {
+                    println!(" {p}");
+                }
+            }
+            bail!("no port found containing '{name}'");
+        }
+        Some(r) => Ok(r),
+    }
 }
 
 pub async fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {

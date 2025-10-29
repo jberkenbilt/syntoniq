@@ -324,17 +324,15 @@ impl Pitch {
         Some(vec![xx, yy, zz])
     }
 
-    /// Compute a frequency to a midi note number and a pitch bend value using ±2 semitones.
+    /// Compute a frequency to a midi note number and a pitch bend value using ±48 semitones.
     /// See also [Self::midi_tuning].
     pub fn midi(&self) -> Option<(u8, u16)> {
         let n1 = self.fractional_midi_note()?;
         let note = n1.round() as u8;
         let delta = n1 - note as f32;
         // - pitch bend is 8192 + 8192 * (semitones/bend range)
-        // - bend range is typically 2 semitones
-        // - 8192*delta/2 is 4096*delta
-        // In other words, this the fraction numerator centered at 8192.
-        let bend = (8192.0 + (4096.0 * delta).round()) as u16;
+        // - bend range is typically 48 semitones
+        let bend = (8192.0 + (8192.0 / 48.0 * delta).round()) as u16;
         Some((note, bend))
     }
 }

@@ -1,8 +1,14 @@
-use std::env;
-use std::path::PathBuf;
-use std::process::Command;
-
 fn main() {
+    #[cfg(feature = "csound")]
+    csound()
+}
+
+#[cfg(feature = "csound")]
+fn csound() {
+    use std::env;
+    use std::path::PathBuf;
+    use std::process::Command;
+
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
     // The cmake file outputs lines prefixed with `!` in a specific order --
     // see `csound-helper/CMakeLists.txt`.

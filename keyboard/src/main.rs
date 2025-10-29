@@ -1,3 +1,5 @@
+#[cfg(not(feature = "csound"))]
+use anyhow::bail;
 use clap::CommandFactory;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
@@ -107,7 +109,12 @@ async fn main() -> anyhow::Result<()> {
             let sound_type = if midi {
                 SoundType::Midi
             } else {
-                SoundType::Csound
+                #[cfg(feature = "csound")]
+                {
+                    SoundType::Csound
+                }
+                #[cfg(not(feature = "csound"))]
+                bail!("MIDI not requested and csound not available");
             };
             engine::run(
                 config_file,

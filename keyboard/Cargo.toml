@@ -24,3 +24,7 @@ rust-embed = "8.7.2"
 
 [build-dependencies]
 bindgen = "0.72.1"
+
+[features]
+default = ["csound"]
+csound = []

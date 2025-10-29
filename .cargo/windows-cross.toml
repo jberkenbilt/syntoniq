@@ -1,0 +1,3 @@
+[build]
+target-dir = "target.x86_64-windows"
+target = "x86_64-pc-windows-gnu"

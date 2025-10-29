@@ -1,5 +1,14 @@
 # TODO
 
+Remember: Windows:
+* Install https://www.tobias-erichsen.de/software/loopmidi.html
+* Create a loop port called `syntoniq-loop`
+```
+cargo build --config .cargo/windows-cross.toml --no-default-features
+```
+
+----------
+
 This has scratch notes in varying degrees of completeness.
 
 ```elisp
