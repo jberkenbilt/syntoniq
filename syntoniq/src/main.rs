@@ -19,6 +19,7 @@ struct Cli {
 }
 
 #[derive(Subcommand)]
+#[allow(clippy::large_enum_variant)]
 enum Commands {
     /// Generate Csound and/or MIDI output. If no output is specified, this just parses the score
     /// and reports errors, if any.

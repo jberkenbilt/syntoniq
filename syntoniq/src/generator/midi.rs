@@ -51,6 +51,11 @@ use syntoniq_common::pitch::Pitch;
 //   - The note will have the correct instrument and MIDI port because of the track and the correct
 //     tuning because of the channel.
 
+pub enum MidiStyle {
+    Mts,
+    Mpe,
+}
+
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct PortChannel {
     midi_port: u7,
@@ -871,7 +876,11 @@ fn select_tuning_program(
     Ok(())
 }
 
-pub(crate) fn generate(timeline: &Timeline, out: impl AsRef<Path>) -> anyhow::Result<()> {
+pub(crate) fn generate(
+    timeline: &Timeline,
+    out: impl AsRef<Path>,
+    _style: MidiStyle,
+) -> anyhow::Result<()> {
     let arena = Arena::new();
     let g = MidiGenerator::new(timeline, &arena)?;
     let smf = g.generate()?;

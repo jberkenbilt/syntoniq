@@ -42,7 +42,8 @@ fn test_generator() -> anyhow::Result<()> {
         let options = GenerateOptions {
             score: input_file("stq").into(),
             json: Some(outfile("json")),
-            midi: Some(outfile("midi")),
+            midi_mts: Some(outfile("mts.midi")),
+            midi_mpe: None, // TODO
             csound: Some(outfile("csd")),
             csound_template,
             parse_options: Default::default(),
@@ -50,7 +51,7 @@ fn test_generator() -> anyhow::Result<()> {
         if let Err(e) = generator::run(options) {
             errors.push(format!("{base}: {e}"));
         }
-        for suf in ["json", "midi", "csd"] {
+        for suf in ["json", "mts.midi", "csd"] {
             let actual = fs::read(outfile(suf))?;
             let exp = fs::read(input_file(suf)).unwrap_or_default();
             if actual == exp {
@@ -220,7 +221,8 @@ fn test_options() -> anyhow::Result<()> {
         let options = GenerateOptions {
             score: orig_file("stq").into(),
             json: Some(outfile("json")),
-            midi: Some(outfile("midi")),
+            midi_mts: Some(outfile("mts.midi")),
+            midi_mpe: None, // TODO
             csound: Some(outfile("csd")),
             csound_template: None,
             parse_options,
@@ -228,7 +230,7 @@ fn test_options() -> anyhow::Result<()> {
         if let Err(e) = generator::run(options) {
             errors.push(format!("{base}: {e}"));
         }
-        for suf in ["json", "midi", "csd"] {
+        for suf in ["json", "mts.midi", "csd"] {
             let actual = fs::read(outfile(suf))?;
             let exp = fs::read(exp_file(suf)).unwrap_or_default();
             if actual == exp {

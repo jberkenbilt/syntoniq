@@ -1,3 +1,4 @@
+use crate::generator::midi::MidiStyle;
 use anyhow::bail;
 use clap::Parser;
 use std::fs;
@@ -17,10 +18,15 @@ pub struct GenerateOptions {
     /// Output a JSON dump of the timeline.
     #[arg(long)]
     json: Option<PathBuf>,
-    /// Output MIDI file. This can be played with Timidity++ or processed with other software that
-    /// properly handles MTS (Midi Tuning System) messages.
+    /// Output MIDI file with MTS data. This can be played with Timidity++ or processed with other
+    /// software that properly handles MTS (Midi Tuning System) messages embedded in MIDI files.
     #[arg(long)]
-    midi: Option<PathBuf>,
+    midi_mts: Option<PathBuf>,
+    /// Output MIDI file with MPE data. This can be played with Surge-XT and will load properly
+    /// into most Digital Audio Workstations. As of 2025, Timidity++ does not follow pitch-bend
+    /// dta.
+    #[arg(long)]
+    midi_mpe: Option<PathBuf>,
     /// Output CSound file. Use the `--csound-template` option to use a template other than the
     /// built-in one.
     #[arg(long)]
@@ -56,10 +62,15 @@ pub fn run(options: GenerateOptions) -> anyhow::Result<()> {
     {
         errors.push(format!("{score_file} -> JSON: {e}"));
     }
-    if let Some(midi_file) = options.midi
-        && let Err(e) = midi::generate(&timeline, midi_file)
+    if let Some(midi_file) = options.midi_mts
+        && let Err(e) = midi::generate(&timeline, midi_file, MidiStyle::Mts)
     {
-        errors.push(format!("{score_file} -> MIDI: {e}"));
+        errors.push(format!("{score_file} -> MIDI (MTS): {e}"));
+    }
+    if let Some(midi_file) = options.midi_mpe
+        && let Err(e) = midi::generate(&timeline, midi_file, MidiStyle::Mpe)
+    {
+        errors.push(format!("{score_file} -> MIDI (MTS): {e}"));
     }
     if let Some(csound_file) = options.csound
         && let Err(e) = csound::generate(&timeline, csound_file, options.csound_template)
