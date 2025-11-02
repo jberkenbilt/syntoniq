@@ -6,12 +6,6 @@ Bugs
 
 nerds.de loopbe1 -- windows virtual midi port
 
-Plan:
-* Evaluate Ableton Live and Bitwig
-* Create a live MIDI output mode for Syntoniq
-* Evaluate the MPE output from HexBoard and see how it differs from what I was trying to do
-
-
 * CSound: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation adjustment directives:
   * four factors: default of each plus modifier for each option
@@ -31,7 +25,7 @@ timidity -A100,100a
 timidity -x "bank 0\n 0 %font \"/home/ejb/tmp/local/z/a.sf2\" amp=127 pan=0" --output-mono -A100,100a /tmp/a.midi
 ```
 
-Note: not tested: > 127 tunings, > 16 channels, sound font banks, a few more minor cases
+Note: not tested: > 127 tunings, > 16 channels, sound font banks, a few more minor cases; for MPE, more than 16 channels
 
 Notes about mark/repeat for architectural docs. They are based on the timeline, not the token stream. This has both advantages and disadvantages.
 

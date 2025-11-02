@@ -1,6 +1,7 @@
 use anyhow::{anyhow, bail};
 use midly::MetaMessage::{EndOfTrack, Tempo};
-use midly::num::{u4, u7, u15, u24, u28};
+use midly::PitchBend;
+use midly::num::{u4, u7, u14, u15, u24, u28};
 use midly::{
     Arena, Format, Header, MetaMessage, MidiMessage, Smf, Timing, TrackEvent, TrackEventKind,
 };
@@ -9,15 +10,16 @@ use num_rational::Ratio;
 use std::borrow::Cow;
 use std::cell::RefCell;
 use std::cmp;
-use std::collections::btree_map::Entry;
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::btree_map::{Entry, VacantEntry};
+use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::fmt::{Display, Formatter};
 use std::ops::Range;
 use std::path::Path;
 use std::sync::Arc;
 use syntoniq_common::parsing::score::{Scale, Tuning};
 use syntoniq_common::parsing::{
-    DynamicEvent, NoteEvent, TempoEvent, Timeline, TimelineData, TimelineEvent,
+    DynamicEvent, MidiInstrumentNumber, NoteEvent, TempoEvent, Timeline, TimelineData,
+    TimelineEvent,
 };
 use syntoniq_common::pitch::Pitch;
 
@@ -126,6 +128,15 @@ struct TrackPortChannel {
     channel: u4,
 }
 
+#[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
+struct MidiNoteData {
+    track: usize,
+    midi_port: u7,
+    channel: u4,
+    key: u7,
+    bend: Option<u14>,
+}
+
 struct MidiGenerator<'s> {
     arena: &'s Arena,
     timeline: &'s Timeline<'s>,
@@ -135,28 +146,66 @@ struct MidiGenerator<'s> {
     ticks_per_beat: u15,
     micros_per_beat: u24,
     part_channels: BTreeMap<&'s str, BTreeSet<TrackPortChannel>>,
-    track_data: BTreeMap<TrackKey<'s>, usize>,
     tracks: Vec<Vec<TrackEvent<'s>>>,
     pitch_data: PitchData<'s>,
     smf: Option<Smf<'s>>,
 }
 enum PitchData<'s> {
     Mts(MtsData<'s>),
-    Mpe(MpeData),
+    Mpe(MpeData<'s>),
 }
 
-impl<'s> PitchData<'s> {
-    fn mts(&self) -> anyhow::Result<&MtsData<'s>> {
-        let PitchData::Mts(mts) = self else {
-            bail!("mts called in non-MTS mode");
-        };
-        Ok(mts)
+fn set_channel_instrument(
+    midi_instruments: &BTreeMap<Cow<str>, MidiInstrumentNumber>,
+    track: &mut Vec<TrackEvent>,
+    score_part: &str,
+    channel: u4,
+) -> anyhow::Result<()> {
+    let Some(instrument) = midi_instruments
+        .get(score_part)
+        .or_else(|| midi_instruments.get(""))
+    else {
+        return Ok(());
+    };
+    if instrument.bank > 0 {
+        let (bank_msb, bank_lsb) = split_u14(instrument.bank)?;
+        track.push(TrackEvent {
+            delta: 0.into(),
+            kind: TrackEventKind::Midi {
+                channel,
+                message: MidiMessage::Controller {
+                    controller: 0.into(), // Bank Select MSB
+                    value: bank_msb,
+                },
+            },
+        });
+        track.push(TrackEvent {
+            delta: 0.into(),
+            kind: TrackEventKind::Midi {
+                channel,
+                message: MidiMessage::Controller {
+                    controller: 32.into(), // Bank Select LSB
+                    value: bank_lsb,
+                },
+            },
+        })
     }
+    let program = u7::try_from(instrument.instrument)
+        .ok_or_else(|| anyhow!("overflow getting instrument number"))?;
+    track.push(TrackEvent {
+        delta: 0.into(),
+        kind: TrackEventKind::Midi {
+            channel,
+            message: MidiMessage::ProgramChange { program },
+        },
+    });
+    Ok(())
 }
 
 struct MtsData<'s> {
     tuning_data: BTreeMap<&'s Tuning<'s>, Vec<TuningData>>,
     channel_data: BTreeMap<MtsChannelKey<'s>, PortChannel>,
+    track_data: BTreeMap<MtsTrackKey<'s>, usize>,
 }
 impl<'s> MtsData<'s> {
     fn tuning_for_note(&'s self, key: &'s Tuning<'s>, note: i32) -> anyhow::Result<&'s TuningData> {
@@ -169,11 +218,11 @@ impl<'s> MtsData<'s> {
             .ok_or_else(|| anyhow!("internal error unable to get tuning data for note"))
     }
 
-    fn port_channel_key(
+    fn track_port_channel_key(
         &self,
         score_part: &str,
         note_event: &NoteEvent,
-    ) -> anyhow::Result<(PortChannel, u7)> {
+    ) -> anyhow::Result<MidiNoteData> {
         let tuning_data = self.tuning_for_note(
             &note_event.value.tuning,
             note_event.value.absolute_scale_degree,
@@ -190,7 +239,22 @@ impl<'s> MtsData<'s> {
             .ok()
             .and_then(u7::try_from)
             .ok_or_else(|| anyhow!("internal error: note out of range"))?;
-        Ok((port_channel, key))
+        let track_key = MtsTrackKey {
+            score_part,
+            midi_port: port_channel.midi_port,
+        };
+        let track = self
+            .track_data
+            .get(&track_key)
+            .cloned()
+            .ok_or_else(|| anyhow!("unable to get track for note"))?;
+        Ok(MidiNoteData {
+            track,
+            midi_port: port_channel.midi_port,
+            channel: port_channel.channel,
+            key,
+            bend: None,
+        })
     }
 
     fn get_channel_mappings(
@@ -296,9 +360,329 @@ impl<'s> MtsData<'s> {
     fn use_banks(&self) -> bool {
         self.tuning_data.len() > 126
     }
+
+    fn get_track_assignments(
+        &mut self,
+        midi_instruments: &BTreeMap<Cow<str>, MidiInstrumentNumber>,
+        tracks: &mut Vec<Vec<TrackEvent>>,
+    ) -> anyhow::Result<()> {
+        let mut cur_track = 1usize;
+        let mut channels_seen = BTreeSet::new();
+        let use_banks = self.use_banks();
+        for (k, port_channel) in &self.channel_data {
+            let track_key = MtsTrackKey {
+                score_part: k.score_part,
+                midi_port: port_channel.midi_port,
+            };
+            if let Entry::Vacant(v) = self.track_data.entry(track_key) {
+                add_track(v, tracks, &mut cur_track, port_channel.midi_port);
+            }
+            if channels_seen.insert(port_channel) {
+                // This is the first time this channel has been seen. Initialize its instrument and
+                // tuning program.
+                let track = tracks.last_mut().unwrap();
+                select_tuning_program(track, port_channel.channel, k.raw_tuning, use_banks)?;
+                set_channel_instrument(
+                    midi_instruments,
+                    track,
+                    k.score_part,
+                    port_channel.channel,
+                )?;
+            }
+        }
+        Ok(())
+    }
+
+    fn dump_tuning(
+        arena: &'s Arena,
+        scales_by_name: &BTreeMap<Cow<'s, str>, &'s Scale<'s>>,
+        track: &mut Vec<TrackEvent<'s>>,
+        tuning: &Tuning,
+        data: &TuningData,
+        use_banks: bool,
+    ) -> anyhow::Result<()> {
+        if data.raw_program == 0 {
+            // We ensure program 0 is only assigned to the default 12-TET tuning. We don't need
+            // to dump that.
+            return Ok(());
+        }
+        let (bank, program) = TuningData::tuning_program(data.raw_program, use_banks)?;
+        let mut dump: Vec<u8> = vec![
+            0x7E, 0x7F, // all devices
+        ];
+        if let Some(bank) = bank {
+            dump.append(&mut vec![
+                0x08,
+                0x04, // bulk bank dump reply
+                bank.into(),
+                program.into(),
+            ]);
+        } else {
+            dump.append(&mut vec![
+                0x08,
+                0x01, // bulk dump reply
+                program.into(),
+            ]);
+        }
+        // Name: 16 bytes
+        dump.append(&mut string_exact_bytes(&tuning.scale_name, 16));
+
+        // This is the actual pitch calculation logic.
+        let &scale = scales_by_name
+            .get(&tuning.scale_name)
+            .ok_or_else(|| anyhow!("unknown scale in dump_tuning"))?;
+        // Get basic information about the scale.
+        let degrees = scale.pitches.len() as i32;
+        let cycle_ratio = scale.definition.cycle;
+        let base_pitch = &tuning.base_pitch;
+        // Get the syntoniq degree for midi note 0.
+        let first = -data.midi_offset;
+        let (mut cycle, mut degree) = first.div_mod_floor(&degrees);
+        let mut pitch0 = base_pitch.clone();
+        let cycle_factor = Pitch::from(cycle_ratio);
+        if cycle < 0 {
+            let invert = cycle_factor.invert();
+            while cycle < 0 {
+                pitch0 *= &invert;
+                cycle += 1;
+            }
+        }
+        while cycle > 0 {
+            pitch0 *= &cycle_factor;
+            cycle -= 1;
+        }
+        //TODO: overflow detection is a little shaky. There are likely conditions that will
+        // cause pitch overflow/underflow conditions or very sparse scales are crazy base pitches.
+        let mut hit_max = false;
+        for i in 0..128 {
+            let pitch = &pitch0 * &scale.pitches[degree as usize];
+            let mut v = pitch.midi_tuning().unwrap_or_else(|| {
+                if i < data.midi_offset {
+                    vec![0; 3]
+                } else {
+                    // No more cycle advances will happen -- from here, we'll keep repeating
+                    // pitch classes in the top octave.
+                    hit_max = true;
+                    vec![127; 3]
+                }
+            });
+            dump.append(&mut v);
+            degree = (degree + 1) % degrees;
+            if degree == 0 && !hit_max {
+                pitch0 *= &cycle_factor;
+            }
+        }
+        // Compute checksum per MTS spec. The MTS spec recommends that readers ignore the checksum.
+        let mut checksum: u8 = 0;
+        for b in &dump {
+            checksum ^= b;
+        }
+        dump.push(checksum & 0x7F);
+        // End SysEx
+        dump.push(0x7F);
+        let dump = arena.add(&dump);
+        track.push(TrackEvent {
+            delta: 0.into(),
+            kind: TrackEventKind::SysEx(dump),
+        });
+        Ok(())
+    }
+
+    fn dump_tunings(
+        &mut self,
+        arena: &'s Arena,
+        scales_by_name: &BTreeMap<Cow<'s, str>, &'s Scale<'s>>,
+        track: &mut Vec<TrackEvent<'s>>,
+    ) -> anyhow::Result<()> {
+        let use_banks = self.use_banks();
+        let mut tunings: Vec<_> = self.tuning_data.iter().collect();
+        tunings.sort_by_key(|x| x.0);
+        let mut events = Vec::new();
+        for (&tuning, tuning_data_vec) in tunings {
+            for tuning_data in tuning_data_vec {
+                Self::dump_tuning(
+                    arena,
+                    scales_by_name,
+                    &mut events,
+                    tuning,
+                    tuning_data,
+                    use_banks,
+                )?;
+            }
+        }
+        track.append(&mut events);
+        Ok(())
+    }
+
+    fn get_part_channels(
+        &mut self,
+        part_channels: &mut BTreeMap<&'s str, BTreeSet<TrackPortChannel>>,
+    ) -> anyhow::Result<()> {
+        // For each distinct part, make a list of all the tracks it uses. This is needed for
+        // dynamics.
+        for (channel_key, port_channel) in &self.channel_data {
+            let track_key = MtsTrackKey {
+                score_part: channel_key.score_part,
+                midi_port: port_channel.midi_port,
+            };
+            let &track = self.track_data.get(&track_key).ok_or_else(|| {
+                anyhow!("get_part_channels: unable to get track for score_part/midi_port")
+            })?;
+            let tpc = TrackPortChannel {
+                track,
+                midi_port: port_channel.midi_port,
+                channel: port_channel.channel,
+            };
+            part_channels
+                .entry(channel_key.score_part)
+                .or_default()
+                .insert(tpc);
+        }
+        Ok(())
+    }
 }
 
-struct MpeData {}
+struct MpeData<'s> {
+    channel_data: BTreeMap<MpeChannelKey<'s>, PortChannel>,
+    track_data: BTreeMap<MpeTrackKey<'s>, usize>,
+}
+impl<'s> MpeData<'s> {
+    fn get_channel_mappings(
+        &mut self,
+        events: &'s BTreeSet<Arc<TimelineEvent<'s>>>,
+    ) -> anyhow::Result<()> {
+        // Assign a separate channel for each note for MPE by first creating bins of parts and
+        // notes and then assigning a port to each bin.
+        let mut channels_for_part: BTreeMap<&str, BTreeSet<u32>> = BTreeMap::new();
+        for event in events {
+            let TimelineData::Note(note_event) = &event.data else {
+                continue;
+            };
+            channels_for_part
+                .entry(note_event.part_note.part)
+                .or_default()
+                .insert(note_event.part_note.note_number);
+        }
+        let mut all_items: Vec<(&str, VecDeque<u32>)> = Default::default();
+        for (score_part, channels_set) in channels_for_part {
+            all_items.push((score_part, channels_set.into_iter().collect()));
+        }
+        let bins = bin_pack(15, all_items);
+        for (i, bin) in bins.into_iter().enumerate() {
+            let midi_port = u7::from(i as u8);
+            for (ch, (score_part, note_number)) in bin.into_iter().enumerate() {
+                let key = MpeChannelKey {
+                    score_part,
+                    note_number,
+                };
+                let port_channel = PortChannel {
+                    midi_port,
+                    channel: u4::from((1 + ch) as u8),
+                };
+                self.channel_data.insert(key, port_channel);
+            }
+        }
+        Ok(())
+    }
+
+    fn get_track_assignments(
+        &mut self,
+        midi_instruments: &BTreeMap<Cow<str>, MidiInstrumentNumber>,
+        tracks: &mut Vec<Vec<TrackEvent>>,
+    ) -> anyhow::Result<()> {
+        let mut cur_track = 1usize;
+        let mut channels_seen = BTreeSet::new();
+        let mut ports_seen = BTreeSet::new();
+        for (k, port_channel) in &self.channel_data {
+            let track_key = MpeTrackKey {
+                score_part: k.score_part,
+                channel: port_channel.channel,
+            };
+            if let Entry::Vacant(v) = self.track_data.entry(track_key) {
+                add_track(v, tracks, &mut cur_track, port_channel.midi_port);
+            }
+            if channels_seen.insert(port_channel) {
+                let track = tracks.last_mut().unwrap();
+                set_channel_instrument(
+                    midi_instruments,
+                    track,
+                    k.score_part,
+                    port_channel.channel,
+                )?;
+            }
+            if ports_seen.insert(port_channel.midi_port) {
+                // This is the first time we've seen this port, so use this track to initialize
+                // MPE for the port.
+                let track = tracks.last_mut().unwrap();
+                init_mpe(track);
+            }
+        }
+        Ok(())
+    }
+
+    fn get_part_channels(
+        &mut self,
+        part_channels: &mut BTreeMap<&'s str, BTreeSet<TrackPortChannel>>,
+    ) -> anyhow::Result<()> {
+        // For each distinct part, make a list of all the tracks it uses. This is needed for
+        // dynamics.
+        for (channel_key, port_channel) in &self.channel_data {
+            let track_key = MpeTrackKey {
+                score_part: channel_key.score_part,
+                channel: port_channel.channel,
+            };
+            let &track = self.track_data.get(&track_key).ok_or_else(|| {
+                anyhow!("get_part_channels: unable to get track for score_part/midi_port")
+            })?;
+            let tpc = TrackPortChannel {
+                track,
+                midi_port: port_channel.midi_port,
+                channel: port_channel.channel,
+            };
+            part_channels
+                .entry(channel_key.score_part)
+                .or_default()
+                .insert(tpc);
+        }
+        Ok(())
+    }
+
+    fn track_port_channel_key(
+        &self,
+        score_part: &str,
+        note_event: &NoteEvent,
+    ) -> anyhow::Result<MidiNoteData> {
+        let port_channel = self
+            .channel_data
+            .get(&MpeChannelKey {
+                score_part,
+                note_number: note_event.part_note.note_number,
+            })
+            .cloned()
+            .ok_or_else(|| anyhow!("unknown channel for note"))?;
+        let (midi_note, bend) = note_event
+            .value
+            .absolute_pitch
+            .midi()
+            .ok_or_else(|| anyhow!("error getting MIDI pitch information for pitch"))?;
+        let track_key = MpeTrackKey {
+            score_part,
+            channel: port_channel.channel,
+        };
+        let track = self
+            .track_data
+            .get(&track_key)
+            .cloned()
+            .ok_or_else(|| anyhow!("unable to get track for note"))?;
+        Ok(MidiNoteData {
+            track,
+            midi_port: port_channel.midi_port,
+            channel: port_channel.channel,
+            key: midi_note.into(),
+            bend: Some(bend.into()),
+        })
+    }
+}
 
 #[derive(Debug)]
 struct TuningData {
@@ -349,10 +733,22 @@ struct MtsChannelKey<'a> {
     raw_tuning: i32,
 }
 
+#[derive(Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
+struct MpeChannelKey<'a> {
+    score_part: &'a str,
+    note_number: u32,
+}
+
 #[derive(Debug, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
-struct TrackKey<'a> {
+struct MtsTrackKey<'a> {
     score_part: &'a str,
     midi_port: u7,
+}
+
+#[derive(Debug, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
+struct MpeTrackKey<'a> {
+    score_part: &'a str,
+    channel: u4,
 }
 
 #[derive(Debug, Clone, Copy, PartialOrd, PartialEq, Eq, Ord)]
@@ -477,6 +873,60 @@ fn ramp_rational(
     result
 }
 
+/// Given a group labelled groups `(A, [B])`, pack these into bins of `[A, B]` of no more than a
+/// given size. This is used to pack part/note pairs into groups of channels. See the test case for
+/// details.
+fn bin_pack<A: Copy, B>(max_size: usize, items: Vec<(A, VecDeque<B>)>) -> Vec<Vec<(A, B)>> {
+    assert!((0..127).contains(&max_size));
+    let mut leftovers: Vec<(A, Vec<B>)> = Default::default();
+    let mut bins: Vec<Vec<(A, B)>> = Default::default();
+    // In each group, take initial subgroups of max_size and fill bins with them.
+    for (a, mut b_group) in items {
+        while b_group.len() >= max_size {
+            let group = b_group.drain(..max_size);
+            bins.push(Default::default());
+            let bin = bins.last_mut().unwrap();
+            for b in group {
+                bin.push((a, b));
+            }
+        }
+        // Throw whatever's left in a pile for later aggregation.
+        leftovers.push((a, b_group.into_iter().collect()));
+    }
+    // Pack the leftovers into groups, combining as we can. Doing this optimally is NP-complete, so
+    // we use a simple heuristic of taking remaining groups in decreasing order of side and placing
+    // them into whichever bin the fit most tightly. Don't worry about the runtime efficiency -- we
+    // use this on groups of parts and notes, which will be small.
+    let mut remainders: Vec<Vec<(A, B)>> = Default::default();
+    leftovers.sort_by_key(|x| -(x.1.len() as i8));
+    for (a, b_group) in leftovers {
+        let mut best_idx = 0;
+        let mut best_remainder = max_size;
+        let mut found = false;
+        for (i, bin) in remainders.iter().enumerate() {
+            let new_size = bin.len() + b_group.len();
+            if new_size > max_size {
+                continue;
+            }
+            let remainder = max_size - new_size;
+            if remainder < best_remainder {
+                best_remainder = remainder;
+                best_idx = i;
+                found = true;
+            }
+        }
+        if !found {
+            remainders.push(Vec::new());
+            best_idx = remainders.len() - 1;
+        }
+        for b in b_group {
+            remainders[best_idx].push((a, b));
+        }
+    }
+    bins.append(&mut remainders);
+    bins
+}
+
 fn bpm_to_micros_per_beat(bpm: Ratio<u32>) -> anyhow::Result<u24> {
     let &micros_per_beat = (Ratio::from_integer(60_000_000) / bpm).floor().numer();
     u24::try_from(micros_per_beat).ok_or_else(|| anyhow!("overflow calculating tempo"))
@@ -499,8 +949,12 @@ impl<'s> MidiGenerator<'s> {
             MidiStyle::Mts => PitchData::Mts(MtsData {
                 tuning_data: Default::default(),
                 channel_data: Default::default(),
+                track_data: Default::default(),
             }),
-            MidiStyle::Mpe => PitchData::Mpe(MpeData {}),
+            MidiStyle::Mpe => PitchData::Mpe(MpeData {
+                channel_data: Default::default(),
+                track_data: Default::default(),
+            }),
         };
         Ok(Self {
             arena,
@@ -512,7 +966,6 @@ impl<'s> MidiGenerator<'s> {
             micros_per_beat,
             pitch_data,
             part_channels: Default::default(),
-            track_data: Default::default(),
             tracks: Default::default(),
             smf: None,
         })
@@ -547,14 +1000,7 @@ impl<'s> MidiGenerator<'s> {
         Ok(result)
     }
 
-    fn get_channel_mappings(&mut self) -> anyhow::Result<()> {
-        match &mut self.pitch_data {
-            PitchData::Mts(mts) => mts.get_channel_mappings(&self.timeline.events),
-            PitchData::Mpe(_) => todo!(),
-        }
-    }
-
-    fn get_track_assignments(&mut self) -> anyhow::Result<()> {
+    fn init_tracks(&self) -> Vec<Vec<TrackEvent<'s>>> {
         // A track should contain only notes for a single instrument/port. The first track
         // is for global information.
         let mut track0 = Vec::new();
@@ -570,216 +1016,30 @@ impl<'s> MidiGenerator<'s> {
                 kind: TrackEventKind::Meta(Tempo(self.micros_per_beat)),
             });
         }
-        self.tracks.push(track0);
-        let mut cur_track = 1usize;
-        let mut channels_seen = BTreeSet::new();
-        let use_banks = self.pitch_data.mts()?.use_banks();
-        for (k, port_channel) in &self.pitch_data.mts()?.channel_data {
-            let track_key = TrackKey {
-                score_part: k.score_part,
-                midi_port: port_channel.midi_port,
-            };
-            if let Entry::Vacant(v) = self.track_data.entry(track_key) {
-                v.insert(cur_track);
-                cur_track += 1;
-                self.tracks.push(vec![TrackEvent {
-                    delta: 0.into(),
-                    kind: TrackEventKind::Meta(MetaMessage::MidiPort(port_channel.midi_port)),
-                }]);
-            }
-            let instrument = self
-                .timeline
-                .midi_instruments
-                .get(k.score_part)
-                .or_else(|| self.timeline.midi_instruments.get(""));
-            if channels_seen.insert(port_channel) {
-                // This is the first track for this port/channel, so assign the channel to its
-                // fixed tuning program here.
-                let track = self.tracks.last_mut().unwrap();
-                select_tuning_program(track, port_channel.channel, k.raw_tuning, use_banks)?;
-                if let Some(&instrument) = instrument {
-                    if instrument.bank > 0 {
-                        let (bank_msb, bank_lsb) = split_u14(instrument.bank)?;
-                        track.push(TrackEvent {
-                            delta: 0.into(),
-                            kind: TrackEventKind::Midi {
-                                channel: port_channel.channel,
-                                message: MidiMessage::Controller {
-                                    controller: 0.into(), // Bank Select MSB
-                                    value: bank_msb,
-                                },
-                            },
-                        });
-                        track.push(TrackEvent {
-                            delta: 0.into(),
-                            kind: TrackEventKind::Midi {
-                                channel: port_channel.channel,
-                                message: MidiMessage::Controller {
-                                    controller: 32.into(), // Bank Select LSB
-                                    value: bank_lsb,
-                                },
-                            },
-                        })
-                    }
-                    let program = u7::try_from(instrument.instrument)
-                        .ok_or_else(|| anyhow!("overflow getting instrument number"))?;
-                    track.push(TrackEvent {
-                        delta: 0.into(),
-                        kind: TrackEventKind::Midi {
-                            channel: port_channel.channel,
-                            message: MidiMessage::ProgramChange { program },
-                        },
-                    });
-                }
-            }
-        }
-        Ok(())
-    }
-
-    fn get_part_channels(&mut self) -> anyhow::Result<()> {
-        // For each distinct part, make a list of all the tracks it uses. This is needed for
-        // dynamics.
-        for (channel_key, port_channel) in &self.pitch_data.mts()?.channel_data {
-            let track_key = TrackKey {
-                score_part: channel_key.score_part,
-                midi_port: port_channel.midi_port,
-            };
-            let &track = self.track_data.get(&track_key).ok_or_else(|| {
-                anyhow!("get_part_channels: unable to get track for score_part/midi_port")
-            })?;
-            let tpc = TrackPortChannel {
-                track,
-                midi_port: port_channel.midi_port,
-                channel: port_channel.channel,
-            };
-            self.part_channels
-                .entry(channel_key.score_part)
-                .or_default()
-                .insert(tpc);
-        }
-        Ok(())
+        vec![track0]
     }
 
     fn analyze(&mut self) -> anyhow::Result<()> {
-        self.get_channel_mappings()?;
-        self.get_track_assignments()?;
-        self.get_part_channels()?;
+        let mut tracks = self.init_tracks();
+        match &mut self.pitch_data {
+            PitchData::Mts(mts) => {
+                mts.get_channel_mappings(&self.timeline.events)?;
+                mts.get_track_assignments(&self.timeline.midi_instruments, &mut tracks)?;
+                mts.get_part_channels(&mut self.part_channels)?;
+            }
+            PitchData::Mpe(mpe) => {
+                mpe.get_channel_mappings(&self.timeline.events)?;
+                mpe.get_track_assignments(&self.timeline.midi_instruments, &mut tracks)?;
+                mpe.get_part_channels(&mut self.part_channels)?;
+            }
+        };
+        self.tracks = tracks;
         Ok(())
     }
 
     fn init_output(&mut self) -> anyhow::Result<()> {
         let header = Header::new(Format::Parallel, Timing::Metrical(self.ticks_per_beat));
         self.smf = Some(Smf::new(header));
-        Ok(())
-    }
-
-    fn dump_tuning(
-        &self,
-        arena: &'s Arena,
-        track: &mut Vec<TrackEvent<'s>>,
-        tuning: &Tuning,
-        data: &TuningData,
-        use_banks: bool,
-    ) -> anyhow::Result<()> {
-        if data.raw_program == 0 {
-            // We ensure program 0 is only assigned to the default 12-TET tuning. We don't need
-            // to dump that.
-            return Ok(());
-        }
-        let (bank, program) = TuningData::tuning_program(data.raw_program, use_banks)?;
-        let mut dump: Vec<u8> = vec![
-            0x7E, 0x7F, // all devices
-        ];
-        if let Some(bank) = bank {
-            dump.append(&mut vec![
-                0x08,
-                0x04, // bulk bank dump reply
-                bank.into(),
-                program.into(),
-            ]);
-        } else {
-            dump.append(&mut vec![
-                0x08,
-                0x01, // bulk dump reply
-                program.into(),
-            ]);
-        }
-        // Name: 16 bytes
-        dump.append(&mut string_exact_bytes(&tuning.scale_name, 16));
-
-        // This is the actual pitch calculation logic.
-        let &scale = self
-            .scales_by_name
-            .get(&tuning.scale_name)
-            .ok_or_else(|| anyhow!("unknown scale in dump_tuning"))?;
-        // Get basic information about the scale.
-        let degrees = scale.pitches.len() as i32;
-        let cycle_ratio = scale.definition.cycle;
-        let base_pitch = &tuning.base_pitch;
-        // Get the syntoniq degree for midi note 0.
-        let first = -data.midi_offset;
-        let (mut cycle, mut degree) = first.div_mod_floor(&degrees);
-        let mut pitch0 = base_pitch.clone();
-        let cycle_factor = Pitch::from(cycle_ratio);
-        if cycle < 0 {
-            let invert = cycle_factor.invert();
-            while cycle < 0 {
-                pitch0 *= &invert;
-                cycle += 1;
-            }
-        }
-        while cycle > 0 {
-            pitch0 *= &cycle_factor;
-            cycle -= 1;
-        }
-        //TODO: overflow detection is a little shaky. There are likely conditions that will
-        // cause pitch overflow/underflow conditions or very sparse scales are crazy base pitches.
-        let mut hit_max = false;
-        for i in 0..128 {
-            let pitch = &pitch0 * &scale.pitches[degree as usize];
-            let mut v = pitch.midi_tuning().unwrap_or_else(|| {
-                if i < data.midi_offset {
-                    vec![0; 3]
-                } else {
-                    // No more cycle advances will happen -- from here, we'll keep repeating
-                    // pitch classes in the top octave.
-                    hit_max = true;
-                    vec![127; 3]
-                }
-            });
-            dump.append(&mut v);
-            degree = (degree + 1) % degrees;
-            if degree == 0 && !hit_max {
-                pitch0 *= &cycle_factor;
-            }
-        }
-        // Compute checksum per MTS spec. The MTS spec recommends that readers ignore the checksum.
-        let mut checksum: u8 = 0;
-        for b in &dump {
-            checksum ^= b;
-        }
-        dump.push(checksum & 0x7F);
-        // End SysEx
-        dump.push(0x7F);
-        let dump = arena.add(&dump);
-        track.push(TrackEvent {
-            delta: 0.into(),
-            kind: TrackEventKind::SysEx(dump),
-        });
-        Ok(())
-    }
-
-    fn dump_tunings(&mut self) -> anyhow::Result<()> {
-        let use_banks = self.pitch_data.mts()?.use_banks();
-        let mut tunings: Vec<_> = self.pitch_data.mts()?.tuning_data.iter().collect();
-        tunings.sort_by_key(|x| x.0);
-        let mut track = Vec::new();
-        for (&tuning, tuning_data_vec) in tunings {
-            for tuning_data in tuning_data_vec {
-                self.dump_tuning(self.arena, &mut track, tuning, tuning_data, use_banks)?;
-            }
-        }
-        self.tracks[0].append(&mut track);
         Ok(())
     }
 
@@ -877,36 +1137,45 @@ impl<'s> MidiGenerator<'s> {
         note_event: &NoteEvent<'s>,
     ) -> anyhow::Result<()> {
         let score_part = note_event.part_note.part;
-        let (port_channel, key) = match &self.pitch_data {
-            PitchData::Mts(mts) => mts.port_channel_key(score_part, note_event)?,
-            PitchData::Mpe(_) => todo!(),
+        let midi_note = match &self.pitch_data {
+            PitchData::Mts(mts) => mts.track_port_channel_key(score_part, note_event)?,
+            PitchData::Mpe(mpe) => mpe.track_port_channel_key(score_part, note_event)?,
         };
-        let track_key = TrackKey {
-            score_part,
-            midi_port: port_channel.midi_port,
-        };
-        let track = self
-            .track_data
-            .get(&track_key)
-            .cloned()
-            .ok_or_else(|| anyhow!("unable to get track for note"))?;
         let velocity = u7::try_from(note_event.value.velocity)
             .ok_or_else(|| anyhow!("overflow getting velocity"))?;
-        let delta = self.get_delta(track, event.time)?;
+        let mut delta = self.get_delta(midi_note.track, event.time)?;
         if velocity == 0 {
-            self.tracks[track].push(TrackEvent {
+            self.tracks[midi_note.track].push(TrackEvent {
                 delta,
                 kind: TrackEventKind::Midi {
-                    channel: port_channel.channel,
-                    message: MidiMessage::NoteOff { key, vel: velocity },
+                    channel: midi_note.channel,
+                    message: MidiMessage::NoteOff {
+                        key: midi_note.key,
+                        vel: velocity,
+                    },
                 },
             });
         } else {
-            self.tracks[track].push(TrackEvent {
+            if let Some(bend) = midi_note.bend {
+                self.tracks[midi_note.track].push(TrackEvent {
+                    delta,
+                    kind: TrackEventKind::Midi {
+                        channel: midi_note.channel,
+                        message: MidiMessage::PitchBend {
+                            bend: PitchBend(bend),
+                        },
+                    },
+                });
+                delta = 0.into();
+            }
+            self.tracks[midi_note.track].push(TrackEvent {
                 delta,
                 kind: TrackEventKind::Midi {
-                    channel: port_channel.channel,
-                    message: MidiMessage::NoteOn { key, vel: velocity },
+                    channel: midi_note.channel,
+                    message: MidiMessage::NoteOn {
+                        key: midi_note.key,
+                        vel: velocity,
+                    },
                 },
             });
             // Generate an event to turn the note off. Use velocity 0 as a signal.
@@ -943,7 +1212,12 @@ impl<'s> MidiGenerator<'s> {
     fn generate(mut self) -> anyhow::Result<Smf<'s>> {
         self.analyze()?;
         self.init_output()?;
-        self.dump_tunings()?;
+        match &mut self.pitch_data {
+            PitchData::Mts(mts) => {
+                mts.dump_tunings(self.arena, &self.scales_by_name, &mut self.tracks[0])?
+            }
+            PitchData::Mpe(_) => {}
+        }
 
         let mut events: BTreeSet<_> = self.timeline.events.iter().cloned().collect();
         while let Some(event) = events.pop_first() {
@@ -967,6 +1241,65 @@ impl<'s> MidiGenerator<'s> {
     }
 }
 
+fn add_track<T: Ord>(
+    v: VacantEntry<T, usize>,
+    tracks: &mut Vec<Vec<TrackEvent>>,
+    cur_track: &mut usize,
+    midi_port: u7,
+) {
+    v.insert(*cur_track);
+    *cur_track += 1;
+    tracks.push(vec![TrackEvent {
+        delta: 0.into(),
+        kind: TrackEventKind::Meta(MetaMessage::MidiPort(midi_port)),
+    }]);
+}
+
+fn set_midi_parameter(
+    track: &mut Vec<TrackEvent>,
+    delta: u28,
+    channel: u4,
+    msb: u7,
+    lsb: u7,
+    value: u7,
+) {
+    track.append(&mut vec![
+        // Select RPN (registered parameter number): code MSB, then code LSB, then 6 for data entry
+        // with value.
+        TrackEvent {
+            delta,
+            kind: TrackEventKind::Midi {
+                channel,
+                message: MidiMessage::Controller {
+                    controller: 101.into(), // RPN MSB
+                    value: msb,
+                },
+            },
+        },
+        TrackEvent {
+            delta,
+            kind: TrackEventKind::Midi {
+                channel,
+                message: MidiMessage::Controller {
+                    controller: 100.into(), // RPN LSB
+                    value: lsb,
+                },
+            },
+        },
+        // Set the value using Data Entry MSB (6) per MTS spec
+        TrackEvent {
+            delta,
+            kind: TrackEventKind::Midi {
+                channel,
+                message: MidiMessage::Controller {
+                    controller: 6.into(), // data entry
+                    value,
+                },
+            },
+        },
+    ]);
+}
+
 fn select_tuning_program(
     track: &mut Vec<TrackEvent>,
     channel: u4,
@@ -975,47 +1308,21 @@ fn select_tuning_program(
 ) -> anyhow::Result<()> {
     let (bank, program) = TuningData::tuning_program(raw_tuning, use_banks)?;
     let delta = 0.into();
-    for (code, value) in [(4, bank), (3, Some(program))] {
+    // Select RPN (registered parameter number) MSB, then LSB for the code. Parameter 3
+    // selects the tuning program. Parameter 4 sets the bank.
+    for (param_lsb, value) in [(4, bank), (3, Some(program))] {
         let Some(value) = value else {
             continue;
         };
-        track.append(&mut vec![
-            // Select RPN (registered parameter number) MSB, then LSB for the code. Parameter 3
-            // selects the tuning program. Parameter 4 sets the bank.
-            TrackEvent {
-                delta,
-                kind: TrackEventKind::Midi {
-                    channel,
-                    message: MidiMessage::Controller {
-                        controller: 101.into(),
-                        value: 0.into(),
-                    },
-                },
-            },
-            TrackEvent {
-                delta,
-                kind: TrackEventKind::Midi {
-                    channel,
-                    message: MidiMessage::Controller {
-                        controller: 100.into(),
-                        value: code.into(),
-                    },
-                },
-            },
-            // Set the value using Data Entry MSB (6) per MTS spec
-            TrackEvent {
-                delta,
-                kind: TrackEventKind::Midi {
-                    channel,
-                    message: MidiMessage::Controller {
-                        controller: 6.into(),
-                        value,
-                    },
-                },
-            },
-        ]);
+        set_midi_parameter(track, delta, channel, 0.into(), param_lsb.into(), value);
     }
     Ok(())
+}
+
+fn init_mpe(track: &mut Vec<TrackEvent>) {
+    let delta = 0.into();
+    let channel = 0.into();
+    set_midi_parameter(track, delta, channel, 0.into(), 6.into(), 15.into());
 }
 
 pub(crate) fn generate(
@@ -1177,6 +1484,37 @@ mod tests {
                 (Ratio::new(51, 4), Ratio::new(6, 1)),
                 (Ratio::new(52, 4), Ratio::new(13, 2)),
                 (Ratio::new(53, 4), Ratio::new(7, 1)),
+            ]
+        );
+    }
+
+    #[test]
+    fn test_bin_pack() {
+        let mut orig: Vec<(&str, VecDeque<i32>)> = Default::default();
+        for (a, b_max) in [("a", 2), ("b", 9), ("c", 3), ("d", 2), ("e", 2), ("f", 4)] {
+            orig.push((a, (0..b_max).collect()));
+        }
+        let bins = bin_pack(6, orig);
+        assert_eq!(
+            bins,
+            vec![
+                vec![("b", 0), ("b", 1), ("b", 2), ("b", 3), ("b", 4), ("b", 5),],
+                vec![("f", 0), ("f", 1), ("f", 2), ("f", 3), ("a", 0), ("a", 1),],
+                vec![("b", 6), ("b", 7), ("b", 8), ("c", 0), ("c", 1), ("c", 2),],
+                vec![("d", 0), ("d", 1), ("e", 0), ("e", 1),],
+            ]
+        );
+
+        let mut orig: Vec<(&str, VecDeque<i32>)> = Default::default();
+        for (a, b_max) in [("a", 4), ("b", 3), ("c", 2)] {
+            orig.push((a, (0..b_max).collect()));
+        }
+        let bins = bin_pack(6, orig);
+        assert_eq!(
+            bins,
+            vec![
+                vec![("a", 0), ("a", 1), ("a", 2), ("a", 3), ("c", 0), ("c", 1),],
+                vec![("b", 0), ("b", 1), ("b", 2),],
             ]
         );
     }
