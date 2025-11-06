@@ -1259,10 +1259,11 @@ fn set_midi_parameter(
     track: &mut Vec<TrackEvent>,
     delta: u28,
     channel: u4,
-    msb: u7,
-    lsb: u7,
-    value: u7,
+    param: u14,
+    value_msb: u7,
+    value_lsb: Option<u7>,
 ) {
+    let (msb, lsb) = split_u14(param).unwrap();
     track.append(&mut vec![
         // Select RPN (registered parameter number): code MSB, then code LSB, then 6 for data entry
         // with value.
@@ -1286,18 +1287,30 @@ fn set_midi_parameter(
                 },
             },
         },
-        // Set the value using Data Entry MSB (6) per MTS spec
+        // Set the value using Data Entry MSB (6) and LSB (26)
         TrackEvent {
             delta,
             kind: TrackEventKind::Midi {
                 channel,
                 message: MidiMessage::Controller {
                     controller: 6.into(), // data entry
-                    value,
+                    value: value_msb,
                 },
             },
         },
     ]);
+    if let Some(value_lsb) = value_lsb {
+        track.push(TrackEvent {
+            delta,
+            kind: TrackEventKind::Midi {
+                channel,
+                message: MidiMessage::Controller {
+                    controller: 26.into(), // data entry
+                    value: value_lsb,
+                },
+            },
+        });
+    }
 }
 
 fn select_tuning_program(
@@ -1310,19 +1323,26 @@ fn select_tuning_program(
     let delta = 0.into();
     // Select RPN (registered parameter number) MSB, then LSB for the code. Parameter 3
     // selects the tuning program. Parameter 4 sets the bank.
-    for (param_lsb, value) in [(4, bank), (3, Some(program))] {
+    for (param, value) in [(4, bank), (3, Some(program))] {
         let Some(value) = value else {
             continue;
         };
-        set_midi_parameter(track, delta, channel, 0.into(), param_lsb.into(), value);
+        set_midi_parameter(track, delta, channel, param.into(), value, None);
     }
     Ok(())
 }
 
 fn init_mpe(track: &mut Vec<TrackEvent>) {
     let delta = 0.into();
-    let channel = 0.into();
-    set_midi_parameter(track, delta, channel, 0.into(), 6.into(), 15.into());
+    // Initialize MPE for a single "low" zone with 15 channels.
+    set_midi_parameter(track, delta, 0.into(), 6.into(), 15.into(), None);
+    for ch in 1..=15 {
+        // Explicitly set pitch bend sensitivity to 48 semitones for all the other channels. This
+        // can help with instruments that support pitch bend but are not necessarily MPE-aware.
+        // Since we don't use on global pitch bend, leave the pitch bend for channel 0 at default
+        // so it remains available for downstream use.
+        set_midi_parameter(track, delta, ch.into(), 0.into(), 48.into(), Some(0.into()));
+    }
 }
 
 pub(crate) fn generate(

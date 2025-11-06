@@ -1,5 +1,7 @@
 # TODO
 
+TODO: RPN: 06 is MSB data entry, 26 is LSB. Pass value_lsb to parameter as an option. RPN 0000 is pitch bend sensitivty. MSB is semitones, LSB is cents. Set to 02 00 for channel 0 and 0x30 00 for the rest (48).
+
 Bugs
 * No comment line or blank lines in scale definition
 * Polyphony for csound doesn't work correctly when splitting parts to use simultaneous tunings. We need something else...perhaps polyphony groups that default to instrument or maybe that default to global but you can assign parts to polyphony groups along with instruments. Maybe csound_instrument takes an optional polyphony group parameter?
