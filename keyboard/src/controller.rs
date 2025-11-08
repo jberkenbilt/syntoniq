@@ -92,14 +92,15 @@ impl Device {
         to_device_rx: flume::Receiver<LightEvent>,
         events_tx: events::WeakSender,
     ) -> anyhow::Result<Self> {
-        let midi_in = MidiInput::new("q-launchpad")?;
+        let midi_in = MidiInput::new("Syntoniq Keyboard")?;
         let in_port = find_port(&midi_in, port_name)?;
-        log::debug!("opening input port: {}", midi_in.port_name(&in_port)?);
+        let full_port_name = midi_in.port_name(&in_port)?;
+        log::debug!("opening input port: {full_port_name}",);
         // Handler keeps running until connection is dropped
         let input_connection = midi_in
             .connect(
                 &in_port,
-                "device-input",
+                &format!("{} to Syntoniq Keyboard", in_port.id()),
                 move |stamp_ms, message, _| {
                     if let Some(event) = Self::on_midi(stamp_ms, message)
                         && let Some(tx) = events_tx.upgrade()
@@ -112,11 +113,15 @@ impl Device {
             )
             .map_err(to_anyhow)?;
 
-        let midi_out = MidiOutput::new("q-launchpad")?;
+        let midi_out = MidiOutput::new("Syntoniq Keyboard")?;
         let out_port = find_port(&midi_out, port_name)?;
-        log::debug!("opening output port: {}", midi_out.port_name(&out_port)?);
+        let full_port_name = midi_out.port_name(&out_port)?;
+        log::debug!("opening output port: {full_port_name}");
         let output_connection = midi_out
-            .connect(&out_port, "from-q-launchpad")
+            .connect(
+                &out_port,
+                &format!("Syntoniq Keyboard to {}", out_port.id()),
+            )
             .map_err(to_anyhow)?;
         let mut controller = Self {
             input_connection: Some(input_connection),
