@@ -7,6 +7,29 @@ Remember: Windows:
 cargo build --config .cargo/windows-cross.toml --no-default-features
 ```
 
+# Redesign
+
+Primary goal: separate Launchpad-specific parts from the rest.
+
+## Refactor engine and controller
+
+Initial state:
+* Controller is only responsible for reading MIDI events and sending out events in the on_midi callback. It just sends KeyEvent and PressureEvent but has support for other things that aren't implemented. It also receives LightEvent. It is mostly generic but knows a little bit about the launchapd.
+* Engine is responsible for interpreting key events, sending light events, and tracking the musical state.
+
+We need to refactor as follows:
+* A generic MIDI controller should communicate with the device. It should generate Key and Pressure events and relay events to the device for controlling lights. It should be device-independent, but an instance must know what device it's working on behalf of.
+* A per-device engine is responsible for translating key events to high-level events and high-level events to light events. It is completely device specific.
+* A pitch engine is responsible for tracking general config, layouts, transposition, shift, and global state.
+
+Most of the work will be in splitting up Engine. In the end, all launchpad-specific stuff should be in a launchpad_mk3 module so we are ready to add hexboard support.
+
+## Re-implement layout engine and config
+
+Layouts should come from a syntoniq DSL file. See dsl.md for details.
+
+# Old -- needs review
+
 ----------
 
 This has scratch notes in varying degrees of completeness.
