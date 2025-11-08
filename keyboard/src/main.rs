@@ -16,8 +16,8 @@ use syntoniq_kbd::{controller, engine, events};
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
 /// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
 /// If RUST_LOG is not set, the log level defaults to Info.
-/// Set RUST_LOG=syntoniq::module::path=level to see messages for a given module.
-/// Set RUST_LOG=syntoniq to see all messages.
+/// Set RUST_LOG=syntoniq_kbd::module::path=level to see messages for a given module.
+/// Set RUST_LOG=syntoniq_kbd to see all messages.
 #[derive(Parser)]
 #[command(version, about, long_about = None, verbatim_doc_comment)]
 struct Cli {
