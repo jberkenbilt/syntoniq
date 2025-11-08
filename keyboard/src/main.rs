@@ -144,7 +144,7 @@ async fn colors_main(
     let Some(tx) = events_tx.upgrade() else {
         return Ok(());
     };
-    controller::clear_lights(&tx).await?;
+    controller::clear_lights(&tx)?;
     // Light all control keys
     for range in [1..=8, 101..=108, 90..=99] {
         for position in range {

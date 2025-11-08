@@ -68,7 +68,7 @@ impl Engine {
         self.transient_state.layouts = config.layouts;
 
         // Draw the logo.
-        controller::clear_lights(&tx).await?;
+        controller::clear_lights(&tx)?;
         for (color, positions) in [
             (
                 Color::FifthOn, // green
@@ -101,14 +101,14 @@ impl Engine {
                 label2: label2.to_string(),
             }))?;
         }
-        self.fix_layout_lights(&tx).await?;
+        self.fix_layout_lights(&tx)?;
         #[cfg(test)]
         self.send_test_event(TestEvent::ResetComplete);
         log::info!("Syntoniq Keyboard is initialized");
         Ok(())
     }
 
-    async fn fix_layout_lights(&mut self, tx: &events::UpgradedSender) -> anyhow::Result<()> {
+    fn fix_layout_lights(&mut self, tx: &events::UpgradedSender) -> anyhow::Result<()> {
         for i in 0..=8 {
             let position = keys::LAYOUT_MIN + i;
             let idx = i as usize + self.transient_state.layout_offset;
@@ -703,7 +703,7 @@ impl Engine {
             layout.name,
             layout.scale.name
         );
-        self.fix_layout_lights(&tx).await?;
+        self.fix_layout_lights(&tx)?;
         tx.send(self.sustain_light_event())?;
         tx.send(self.transpose_light_event())?;
         tx.send(self.shift_light_event())?;
@@ -729,7 +729,7 @@ impl Engine {
         if self.transient_state.layout_offset >= self.transient_state.layouts.len() {
             self.transient_state.layout_offset = 0;
         }
-        self.fix_layout_lights(&tx).await?;
+        self.fix_layout_lights(&tx)?;
         #[cfg(test)]
         self.send_test_event(TestEvent::LayoutsScrolled);
         Ok(())

@@ -44,7 +44,7 @@ pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::P
     }
 }
 
-pub async fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {
+pub fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {
     for position in 1..=108 {
         tx.send(Event::Light(LightEvent {
             position,
@@ -64,10 +64,8 @@ impl Controller {
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
         // async. To bridge the gap, we create flume channels to relay back and forth.
-        let (from_device_tx, from_device_rx) = flume::unbounded();
         let (to_device_tx, to_device_rx) = flume::unbounded();
-        let mut device =
-            Device::new(&port_name, to_device_rx, from_device_tx).map_err(to_anyhow)?;
+        let mut device = Device::new(&port_name, to_device_rx, events_tx).map_err(to_anyhow)?;
         tokio::spawn(async move {
             while let Some(event) =
                 events::receive_check_lag(&mut events_rx, Some("controller")).await
@@ -77,15 +75,6 @@ impl Controller {
                 };
                 if let Err(e) = to_device_tx.send_async(event).await {
                     log::error!("failed to relay message to device: {e}");
-                }
-            }
-        });
-        tokio::spawn(async move {
-            while let Ok(msg) = from_device_rx.recv_async().await {
-                if let Some(tx) = events_tx.upgrade()
-                    && let Err(e) = tx.send(msg)
-                {
-                    log::error!("failed to relay message from device: {e}");
                 }
             }
         });
@@ -101,7 +90,7 @@ impl Device {
     pub fn new(
         port_name: &str,
         to_device_rx: flume::Receiver<LightEvent>,
-        from_device_tx: flume::Sender<Event>,
+        events_tx: events::WeakSender,
     ) -> anyhow::Result<Self> {
         let midi_in = MidiInput::new("q-launchpad")?;
         let in_port = find_port(&midi_in, port_name)?;
@@ -113,7 +102,8 @@ impl Device {
                 "device-input",
                 move |stamp_ms, message, _| {
                     if let Some(event) = Self::on_midi(stamp_ms, message)
-                        && let Err(e) = from_device_tx.send(event)
+                        && let Some(tx) = events_tx.upgrade()
+                        && let Err(e) = tx.send(event)
                     {
                         log::error!("error notifying of device event: {e}")
                     }
