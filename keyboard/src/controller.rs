@@ -162,6 +162,15 @@ impl Device {
                         synthetic: false,
                     }))
                 }
+                MidiMessage::NoteOff { key, .. } => {
+                    let key = key.as_int();
+                    let velocity = 0;
+                    Some(Event::Key(KeyEvent {
+                        key,
+                        velocity,
+                        synthetic: false,
+                    }))
+                }
                 MidiMessage::Aftertouch { key, vel } => {
                     // polyphonic after-touch; not supported on MK3 Pro as of 2025-07
                     Some(Event::Pressure(PressureEvent {
@@ -170,6 +179,7 @@ impl Device {
                     }))
                 }
                 MidiMessage::Controller { controller, value } => {
+                    // Launchpad sends this in programmer mode for non-note keys.
                     let key = controller.as_int();
                     let velocity = value.as_int();
                     Some(Event::Key(KeyEvent {
@@ -184,12 +194,7 @@ impl Device {
                 })),
                 _ => None,
             },
-            LiveEvent::Common(common) => {
-                // Shouldn't happen in programmer mode
-                log::warn!("unhandled device event: common: {common:?}");
-                None
-            }
-            LiveEvent::Realtime(_) => None,
+            _ => None,
         }
     }
 
