@@ -4,7 +4,7 @@ use crate::csound;
 #[cfg(test)]
 use crate::events::TestEvent;
 use crate::events::{
-    Color, EngineState, Event, KeyEvent, LayoutNamesEvent, LightEvent, LightMode, PlayNoteEvent,
+    Color, EngineState, Event, KeyEvent, LayoutNamesEvent, LightEvent, PlayNoteEvent,
     SelectLayoutEvent, ShiftKeyState, ShiftLayoutState, SpecificNote, TransposeState,
     UpdateNoteEvent, keys,
 };
@@ -81,7 +81,6 @@ impl Engine {
         ] {
             for position in positions {
                 tx.send(Event::Light(LightEvent {
-                    mode: LightMode::On,
                     position,
                     color,
                     label1: String::new(),
@@ -96,7 +95,6 @@ impl Engine {
             (keys::RECORD, "Show", "Notes"),
         ] {
             tx.send(Event::Light(LightEvent {
-                mode: LightMode::On,
                 position,
                 color: Color::Active,
                 label1: label1.to_string(),
@@ -121,7 +119,6 @@ impl Engine {
                     .map(|x| x == idx)
                     .unwrap_or(false);
                 LightEvent {
-                    mode: LightMode::On,
                     position,
                     color: if is_cur {
                         Color::ToggleOn
@@ -133,7 +130,6 @@ impl Engine {
                 }
             } else {
                 LightEvent {
-                    mode: LightMode::Off,
                     position,
                     color: Color::Off,
                     label1: String::new(),
@@ -144,7 +140,6 @@ impl Engine {
         }
         if self.transient_state.layouts.len() > 8 {
             tx.send(Event::Light(LightEvent {
-                mode: LightMode::On,
                 position: keys::LAYOUT_SCROLL,
                 color: Color::Active,
                 label1: "Scroll".to_string(),
@@ -518,7 +513,6 @@ impl Engine {
             }
             None => {
                 tx.send(Event::Light(LightEvent {
-                    mode: LightMode::Off,
                     position,
                     color: Color::Off,
                     label1: String::new(),
@@ -611,7 +605,6 @@ impl Engine {
                     self.send_note(&tx, row, col, note)?;
                 } else {
                     tx.send(Event::Light(LightEvent {
-                        mode: LightMode::Off,
                         position: (10 * row + col) as u8,
                         color: Color::Off,
                         label1: "".to_string(),
@@ -630,7 +623,6 @@ impl Engine {
             Color::ToggleOff
         };
         Event::Light(LightEvent {
-            mode: LightMode::On,
             position,
             color,
             label1: label1.to_string(),
@@ -645,7 +637,6 @@ impl Engine {
             TransposeState::FirstSelected { .. } => Color::NoteSelected,
         };
         Event::Light(LightEvent {
-            mode: LightMode::On,
             position: keys::TRANSPOSE,
             color,
             label1: "Transpose".to_string(),
@@ -679,7 +670,6 @@ impl Engine {
             _ => Color::ToggleOn,
         };
         Event::Light(LightEvent {
-            mode: LightMode::On,
             position: keys::SHIFT,
             color,
             label1: "Shift".to_string(),

@@ -1,5 +1,5 @@
 use crate::events;
-use crate::events::{Color, Event, KeyEvent, LightEvent, LightMode, PressureEvent, UpgradedSender};
+use crate::events::{Color, Event, KeyEvent, LightEvent, PressureEvent, UpgradedSender};
 use anyhow::bail;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
 use midly::MidiMessage;
@@ -47,7 +47,6 @@ pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::P
 pub async fn clear_lights(tx: &UpgradedSender) -> anyhow::Result<()> {
     for position in 1..=108 {
         tx.send(Event::Light(LightEvent {
-            mode: LightMode::Off,
             position,
             color: Color::Off,
             label1: String::new(),
@@ -140,15 +139,14 @@ impl Device {
 
     pub fn run(&mut self) -> anyhow::Result<()> {
         while let Ok(event) = self.to_device.recv() {
-            let mode = match event.mode {
-                LightMode::Off | LightMode::On => 0x90,
-                LightMode::Flashing => 0x91,
-                LightMode::Pulsing => 0x92,
-            };
+            // The launchpad MK3 in programmer mode uses note events on channel 0 to turn lights
+            // on, channel 1 for flashing, and channel 2 for pulsing. We only use channel 0 for
+            // on/off events. See color.py for iterating on color choices.
+            let code = 0x90; // note on, channel 0
             // See color.py for iterating on color choices.
             let color = event.color.launchpad_color();
             self.output_connection
-                .send(&[mode, event.position, color])?;
+                .send(&[code, event.position, color])?;
         }
         log::debug!("device received shutdown request");
         // Dropping the input connection triggers the series events that leads

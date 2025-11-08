@@ -93,17 +93,8 @@ impl Color {
     }
 }
 
-#[derive(Copy, Clone, Debug)]
-pub enum LightMode {
-    Off,
-    On,
-    Flashing,
-    Pulsing,
-}
-
 #[derive(Clone, Debug)]
 pub struct LightEvent {
-    pub mode: LightMode,
     pub position: u8,
     pub color: Color,
     pub label1: String,
@@ -301,14 +292,8 @@ impl Display for Event {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Event::Light(LightEvent {
-                mode,
-                position,
-                color,
-                ..
-            }) => write!(
-                f,
-                "light: mode={mode:?}, position={position}, color={color:?}"
-            ),
+                position, color, ..
+            }) => write!(f, "light: position={position}, color={color:?}"),
             Event::Key(KeyEvent {
                 key,
                 velocity,

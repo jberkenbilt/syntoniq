@@ -1,4 +1,4 @@
-use crate::events::{Color, Event, LightEvent, LightMode};
+use crate::events::{Color, Event, LightEvent};
 use crate::layout;
 use anyhow::{anyhow, bail};
 use serde::Deserialize;
@@ -73,7 +73,6 @@ impl Note {
             self.colors.1
         };
         Event::Light(LightEvent {
-            mode: LightMode::On,
             position,
             color,
             label1: self.name.clone(),

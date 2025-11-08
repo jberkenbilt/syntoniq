@@ -9,7 +9,7 @@ use std::env;
 use std::path::PathBuf;
 use syntoniq_kbd::controller::Controller;
 use syntoniq_kbd::engine::SoundType;
-use syntoniq_kbd::events::{Color, Event, Events, KeyEvent, LightEvent, LightMode};
+use syntoniq_kbd::events::{Color, Event, Events, KeyEvent, LightEvent};
 use syntoniq_kbd::view::web;
 use syntoniq_kbd::{controller, engine, events};
 
@@ -149,7 +149,6 @@ async fn colors_main(
     for range in [1..=8, 101..=108, 90..=99] {
         for position in range {
             tx.send(Event::Light(LightEvent {
-                mode: LightMode::On,
                 position,
                 color: Color::Active,
                 label1: String::new(),
@@ -160,7 +159,6 @@ async fn colors_main(
     for row in 1..=8 {
         for position in [row * 10, row * 10 + 9] {
             tx.send(Event::Light(LightEvent {
-                mode: LightMode::On,
                 position,
                 color: Color::Active,
                 label1: String::new(),
@@ -179,7 +177,6 @@ async fn colors_main(
         (18, Color::TonicOn),
     ] {
         tx.send(Event::Light(LightEvent {
-            mode: LightMode::On,
             position,
             color,
             label1: String::new(),
@@ -207,7 +204,6 @@ async fn colors_main(
             pos_to_off.insert(position, color);
             pos_to_on.insert(position, on_color);
             tx.send(Event::Light(LightEvent {
-                mode: LightMode::On,
                 position,
                 color,
                 label1: String::new(),
@@ -230,7 +226,6 @@ async fn colors_main(
             for position in [key, *pos_to_other.get(&key).unwrap()] {
                 if let Some(tx) = events_tx.upgrade() {
                     tx.send(Event::Light(LightEvent {
-                        mode: LightMode::On,
                         position,
                         color: *color,
                         label1: String::new(),
