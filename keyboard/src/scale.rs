@@ -1,4 +1,4 @@
-use crate::events::{Color, Event, LightEvent};
+use crate::events::Color;
 use crate::layout;
 use anyhow::{anyhow, bail};
 use serde::Deserialize;
@@ -65,19 +65,20 @@ pub struct Note {
     pub base_factor: Pitch,
     pub colors: (Color, Color), // note off, note on
 }
+
+pub struct NoteAppearance<'a> {
+    pub color: Color,
+    pub name: &'a str,
+    pub description: &'a str,
+}
 impl Note {
-    pub fn light_event(&self, position: u8, velocity: u8) -> Event {
-        let color = if velocity == 0 {
-            self.colors.0
-        } else {
-            self.colors.1
-        };
-        Event::Light(LightEvent {
-            position,
+    pub fn appearance(&self, on: bool) -> NoteAppearance<'_> {
+        let color = if on { self.colors.1 } else { self.colors.0 };
+        NoteAppearance {
             color,
-            label1: self.name.clone(),
-            label2: self.description.clone(),
-        })
+            name: &self.name,
+            description: &self.description,
+        }
     }
 }
 

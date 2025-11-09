@@ -410,6 +410,16 @@ impl Engine {
         Ok(())
     }
 
+    fn note_light_event(note: &Note, position: u8, velocity: u8) -> Event {
+        let appearance = note.appearance(velocity != 0);
+        Event::Light(LightEvent {
+            position,
+            color: appearance.color,
+            label1: appearance.name.to_string(),
+            label2: appearance.description.to_string(),
+        })
+    }
+
     fn handle_note_key_normal(
         &mut self,
         tx: &events::UpgradedSender,
@@ -479,7 +489,7 @@ impl Engine {
         if is_on != was_on {
             let velocity = if is_on { 127 } else { 0 };
             for position in others.iter().copied() {
-                tx.send(note.light_event(position, velocity))?;
+                tx.send(Self::note_light_event(&note, position, velocity))?;
             }
             tx.send(Event::PlayNote(PlayNoteEvent {
                 pitch: pitch.clone(),
@@ -509,7 +519,11 @@ impl Engine {
                     .entry(note.pitch.clone())
                     .or_default()
                     .insert(position);
-                tx.send(note.light_event(position, played_note.velocity))?;
+                tx.send(Self::note_light_event(
+                    &note,
+                    position,
+                    played_note.velocity,
+                ))?;
             }
             None => {
                 tx.send(Event::Light(LightEvent {
