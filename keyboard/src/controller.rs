@@ -12,7 +12,7 @@ mod message;
 struct Device {
     input_connection: Option<MidiInputConnection<()>>,
     output_connection: MidiOutputConnection,
-    to_device: flume::Receiver<LightEvent>,
+    to_device: flume::Receiver<Event>,
 }
 
 pub struct Controller;
@@ -70,9 +70,6 @@ impl Controller {
             while let Some(event) =
                 events::receive_check_lag(&mut events_rx, Some("controller")).await
             {
-                let Event::Light(event) = event else {
-                    continue;
-                };
                 if let Err(e) = to_device_tx.send_async(event).await {
                     log::error!("failed to relay message to device: {e}");
                 }
@@ -89,7 +86,7 @@ impl Controller {
 impl Device {
     pub fn new(
         port_name: &str,
-        to_device_rx: flume::Receiver<LightEvent>,
+        to_device_rx: flume::Receiver<Event>,
         events_tx: events::WeakSender,
     ) -> anyhow::Result<Self> {
         let midi_in = MidiInput::new("Syntoniq Keyboard")?;
@@ -133,7 +130,10 @@ impl Device {
     }
 
     pub fn run(&mut self) -> anyhow::Result<()> {
-        while let Ok(event) = self.to_device.recv() {
+        while let Ok(e) = self.to_device.recv() {
+            let Event::Light(event) = e else {
+                continue;
+            };
             // The launchpad MK3 in programmer mode uses note events on channel 0 to turn lights
             // on, channel 1 for flashing, and channel 2 for pulsing. We only use channel 0 for
             // on/off events. See color.py for iterating on color choices.
