@@ -7,11 +7,11 @@ use log::LevelFilter;
 use std::collections::HashMap;
 use std::env;
 use std::path::PathBuf;
-use syntoniq_kbd::controller::Controller;
 use syntoniq_kbd::engine::SoundType;
 use syntoniq_kbd::events::{Color, Event, Events, KeyEvent, LightEvent};
+use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
-use syntoniq_kbd::{controller, engine, events};
+use syntoniq_kbd::{engine, events};
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
 /// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
@@ -81,7 +81,7 @@ async fn main() -> anyhow::Result<()> {
     let tx2 = events_tx.clone();
     let mut rx2 = events_rx.resubscribe();
     let main_handle = match cli.port {
-        Some(port) => Controller::run(port.to_string(), tx2, rx2).await?,
+        Some(port) => Launchpad::run(port.to_string(), tx2, rx2).await?,
         None => tokio::spawn(async move {
             while events::receive_check_lag(&mut rx2, None).await.is_some() {}
             Ok(())
@@ -144,7 +144,7 @@ async fn colors_main(
     let Some(tx) = events_tx.upgrade() else {
         return Ok(());
     };
-    controller::clear_lights(&tx)?;
+    tx.send(Event::ClearLights)?;
     // Light all control keys
     for range in [1..=8, 101..=108, 90..=99] {
         for position in range {

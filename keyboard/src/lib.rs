@@ -4,6 +4,7 @@ pub mod controller;
 pub mod csound;
 pub mod engine;
 pub mod events;
+pub mod launchpad;
 pub mod layout;
 pub mod midi_player;
 pub mod scale;

@@ -10,7 +10,7 @@ use crate::events::{
 };
 use crate::layout::{HorizVert, Layout, RowCol};
 use crate::scale::{Note, ScaleType};
-use crate::{controller, events, midi_player};
+use crate::{events, midi_player};
 use anyhow::{anyhow, bail};
 use chrono::SubsecRound;
 use std::collections::{HashMap, HashSet};
@@ -68,7 +68,7 @@ impl Engine {
         self.transient_state.layouts = config.layouts;
 
         // Draw the logo.
-        controller::clear_lights(&tx)?;
+        tx.send(Event::ClearLights)?;
         for (color, positions) in [
             (
                 Color::FifthOn, // green
@@ -756,6 +756,7 @@ impl Engine {
             Event::Key(e) => self.handle_key(e).await?,
             Event::Pressure(_) => {}
             Event::Reset => self.reset().await?,
+            Event::ClearLights => {}
             Event::SelectLayout(e) => self.select_layout(e).await?,
             Event::ScrollLayouts => self.scroll_layouts().await?,
             Event::SetLayoutNames(_) => {}

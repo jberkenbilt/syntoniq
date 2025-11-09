@@ -2,7 +2,7 @@
 //! manages the broadcast channel used for SSE events so it can own the process of updating the
 //! clients when state changes.
 use crate::events;
-use crate::events::{LayoutNamesEvent, LightEvent, SelectLayoutEvent, StateView};
+use crate::events::{Color, LayoutNamesEvent, LightEvent, SelectLayoutEvent, StateView};
 use crate::view::content::Cell;
 use askama::Template;
 use axum::response::sse::Event;
@@ -94,6 +94,13 @@ impl AppState {
 
     pub fn handle_light_event(&mut self, e: LightEvent) {
         self.set_cell(e.position, e.color.rgb_color(), &e.label1, &e.label2);
+    }
+
+    pub fn clear_lights(&mut self) {
+        let positions: Vec<_> = self.cells.keys().cloned().collect();
+        for p in positions {
+            self.set_cell(p, Color::Off.rgb_color(), "", "");
+        }
     }
 
     async fn send_state_view(&mut self) {

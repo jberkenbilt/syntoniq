@@ -273,6 +273,7 @@ pub enum Event {
     Key(KeyEvent),
     Pressure(PressureEvent),
     Reset,
+    ClearLights,
     SetLayoutNames(LayoutNamesEvent),
     SelectLayout(SelectLayoutEvent),
     ScrollLayouts,
