@@ -1,9 +1,11 @@
 use crate::controller::{Controller, Device};
 use crate::events;
-use crate::events::{Color, Event, KeyEvent, PressureEvent};
+use crate::events::{Color, Event, KeyEvent, LightEvent, PressureEvent};
 use midir::MidiOutputConnection;
 use midly::MidiMessage;
 use midly::live::LiveEvent;
+use std::collections::HashMap;
+use tokio::task;
 use tokio::task::JoinHandle;
 
 macro_rules! make_message {
@@ -49,6 +51,19 @@ impl Launchpad {
     pub async fn run(
         port_name: String,
         events_tx: events::WeakSender,
+        events_rx: events::Receiver,
+    ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
+        let controller_h =
+            Self::start_controller(port_name, events_tx.clone(), events_rx.resubscribe()).await?;
+        Ok(task::spawn(async move {
+            Self::main_event_loop(events_tx, events_rx).await?;
+            controller_h.await?
+        }))
+    }
+
+    pub async fn start_controller(
+        port_name: String,
+        events_tx: events::WeakSender,
         mut events_rx: events::Receiver,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
@@ -74,6 +89,141 @@ impl Launchpad {
             }
         });
         Controller::<Self>::run(port_name, to_device_rx, from_device_tx)
+    }
+
+    async fn colors_main(
+        events_tx: events::WeakSender,
+        mut events_rx: events::Receiver,
+    ) -> anyhow::Result<()> {
+        let Some(tx) = events_tx.upgrade() else {
+            return Ok(());
+        };
+        tx.send(Event::ClearLights)?;
+        // Light all control keys
+        for range in [1..=8, 101..=108, 90..=99] {
+            for position in range {
+                tx.send(Event::Light(LightEvent {
+                    position,
+                    color: Color::Active,
+                    label1: String::new(),
+                    label2: String::new(),
+                }))?;
+            }
+        }
+        for row in 1..=8 {
+            for position in [row * 10, row * 10 + 9] {
+                tx.send(Event::Light(LightEvent {
+                    position,
+                    color: Color::Active,
+                    label1: String::new(),
+                    label2: String::new(),
+                }))?;
+            }
+        }
+        for (position, color) in [
+            (11, Color::FifthOff),
+            (12, Color::MajorThirdOff),
+            (13, Color::MinorThirdOff),
+            (14, Color::TonicOff),
+            (15, Color::FifthOn),
+            (16, Color::MajorThirdOn),
+            (17, Color::MinorThirdOn),
+            (18, Color::TonicOn),
+        ] {
+            tx.send(Event::Light(LightEvent {
+                position,
+                color,
+                label1: String::new(),
+                label2: String::new(),
+            }))?;
+        }
+        let simulated = [
+            (Color::TonicOff, Color::TonicOn, [32, 51]),
+            (Color::SingleStepOff, Color::SingleStepOn, [33, 52]),
+            (Color::MinorThirdOff, Color::MinorThirdOn, [43, 62]),
+            (Color::MajorThirdOff, Color::MajorThirdOn, [34, 53]),
+            (Color::FifthOff, Color::FifthOn, [44, 63]),
+            (Color::FifthOff, Color::FifthOn, [45, 64]),
+            (Color::MinorThirdOff, Color::MinorThirdOn, [46, 65]),
+            (Color::OtherOff, Color::OtherOn, [47, 66]),
+            (Color::TonicOff, Color::TonicOn, [57, 76]),
+        ];
+        let mut pos_to_off = HashMap::new();
+        let mut pos_to_on = HashMap::new();
+        let mut pos_to_other = HashMap::new();
+        for (color, on_color, positions) in simulated {
+            pos_to_other.insert(positions[0], positions[1]);
+            pos_to_other.insert(positions[1], positions[0]);
+            for position in positions {
+                pos_to_off.insert(position, color);
+                pos_to_on.insert(position, on_color);
+                tx.send(Event::Light(LightEvent {
+                    position,
+                    color,
+                    label1: String::new(),
+                    label2: String::new(),
+                }))?;
+            }
+        }
+        drop(tx);
+        while let Some(event) = events::receive_check_lag(&mut events_rx, None).await {
+            let Event::Key(KeyEvent { key, velocity, .. }) = event else {
+                continue;
+            };
+            let color_map = if velocity == 0 {
+                &pos_to_off
+            } else {
+                &pos_to_on
+            };
+
+            if let Some(color) = color_map.get(&key) {
+                for position in [key, *pos_to_other.get(&key).unwrap()] {
+                    if let Some(tx) = events_tx.upgrade() {
+                        tx.send(Event::Light(LightEvent {
+                            position,
+                            color: *color,
+                            label1: String::new(),
+                            label2: String::new(),
+                        }))?;
+                    }
+                }
+            }
+        }
+        Ok(())
+    }
+
+    pub async fn main_event_loop(
+        events_tx: events::WeakSender,
+        mut events_rx: events::Receiver,
+    ) -> anyhow::Result<()> {
+        while let Some(event) = events::receive_check_lag(&mut events_rx, Some("engine")).await {
+            match event {
+                Event::Shutdown => return Ok(()),
+                Event::ColorsMain => {
+                    return Self::colors_main(events_tx.clone(), events_rx.resubscribe()).await;
+                }
+                Event::Light(_) => {}
+                Event::Key(_) => {}
+                Event::Pressure(_) => {}
+                Event::Reset => {}
+                Event::ClearLights => {}
+                Event::SetLayoutNames(_) => {}
+                Event::SelectLayout(_) => {}
+                Event::ScrollLayouts => {}
+                Event::UpdateNote(_) => {}
+                Event::PlayNote(_) => {}
+                #[cfg(test)]
+                Event::TestEngine(_) => {}
+                #[cfg(test)]
+                Event::TestWeb(_) => {}
+                #[cfg(test)]
+                Event::TestEvent(_) => {}
+                #[cfg(test)]
+                Event::TestSync => {}
+            }
+            // TODO
+        }
+        Ok(())
     }
 }
 

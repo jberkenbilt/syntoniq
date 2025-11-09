@@ -4,11 +4,10 @@ use clap::CommandFactory;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 use log::LevelFilter;
-use std::collections::HashMap;
 use std::env;
 use std::path::PathBuf;
 use syntoniq_kbd::engine::SoundType;
-use syntoniq_kbd::events::{Color, Event, Events, KeyEvent, LightEvent};
+use syntoniq_kbd::events::{Event, Events};
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
 use syntoniq_kbd::{engine, events};
@@ -104,7 +103,12 @@ async fn main() -> anyhow::Result<()> {
     match cli.command {
         Commands::Completion { .. } => unreachable!("already handled"),
         Commands::Events => events_main(events_rx.resubscribe()).await,
-        Commands::Colors => colors_main(events_tx.clone(), events_rx.resubscribe()).await,
+        Commands::Colors => {
+            if let Some(tx) = events_tx.upgrade() {
+                tx.send(Event::ColorsMain)?;
+            }
+            Ok(())
+        }
         Commands::Run { config_file, midi } => {
             let sound_type = if midi {
                 SoundType::Midi
@@ -133,107 +137,6 @@ async fn main() -> anyhow::Result<()> {
 async fn events_main(mut rx: events::Receiver) -> anyhow::Result<()> {
     while let Ok(event) = rx.recv().await {
         println!("{event}");
-    }
-    Ok(())
-}
-
-async fn colors_main(
-    events_tx: events::WeakSender,
-    mut events_rx: events::Receiver,
-) -> anyhow::Result<()> {
-    let Some(tx) = events_tx.upgrade() else {
-        return Ok(());
-    };
-    tx.send(Event::ClearLights)?;
-    // Light all control keys
-    for range in [1..=8, 101..=108, 90..=99] {
-        for position in range {
-            tx.send(Event::Light(LightEvent {
-                position,
-                color: Color::Active,
-                label1: String::new(),
-                label2: String::new(),
-            }))?;
-        }
-    }
-    for row in 1..=8 {
-        for position in [row * 10, row * 10 + 9] {
-            tx.send(Event::Light(LightEvent {
-                position,
-                color: Color::Active,
-                label1: String::new(),
-                label2: String::new(),
-            }))?;
-        }
-    }
-    for (position, color) in [
-        (11, Color::FifthOff),
-        (12, Color::MajorThirdOff),
-        (13, Color::MinorThirdOff),
-        (14, Color::TonicOff),
-        (15, Color::FifthOn),
-        (16, Color::MajorThirdOn),
-        (17, Color::MinorThirdOn),
-        (18, Color::TonicOn),
-    ] {
-        tx.send(Event::Light(LightEvent {
-            position,
-            color,
-            label1: String::new(),
-            label2: String::new(),
-        }))?;
-    }
-    let simulated = [
-        (Color::TonicOff, Color::TonicOn, [32, 51]),
-        (Color::SingleStepOff, Color::SingleStepOn, [33, 52]),
-        (Color::MinorThirdOff, Color::MinorThirdOn, [43, 62]),
-        (Color::MajorThirdOff, Color::MajorThirdOn, [34, 53]),
-        (Color::FifthOff, Color::FifthOn, [44, 63]),
-        (Color::FifthOff, Color::FifthOn, [45, 64]),
-        (Color::MinorThirdOff, Color::MinorThirdOn, [46, 65]),
-        (Color::OtherOff, Color::OtherOn, [47, 66]),
-        (Color::TonicOff, Color::TonicOn, [57, 76]),
-    ];
-    let mut pos_to_off = HashMap::new();
-    let mut pos_to_on = HashMap::new();
-    let mut pos_to_other = HashMap::new();
-    for (color, on_color, positions) in simulated {
-        pos_to_other.insert(positions[0], positions[1]);
-        pos_to_other.insert(positions[1], positions[0]);
-        for position in positions {
-            pos_to_off.insert(position, color);
-            pos_to_on.insert(position, on_color);
-            tx.send(Event::Light(LightEvent {
-                position,
-                color,
-                label1: String::new(),
-                label2: String::new(),
-            }))?;
-        }
-    }
-    drop(tx);
-    while let Some(event) = events::receive_check_lag(&mut events_rx, None).await {
-        let Event::Key(KeyEvent { key, velocity, .. }) = event else {
-            continue;
-        };
-        let color_map = if velocity == 0 {
-            &pos_to_off
-        } else {
-            &pos_to_on
-        };
-
-        if let Some(color) = color_map.get(&key) {
-            for position in [key, *pos_to_other.get(&key).unwrap()] {
-                if let Some(tx) = events_tx.upgrade() {
-                    tx.send(Event::Light(LightEvent {
-                        position,
-                        color: *color,
-                        label1: String::new(),
-                        label2: String::new(),
-                    }))?;
-                }
-            }
-        }
     }
     Ok(())
 }

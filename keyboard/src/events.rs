@@ -269,6 +269,7 @@ pub enum TestEvent {
 #[derive(Clone, Debug)]
 pub enum Event {
     Shutdown,
+    ColorsMain,
     Light(LightEvent),
     Key(KeyEvent),
     Pressure(PressureEvent),

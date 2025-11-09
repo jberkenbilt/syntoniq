@@ -752,24 +752,23 @@ impl Engine {
     async fn handle_event(&mut self, event: Event) -> anyhow::Result<bool> {
         match event {
             Event::Shutdown => return Ok(true),
-            Event::Light(_) => {}
             Event::Key(e) => self.handle_key(e).await?,
-            Event::Pressure(_) => {}
             Event::Reset => self.reset().await?,
-            Event::ClearLights => {}
             Event::SelectLayout(e) => self.select_layout(e).await?,
             Event::ScrollLayouts => self.scroll_layouts().await?,
-            Event::SetLayoutNames(_) => {}
             Event::UpdateNote(e) => self.update_note(e).await?,
             Event::PlayNote(e) => self.handle_play_note(e).await?,
+            Event::ColorsMain
+            | Event::Light(_)
+            | Event::Pressure(_)
+            | Event::ClearLights
+            | Event::SetLayoutNames(_) => {}
             #[cfg(test)]
             Event::TestEngine(test_tx) => test_tx.send(self.transient_state.clone()).await?,
             #[cfg(test)]
-            Event::TestWeb(_) => {}
-            #[cfg(test)]
-            Event::TestEvent(_) => {}
-            #[cfg(test)]
             Event::TestSync => self.send_test_event(TestEvent::Sync),
+            #[cfg(test)]
+            Event::TestWeb(_) | Event::TestEvent(_) => {}
         };
         Ok(false)
     }
