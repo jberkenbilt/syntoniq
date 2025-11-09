@@ -7,7 +7,7 @@ use log::LevelFilter;
 use std::env;
 use std::path::PathBuf;
 use syntoniq_kbd::engine::SoundType;
-use syntoniq_kbd::events::{Event, Events};
+use syntoniq_kbd::events::Events;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
 use syntoniq_kbd::{engine, events};
@@ -44,8 +44,6 @@ enum Commands {
     },
     /// Log device events during interaction
     Events,
-    /// Display color choices
-    Colors,
     /// Generate shell completion
     Completion {
         /// shell
@@ -103,12 +101,6 @@ async fn main() -> anyhow::Result<()> {
     match cli.command {
         Commands::Completion { .. } => unreachable!("already handled"),
         Commands::Events => events_main(events_rx.resubscribe()).await,
-        Commands::Colors => {
-            if let Some(tx) = events_tx.upgrade() {
-                tx.send(Event::ColorsMain)?;
-            }
-            Ok(())
-        }
         Commands::Run { config_file, midi } => {
             let sound_type = if midi {
                 SoundType::Midi
@@ -136,7 +128,7 @@ async fn main() -> anyhow::Result<()> {
 
 async fn events_main(mut rx: events::Receiver) -> anyhow::Result<()> {
     while let Ok(event) = rx.recv().await {
-        println!("{event}");
+        println!("{event:?}");
     }
     Ok(())
 }

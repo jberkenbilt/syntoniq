@@ -1,20 +1,18 @@
 use crate::events;
-use crate::events::{Event, KeyEvent};
+use crate::events::{Event, ToDevice};
 use crate::view::content::App;
 use crate::view::state::{AppState, LockedState};
 use askama::Template;
 use axum::extract::{Path, State};
 use axum::http::header;
 use axum::response::Sse;
-use axum::routing::post;
 use axum::{
-    Form, Router,
+    Router,
     http::StatusCode,
     response::{Html, IntoResponse},
     routing::get,
 };
 use rust_embed::RustEmbed;
-use serde::Deserialize;
 use std::net::SocketAddr;
 use std::sync::LazyLock;
 use tokio::sync::{Mutex, oneshot};
@@ -44,12 +42,6 @@ async fn static_asset(Path(path): Path<String>) -> impl IntoResponse {
     }
 }
 
-#[derive(Deserialize, Debug)]
-struct KeyInput {
-    key: u8,
-    velocity: u8,
-}
-
 async fn view(State(lock): State<LockedState>) -> impl IntoResponse {
     let s = lock.read().await;
     Html(
@@ -57,21 +49,6 @@ async fn view(State(lock): State<LockedState>) -> impl IntoResponse {
             .render()
             .unwrap(),
     )
-}
-
-async fn key(State(lock): State<LockedState>, data: Form<KeyInput>) -> impl IntoResponse {
-    let Some(tx) = lock.read().await.get_events_tx() else {
-        return StatusCode::SERVICE_UNAVAILABLE.into_response();
-    };
-    if let Err(e) = tx.send(Event::Key(KeyEvent {
-        key: data.key,
-        velocity: data.velocity,
-        synthetic: false,
-    })) {
-        log::error!("web server: error sending key event: {e}");
-        return StatusCode::SERVICE_UNAVAILABLE.into_response();
-    }
-    StatusCode::ACCEPTED.into_response()
 }
 
 async fn sse_handler(State(lock): State<LockedState>) -> impl IntoResponse {
@@ -97,7 +74,6 @@ pub async fn http_view(events_tx: events::WeakSender, events_rx: events::Receive
     let app = Router::new()
         .route("/sse", get(sse_handler))
         .route("/assets/{*path}", get(static_asset))
-        .route("/key", post(key))
         .route("/", get(view))
         .with_state(state.clone());
 
@@ -126,8 +102,10 @@ async fn main_loop(state: LockedState, mut events_rx: events::Receiver) {
     {
         match event {
             Event::Shutdown => drop(SHUTDOWN.lock().await.take()),
-            Event::Light(e) => state.write().await.handle_light_event(e),
-            Event::ClearLights => state.write().await.clear_lights(),
+            Event::ToDevice(td) => match td {
+                ToDevice::Light(e) => state.write().await.handle_light_event(e),
+                ToDevice::ClearLights => state.write().await.clear_lights(),
+            },
             Event::SelectLayout(e) => state.write().await.handle_select_layout(e).await,
             Event::SetLayoutNames(e) => state.write().await.handle_layout_names(e).await,
             Event::Reset => state.write().await.handle_reset().await,

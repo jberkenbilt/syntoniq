@@ -1,9 +1,9 @@
 //! The state module is responsible for keeping track of the live values for the app. It also
 //! manages the broadcast channel used for SSE events so it can own the process of updating the
 //! clients when state changes.
-use crate::events;
-use crate::events::{Color, LayoutNamesEvent, LightEvent, SelectLayoutEvent, StateView};
+use crate::events::{Color, LayoutNamesEvent, RawLightEvent, SelectLayoutEvent, StateView};
 use crate::view::content::Cell;
+use crate::{events, launchpad};
 use askama::Template;
 use axum::response::sse::Event;
 use std::collections::HashMap;
@@ -92,14 +92,19 @@ impl AppState {
         }
     }
 
-    pub fn handle_light_event(&mut self, e: LightEvent) {
-        self.set_cell(e.position, e.color.rgb_color(), &e.label1, &e.label2);
+    pub fn handle_light_event(&mut self, e: RawLightEvent) {
+        self.set_cell(
+            e.position,
+            launchpad::rgb_color(&e.color),
+            &e.label1,
+            &e.label2,
+        );
     }
 
     pub fn clear_lights(&mut self) {
         let positions: Vec<_> = self.cells.keys().cloned().collect();
         for p in positions {
-            self.set_cell(p, Color::Off.rgb_color(), "", "");
+            self.set_cell(p, launchpad::rgb_color(&Color::Off), "", "");
         }
     }
 

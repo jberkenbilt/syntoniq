@@ -1,3 +1,4 @@
+use crate::events::{FromDevice, ToDevice};
 use anyhow::bail;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
 use std::marker::PhantomData;
@@ -5,10 +6,9 @@ use syntoniq_common::to_anyhow;
 use tokio::task::JoinHandle;
 
 pub trait Device: Sync + Send + 'static {
-    type DeviceEvent: Sync + Send;
-    fn on_midi(_stamp_ms: u64, event: &[u8]) -> Option<Self::DeviceEvent>;
+    fn on_midi(_stamp_ms: u64, event: &[u8]) -> Option<FromDevice>;
     fn handle_event(
-        event: Self::DeviceEvent,
+        event: ToDevice,
         output_connection: &mut MidiOutputConnection,
     ) -> anyhow::Result<()>;
     fn init(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()>;
@@ -18,7 +18,7 @@ pub trait Device: Sync + Send + 'static {
 pub struct Controller<D: Device> {
     input_connection: Option<MidiInputConnection<()>>,
     output_connection: MidiOutputConnection,
-    to_device: flume::Receiver<D::DeviceEvent>,
+    to_device: flume::Receiver<ToDevice>,
     _device: PhantomData<D>,
 }
 
@@ -52,8 +52,8 @@ pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::P
 impl<D: Device> Controller<D> {
     pub fn run(
         port_name: String,
-        to_device_rx: flume::Receiver<D::DeviceEvent>,
-        from_device_tx: flume::Sender<D::DeviceEvent>,
+        to_device_rx: flume::Receiver<ToDevice>,
+        from_device_tx: flume::Sender<FromDevice>,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         let handle: JoinHandle<anyhow::Result<()>> = tokio::task::spawn_blocking(move || {
             let controller =
@@ -65,8 +65,8 @@ impl<D: Device> Controller<D> {
 
     pub fn new(
         port_name: &str,
-        to_device_rx: flume::Receiver<D::DeviceEvent>,
-        from_device_tx: flume::Sender<D::DeviceEvent>,
+        to_device_rx: flume::Receiver<ToDevice>,
+        from_device_tx: flume::Sender<FromDevice>,
     ) -> anyhow::Result<Self> {
         let midi_in = MidiInput::new("Syntoniq Keyboard")?;
         let in_port = find_port(&midi_in, port_name)?;
