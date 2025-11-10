@@ -24,6 +24,13 @@ We need to refactor as follows:
 
 Most of the work will be in splitting up Engine. In the end, all launchpad-specific stuff should be in a launchpad_mk3 module so we are ready to add hexboard support.
 
+* Make device a generic parameter of engine, and have engine have a copy of the device. Probably use an Arc for simplicity rather than making the device clonable.
+* Get rid of ResetDevice and corresponding test message. Instead, just have engine call reset. See if we should do that for anything else, but probably not
+* Figure out what methods to create for handling layout and position-to-note so the logic can stay in engine
+* This design precludes having multiple simultaneous devices, but supporting that would be complex and is probably not worth it. This is not trying to be a performance tool.
+* In engine/tests.rs, check every KeyData::Note
+* In web/content.rs and web/state.rs, remove move remaining launchpad specifics
+
 ## Re-implement layout engine and config
 
 Layouts should come from a syntoniq DSL file. See dsl.md for details.
