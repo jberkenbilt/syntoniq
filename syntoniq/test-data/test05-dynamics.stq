@@ -4,7 +4,7 @@ midi_instrument(instrument=23)
 midi_instrument(part="p2" instrument=55)
 
 ; Create simple JI scale
-define_scale(name="JI1") <<
+define_scale(scale="JI1") <<
 1     c
 25/24 c#     ; major third above a
 9/8   d
@@ -25,7 +25,7 @@ define_scale(name="JI1") <<
 ; Part 1 changes dynamics getting louder and then softer. Part 2 does
 ; a sudden dynamic change.
 
-use_scale(name="JI1" part="p1")
+use_scale(scale="JI1" part="p1")
 [p1.0] 4:c
 [p1.1] 4:e
 [p1.2] 4:g

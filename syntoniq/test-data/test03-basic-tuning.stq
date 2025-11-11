@@ -1,6 +1,6 @@
 syntoniq(version=1)
 
-define_scale(name="5-EDO") <<
+define_scale(scale="5-EDO") <<
   ^0|5 p
   ^1|5 q
   ^2|5 r
@@ -10,13 +10,13 @@ define_scale(name="5-EDO") <<
 
 ; Start with a 5-EDO scale that plays chords going up by a step. End
 ; with a one-beat rest.
-use_scale(name="5-EDO" part="p1")
+use_scale(scale="5-EDO" part="p1")
 [p1.0] 1:p q  r  s  t  p' ~
 [p1.1] 1:r s  t  p' q' r' ~
 [p1.2] 1:t p' q' r' s' t' ~
 
 ; Change tuning for the same part to regular 12-TET and play two chords.
-use_scale(name="default" part="p1")
+use_scale(scale="default" part="p1")
 [p1.0]  1:c c'
 [p1.1]  1:e e
 [p1.2]  1:g g,

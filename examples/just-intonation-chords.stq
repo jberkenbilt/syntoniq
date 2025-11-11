@@ -6,7 +6,7 @@ syntoniq(version=1)
 ; - no accidental is the "major" interval
 ; - % (flat) is the "minor" interval
 ; - + and - slightly shift the pitch; tentative
-define_scale(name="JI-chords") <<
+define_scale(scale="JI-chords") <<
    1     r
   16/15  i2%
   10/9   i2-
@@ -26,7 +26,7 @@ define_scale(name="JI-chords") <<
   15/8   i7
 >>
 
-use_scale(name="JI-chords")
+use_scale(scale="JI-chords")
 
 tempo(bpm=30)
 

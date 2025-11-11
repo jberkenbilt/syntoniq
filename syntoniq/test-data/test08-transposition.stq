@@ -1,7 +1,7 @@
 syntoniq(version=1)
 midi_instrument(instrument=23)
 
-define_scale(name="JI1") <<
+define_scale(scale="JI1") <<
 1     c
 25/24 c#     ; major third above a
 9/8   d
@@ -18,7 +18,7 @@ define_scale(name="JI1") <<
 15/8  b
 >>
 
-use_scale(name="JI1")
+use_scale(scale="JI1")
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g

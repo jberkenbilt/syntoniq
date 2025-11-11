@@ -1,2 +1,2 @@
-define_scale(name="uninitialized")
+define_scale(scale="uninitialized")
 ignored()

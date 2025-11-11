@@ -42,7 +42,7 @@ impl<'s> Syntoniq<'s> {
 pub struct DefineScale<'s> {
     pub span: Span,
     /// scale name
-    pub name: Spanned<Cow<'s, str>>,
+    pub scale: Spanned<Cow<'s, str>>,
     /// ratio to be applied by the octave marker; default is 2 (one octave)
     pub cycle_ratio: Option<Spanned<Ratio<u32>>>,
 }
@@ -57,7 +57,7 @@ impl<'s> DefineScale<'s> {
 pub struct UseScale<'s> {
     pub span: Span,
     /// Scale name
-    pub name: Spanned<Cow<'s, str>>,
+    pub scale: Spanned<Cow<'s, str>>,
     /// Which parts the tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Cow<'s, str>>>,
 }
@@ -181,7 +181,7 @@ pub struct CsoundInstrument<'s> {
     pub span: Span,
     /// CSound instrument number
     pub number: Option<Spanned<u32>>,
-    /// Optional bank number from 1 to 16384
+    /// CSound instrument name
     pub name: Option<Spanned<Cow<'s, str>>>,
     /// Which parts use this instrument; if not specified, all unassigned parts use it
     pub part: Vec<Spanned<Cow<'s, str>>>,

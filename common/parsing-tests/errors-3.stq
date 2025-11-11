@@ -2,9 +2,9 @@ syntoniq(version=1 potato="salad")
 syntoniq(version=2) syntoniq(version=1)
 onceThere(quack="moo π" a=3.14 b = *^-2|17 d = 1/5)
 
-define_scale(name="5-EDO") << 1 u | 2 v | 3 w | 4 w | 5 y/z >>
-define_scale(name="5-EDO") << 1 u | 2 v | 3/2 w | 4/3 x>> ; terminate with no space
-define_scale(name="random") f()
+define_scale(scale="5-EDO") << 1 u | 2 v | 3 w | 4 w | 5 y/z >>
+define_scale(scale="5-EDO") << 1 u | 2 v | 3/2 w | 4/3 x>> ; terminate with no space
+define_scale(scale="random") f()
 << ; opening comment
 *1 q+
 *^2|17 r* potato | 3.14 pi ; comment
@@ -53,9 +53,9 @@ midi_instrument(part="p1" instrument=1 bank=1) ; duplicate
 midi_instrument(part="p29" instrument=1 bank=1) ; unknown part
 
 csound_instrument(part="")
-csound_instrument(name="potato" number=12)
-csound_instrument(name="potato")
-csound_instrument(name="potato") ; duplicate
+csound_instrument(scale="potato" number=12)
+csound_instrument(scale="potato")
+csound_instrument(scale="potato") ; duplicate
 csound_instrument(part="p1" number=3)
 csound_instrument(part="p1" number=3) ; duplicate
 csound_instrument(part="p29" number=3) ; unknown part
@@ -63,4 +63,4 @@ csound_instrument(part="p29" number=3) ; unknown part
 tempo(bpm=5 end_bpm=5) tempo(bpm=5 duration=5)
 
 ; unresolved define_scale must be the last thing in the file
-define_scale(name="oops")
+define_scale(scale="oops")

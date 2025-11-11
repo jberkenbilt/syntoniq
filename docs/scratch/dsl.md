@@ -332,7 +332,7 @@ A file consists of a sequence of the following, excluding comments and non-funct
     k=v
   )
   ```
-* a keyword may be repeated, e.g. `use_scale(name="default" part="p1" part="p2")`
+* a keyword may be repeated, e.g. `use_scale(scale="default" part="p1" part="p2")`
 * multiple may occur on one line
 * comments allowed after `(` and on the same line as a parameter but not on lines between parameters
 
@@ -349,7 +349,7 @@ A score block consists of one or more note lines and zero or more dynamic lines.
 
 The `define_scale` directive is followed by scale definition blocks.
 ```
-define_scale(name=... base_pitch=... cycle_ratio=...)
+define_scale(scale=... base_pitch=... cycle_ratio=...)
 ```
 * `name` is mandatory
 * `base_pitch` defaults to `220*^1|4` (middle C based on 440 Hz, 12-TET)
@@ -371,7 +371,7 @@ or
 
 The names are enharmonic names for the scale degree. Examples:
 ```
-define_scale(name="19-EDO")
+define_scale(scale="19-EDO")
 <<
  ^0|19 c |  ^1|19 c# d%% |  ^2|19 d% c##
  ^3|19 d |  ^4|19 d# e%% |  ^5|19 e% d##
@@ -382,7 +382,7 @@ define_scale(name="19-EDO")
 ^17|19 b | ^18|19 b# c%
 >>
 
-define_scale(name="11-JI-partial")
+define_scale(scale="11-JI-partial")
 <<
 1     c
 17/16 c#
@@ -469,7 +469,7 @@ The first directive must be `syntoniq(version=n)`. This is a file format version
 
 Tuning
 ```
-use_scale(name="..." part="...")
+use_scale(scale="..." part="...")
 set_base_pitch(absolute=... relative=... part=...)
 transpose(written="..." pitch_from="..." part=...)
 reset_tuning(part=...)
@@ -630,7 +630,7 @@ use_instrument(name=... part=...) ; default or within a part
 # Marks, Regions, and Repeats
 
 ```
-mark(name="x")
+mark(label="x")
 repeat(start="mark1" end="mark2")
 ```
 

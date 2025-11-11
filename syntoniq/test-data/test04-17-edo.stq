@@ -3,7 +3,7 @@ syntoniq(version=1)
 ; Basic 17-EDO tune and test of named instrument
 csound_instrument(name="potato")
 
-define_scale(name="17-EDO") <<
+define_scale(scale="17-EDO") <<
  ^0|17 c
  ^1|17 c#
  ^2|17 d%
@@ -23,7 +23,7 @@ define_scale(name="17-EDO") <<
 ^16|17 b
 >>
 
-use_scale(name="17-EDO")
+use_scale(scale="17-EDO")
 [p1.0] 3:~      3:g
 [p1.1] 2:~ 1:g, 3:c
 [p1.2] 6:c,2

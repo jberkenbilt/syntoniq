@@ -2,14 +2,14 @@ syntoniq(version=1)
 
 ; Define two 5-note scales with different pitches and partial overlap
 ; in note names.
-define_scale(name="5-EDO") <<
+define_scale(scale="5-EDO") <<
   ^0|5 p
   ^1|5 q
   ^2|5 r
   ^3|5 s
   ^4|5 t
 >>
-define_scale(name="5-JI") <<
+define_scale(scale="5-JI") <<
     1 p
   5/4 q
   4/3 r
@@ -19,33 +19,33 @@ define_scale(name="5-JI") <<
 
 [p1.0]  1:c d e f
 
-use_scale(name="5-EDO" part="p1")
+use_scale(scale="5-EDO" part="p1")
 
 [p1.0]  1:p q r s
 [p2.0]  1:c d e f
 
 ; Transpose to set the base pitch to the current pitch of `d`, then
 ; switch to the 5-JI scale for p2.
-transpose(written="c" pitch_from="d" part="p2") use_scale(name="5-JI" part="p2")
+transpose(written="c" pitch_from="d" part="p2") use_scale(scale="5-JI" part="p2")
 
 [p1.0]  1:p q r s
 [p2.0]  1:p q r u
 
 ; Error: duplicated part
-use_scale(name="z" part="p2" part="p2")
+use_scale(scale="z" part="p2" part="p2")
 transpose(written="z" pitch_from="z" part="p2" part="p2")
 set_base_pitch(absolute=440 part="p2" part="p2")
 
 ; Error: unknown scale part
-use_scale(name="potato" part="p2")
+use_scale(scale="potato" part="p2")
 
 ; Error: can't transpose using unknown notes
 transpose(part="p2" written="c" pitch_from="d")
 
 reset_tuning()
 ; Now okay
-transpose(written="c" pitch_from="d") use_scale(name="5-EDO")
-transpose(written="p" pitch_from="q" part="p1") use_scale(name="5-JI" part="p2")
+transpose(written="c" pitch_from="d") use_scale(scale="5-EDO")
+transpose(written="p" pitch_from="q" part="p1") use_scale(scale="5-JI" part="p2")
 ; p1 doesn't have v
 transpose(part="p1" written="p" pitch_from="v")
 ; okay -- they both have q and r
@@ -58,10 +58,10 @@ reset_tuning(part="p2")
 [p1.0]  1:p q r s
 [p2.0]  1:p q r s ; okay now
 
-use_scale(name="5-EDO" part="p1" part="p2")
+use_scale(scale="5-EDO" part="p1" part="p2")
 set_base_pitch(part="p1" part="p2" absolute=440)
 set_base_pitch(part="p1" part="p2" relative=^1|19)
-use_scale(name="default" part="p4")
+use_scale(scale="default" part="p4")
 
 [p1.0]  1:p q r s
 [p2.0]  1:p q r s

@@ -24,17 +24,17 @@
       {
         "span": [
           13,
-          17
+          18
         ],
         "value": {
-          "raw": "name",
+          "raw": "scale",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          17,
-          18
+          18,
+          19
         ],
         "value": {
           "raw": "=",
@@ -43,29 +43,19 @@
       },
       {
         "span": [
-          18,
-          33
+          19,
+          34
         ],
         "value": {
           "raw": "\"uninitialized\"",
           "t": {
             "String": {
               "inner_span": [
-                19,
-                32
+                20,
+                33
               ]
             }
           }
-        }
-      },
-      {
-        "span": [
-          33,
-          34
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
         }
       },
       {
@@ -74,14 +64,24 @@
           35
         ],
         "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          35,
+          36
+        ],
+        "value": {
           "raw": "\n",
           "t": "Newline"
         }
       },
       {
         "span": [
-          35,
-          42
+          36,
+          43
         ],
         "value": {
           "raw": "ignored",
@@ -90,8 +90,8 @@
       },
       {
         "span": [
-          42,
-          43
+          43,
+          44
         ],
         "value": {
           "raw": "(",
@@ -100,8 +100,8 @@
       },
       {
         "span": [
-          43,
-          44
+          44,
+          45
         ],
         "value": {
           "raw": ")",
@@ -110,8 +110,8 @@
       },
       {
         "span": [
-          44,
-          45
+          45,
+          46
         ],
         "value": {
           "raw": "\n",
@@ -125,10 +125,10 @@
       {
         "span": [
           0,
-          34
+          35
         ],
         "value": {
-          "raw": "define_scale(name=\"uninitialized\")",
+          "raw": "define_scale(scale=\"uninitialized\")",
           "t": {
             "Directive": {
               "name": {
@@ -146,14 +146,14 @@
                     "key": {
                       "span": [
                         13,
-                        17
+                        18
                       ],
-                      "value": "name"
+                      "value": "scale"
                     },
                     "value": {
                       "span": [
-                        18,
-                        33
+                        19,
+                        34
                       ],
                       "value": {
                         "String": "uninitialized"
@@ -168,8 +168,8 @@
       },
       {
         "span": [
-          34,
-          35
+          35,
+          36
         ],
         "value": {
           "raw": "\n",
@@ -178,8 +178,8 @@
       },
       {
         "span": [
-          35,
-          44
+          36,
+          45
         ],
         "value": {
           "raw": "ignored()",
@@ -187,8 +187,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  35,
-                  42
+                  36,
+                  43
                 ],
                 "value": "ignored"
               },
@@ -200,8 +200,8 @@
       },
       {
         "span": [
-          44,
-          45
+          45,
+          46
         ],
         "value": {
           "raw": "\n",

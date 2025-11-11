@@ -3,7 +3,7 @@ syntoniq(version=1)
 ; Start off in regular 12-TET. No tuning/scale directives are needed.
 
 ;; TEMP
-define_scale(name="JI1") <<
+define_scale(scale="JI1") <<
   1      c
   25/24  c#     ; major third above a
   10/9   d     ;  9/8    d
@@ -19,7 +19,7 @@ define_scale(name="JI1") <<
   16/9   b%
   15/8   b
 >>
-use_scale(name="JI1")
+use_scale(scale="JI1")
 
 tempo(bpm=70)
 

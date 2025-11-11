@@ -1,6 +1,6 @@
 syntoniq(version=1)
 
-define_scale(name="JI1") <<
+define_scale(scale="JI1") <<
   1      c
   25/24  c#     ; major third above a
   10/9   d-
@@ -18,7 +18,7 @@ define_scale(name="JI1") <<
   15/8   b
 >>
 
-use_scale(name="default")
+use_scale(scale="default")
 
 tempo(bpm=30)
 [p1.1] 1:g b    c'
@@ -45,7 +45,7 @@ transpose(written="a" pitch_from="g")
 [p1.3] 1:e,  c  c  ~
 [p1.4] 1:d   g, f, ~
 
-use_scale(name="JI1")
+use_scale(scale="JI1")
 
 tempo(bpm=30)
 [p1.1] 1:g b    c'

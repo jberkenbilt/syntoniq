@@ -1,6 +1,6 @@
 syntoniq(version=1)
 
-define_scale(name="harmonics" cycle_ratio=64) <<
+define_scale(scale="harmonics" cycle_ratio=64) <<
  1  h1
  2  h2
  3  h3
@@ -66,7 +66,7 @@ define_scale(name="harmonics" cycle_ratio=64) <<
 63 h63
 >>
 
-use_scale(name="harmonics")
+use_scale(scale="harmonics")
 
 set_base_pitch(absolute=990/13)
 [p0.7] 11:h15~

@@ -827,8 +827,8 @@ impl<'s> Score<'s> {
             }
             Directive::DefineScale(x) => {
                 self.pending_scale = Some(ScaleDefinition {
-                    span: x.name.span,
-                    name: x.name.value,
+                    span: x.scale.span,
+                    name: x.scale.value,
                     cycle: x
                         .cycle_ratio
                         .map(Spanned::value)
@@ -987,11 +987,11 @@ impl<'s> Score<'s> {
     }
 
     fn use_scale(&mut self, diags: &Diagnostics, directive: UseScale<'s>) {
-        let Some(scale) = self.scales.get(&directive.name.value).cloned() else {
+        let Some(scale) = self.scales.get(&directive.scale.value).cloned() else {
             diags.err(
                 code::TUNE,
-                directive.name.span,
-                format!("unknown scale '{}'", directive.name.value),
+                directive.scale.span,
+                format!("unknown scale '{}'", directive.scale.value),
             );
             return;
         };
