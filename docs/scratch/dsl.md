@@ -1,9 +1,16 @@
 # TODO
 
-TODO: RPN: 06 is MSB data entry, 26 is LSB. Pass value_lsb to parameter as an option. RPN 0000 is pitch bend sensitivty. MSB is semitones, LSB is cents. Set to 02 00 for channel 0 and 0x30 00 for the rest (48).
+Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep.
+
+Immediate parser rework:
+* Consume comments, spaces, and newlines early in pass 2 to a token that contains contiguous spaces, comments, and newlines with newlines being optional, required, or forbidden
+* Remove comments from all higher-level tokens
+* The reformatter will be split from the final token stream and will instead be written from the low-level token stream based on known semantic information we can obtain from a known, valid file
+* Add an attribute to a directive of whether it requires a data block, and if so, require the `<<` to follow the directive and know how to parse it.
+This should eliminate several special cases, fix a few bugs, and make it much easier to code layout definition.
 
 Bugs
-* No comment line or blank lines in scale definition
+* No comment line or blank lines in scale definition -- should be fixed by above
 * Polyphony for csound doesn't work correctly when splitting parts to use simultaneous tunings. We need something else...perhaps polyphony groups that default to instrument or maybe that default to global but you can assign parts to polyphony groups along with instruments. Maybe csound_instrument takes an optional polyphony group parameter?
 
 nerds.de loopbe1 -- windows virtual midi port
@@ -84,123 +91,109 @@ XXX Document highlight-next-span in a dev/test README -- can refer to comment in
 
 # Keyboard thoughts
 
-We could replace the toml file for configuring the keyboard with something based on stq syntax.
+Bake keyboard layouts into the code for now. A keyboard consists of a number of rows and a number of columns in each row for note keys. Rows are numbered from 1 top to bottom, and columns are numbered from left to right. For hex keyboards, rows lie along a specified direction, which could be the line formed by the smallest angle from horizontal that has directly adjacent keys (Lumatone below) or some angle offset from horizontal (e.g. HexBoard-60, which is at 60 degrees fro horizontal in portrait mode). The rows and columns are specified as an array of numbers indicating the number of columns in each row from top to bottom. An angled layout will provide rows of less uniform length but will also provide some longer rows.
 
-Add a layout definition.
-```
-define_isomorphic_layout(
-    shape="square" ; or "hex"
-    rows=n cols=n
-    scale="scale"
-    base-row=n base-col=n ; see below for row/col
-    steps-h=n steps-v=h   ; closest to h/v in the upper-left quadrant
-)
+See ![Lumatone](lumatone.png), [HexBoard](hexboard.jpg).
 
-define_manual_layout(
-    shape="square" ; or "hex"
-    rows=n cols=n
-    scale="scale"
-    base-row=n base-col=n ; see below for row/col
-    cycle-h=n cycle-v=n   ; see below
-) <<< ... >>>
-```
+Layouts:
+* Launchpad: 8, 8, 8, 8, 8, 8, 8, 8
+* Hexboard: 9, 10, 9, 10, 9, 10, 9, 10, 9, 10, 9, 10, 9, 10
+* Hexboard-60: 2, 4, 6, 8, 10, 12, 14, 14, 14, 13, 11, 9, 7, 5, 3, 1
+* Lumatone: 2, 5, 8, 11, 14, 17, 20, 23, 26, 28, 26, 23, 20, 17, 14, 11, 8, 5, 2
 
-With isomorphic keyboards, for square keyboards, `steps-h` and `steps-v` are self-explanatory, row 1 is the bottom row, and column 1 is the left column.
-
-For hex keyboards, consider these two layouts:
+With each cell as RC (Row, Col), this is the launchpad (noting that the actual launchpad uses note numbers that are a row inversion of this):
 
 ```
-                           ⌈S⌉   ⌈X⌉   ⌈γ⌉
-<NN><OO><PP><QQ><RR>       ⌊S⌋|U⌉⌊X⌋⌈Z⌉⌊γ⌋
-  |JJ><KK><LL><MM>         ⌈R⌉⌊U⌋⌈W⌉⌊Z⌋⌈β⌉
-<EE><FF><GG><HH><II>       ⌊R⌋|T⌉⌊W⌋⌈Y⌉⌊β⌋
-  <AA><BB><CC><DD>         ⌈Q⌉⌊T⌋⌈V⌉⌊Y⌋⌈α⌉
-                           ⌊Q⌋   ⌊V⌋   ⌊α⌋
+11 12 13 14 15 16 17 18
+21 22 23 24 25 26 27 28
+31 32 33 34 35 36 37 38
+41 42 43 44 45 46 47 48
+51 52 53 54 55 56 57 58
+61 62 63 64 65 66 67 68
+71 72 73 74 75 76 77 78
+81 82 83 84 85 86 87 88
 ```
 
-To assign rows and columns unambiguously, we create a staggered grid where either every column has only even/odd rows or every row has only even/odd columns. In the left layout, keys have immediate horizontal neighbors. In this case, odd rows have only even columns, and even rows have only odd columns.
+and this is the HexBoard (using rows A=1 to N=14 and columns A=1 to J=10):
 
-* A = row 1, column 2
-* B = row 1, column 4
-* E = row 2, column 1
-* J = row 3, column 2
-* N = row 4, column 1
-
-Horizontal would be in the direction from A to B, and vertical would be the closest to vertical in the upper-left quadrant, so it would be the direction from A to F.
-
-In the right layout, keys have immediate vertical neighbors. In this case, odd rows have only odd columns, and even rows have only even columns
-
-* Q = row 1, column 1
-* R = row 3, column 1
-* S = row 5, column 1
-* T = row 2, column 2
-* U = row 2, column 4
-
-Vertical would be in the direction from Q to R, and horizontal would be from Q to T.
-
-I feel like this is the only sensible way to do it unambiguously. Otherwise, the coordinates depend on whether start with column first or row first.
-
-For isomorphic layouts, the above is sufficient to fully describe the keyboard. For non-isomorphic layouts, we need some way of assigning notes to keys. Also, we can assign keys to only a fraction of the keyboard, and then repeat the pattern n cycles up in a given direction. The repetition period would be determined by the number of rows and columns defined in the layout. For hex keyboards, there needs to be an even number of rows if cycle-v is specified and an even number of columns if cycle-h is specified. In all cases, a rectangular region has to be specified, meaning each row has to have the same number of specified columns.
-
-I'm thinking `<<<` and `>>>` could be keyboard layout delimiters, and the syntax could be note names or `~` for unused in the layout of the keyboard.
-
-For example, this toml:
-
-```toml
-[[scale]]
-name = "JI-11"
-type = "Generic"
-base_pitch = "220*^3|12"
-pitches = [
-  "[61]*2", "[62]*2", "[63]*2", "[64]*2", "[65]*2", "[66]*2", "[67]*2", "[68]*2",
-  "[51]*2", "[52]*2", "[53]*2", "[54]*2", "[55]*2", "[56]*2", "[57]*2", "[58]*2",
-  "17/16",  "16/15",   "6/5",   "11/8",   "17/12",  "8/5",     "7/4",   "16/9",
-   "1",      "9/8",    "5/4",    "4/3",    "3/2",   "5/3",    "15/8",    "2",
-  "[61]*1/2", "[62]*1/2", "[63]*1/2", "[64]*1/2", "[65]*1/2", "[66]*1/2", "[67]*1/2", "[68]*1/2",
-  "[51]*1/2", "[52]*1/2", "[53]*1/2", "[54]*1/2", "[55]*1/2", "[56]*1/2", "[57]*1/2", "[58]*1/2",
-  "[41]*1/2", "[42]*1/2", "[43]*1/2", "[44]*1/2", "[45]*1/2", "[46]*1/2", "[47]*1/2", "[48]*1/2",
-  "[31]*1/2", "[32]*1/2", "[33]*1/2", "[34]*1/2", "[35]*1/2", "[36]*1/2", "[37]*1/2", "[38]*1/2",
-]
-note_names = [
- "C♯'", "D♭'", "E♭'", "H11'", "F♯'", "A♭'", "H7'", "B♭'",
- "C'",  "D'",  "E'",  "F'",   "G'",  "A'",  "B'",  "C'",
- "C♯", "D♭", "E♭", "H11", "F♯", "A♭", "H7", "B♭",
- "C",  "D",  "E",  "F",   "G",  "A",  "B",  "C",
- "C♯,", "D♭,", "E♭,", "H11,", "F♯,", "A♭,", "H7,", "B♭,",
- "C,",  "D,",  "E,",  "F,",   "G,",  "A,",  "B,",  "C,",
- "C♯,,", "D♭,,", "E♭,,", "H11,,", "F♯,,", "A♭,,", "H7,,", "B♭,,",
- "C,,",  "D,,",  "E,,",  "F,,",   "G,,",  "A,,",  "B,,",  "C,,",
-]
-
-[[layout]]
-name = "Just Intonation (11)"
-scale_name = "JI-11"
+```
+  AA  AB  AC  AD  AE  AF  AG  AH  AI
+BA  BB  BC  BD  BE  BF  BG  BH  BI  BJ
+  CA  CB  CC  CD  CE  CF  CG  CH  CI
+DA  DB  DC  DD  DE  DF  DG  DH  DI  DJ
+  EA  EB  EC  ED  EE  EF  EG  EH  EI
+FA  FB  FC  FD  FE  FF  FG  FH  FI  FJ
+  GA  GB  GC  GD  GE  GF  GG  GH  GI
+HA  HB  HC  HD  HE  HF  HG  HH  HI  HJ
+  IA  IB  IC  ID  IE  IF  IG  IH  II
+JA  JB  JC  JD  JE  JF  JG  JH  JI  JJ
+  KA  KB  KC  KD  KE  KF  KG  KH  KI
+LA  LB  LC  LD  LE  LF  LG  LH  LI  LJ
+  MA  MB  MC  MD  ME  MF  MG  MH  MI
+NA  NB  NC  ND  NE  NF  NG  NH  NI  NJ
 ```
 
-would be replaced with this:
+A layout consists of a number of mappings placed onto the keyboard. A mapping maps positions to notes from the tuning for a specified part. A mapping can be manual or isomorphic. A manual mapping should have the same number of rows and columns. An isomorphic mapping is a regular directive. A manual mapping must be defined by a set of note placements within the mapping, which defines the mapping's size and layout. These are enclosed in `<< ... >>` delimiters (like scale blocks) and consist of space-separated notes on one line per row. You can use `~` to indicate a spot that should not have a note assigned, useful for positions that will be off the keyboard after placement. The parser can recognize whether something is a scale block or a manual mapping based on whether it follows `define_scale` or `define_manual_mapping`.
+
+Here are examples:
+
 ```
-define_scale(name="JI-11") <<
- 1     c  | 17/16  c#  | 16/15  d%
- 9/8   d  |  6/5   e%
- 5/4   e
- 4/3   f  | 11/8   h11 | 17/12  f#
- 3/2   g  |  8/5   a%
- 5/3   a  |  7/4   h7  | 16/9   b%
-15/8   b
->>
-define_generic_layout(
-   shape="square" rows=8 cols=8
-   base-row=5 base-col=1
-   scale="JI-11" cycle-v=1
-) <<<
+use_scale(part="p1" scale="ji")
+define_manual_mapping(
+    mapping="m1"     ; mapping name
+    part="p1"        ; part whose current tuning is used for notes and pitches
+) <<
 c# d% e% h11 f# a% h7 b%
 c  d  e  f   g  a  b  c'
->>>
+>>
+
+use_scale(part="p2" name="17-EDO")
+define_isomorphic_mapping(mapping="m2" part="p2" steps-h=3 steps-v=10)
 ```
 
-We can ignore layouts in scores and pay attention to only scales and layouts for the keyboard. That way you can define layouts for the scales and tunings used in a particular file, and the transposition and shift features in the keyboard can work to replace the idea of tunings. We could even potentially have the keyboard output tuning directives in response to transposition events, which makes the keyboard even more useful for transcribing notes.
+To define a full keyboard layout, you specify a keyboard type and multiple mapping placements.
 
-This also makes the keyboard generalizable to other keyboard layouts. You just have to write a driver for the specific keyboard. When using a particular keyboard, only look at layouts that can be applied to that keyboard. A keyboard driver can accept or reject a given layout.
+```
+define_layout(keyboard="launchpad" layout="l1")
+place_mapping(
+   layout="l1"
+   mapping="m1"
+   first_row=n  ; first row on keyboard to allocate (default=1)
+   first_col=n  ; first column on keyboard to allocate (default=1)
+   num_rows=n   ; number of rows to allocate (default=all remaining)
+   num_cols=n   ; number of columns to allocate (default=all remaining)
+   anchor_row=n anchor_col=n  ; see below
+)
+```
+
+The `anchor_row` and `anchor_col` parameters are interpreted differently for isomorphic and manual mappings. In both cases, they may be negative or larger than the number of rows and columns. For isomorphic, they represent the position of the base pitch. For manual, they indicate the position of the lower-left note.
+
+If the placement parameters result in overlapping mappings or mappings that fall off the edge, later ones overwrite earlier ones. This makes it easier to deal with non-rectangular keyboards. For example, hexagonal-key keyboards will not usually have the same number of columns in every row. This gives us a best-effort way to place keys, which is especially useful for repeating mappings where the allocated rows/cols is larger than the number of notes mapped. That gives us the ability to fit as much of the mapping as possible and use extra space for repeating notes as they fit. When manual maps are repeated, they repeat up by one cycle size to the right and also up.
+
+Examples
+
+```
+; Fill the whole keyboard with 19-EDO, 3 steps horizontally, 8 steps up-right.
+define_layout(keyboard="hexboard" layout="19-EDO-h3v8")
+use_scale(scale="19-EDO" part="p1")
+define_isomorphic_mapping(mapping="19-EDO-h3v8" part="p1" steps-h=3 steps-v=8)
+place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" anchor_row=8 anchor_col=5)
+
+; Fill the top half of the keyboard with 17-EDO and the bottom four rows with JI
+define_layout(keyboard="hexboard" layout="17-EDO-JI")
+; Use m1 (ji) and m2 (17-EDO) from above
+place_mapping(
+    layout="17-EDO-JI" mapping="m1" ; JI
+    first_row=11 ; last 4 rows
+    first_col=1
+    anchor_row=4 anchor_col=1
+)
+place_mapping(
+    layout="17-EDO-JI" mapping="m1" ; JI
+    first_row=1 num_rows=10
+    anchor_row=5 anchor_col=4
+)
+```
 
 ## Timeline
 
