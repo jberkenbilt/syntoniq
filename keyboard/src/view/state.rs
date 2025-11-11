@@ -13,9 +13,6 @@ use tokio::sync::RwLock;
 use tokio::sync::broadcast;
 use tokio::sync::broadcast::WeakSender;
 
-pub const ROWS: u8 = 11;
-pub const COLS: u8 = 10;
-
 pub struct AppState {
     cells: HashMap<u8, Cell>,
     state_view: StateView,

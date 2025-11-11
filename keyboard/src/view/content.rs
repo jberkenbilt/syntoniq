@@ -1,9 +1,11 @@
 //! The content module is responsible for the objects that comprise content and their HTML
 //! rendering.
 use crate::events::StateView;
-use crate::view::state;
 use askama::Template;
 use std::collections::HashMap;
+
+pub const ROWS: u8 = 11;
+pub const COLS: u8 = 10;
 
 #[derive(Template, Default, Clone, PartialEq)]
 #[template(path = "cell-text.html")]
@@ -72,8 +74,8 @@ pub struct App<'a> {
 impl<'a> App<'a> {
     pub fn new(cells: &'a HashMap<u8, Cell>, state_view: &'a StateView) -> Self {
         Self {
-            rows: state::ROWS,
-            cols: state::COLS,
+            rows: ROWS,
+            cols: COLS,
             cells,
             state_view,
         }
