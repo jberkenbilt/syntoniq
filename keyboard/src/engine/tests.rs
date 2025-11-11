@@ -595,34 +595,3 @@ async fn transpose_print_notes() -> anyhow::Result<()> {
 
     tc.shutdown().await
 }
-
-// #[tokio::test]
-// async fn test_scroll_layouts() -> anyhow::Result<()> {
-//     // TODO: launchpad-specific test
-//     let mut tc = TestController::new().await;
-//
-//     tc.press_and_release_key(KeyData::Layout { idx: 4 }).await?;
-//     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
-//     let ts = tc.get_engine_state().await;
-//     assert_eq!(ts.layout.unwrap(), 4);
-//     // Scroll layout
-//     tc.press_and_release_key(KeyData::Other { position: 19 }).await?;
-//     tc.wait_for_test_event(TestEvent::LayoutsScrolled).await;
-//     let ts = tc.get_engine_state().await;
-//     assert_eq!(ts.layout_offset, 8);
-//     tc.press_and_release_key(KeyData::Layout { idx: 0 }).await?;
-//     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
-//     let ts = tc.get_engine_state().await;
-//     assert_eq!(ts.layout.unwrap(), 8);
-//
-//     tc.press_and_release_key(KeyData::Other { position: 19 }).await?;
-//     tc.wait_for_test_event(TestEvent::LayoutsScrolled).await;
-//     let ts = tc.get_engine_state().await;
-//     assert_eq!(ts.layout_offset, 0);
-//     tc.press_and_release_key(KeyData::Layout { idx: 1 }).await?;
-//     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
-//     let ts = tc.get_engine_state().await;
-//     assert_eq!(ts.layout.unwrap(), 1);
-//
-//     tc.shutdown().await
-// }

@@ -78,7 +78,7 @@ async fn main() -> anyhow::Result<()> {
     let tx2 = events_tx.clone();
     let mut rx2 = events_rx.resubscribe();
     let main_handle = match cli.port {
-        Some(port) => Launchpad::run(port.to_string(), tx2, rx2).await?,
+        Some(port) => Launchpad::new(tx2).run(port.to_string(), rx2).await?,
         None => tokio::spawn(async move {
             while events::receive_check_lag(&mut rx2, None).await.is_some() {}
             Ok(())

@@ -59,6 +59,14 @@ impl TestController {
         tc
     }
 
+    pub fn tx(&self) -> events::UpgradedSender {
+        self.events_tx.clone()
+    }
+
+    pub fn rx(&self) -> events::Receiver {
+        self.events_rx.resubscribe()
+    }
+
     pub async fn shutdown(mut self) -> anyhow::Result<()> {
         self.events_tx.send(Event::Shutdown)?;
         while events::receive_check_lag(&mut self.events_rx, None)

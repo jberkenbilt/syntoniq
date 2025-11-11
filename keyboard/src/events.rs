@@ -219,7 +219,7 @@ pub enum TestEvent {
     ResetComplete,
     DeviceResetComplete,
     LayoutSelected,
-    LayoutsScrolled,
+    LayoutsHandled,
     HandledNote,
     HandledKey,
     MoveCanceled,

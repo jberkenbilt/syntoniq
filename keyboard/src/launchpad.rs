@@ -38,6 +38,14 @@ struct State {
 }
 
 impl Launchpad {
+    pub fn new(events_tx: events::WeakSender) -> Self {
+        let state: Arc<RwLock<State>> = Default::default();
+        Launchpad {
+            events_tx: events_tx.clone(),
+            state: state.clone(),
+        }
+    }
+
     fn set_light(
         output_connection: &mut MidiOutputConnection,
         position: u8,
@@ -143,6 +151,8 @@ impl Launchpad {
                 label2: "layouts".to_string(),
             })))?;
         }
+        #[cfg(test)]
+        events::send_test_event(&self.events_tx, TestEvent::LayoutsHandled);
         Ok(())
     }
 
@@ -155,8 +165,6 @@ impl Launchpad {
             }
         }
         self.fix_layout_lights()?;
-        #[cfg(test)]
-        events::send_test_event(&self.events_tx, TestEvent::LayoutsScrolled);
         Ok(())
     }
 
@@ -179,25 +187,30 @@ impl Launchpad {
     }
 
     pub async fn run(
+        &self,
         port_name: String,
-        events_tx: events::WeakSender,
         mut events_rx: events::Receiver,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
-        let state: Arc<RwLock<State>> = Default::default();
-        let launchpad = Launchpad {
-            events_tx: events_tx.clone(),
-            state: state.clone(),
-        };
+        let launchpad = self.clone();
         Ok(task::spawn(async move {
-            let controller_h = launchpad
-                .clone()
-                .start_controller(port_name, events_rx.resubscribe())
-                .await?;
+            let controller_h = if port_name.is_empty() {
+                None
+            } else {
+                Some(
+                    launchpad
+                        .clone()
+                        .start_controller(port_name, events_rx.resubscribe())
+                        .await?,
+                )
+            };
             while let Some(event) = events::receive_check_lag(&mut events_rx, Some("engine")).await
             {
                 launchpad.main_event_loop(event)?;
             }
-            controller_h.await?
+            if let Some(h) = controller_h {
+                h.await??;
+            }
+            Ok(())
         }))
     }
 
@@ -411,4 +424,64 @@ pub fn launchpad_color(color: &Color) -> u8 {
 
 pub fn rgb_color(color: &Color) -> &'static str {
     rgb_colors::RGB_COLORS[launchpad_color(color) as usize]
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::events::LayoutNamesEvent;
+    use crate::test_util::TestController;
+
+    #[tokio::test]
+    async fn test_scroll_layouts() -> anyhow::Result<()> {
+        let mut tc = TestController::new().await;
+        let events_tx = tc.tx().downgrade();
+        let events_rx = tc.rx();
+        let tx = events_tx.upgrade().unwrap();
+        let launchpad = Launchpad::new(events_tx);
+        launchpad.run(String::new(), events_rx).await?;
+        let layout_names: Vec<_> = (0..12).map(|x| x.to_string()).collect();
+        tx.send(Event::SetLayoutNames(LayoutNamesEvent {
+            names: layout_names.clone(),
+        }))?;
+        tc.wait_for_test_event(TestEvent::LayoutsHandled).await;
+
+        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+            key: 105,
+            velocity: 0,
+        }))?;
+        tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+        let ts = tc.get_engine_state().await;
+        assert_eq!(ts.layout.unwrap(), 4);
+        // Scroll layout
+        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+            key: 19,
+            velocity: 0,
+        }))?;
+        tc.wait_for_test_event(TestEvent::LayoutsHandled).await;
+        assert_eq!(launchpad.state.read().expect("lock").layout_offset, 8);
+        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+            key: 101,
+            velocity: 0,
+        }))?;
+        tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+        let ts = tc.get_engine_state().await;
+        assert_eq!(ts.layout.unwrap(), 8);
+
+        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+            key: 19,
+            velocity: 0,
+        }))?;
+        tc.wait_for_test_event(TestEvent::LayoutsHandled).await;
+        assert_eq!(launchpad.state.read().expect("lock").layout_offset, 0);
+        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+            key: 102,
+            velocity: 0,
+        }))?;
+        tc.wait_for_test_event(TestEvent::LayoutSelected).await;
+        let ts = tc.get_engine_state().await;
+        assert_eq!(ts.layout.unwrap(), 1);
+
+        tc.shutdown().await
+    }
 }
