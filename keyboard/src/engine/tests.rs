@@ -43,7 +43,7 @@ async fn test_sustain() -> anyhow::Result<()> {
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
 
     // TODO: Launchpad-specific
-    let middle_c_12_edo = KeyData::Other { position: 32 };
+    let middle_c_12_edo = KeyData::Note { position: 32 };
 
     // Press and release middle C. Note is on after press and off after release.
     tc.press_key(middle_c_12_edo).await?; // middle C
@@ -114,12 +114,12 @@ async fn test_shift_key() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     assert!(matches!(ts.shift_key_state, ShiftKeyState::Down));
     // Press some other key
-    tc.press_key(KeyData::Other { position: 11 }).await?;
+    tc.press_key(KeyData::Note { position: 11 }).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     assert!(matches!(ts.shift_key_state, ShiftKeyState::On));
     // Release other key
-    tc.release_key(KeyData::Other { position: 11 }).await?;
+    tc.release_key(KeyData::Note { position: 11 }).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     assert!(matches!(ts.shift_key_state, ShiftKeyState::On));
@@ -155,7 +155,7 @@ async fn test_transpose_cancels() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     assert!(matches!(ts.transpose_state, TransposeState::Pending { .. }));
     // Touch a note
-    tc.press_and_release_key(KeyData::Other { position: 32 })
+    tc.press_and_release_key(KeyData::Note { position: 32 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
@@ -181,7 +181,7 @@ async fn test_layout_shift_cancels() -> anyhow::Result<()> {
     tc.wait_for_test_event(TestEvent::HandledKey).await;
 
     // Touch a note
-    tc.press_and_release_key(KeyData::Other { position: 32 })
+    tc.press_and_release_key(KeyData::Note { position: 32 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
 
@@ -205,10 +205,10 @@ async fn test_layout_shift_cancels() -> anyhow::Result<()> {
     tc.press_key(KeyData::Shift).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     // Can't shift a generic layout
-    tc.press_and_release_key(KeyData::Other { position: 32 })
+    tc.press_and_release_key(KeyData::Note { position: 32 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
-    tc.press_and_release_key(KeyData::Other { position: 33 })
+    tc.press_and_release_key(KeyData::Note { position: 33 })
         .await?;
     tc.wait_for_test_event(TestEvent::MoveCanceled).await;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
@@ -294,7 +294,7 @@ async fn test_transpose_same_layout() -> anyhow::Result<()> {
     assert!(matches!(ts.transpose_state, TransposeState::Pending { .. }));
 
     // Touch a note twice to transpose
-    tc.press_and_release_key(KeyData::Other { position: 88 })
+    tc.press_and_release_key(KeyData::Note { position: 88 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
@@ -303,7 +303,7 @@ async fn test_transpose_same_layout() -> anyhow::Result<()> {
         TransposeState::FirstSelected { .. }
     ));
     // Touch a different note, changing first note
-    tc.press_and_release_key(KeyData::Other { position: 44 })
+    tc.press_and_release_key(KeyData::Note { position: 44 })
         .await?;
     let ts = tc.get_engine_state().await;
     assert!(matches!(
@@ -311,7 +311,7 @@ async fn test_transpose_same_layout() -> anyhow::Result<()> {
         TransposeState::FirstSelected { .. }
     ));
     tc.wait_for_test_event(TestEvent::HandledKey).await;
-    tc.press_and_release_key(KeyData::Other { position: 44 })
+    tc.press_and_release_key(KeyData::Note { position: 44 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
@@ -364,10 +364,10 @@ async fn test_transpose_different_layout() -> anyhow::Result<()> {
     );
 
     // Touch a note twice to transpose
-    tc.press_and_release_key(KeyData::Other { position: 34 })
+    tc.press_and_release_key(KeyData::Note { position: 34 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
-    tc.press_and_release_key(KeyData::Other { position: 34 })
+    tc.press_and_release_key(KeyData::Note { position: 34 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
@@ -409,7 +409,7 @@ async fn test_shift_layout() -> anyhow::Result<()> {
     tc.press_key(KeyData::Shift).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     // Touch a note, then another to shift
-    tc.press_and_release_key(KeyData::Other { position: 34 })
+    tc.press_and_release_key(KeyData::Note { position: 34 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
@@ -418,7 +418,7 @@ async fn test_shift_layout() -> anyhow::Result<()> {
         ShiftLayoutState::FirstSelected { .. }
     ));
     // Over 1 column, up 2 rows
-    tc.press_and_release_key(KeyData::Other { position: 55 })
+    tc.press_and_release_key(KeyData::Note { position: 55 })
         .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
@@ -442,7 +442,7 @@ async fn test_shift_layout() -> anyhow::Result<()> {
 async fn transpose_non_note_to_note() -> anyhow::Result<()> {
     let mut tc = TestController::new().await;
     // Press any key on the start screen.
-    tc.press_key(KeyData::Other { position: 55 }).await?;
+    tc.press_key(KeyData::Note { position: 55 }).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     assert!(ts.positions_down.is_empty());
@@ -453,7 +453,7 @@ async fn transpose_non_note_to_note() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     assert!(ts.positions_down.is_empty());
     // Release the key
-    tc.release_key(KeyData::Other { position: 55 }).await?;
+    tc.release_key(KeyData::Note { position: 55 }).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     assert!(ts.positions_down.is_empty());
@@ -468,7 +468,7 @@ async fn transpose_note_to_non_note() -> anyhow::Result<()> {
     tc.press_and_release_key(KeyData::Layout { idx: 0 }).await?;
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     // Press a note key
-    tc.press_key(KeyData::Other { position: 18 }).await?;
+    tc.press_key(KeyData::Note { position: 18 }).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     // Observe that the key is down and the pitch is playing.
@@ -494,7 +494,7 @@ async fn transpose_note_to_non_note() -> anyhow::Result<()> {
     assert!(ts.positions_down.is_empty());
     assert_eq!(ts.pitch_on_count.get(&layout_101_pos_18).unwrap_or(&0), &0);
     assert_eq!(ts.pitch_on_count.get(&layout_102_pos_18).unwrap_or(&0), &0);
-    tc.release_key(KeyData::Other { position: 18 }).await?;
+    tc.release_key(KeyData::Note { position: 18 }).await?;
 
     tc.shutdown().await
 }
@@ -509,7 +509,7 @@ async fn transpose_with_sustain() -> anyhow::Result<()> {
     tc.press_and_release_key(KeyData::Sustain).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     // Press a note key
-    tc.press_key(KeyData::Other { position: 18 }).await?;
+    tc.press_key(KeyData::Note { position: 18 }).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
     // Observe that the key is down and the pitch is playing.
@@ -529,7 +529,7 @@ async fn transpose_with_sustain() -> anyhow::Result<()> {
     assert_eq!(ts.pitch_on_count.get(&pos_18a).unwrap_or(&0), &1);
     assert_eq!(ts.pitch_on_count.get(&pos_18b).unwrap_or(&0), &1);
     // Release the key. The notes are still both on.
-    tc.release_key(KeyData::Other { position: 18 }).await?;
+    tc.release_key(KeyData::Note { position: 18 }).await?;
     let ts = tc.get_engine_state().await;
     assert!(ts.positions_down.is_empty());
     assert_eq!(ts.pitch_on_count.get(&pos_18a).unwrap_or(&0), &1);
@@ -548,31 +548,31 @@ async fn transpose_print_notes() -> anyhow::Result<()> {
     tc.press_and_release_key(KeyData::Sustain).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     // Play some notes
-    tc.press_and_release_key(KeyData::Other { position: 51 })
+    tc.press_and_release_key(KeyData::Note { position: 51 })
         .await?;
-    tc.press_and_release_key(KeyData::Other { position: 53 })
+    tc.press_and_release_key(KeyData::Note { position: 53 })
         .await?;
-    tc.press_and_release_key(KeyData::Other { position: 55 })
+    tc.press_and_release_key(KeyData::Note { position: 55 })
         .await?;
     // Transpose and play
     tc.press_and_release_key(KeyData::Transpose).await?;
     // Since this is sustain, we have to turn the note on ahead so it won't be on after selecting
-    tc.press_and_release_key(KeyData::Other { position: 13 })
+    tc.press_and_release_key(KeyData::Note { position: 13 })
         .await?;
-    tc.press_and_release_key(KeyData::Other { position: 13 })
+    tc.press_and_release_key(KeyData::Note { position: 13 })
         .await?;
-    tc.press_and_release_key(KeyData::Other { position: 13 })
+    tc.press_and_release_key(KeyData::Note { position: 13 })
         .await?;
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     // More notes
-    tc.press_and_release_key(KeyData::Other { position: 53 })
+    tc.press_and_release_key(KeyData::Note { position: 53 })
         .await?;
-    tc.press_and_release_key(KeyData::Other { position: 55 })
+    tc.press_and_release_key(KeyData::Note { position: 55 })
         .await?;
     // New layout
     tc.press_and_release_key(KeyData::Layout { idx: 0 }).await?;
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
-    tc.press_and_release_key(KeyData::Other { position: 33 })
+    tc.press_and_release_key(KeyData::Note { position: 33 })
         .await?;
     // Let all events be handled
     tc.sync().await?;

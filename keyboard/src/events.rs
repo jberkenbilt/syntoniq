@@ -60,7 +60,7 @@ pub enum KeyData {
     Transpose,
     OctaveShift { up: bool },
     Print,
-    Other { position: u8 },
+    Note { position: u8 },
 }
 
 #[derive(Clone, Debug)]

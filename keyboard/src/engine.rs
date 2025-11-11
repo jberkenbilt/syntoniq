@@ -163,7 +163,7 @@ impl Engine {
                     self.print_notes();
                 }
             }
-            KeyData::Other { position } => {
+            KeyData::Note { position } => {
                 if have_layout
                     && self.transient_state.notes.contains_key(&position)
                     && let Some(note) = self.transient_state.notes.get(&position).unwrap()
@@ -672,7 +672,7 @@ impl Engine {
         for position in note_positions_before {
             tx.send(Event::KeyEvent(KeyEvent {
                 velocity: 127,
-                key: KeyData::Other { position },
+                key: KeyData::Note { position },
             }))?;
         }
         #[cfg(test)]

@@ -266,6 +266,10 @@ impl Launchpad {
         Ok(())
     }
 
+    fn is_note_key(position: u8) -> bool {
+        (1..=8).contains(&(position / 10)) && (1..=8).contains(&(position % 10))
+    }
+
     fn handle_raw_event(&self, msg: FromDevice) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
@@ -300,7 +304,8 @@ impl Launchpad {
             keys::UP_ARROW => send(KeyData::OctaveShift { up: true })?,
             keys::DOWN_ARROW => send(KeyData::OctaveShift { up: false })?,
             keys::RECORD => send(KeyData::Print)?,
-            position => send(KeyData::Other { position })?,
+            position if Self::is_note_key(position) => send(KeyData::Note { position })?,
+            _ => {}
         }
         Ok(())
     }
