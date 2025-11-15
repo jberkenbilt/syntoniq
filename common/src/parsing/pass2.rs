@@ -59,7 +59,7 @@ pub enum Degraded {
     Directive,
     Dynamic,
     Note,
-    Scale,
+    Definition,
     Misc,
 }
 
@@ -347,14 +347,14 @@ fn identifier<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<&'s str>
         .map(|t| Spanned::new(t.span, t.value.raw))
 }
 
-fn scale_start<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
-    one_of(|x: Token1| matches!(x.value.t, Pass1::ScaleStart))
+fn definition_start<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
+    one_of(|x: Token1| matches!(x.value.t, Pass1::DefinitionStart))
         .parse_next(input)
         .map(|t| Spanned::new(t.span, t.value.raw))
 }
 
-fn scale_end<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
-    one_of(|x: Token1| matches!(x.value.t, Pass1::ScaleEnd))
+fn definition_end<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
+    one_of(|x: Token1| matches!(x.value.t, Pass1::DefinitionEnd))
         .parse_next(input)
         .map(|t| Spanned::new(t.span, t.value.raw))
 }
@@ -776,7 +776,7 @@ fn scale_note<'s>(
         })?;
         // If this is followed by a newline or a bar, we need to consume it, but if it's followed
         // by scale end, we need to leave it there. It's easier to do this explicitly.
-        if peek(scale_end).parse_next(input).is_err() {
+        if peek(definition_end).parse_next(input).is_err() {
             (
                 optional_space,
                 alt((character('|').map(|_| ()), space(true))),
@@ -792,9 +792,9 @@ fn scale_block<'s>(
 ) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<ScaleBlock<'s>>> {
     |input| {
         (
-            terminated(scale_start, opt(some_space)),
+            terminated(definition_start, opt(some_space)),
             combinator::repeat(1.., scale_note(diags)),
-            preceded(optional_space, scale_end),
+            preceded(optional_space, definition_end),
         )
             .parse_next(input)
             .map(|items: (_, Vec<_>, _)| {
@@ -915,7 +915,7 @@ fn degraded_dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::R
     }
 }
 
-fn degraded_scale(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
+fn degraded_definition(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
     move |input| {
         terminated(
             combinator::repeat(
@@ -926,13 +926,15 @@ fn degraded_scale(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Res
                     pitch_or_number(diags).map(|_| ()),
                     character('|').map(|_| ()),
                     note_name().map(|_| ()),
-                    one_of(|x: Token1| !matches!(x.value.t, Pass1::ScaleEnd)).map(|tok: Token1| {
-                        diags.err(
-                            code::SCORE_SYNTAX,
-                            tok.span,
-                            "unexpected item in scale block",
-                        );
-                    }),
+                    one_of(|x: Token1| !matches!(x.value.t, Pass1::DefinitionEnd)).map(
+                        |tok: Token1| {
+                            diags.err(
+                                code::SCORE_SYNTAX,
+                                tok.span,
+                                "unexpected item in definition block",
+                            );
+                        },
+                    ),
                 )),
             )
             .map(|_: Vec<_>| ()),
@@ -1073,7 +1075,7 @@ fn handle_token<'s>(
                 Err(Degraded::Dynamic)
             }
         }
-        Pass1::ScaleStart => {
+        Pass1::DefinitionStart => {
             if let Ok(x) = scale_block(diags).parse_next(input) {
                 Ok(Token::new_spanned(
                     &src[x.span],
@@ -1082,11 +1084,11 @@ fn handle_token<'s>(
                 ))
             } else {
                 diags.err(
-                    code::SCALE_SYNTAX,
+                    code::DEFINITION_SYNTAX,
                     tok.span,
-                    "unable to parse as scale block",
+                    "unable to parse as definition block",
                 );
-                Err(Degraded::Scale)
+                Err(Degraded::Definition)
             }
         }
         _ => {
@@ -1164,7 +1166,7 @@ pub fn parse2<'s>(src: &'s str) -> Result<Vec<Token2<'s>>, Diagnostics> {
                     Degraded::Directive => degraded_directive(&diags).parse_next(&mut input),
                     Degraded::Dynamic => degraded_dynamic(&diags).parse_next(&mut input),
                     Degraded::Note => degraded_note(&diags).parse_next(&mut input),
-                    Degraded::Scale => degraded_scale(&diags).parse_next(&mut input),
+                    Degraded::Definition => degraded_definition(&diags).parse_next(&mut input),
                     Degraded::Misc => degraded_misc(&diags).parse_next(&mut input),
                 };
                 if tok.is_err() {

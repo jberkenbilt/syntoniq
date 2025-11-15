@@ -385,7 +385,7 @@
         ],
         "value": {
           "raw": "<<",
-          "t": "ScaleStart"
+          "t": "DefinitionStart"
         }
       },
       {
@@ -985,7 +985,7 @@
         ],
         "value": {
           "raw": ">>",
-          "t": "ScaleEnd"
+          "t": "DefinitionEnd"
         }
       },
       {
@@ -1132,7 +1132,7 @@
         ],
         "value": {
           "raw": "<<",
-          "t": "ScaleStart"
+          "t": "DefinitionStart"
         }
       },
       {
@@ -1572,7 +1572,7 @@
         ],
         "value": {
           "raw": ">>",
-          "t": "ScaleEnd"
+          "t": "DefinitionEnd"
         }
       },
       {
@@ -3968,7 +3968,7 @@
         ],
         "value": {
           "raw": "<<",
-          "t": "ScaleStart"
+          "t": "DefinitionStart"
         }
       },
       {
@@ -4468,7 +4468,7 @@
         ],
         "value": {
           "raw": ">>",
-          "t": "ScaleEnd"
+          "t": "DefinitionEnd"
         }
       },
       {
@@ -4615,7 +4615,7 @@
         ],
         "value": {
           "raw": "<<",
-          "t": "ScaleStart"
+          "t": "DefinitionStart"
         }
       },
       {
@@ -5115,7 +5115,7 @@
         ],
         "value": {
           "raw": ">>",
-          "t": "ScaleEnd"
+          "t": "DefinitionEnd"
         }
       },
       {

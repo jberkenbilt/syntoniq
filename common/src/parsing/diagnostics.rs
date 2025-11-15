@@ -21,7 +21,7 @@ pub mod code {
     pub const DYNAMIC_SYNTAX: &str = "E1010 incorrect dynamic syntax";
     pub const TOPLEVEL_SYNTAX: &str = "E1011 incorrect syntax";
     pub const DIRECTIVE_SYNTAX: &str = "E1012 incorrect directive syntax";
-    pub const SCALE_SYNTAX: &str = "E1013 incorrect scale block syntax";
+    pub const DEFINITION_SYNTAX: &str = "E1013 incorrect definition block syntax";
     pub const UNKNOWN_DIRECTIVE: &str = "E1014 unknown directive";
     pub const UNKNOWN_DIRECTIVE_PARAM: &str = "E1015 unknown directive parameter";
     pub const INCORRECT_DIRECTIVE_PARAM: &str = "E1016 incorrect parameter type";

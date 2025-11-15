@@ -93,8 +93,8 @@ pub enum Pass1 {
     DynamicLeader { name_span: Span },
     Articulation { inner_span: Span },
     NoteName,
-    ScaleStart,
-    ScaleEnd,
+    DefinitionStart,
+    DefinitionEnd,
 }
 impl Display for Pass1 {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -186,7 +186,7 @@ enum LexState {
     Top,
     DynamicLine,
     NoteLine,
-    Scale,
+    Definition,
 }
 
 // Pass1 Step 5: This is the heart of our parsing logic. It's simple, but there's a lot to unpack.
@@ -381,12 +381,16 @@ fn string_literal<'s>(diags: &Diagnostics) -> impl Parser1<'s> {
     })
 }
 
-fn scale_start<'s>() -> impl Parser1<'s> {
-    parse1_token(take_while(2, '<'), |_raw, _span, _chars| Pass1::ScaleStart)
+fn definition_start<'s>() -> impl Parser1<'s> {
+    parse1_token(take_while(2, '<'), |_raw, _span, _chars| {
+        Pass1::DefinitionStart
+    })
 }
 
-fn scale_end<'s>() -> impl Parser1<'s> {
-    parse1_token(take_while(2, '>'), |_raw, _span, _chars| Pass1::ScaleEnd)
+fn definition_end<'s>() -> impl Parser1<'s> {
+    parse1_token(take_while(2, '>'), |_raw, _span, _chars| {
+        Pass1::DefinitionEnd
+    })
 }
 
 fn note_leader<'s>(diags: &Diagnostics) -> impl Parser1<'s> {
@@ -505,9 +509,9 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
                     (None, LexState::Top)
                 }
             } else if input.starts_with("<<") && matches!(state, LexState::Top) {
-                let tok = parse_next!(scale_start());
-                (tok, tok.map(|_| LexState::Scale).unwrap_or(state))
-            } else if ch == '>' && matches!(state, LexState::Scale) {
+                let tok = parse_next!(definition_start());
+                (tok, tok.map(|_| LexState::Definition).unwrap_or(state))
+            } else if ch == '>' && matches!(state, LexState::Definition) {
                 (None, LexState::Top)
             } else {
                 (None, state)
@@ -552,7 +556,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
             _ => match state {
                 LexState::Top => match ch {
                     '"' => parse_next!(string_literal(&diags)),
-                    '>' if input.starts_with(">>") => parse_next!(scale_end()),
+                    '>' if input.starts_with(">>") => parse_next!(definition_end()),
                     x if x.is_ascii_punctuation() => parse_next!(punctuation()),
                     x if AsChar::is_alpha(x) => parse_next!(identifier()),
                     _ => None,
@@ -567,7 +571,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
                     x if DYNAMIC_PUNCTUATION.contains(x) => parse_next!(punctuation()),
                     _ => None,
                 },
-                LexState::Scale => match ch {
+                LexState::Definition => match ch {
                     x if PITCH_CHARACTERS.contains(x) => parse_next!(punctuation()),
                     x if AsChar::is_alpha(x) => parse_next!(note_name()),
                     _ => None,

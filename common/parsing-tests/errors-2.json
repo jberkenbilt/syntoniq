@@ -979,7 +979,7 @@
         ],
         "value": {
           "raw": "<<",
-          "t": "ScaleStart"
+          "t": "DefinitionStart"
         }
       },
       {
@@ -1499,7 +1499,7 @@
         ],
         "value": {
           "raw": ">>",
-          "t": "ScaleEnd"
+          "t": "DefinitionEnd"
         }
       },
       {
@@ -1529,7 +1529,7 @@
         ],
         "value": {
           "raw": "<<",
-          "t": "ScaleStart"
+          "t": "DefinitionStart"
         }
       },
       {
@@ -2009,7 +2009,7 @@
         ],
         "value": {
           "raw": ">>",
-          "t": "ScaleEnd"
+          "t": "DefinitionEnd"
         }
       },
       {
@@ -5348,25 +5348,25 @@
           }
         },
         {
-          "code": "E1013 incorrect scale block syntax",
+          "code": "E1013 incorrect definition block syntax",
           "context": [],
           "message": {
             "span": [
               304,
               306
             ],
-            "value": "unable to parse as scale block"
+            "value": "unable to parse as definition block"
           }
         },
         {
-          "code": "E1013 incorrect scale block syntax",
+          "code": "E1013 incorrect definition block syntax",
           "context": [],
           "message": {
             "span": [
               401,
               403
             ],
-            "value": "unable to parse as scale block"
+            "value": "unable to parse as definition block"
           }
         },
         {
@@ -5377,7 +5377,7 @@
               490,
               491
             ],
-            "value": "unexpected item in scale block"
+            "value": "unexpected item in definition block"
           }
         },
         {
