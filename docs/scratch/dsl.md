@@ -2,15 +2,12 @@
 
 Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep.
 
+code::DIRECTIVE is currently unused. May be useful when attaching << to directive.
+
 Immediate parser rework:
-* Consume comments, spaces, and newlines early in pass 2 to a token that contains contiguous spaces, comments, and newlines with newlines being optional, required, or forbidden
-* Remove comments from all higher-level tokens
-* The reformatter will be split from the final token stream and will instead be written from the low-level token stream based on known semantic information we can obtain from a known, valid file
 * Add an attribute to a directive of whether it requires a data block, and if so, require the `<<` to follow the directive and know how to parse it.
-This should eliminate several special cases, fix a few bugs, and make it much easier to code layout definition.
 
 Bugs
-* No comment line or blank lines in scale definition -- should be fixed by above
 * Polyphony for csound doesn't work correctly when splitting parts to use simultaneous tunings. We need something else...perhaps polyphony groups that default to instrument or maybe that default to global but you can assign parts to polyphony groups along with instruments. Maybe csound_instrument takes an optional polyphony group parameter?
 
 nerds.de loopbe1 -- windows virtual midi port
@@ -662,6 +659,8 @@ Summary:
   * The best reference for getting started is the official Tree-sitter documentation: [Creating Parsers](https://tree-sitter.github.io/tree-sitter/creating-parsers)
 
 ## Reformatting
+
+The reformatter will first fully validate an input file. Then it will drive the formatting from pass1 tokens, peeking at later parsing results for semantic information as needed.
 
 Suggested reformatting rules:
 * Collapse multiple blank lines to single blank lines, and remove leading and trailing blank lines

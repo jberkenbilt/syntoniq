@@ -229,23 +229,11 @@ impl<'s> ParamValue<'s> {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct Comment<'s> {
-    pub content: Spanned<&'s str>,
-}
-impl<'s> Display for Comment<'s> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{{")?;
-        color!(f, 248, "{}", self.content.value)?;
-        write!(f, "}}")
-    }
-}
-
-#[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct ParamKV<'s> {
+pub struct Param<'s> {
     pub key: Spanned<&'s str>,
     pub value: Spanned<ParamValue<'s>>,
 }
-impl<'s> Display for ParamKV<'s> {
+impl<'s> Display for Param<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 88, "{}", self.key.value,)?;
         color!(f, 55, "=")?;
@@ -254,32 +242,13 @@ impl<'s> Display for ParamKV<'s> {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
-pub struct Param<'s> {
-    pub kv: ParamKV<'s>,
-    pub comment: Option<Comment<'s>>,
-}
-impl<'s> Display for Param<'s> {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        Display::fmt(&self.kv, f)?;
-        if let Some(comment) = &self.comment {
-            Display::fmt(comment, f)?;
-        }
-        Ok(())
-    }
-}
-
-#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct RawDirective<'s> {
-    pub opening_comment: Option<Comment<'s>>,
     pub name: Spanned<&'s str>,
     pub params: Vec<Param<'s>>,
 }
 impl<'s> Display for RawDirective<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 39, "{}(", self.name.value)?;
-        if let Some(comment) = &self.opening_comment {
-            Display::fmt(comment, f)?;
-        }
         let mut first = true;
         for p in &self.params {
             if first {
@@ -453,16 +422,12 @@ impl Display for Dynamic {
 pub struct DynamicLine<'s> {
     pub leader: Spanned<DynamicLeader<'s>>,
     pub dynamics: Vec<Spanned<Dynamic>>,
-    pub comment: Option<Comment<'s>>,
 }
 impl<'s> Display for DynamicLine<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.leader.value)?;
         for i in &self.dynamics {
             write!(f, " {}", i.value)?;
-        }
-        if let Some(comment) = &self.comment {
-            Display::fmt(comment, f)?;
         }
         Ok(())
     }
@@ -472,16 +437,12 @@ impl<'s> Display for DynamicLine<'s> {
 pub struct NoteLine<'s> {
     pub leader: Spanned<NoteLeader<'s>>,
     pub notes: Vec<Spanned<Note<'s>>>,
-    pub comment: Option<Comment<'s>>,
 }
 impl<'s> Display for NoteLine<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.leader.value)?;
         for i in &self.notes {
             write!(f, " {}", i.value)?;
-        }
-        if let Some(comment) = &self.comment {
-            Display::fmt(comment, f)?;
         }
         Ok(())
     }
@@ -491,16 +452,12 @@ impl<'s> Display for NoteLine<'s> {
 pub struct ScaleNote<'s> {
     pub pitch: Spanned<PitchOrNumber>,
     pub note_names: Vec<Spanned<&'s str>>,
-    pub comment: Option<Comment<'s>>,
 }
 impl<'s> Display for ScaleNote<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&self.pitch.value, f)?;
         for name in &self.note_names {
             color!(f, 2, " {}", name.value)?;
-        }
-        if let Some(comment) = &self.comment {
-            Display::fmt(comment, f)?;
         }
         Ok(())
     }
@@ -509,16 +466,11 @@ impl<'s> Display for ScaleNote<'s> {
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct ScaleBlock<'s> {
     pub span: Span,
-    pub opening_comment: Option<Comment<'s>>,
     pub notes: Vec<Spanned<ScaleNote<'s>>>,
 }
 impl<'s> Display for ScaleBlock<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "<<")?;
-        if let Some(comment) = &self.opening_comment {
-            Display::fmt(comment, f)?;
-        }
-        write!(f, "|")?;
+        write!(f, "<<|")?;
         for n in &self.notes {
             write!(f, "{}|", &n.value)?;
         }

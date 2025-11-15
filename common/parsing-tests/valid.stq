@@ -3,9 +3,19 @@ tempo(bpm=60)
 
 ; Define two 5-note scales with different pitches and partial overlap
 ; in note names.
-define_scale(scale="5-EDO") <<
+define_scale(
+
+  ; comment and blank line here
+
+  scale="5-EDO"
+
+) <<
   ^0|5 p
+  ; comment in scale definition
   ^1|5 q
+
+  ; also blank lines
+
   ^2|5 r
   ^3|5 s
   ^4|5 t

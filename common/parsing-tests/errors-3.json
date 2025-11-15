@@ -12001,52 +12001,45 @@
                 ],
                 "value": "syntoniq"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        9,
-                        16
-                      ],
-                      "value": "version"
-                    },
+                  "key": {
+                    "span": [
+                      9,
+                      16
+                    ],
+                    "value": "version"
+                  },
+                  "value": {
+                    "span": [
+                      17,
+                      18
+                    ],
                     "value": {
-                      "span": [
-                        17,
-                        18
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        19,
-                        25
-                      ],
-                      "value": "potato"
-                    },
+                  "key": {
+                    "span": [
+                      19,
+                      25
+                    ],
+                    "value": "potato"
+                  },
+                  "value": {
+                    "span": [
+                      26,
+                      33
+                    ],
                     "value": {
-                      "span": [
-                        26,
-                        33
-                      ],
-                      "value": {
-                        "String": "salad"
-                      }
+                      "String": "salad"
                     }
                   }
                 }
@@ -12081,30 +12074,26 @@
                 ],
                 "value": "syntoniq"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        44,
-                        51
-                      ],
-                      "value": "version"
-                    },
+                  "key": {
+                    "span": [
+                      44,
+                      51
+                    ],
+                    "value": "version"
+                  },
+                  "value": {
+                    "span": [
+                      52,
+                      53
+                    ],
                     "value": {
-                      "span": [
-                        52,
-                        53
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            2,
-                            "2"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          2,
+                          "2"
+                        ]
                       }
                     }
                   }
@@ -12140,30 +12129,26 @@
                 ],
                 "value": "syntoniq"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        64,
-                        71
-                      ],
-                      "value": "version"
-                    },
+                  "key": {
+                    "span": [
+                      64,
+                      71
+                    ],
+                    "value": "version"
+                  },
+                  "value": {
+                    "span": [
+                      72,
+                      73
+                    ],
                     "value": {
-                      "span": [
-                        72,
-                        73
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -12199,106 +12184,93 @@
                 ],
                 "value": "onceThere"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        85,
-                        90
-                      ],
-                      "value": "quack"
-                    },
+                  "key": {
+                    "span": [
+                      85,
+                      90
+                    ],
+                    "value": "quack"
+                  },
+                  "value": {
+                    "span": [
+                      91,
+                      99
+                    ],
                     "value": {
-                      "span": [
-                        91,
-                        99
-                      ],
-                      "value": {
-                        "String": "moo π"
+                      "String": "moo π"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      100,
+                      101
+                    ],
+                    "value": "a"
+                  },
+                  "value": {
+                    "span": [
+                      102,
+                      106
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Ratio": [
+                          [
+                            157,
+                            50
+                          ],
+                          "157/50"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        100,
-                        101
-                      ],
-                      "value": "a"
-                    },
+                  "key": {
+                    "span": [
+                      107,
+                      108
+                    ],
+                    "value": "b"
+                  },
+                  "value": {
+                    "span": [
+                      111,
+                      118
+                    ],
                     "value": {
-                      "span": [
-                        102,
-                        106
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Ratio": [
-                            [
-                              157,
-                              50
-                            ],
-                            "157/50"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Pitch": "1/2*^15|17"
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        107,
-                        108
-                      ],
-                      "value": "b"
-                    },
+                  "key": {
+                    "span": [
+                      119,
+                      120
+                    ],
+                    "value": "d"
+                  },
+                  "value": {
+                    "span": [
+                      123,
+                      126
+                    ],
                     "value": {
-                      "span": [
-                        111,
-                        118
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Pitch": "1/2*^15|17"
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        119,
-                        120
-                      ],
-                      "value": "d"
-                    },
-                    "value": {
-                      "span": [
-                        123,
-                        126
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Ratio": [
-                            [
-                              1,
-                              5
-                            ],
-                            "1/5"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Ratio": [
+                          [
+                            1,
+                            5
+                          ],
+                          "1/5"
+                        ]
                       }
                     }
                   }
@@ -12344,26 +12316,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        142,
-                        147
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      142,
+                      147
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      148,
+                      155
+                    ],
                     "value": {
-                      "span": [
-                        148,
-                        155
-                      ],
-                      "value": {
-                        "String": "5-EDO"
-                      }
+                      "String": "5-EDO"
                     }
                   }
                 }
@@ -12398,7 +12366,6 @@
                     163
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12428,7 +12395,6 @@
                     169
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12458,7 +12424,6 @@
                     175
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12488,7 +12453,6 @@
                     181
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12518,7 +12482,6 @@
                     189
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12543,7 +12506,6 @@
                   }
                 }
               ],
-              "opening_comment": null,
               "span": [
                 157,
                 159
@@ -12578,26 +12540,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        206,
-                        211
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      206,
+                      211
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      212,
+                      219
+                    ],
                     "value": {
-                      "span": [
-                        212,
-                        219
-                      ],
-                      "value": {
-                        "String": "5-EDO"
-                      }
+                      "String": "5-EDO"
                     }
                   }
                 }
@@ -12632,7 +12590,6 @@
                     227
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12662,7 +12619,6 @@
                     233
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12692,7 +12648,6 @@
                     241
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12725,7 +12680,6 @@
                     249
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12753,7 +12707,6 @@
                   }
                 }
               ],
-              "opening_comment": null,
               "span": [
                 221,
                 223
@@ -12808,26 +12761,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        291,
-                        296
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      291,
+                      296
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      297,
+                      305
+                    ],
                     "value": {
-                      "span": [
-                        297,
-                        305
-                      ],
-                      "value": {
-                        "String": "random"
-                      }
+                      "String": "random"
                     }
                   }
                 }
@@ -12862,7 +12811,6 @@
                 ],
                 "value": "f"
               },
-              "opening_comment": null,
               "params": []
             }
           }
@@ -12894,7 +12842,6 @@
                     337
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12921,7 +12868,6 @@
                     354
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -12952,18 +12898,9 @@
                 {
                   "span": [
                     357,
-                    374
+                    364
                   ],
                   "value": {
-                    "comment": {
-                      "content": {
-                        "span": [
-                          365,
-                          374
-                        ],
-                        "value": "; comment"
-                      }
-                    },
                     "note_names": [
                       {
                         "span": [
@@ -12996,7 +12933,6 @@
                     385
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -13023,7 +12959,6 @@
                     403
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -13057,7 +12992,6 @@
                     415
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -13085,15 +13019,6 @@
                   }
                 }
               ],
-              "opening_comment": {
-                "content": {
-                  "span": [
-                    314,
-                    331
-                  ],
-                  "value": "; opening comment"
-                }
-              },
               "span": [
                 311,
                 313
@@ -13131,7 +13056,6 @@
           "raw": "[p1.0]  1/2:e g e g e g e   g |      f g     f g   w g    f  g(>^>^..)~\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   420,
@@ -13592,7 +13516,6 @@
           "raw": "[p1.1]      d   c   d   c     |      e   1/2:d e   d e    d~ e\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   533,
@@ -13885,7 +13808,6 @@
           "raw": "[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g(>)\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   596,
@@ -14288,7 +14210,6 @@
           "raw": "[p1.2]      ~     1:b,  b%,   |    2:c'2           b,2\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   662,
@@ -14482,15 +14403,6 @@
           "raw": "[p1.3]  | 4:~                 |    2:~             a,   ; comment on note line\n",
           "t": {
             "NoteLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    773,
-                    795
-                  ],
-                  "value": "; comment on note line"
-                }
-              },
               "leader": {
                 "span": [
                   717,
@@ -14633,7 +14545,6 @@
           "raw": "[p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   796,
@@ -14855,7 +14766,6 @@
           "raw": "[p1]   64@0    64@2<        |   96@0>          64@2<\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -15038,15 +14948,6 @@
           "raw": "[p2]   64@0    64@2<        |   96@0>          64@2  ; comment on dynamic line\n",
           "t": {
             "DynamicLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    970,
-                    995
-                  ],
-                  "value": "; comment on dynamic line"
-                }
-              },
               "dynamics": [
                 {
                   "span": [
@@ -15223,7 +15124,6 @@
           "raw": "[p3]   64@0    64@2>            96@0<          64@2>\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -15394,15 +15294,6 @@
           "raw": "[p2]   64@0    64@2<        |   96@0>   |      64@2  ; comment on dynamic line\n",
           "t": {
             "DynamicLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    1106,
-                    1131
-                  ],
-                  "value": "; comment on dynamic line"
-                }
-              },
               "dynamics": [
                 {
                   "span": [
@@ -15591,7 +15482,6 @@
           "raw": "[p1] 64@0\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -15660,7 +15550,6 @@
           "raw": "[p1.0]  1:c d e f | g a b c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1144,
@@ -15887,7 +15776,6 @@
           "raw": "[p1.1]  1:c d e | g a b c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1172,
@@ -16093,7 +15981,6 @@
           "raw": "[p2.0]  1:c d 1/2:e g e 0.25:g g | f a b c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1198,
@@ -16401,7 +16288,6 @@
           "raw": "[p2.1]  1:c d e f | g a b c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1241,
@@ -16638,7 +16524,6 @@
           "raw": "[p1.0]  1:c d e f | g a b c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1270,
@@ -16865,7 +16750,6 @@
           "raw": "[p1.1]  1:c d e f | g a b c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1298,
@@ -17092,7 +16976,6 @@
           "raw": "[p2.0]  1:c d 1/2:e g e 0.25:g g | 1:f a b c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1326,
@@ -17409,7 +17292,6 @@
           "raw": "[p2.1]  1:c d e f | g a b c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1371,
@@ -17646,7 +17528,6 @@
           "raw": "[p1]  64@0 | 64@1 | 64@1\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -17795,7 +17676,6 @@
           "raw": "[p2]  64@0 64@0\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -17892,7 +17772,6 @@
           "raw": "[p3]  64@4 64@5 | 64@2 64@2 127@4.7 64@9/2\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -18120,26 +17999,22 @@
                 ],
                 "value": "mark"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1495,
-                        1500
-                      ],
-                      "value": "label"
-                    },
+                  "key": {
+                    "span": [
+                      1495,
+                      1500
+                    ],
+                    "value": "label"
+                  },
+                  "value": {
+                    "span": [
+                      1501,
+                      1504
+                    ],
                     "value": {
-                      "span": [
-                        1501,
-                        1504
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 }
@@ -18167,7 +18042,6 @@
           "raw": "[p1.0]  1:c d e f\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1506,
@@ -18308,7 +18182,6 @@
           "raw": "[p1]  64@0 | 64@1 | 64@1<\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -18460,26 +18333,22 @@
                 ],
                 "value": "mark"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1557,
-                        1562
-                      ],
-                      "value": "label"
-                    },
+                  "key": {
+                    "span": [
+                      1557,
+                      1562
+                    ],
+                    "value": "label"
+                  },
+                  "value": {
+                    "span": [
+                      1563,
+                      1566
+                    ],
                     "value": {
-                      "span": [
-                        1563,
-                        1566
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 }
@@ -18544,77 +18413,67 @@
                 ],
                 "value": "midi_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1597,
-                        1601
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1597,
+                      1601
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1602,
+                      1604
+                    ],
                     "value": {
-                      "span": [
-                        1602,
-                        1604
-                      ],
-                      "value": {
-                        "String": ""
+                      "String": ""
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1605,
+                      1615
+                    ],
+                    "value": "instrument"
+                  },
+                  "value": {
+                    "span": [
+                      1616,
+                      1619
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          300,
+                          "300"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1605,
-                        1615
-                      ],
-                      "value": "instrument"
-                    },
+                  "key": {
+                    "span": [
+                      1620,
+                      1624
+                    ],
+                    "value": "bank"
+                  },
+                  "value": {
+                    "span": [
+                      1625,
+                      1630
+                    ],
                     "value": {
-                      "span": [
-                        1616,
-                        1619
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            300,
-                            "300"
-                          ]
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1620,
-                        1624
-                      ],
-                      "value": "bank"
-                    },
-                    "value": {
-                      "span": [
-                        1625,
-                        1630
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            30000,
-                            "30000"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          30000,
+                          "30000"
+                        ]
                       }
                     }
                   }
@@ -18650,56 +18509,49 @@
                 ],
                 "value": "midi_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1648,
-                        1658
-                      ],
-                      "value": "instrument"
-                    },
+                  "key": {
+                    "span": [
+                      1648,
+                      1658
+                    ],
+                    "value": "instrument"
+                  },
+                  "value": {
+                    "span": [
+                      1659,
+                      1660
+                    ],
                     "value": {
-                      "span": [
-                        1659,
-                        1660
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1661,
-                        1665
-                      ],
-                      "value": "bank"
-                    },
+                  "key": {
+                    "span": [
+                      1661,
+                      1665
+                    ],
+                    "value": "bank"
+                  },
+                  "value": {
+                    "span": [
+                      1666,
+                      1667
+                    ],
                     "value": {
-                      "span": [
-                        1666,
-                        1667
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -18735,56 +18587,49 @@
                 ],
                 "value": "midi_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1685,
-                        1695
-                      ],
-                      "value": "instrument"
-                    },
+                  "key": {
+                    "span": [
+                      1685,
+                      1695
+                    ],
+                    "value": "instrument"
+                  },
+                  "value": {
+                    "span": [
+                      1696,
+                      1697
+                    ],
                     "value": {
-                      "span": [
-                        1696,
-                        1697
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1698,
-                        1702
-                      ],
-                      "value": "bank"
-                    },
+                  "key": {
+                    "span": [
+                      1698,
+                      1702
+                    ],
+                    "value": "bank"
+                  },
+                  "value": {
+                    "span": [
+                      1703,
+                      1704
+                    ],
                     "value": {
-                      "span": [
-                        1703,
-                        1704
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -18840,77 +18685,67 @@
                 ],
                 "value": "midi_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1734,
-                        1738
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1734,
+                      1738
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1739,
+                      1743
+                    ],
                     "value": {
-                      "span": [
-                        1739,
-                        1743
-                      ],
-                      "value": {
-                        "String": "p1"
+                      "String": "p1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1744,
+                      1754
+                    ],
+                    "value": "instrument"
+                  },
+                  "value": {
+                    "span": [
+                      1755,
+                      1756
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1744,
-                        1754
-                      ],
-                      "value": "instrument"
-                    },
+                  "key": {
+                    "span": [
+                      1757,
+                      1761
+                    ],
+                    "value": "bank"
+                  },
+                  "value": {
+                    "span": [
+                      1762,
+                      1763
+                    ],
                     "value": {
-                      "span": [
-                        1755,
-                        1756
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1757,
-                        1761
-                      ],
-                      "value": "bank"
-                    },
-                    "value": {
-                      "span": [
-                        1762,
-                        1763
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -18946,77 +18781,67 @@
                 ],
                 "value": "midi_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1781,
-                        1785
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1781,
+                      1785
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1786,
+                      1790
+                    ],
                     "value": {
-                      "span": [
-                        1786,
-                        1790
-                      ],
-                      "value": {
-                        "String": "p1"
+                      "String": "p1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1791,
+                      1801
+                    ],
+                    "value": "instrument"
+                  },
+                  "value": {
+                    "span": [
+                      1802,
+                      1803
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1791,
-                        1801
-                      ],
-                      "value": "instrument"
-                    },
+                  "key": {
+                    "span": [
+                      1804,
+                      1808
+                    ],
+                    "value": "bank"
+                  },
+                  "value": {
+                    "span": [
+                      1809,
+                      1810
+                    ],
                     "value": {
-                      "span": [
-                        1802,
-                        1803
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1804,
-                        1808
-                      ],
-                      "value": "bank"
-                    },
-                    "value": {
-                      "span": [
-                        1809,
-                        1810
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -19072,77 +18897,67 @@
                 ],
                 "value": "midi_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1840,
-                        1844
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1840,
+                      1844
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1845,
+                      1850
+                    ],
                     "value": {
-                      "span": [
-                        1845,
-                        1850
-                      ],
-                      "value": {
-                        "String": "p29"
+                      "String": "p29"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1851,
+                      1861
+                    ],
+                    "value": "instrument"
+                  },
+                  "value": {
+                    "span": [
+                      1862,
+                      1863
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1851,
-                        1861
-                      ],
-                      "value": "instrument"
-                    },
+                  "key": {
+                    "span": [
+                      1864,
+                      1868
+                    ],
+                    "value": "bank"
+                  },
+                  "value": {
+                    "span": [
+                      1869,
+                      1870
+                    ],
                     "value": {
-                      "span": [
-                        1862,
-                        1863
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1864,
-                        1868
-                      ],
-                      "value": "bank"
-                    },
-                    "value": {
-                      "span": [
-                        1869,
-                        1870
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -19208,26 +19023,22 @@
                 ],
                 "value": "csound_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1906,
-                        1910
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1906,
+                      1910
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1911,
+                      1913
+                    ],
                     "value": {
-                      "span": [
-                        1911,
-                        1913
-                      ],
-                      "value": {
-                        "String": ""
-                      }
+                      "String": ""
                     }
                   }
                 }
@@ -19262,51 +19073,44 @@
                 ],
                 "value": "csound_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1933,
-                        1938
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      1933,
+                      1938
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1939,
+                      1947
+                    ],
                     "value": {
-                      "span": [
-                        1939,
-                        1947
-                      ],
-                      "value": {
-                        "String": "potato"
-                      }
+                      "String": "potato"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1948,
-                        1954
-                      ],
-                      "value": "number"
-                    },
+                  "key": {
+                    "span": [
+                      1948,
+                      1954
+                    ],
+                    "value": "number"
+                  },
+                  "value": {
+                    "span": [
+                      1955,
+                      1957
+                    ],
                     "value": {
-                      "span": [
-                        1955,
-                        1957
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            12,
-                            "12"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          12,
+                          "12"
+                        ]
                       }
                     }
                   }
@@ -19342,26 +19146,22 @@
                 ],
                 "value": "csound_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1977,
-                        1982
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      1977,
+                      1982
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1983,
+                      1991
+                    ],
                     "value": {
-                      "span": [
-                        1983,
-                        1991
-                      ],
-                      "value": {
-                        "String": "potato"
-                      }
+                      "String": "potato"
                     }
                   }
                 }
@@ -19396,26 +19196,22 @@
                 ],
                 "value": "csound_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2011,
-                        2016
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      2011,
+                      2016
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      2017,
+                      2025
+                    ],
                     "value": {
-                      "span": [
-                        2017,
-                        2025
-                      ],
-                      "value": {
-                        "String": "potato"
-                      }
+                      "String": "potato"
                     }
                   }
                 }
@@ -19470,51 +19266,44 @@
                 ],
                 "value": "csound_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2057,
-                        2061
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      2057,
+                      2061
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2062,
+                      2066
+                    ],
                     "value": {
-                      "span": [
-                        2062,
-                        2066
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2067,
-                        2073
-                      ],
-                      "value": "number"
-                    },
+                  "key": {
+                    "span": [
+                      2067,
+                      2073
+                    ],
+                    "value": "number"
+                  },
+                  "value": {
+                    "span": [
+                      2074,
+                      2075
+                    ],
                     "value": {
-                      "span": [
-                        2074,
-                        2075
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            3,
-                            "3"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          3,
+                          "3"
+                        ]
                       }
                     }
                   }
@@ -19550,51 +19339,44 @@
                 ],
                 "value": "csound_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2095,
-                        2099
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      2095,
+                      2099
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2100,
+                      2104
+                    ],
                     "value": {
-                      "span": [
-                        2100,
-                        2104
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2105,
-                        2111
-                      ],
-                      "value": "number"
-                    },
+                  "key": {
+                    "span": [
+                      2105,
+                      2111
+                    ],
+                    "value": "number"
+                  },
+                  "value": {
+                    "span": [
+                      2112,
+                      2113
+                    ],
                     "value": {
-                      "span": [
-                        2112,
-                        2113
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            3,
-                            "3"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          3,
+                          "3"
+                        ]
                       }
                     }
                   }
@@ -19650,51 +19432,44 @@
                 ],
                 "value": "csound_instrument"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2145,
-                        2149
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      2145,
+                      2149
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2150,
+                      2155
+                    ],
                     "value": {
-                      "span": [
-                        2150,
-                        2155
-                      ],
-                      "value": {
-                        "String": "p29"
-                      }
+                      "String": "p29"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2156,
-                        2162
-                      ],
-                      "value": "number"
-                    },
+                  "key": {
+                    "span": [
+                      2156,
+                      2162
+                    ],
+                    "value": "number"
+                  },
+                  "value": {
+                    "span": [
+                      2163,
+                      2164
+                    ],
                     "value": {
-                      "span": [
-                        2163,
-                        2164
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            3,
-                            "3"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          3,
+                          "3"
+                        ]
                       }
                     }
                   }
@@ -19760,56 +19535,49 @@
                 ],
                 "value": "tempo"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2188,
-                        2191
-                      ],
-                      "value": "bpm"
-                    },
+                  "key": {
+                    "span": [
+                      2188,
+                      2191
+                    ],
+                    "value": "bpm"
+                  },
+                  "value": {
+                    "span": [
+                      2192,
+                      2193
+                    ],
                     "value": {
-                      "span": [
-                        2192,
-                        2193
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            5,
-                            "5"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          5,
+                          "5"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2194,
-                        2201
-                      ],
-                      "value": "end_bpm"
-                    },
+                  "key": {
+                    "span": [
+                      2194,
+                      2201
+                    ],
+                    "value": "end_bpm"
+                  },
+                  "value": {
+                    "span": [
+                      2202,
+                      2203
+                    ],
                     "value": {
-                      "span": [
-                        2202,
-                        2203
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            5,
-                            "5"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          5,
+                          "5"
+                        ]
                       }
                     }
                   }
@@ -19845,56 +19613,49 @@
                 ],
                 "value": "tempo"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2211,
-                        2214
-                      ],
-                      "value": "bpm"
-                    },
+                  "key": {
+                    "span": [
+                      2211,
+                      2214
+                    ],
+                    "value": "bpm"
+                  },
+                  "value": {
+                    "span": [
+                      2215,
+                      2216
+                    ],
                     "value": {
-                      "span": [
-                        2215,
-                        2216
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            5,
-                            "5"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          5,
+                          "5"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2217,
-                        2225
-                      ],
-                      "value": "duration"
-                    },
+                  "key": {
+                    "span": [
+                      2217,
+                      2225
+                    ],
+                    "value": "duration"
+                  },
+                  "value": {
+                    "span": [
+                      2226,
+                      2227
+                    ],
                     "value": {
-                      "span": [
-                        2226,
-                        2227
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            5,
-                            "5"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          5,
+                          "5"
+                        ]
                       }
                     }
                   }
@@ -19960,26 +19721,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        2304,
-                        2309
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      2304,
+                      2309
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      2310,
+                      2316
+                    ],
                     "value": {
-                      "span": [
-                        2310,
-                        2316
-                      ],
-                      "value": {
-                        "String": "oops"
-                      }
+                      "String": "oops"
                     }
                   }
                 }

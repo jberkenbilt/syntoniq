@@ -6489,30 +6489,26 @@
                 ],
                 "value": "syntoniq"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        9,
-                        16
-                      ],
-                      "value": "version"
-                    },
+                  "key": {
+                    "span": [
+                      9,
+                      16
+                    ],
+                    "value": "version"
+                  },
+                  "value": {
+                    "span": [
+                      17,
+                      18
+                    ],
                     "value": {
-                      "span": [
-                        17,
-                        18
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -6598,26 +6594,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        121,
-                        126
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      121,
+                      126
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      127,
+                      134
+                    ],
                     "value": {
-                      "span": [
-                        127,
-                        134
-                      ],
-                      "value": {
-                        "String": "5-EDO"
-                      }
+                      "String": "5-EDO"
                     }
                   }
                 }
@@ -6652,7 +6644,6 @@
                     147
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6679,7 +6670,6 @@
                     156
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6706,7 +6696,6 @@
                     165
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6733,7 +6722,6 @@
                     174
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6760,7 +6748,6 @@
                     183
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6782,7 +6769,6 @@
                   }
                 }
               ],
-              "opening_comment": null,
               "span": [
                 136,
                 138
@@ -6817,26 +6803,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        200,
-                        205
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      200,
+                      205
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      206,
+                      212
+                    ],
                     "value": {
-                      "span": [
-                        206,
-                        212
-                      ],
-                      "value": {
-                        "String": "5-JI"
-                      }
+                      "String": "5-JI"
                     }
                   }
                 }
@@ -6871,7 +6853,6 @@
                     224
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6901,7 +6882,6 @@
                     232
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6934,7 +6914,6 @@
                     240
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6967,7 +6946,6 @@
                     248
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -7000,7 +6978,6 @@
                     256
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -7028,7 +7005,6 @@
                   }
                 }
               ],
-              "opening_comment": null,
               "span": [
                 214,
                 216
@@ -7066,7 +7042,6 @@
           "raw": "[p1.0]  1:c d e f\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   261,
@@ -7214,47 +7189,40 @@
                 ],
                 "value": "use_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        290,
-                        295
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      290,
+                      295
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      296,
+                      303
+                    ],
                     "value": {
-                      "span": [
-                        296,
-                        303
-                      ],
-                      "value": {
-                        "String": "5-EDO"
-                      }
+                      "String": "5-EDO"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        304,
-                        308
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      304,
+                      308
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      309,
+                      313
+                    ],
                     "value": {
-                      "span": [
-                        309,
-                        313
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 }
@@ -7292,7 +7260,6 @@
           "raw": "[p1.0]  1:p q r s\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   316,
@@ -7423,7 +7390,6 @@
           "raw": "[p2.0]  1:c d e f\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   334,
@@ -7611,68 +7577,58 @@
                 ],
                 "value": "transpose"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        466,
-                        473
-                      ],
-                      "value": "written"
-                    },
+                  "key": {
+                    "span": [
+                      466,
+                      473
+                    ],
+                    "value": "written"
+                  },
+                  "value": {
+                    "span": [
+                      474,
+                      477
+                    ],
                     "value": {
-                      "span": [
-                        474,
-                        477
-                      ],
-                      "value": {
-                        "String": "c"
-                      }
+                      "String": "c"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        478,
-                        488
-                      ],
-                      "value": "pitch_from"
-                    },
+                  "key": {
+                    "span": [
+                      478,
+                      488
+                    ],
+                    "value": "pitch_from"
+                  },
+                  "value": {
+                    "span": [
+                      489,
+                      492
+                    ],
                     "value": {
-                      "span": [
-                        489,
-                        492
-                      ],
-                      "value": {
-                        "String": "d"
-                      }
+                      "String": "d"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        493,
-                        497
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      493,
+                      497
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      498,
+                      502
+                    ],
                     "value": {
-                      "span": [
-                        498,
-                        502
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -7707,47 +7663,40 @@
                 ],
                 "value": "use_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        514,
-                        519
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      514,
+                      519
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      520,
+                      526
+                    ],
                     "value": {
-                      "span": [
-                        520,
-                        526
-                      ],
-                      "value": {
-                        "String": "5-JI"
-                      }
+                      "String": "5-JI"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        527,
-                        531
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      527,
+                      531
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      532,
+                      536
+                    ],
                     "value": {
-                      "span": [
-                        532,
-                        536
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -7785,7 +7734,6 @@
           "raw": "[p1.0]  1:p q r s\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   539,
@@ -7916,7 +7864,6 @@
           "raw": "[p2.0]  1:p q r u\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   557,
@@ -8084,68 +8031,58 @@
                 ],
                 "value": "use_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        611,
-                        616
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      611,
+                      616
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      617,
+                      620
+                    ],
                     "value": {
-                      "span": [
-                        617,
-                        620
-                      ],
-                      "value": {
-                        "String": "z"
-                      }
+                      "String": "z"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        621,
-                        625
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      621,
+                      625
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      626,
+                      630
+                    ],
                     "value": {
-                      "span": [
-                        626,
-                        630
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        631,
-                        635
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      631,
+                      635
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      636,
+                      640
+                    ],
                     "value": {
-                      "span": [
-                        636,
-                        640
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -8180,89 +8117,76 @@
                 ],
                 "value": "transpose"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        652,
-                        659
-                      ],
-                      "value": "written"
-                    },
+                  "key": {
+                    "span": [
+                      652,
+                      659
+                    ],
+                    "value": "written"
+                  },
+                  "value": {
+                    "span": [
+                      660,
+                      663
+                    ],
                     "value": {
-                      "span": [
-                        660,
-                        663
-                      ],
-                      "value": {
-                        "String": "z"
-                      }
+                      "String": "z"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        664,
-                        674
-                      ],
-                      "value": "pitch_from"
-                    },
+                  "key": {
+                    "span": [
+                      664,
+                      674
+                    ],
+                    "value": "pitch_from"
+                  },
+                  "value": {
+                    "span": [
+                      675,
+                      678
+                    ],
                     "value": {
-                      "span": [
-                        675,
-                        678
-                      ],
-                      "value": {
-                        "String": "z"
-                      }
+                      "String": "z"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        679,
-                        683
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      679,
+                      683
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      684,
+                      688
+                    ],
                     "value": {
-                      "span": [
-                        684,
-                        688
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        689,
-                        693
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      689,
+                      693
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      694,
+                      698
+                    ],
                     "value": {
-                      "span": [
-                        694,
-                        698
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -8297,73 +8221,63 @@
                 ],
                 "value": "set_base_pitch"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        715,
-                        723
-                      ],
-                      "value": "absolute"
-                    },
+                  "key": {
+                    "span": [
+                      715,
+                      723
+                    ],
+                    "value": "absolute"
+                  },
+                  "value": {
+                    "span": [
+                      724,
+                      727
+                    ],
                     "value": {
-                      "span": [
-                        724,
-                        727
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            440,
-                            "440"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          440,
+                          "440"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        728,
-                        732
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      728,
+                      732
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      733,
+                      737
+                    ],
                     "value": {
-                      "span": [
-                        733,
-                        737
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        738,
-                        742
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      738,
+                      742
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      743,
+                      747
+                    ],
                     "value": {
-                      "span": [
-                        743,
-                        747
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -8428,47 +8342,40 @@
                 ],
                 "value": "use_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        788,
-                        793
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      788,
+                      793
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      794,
+                      802
+                    ],
                     "value": {
-                      "span": [
-                        794,
-                        802
-                      ],
-                      "value": {
-                        "String": "potato"
-                      }
+                      "String": "potato"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        803,
-                        807
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      803,
+                      807
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      808,
+                      812
+                    ],
                     "value": {
-                      "span": [
-                        808,
-                        812
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -8533,68 +8440,58 @@
                 ],
                 "value": "transpose"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        870,
-                        874
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      870,
+                      874
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      875,
+                      879
+                    ],
                     "value": {
-                      "span": [
-                        875,
-                        879
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        880,
-                        887
-                      ],
-                      "value": "written"
-                    },
+                  "key": {
+                    "span": [
+                      880,
+                      887
+                    ],
+                    "value": "written"
+                  },
+                  "value": {
+                    "span": [
+                      888,
+                      891
+                    ],
                     "value": {
-                      "span": [
-                        888,
-                        891
-                      ],
-                      "value": {
-                        "String": "c"
-                      }
+                      "String": "c"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        892,
-                        902
-                      ],
-                      "value": "pitch_from"
-                    },
+                  "key": {
+                    "span": [
+                      892,
+                      902
+                    ],
+                    "value": "pitch_from"
+                  },
+                  "value": {
+                    "span": [
+                      903,
+                      906
+                    ],
                     "value": {
-                      "span": [
-                        903,
-                        906
-                      ],
-                      "value": {
-                        "String": "d"
-                      }
+                      "String": "d"
                     }
                   }
                 }
@@ -8639,7 +8536,6 @@
                 ],
                 "value": "reset_tuning"
               },
-              "opening_comment": null,
               "params": []
             }
           }
@@ -8691,47 +8587,40 @@
                 ],
                 "value": "transpose"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        945,
-                        952
-                      ],
-                      "value": "written"
-                    },
+                  "key": {
+                    "span": [
+                      945,
+                      952
+                    ],
+                    "value": "written"
+                  },
+                  "value": {
+                    "span": [
+                      953,
+                      956
+                    ],
                     "value": {
-                      "span": [
-                        953,
-                        956
-                      ],
-                      "value": {
-                        "String": "c"
-                      }
+                      "String": "c"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        957,
-                        967
-                      ],
-                      "value": "pitch_from"
-                    },
+                  "key": {
+                    "span": [
+                      957,
+                      967
+                    ],
+                    "value": "pitch_from"
+                  },
+                  "value": {
+                    "span": [
+                      968,
+                      971
+                    ],
                     "value": {
-                      "span": [
-                        968,
-                        971
-                      ],
-                      "value": {
-                        "String": "d"
-                      }
+                      "String": "d"
                     }
                   }
                 }
@@ -8766,26 +8655,22 @@
                 ],
                 "value": "use_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        983,
-                        988
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      983,
+                      988
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      989,
+                      996
+                    ],
                     "value": {
-                      "span": [
-                        989,
-                        996
-                      ],
-                      "value": {
-                        "String": "5-EDO"
-                      }
+                      "String": "5-EDO"
                     }
                   }
                 }
@@ -8820,68 +8705,58 @@
                 ],
                 "value": "transpose"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1008,
-                        1015
-                      ],
-                      "value": "written"
-                    },
+                  "key": {
+                    "span": [
+                      1008,
+                      1015
+                    ],
+                    "value": "written"
+                  },
+                  "value": {
+                    "span": [
+                      1016,
+                      1019
+                    ],
                     "value": {
-                      "span": [
-                        1016,
-                        1019
-                      ],
-                      "value": {
-                        "String": "p"
-                      }
+                      "String": "p"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1020,
-                        1030
-                      ],
-                      "value": "pitch_from"
-                    },
+                  "key": {
+                    "span": [
+                      1020,
+                      1030
+                    ],
+                    "value": "pitch_from"
+                  },
+                  "value": {
+                    "span": [
+                      1031,
+                      1034
+                    ],
                     "value": {
-                      "span": [
-                        1031,
-                        1034
-                      ],
-                      "value": {
-                        "String": "q"
-                      }
+                      "String": "q"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1035,
-                        1039
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1035,
+                      1039
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1040,
+                      1044
+                    ],
                     "value": {
-                      "span": [
-                        1040,
-                        1044
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 }
@@ -8916,47 +8791,40 @@
                 ],
                 "value": "use_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1056,
-                        1061
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      1056,
+                      1061
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1062,
+                      1068
+                    ],
                     "value": {
-                      "span": [
-                        1062,
-                        1068
-                      ],
-                      "value": {
-                        "String": "5-JI"
-                      }
+                      "String": "5-JI"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1069,
-                        1073
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1069,
+                      1073
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1074,
+                      1078
+                    ],
                     "value": {
-                      "span": [
-                        1074,
-                        1078
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -9011,68 +8879,58 @@
                 ],
                 "value": "transpose"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1110,
-                        1114
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1110,
+                      1114
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1115,
+                      1119
+                    ],
                     "value": {
-                      "span": [
-                        1115,
-                        1119
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1120,
-                        1127
-                      ],
-                      "value": "written"
-                    },
+                  "key": {
+                    "span": [
+                      1120,
+                      1127
+                    ],
+                    "value": "written"
+                  },
+                  "value": {
+                    "span": [
+                      1128,
+                      1131
+                    ],
                     "value": {
-                      "span": [
-                        1128,
-                        1131
-                      ],
-                      "value": {
-                        "String": "p"
-                      }
+                      "String": "p"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1132,
-                        1142
-                      ],
-                      "value": "pitch_from"
-                    },
+                  "key": {
+                    "span": [
+                      1132,
+                      1142
+                    ],
+                    "value": "pitch_from"
+                  },
+                  "value": {
+                    "span": [
+                      1143,
+                      1146
+                    ],
                     "value": {
-                      "span": [
-                        1143,
-                        1146
-                      ],
-                      "value": {
-                        "String": "v"
-                      }
+                      "String": "v"
                     }
                   }
                 }
@@ -9127,89 +8985,76 @@
                 ],
                 "value": "transpose"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1191,
-                        1195
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1191,
+                      1195
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1196,
+                      1200
+                    ],
                     "value": {
-                      "span": [
-                        1196,
-                        1200
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1201,
-                        1205
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1201,
+                      1205
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1206,
+                      1210
+                    ],
                     "value": {
-                      "span": [
-                        1206,
-                        1210
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1211,
-                        1218
-                      ],
-                      "value": "written"
-                    },
+                  "key": {
+                    "span": [
+                      1211,
+                      1218
+                    ],
+                    "value": "written"
+                  },
+                  "value": {
+                    "span": [
+                      1219,
+                      1222
+                    ],
                     "value": {
-                      "span": [
-                        1219,
-                        1222
-                      ],
-                      "value": {
-                        "String": "q"
-                      }
+                      "String": "q"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1223,
-                        1233
-                      ],
-                      "value": "pitch_from"
-                    },
+                  "key": {
+                    "span": [
+                      1223,
+                      1233
+                    ],
+                    "value": "pitch_from"
+                  },
+                  "value": {
+                    "span": [
+                      1234,
+                      1237
+                    ],
                     "value": {
-                      "span": [
-                        1234,
-                        1237
-                      ],
-                      "value": {
-                        "String": "r"
-                      }
+                      "String": "r"
                     }
                   }
                 }
@@ -9247,7 +9092,6 @@
           "raw": "[p1.0]  1:p q r s\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1240,
@@ -9378,15 +9222,6 @@
           "raw": "[p2.0]  1:p q r s ; s is an error\n",
           "t": {
             "NoteLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    1276,
-                    1291
-                  ],
-                  "value": "; s is an error"
-                }
-              },
               "leader": {
                 "span": [
                   1258,
@@ -9534,26 +9369,22 @@
                 ],
                 "value": "reset_tuning"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1306,
-                        1310
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1306,
+                      1310
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1311,
+                      1315
+                    ],
                     "value": {
-                      "span": [
-                        1311,
-                        1315
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -9581,7 +9412,6 @@
           "raw": "[p1.0]  1:p q r s\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1317,
@@ -9712,15 +9542,6 @@
           "raw": "[p2.0]  1:p q r s ; okay now\n",
           "t": {
             "NoteLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    1353,
-                    1363
-                  ],
-                  "value": "; okay now"
-                }
-              },
               "leader": {
                 "span": [
                   1335,
@@ -9868,68 +9689,58 @@
                 ],
                 "value": "use_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1375,
-                        1380
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      1375,
+                      1380
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1381,
+                      1388
+                    ],
                     "value": {
-                      "span": [
-                        1381,
-                        1388
-                      ],
-                      "value": {
-                        "String": "5-EDO"
-                      }
+                      "String": "5-EDO"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1389,
-                        1393
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1389,
+                      1393
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1394,
+                      1398
+                    ],
                     "value": {
-                      "span": [
-                        1394,
-                        1398
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1399,
-                        1403
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1399,
+                      1403
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1404,
+                      1408
+                    ],
                     "value": {
-                      "span": [
-                        1404,
-                        1408
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 }
@@ -9964,72 +9775,62 @@
                 ],
                 "value": "set_base_pitch"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1425,
-                        1429
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1425,
+                      1429
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1430,
+                      1434
+                    ],
                     "value": {
-                      "span": [
-                        1430,
-                        1434
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1435,
-                        1439
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1435,
+                      1439
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1440,
+                      1444
+                    ],
                     "value": {
-                      "span": [
-                        1440,
-                        1444
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1445,
-                        1453
-                      ],
-                      "value": "absolute"
-                    },
+                  "key": {
+                    "span": [
+                      1445,
+                      1453
+                    ],
+                    "value": "absolute"
+                  },
+                  "value": {
+                    "span": [
+                      1454,
+                      1457
+                    ],
                     "value": {
-                      "span": [
-                        1454,
-                        1457
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            440,
-                            "440"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          440,
+                          "440"
+                        ]
                       }
                     }
                   }
@@ -10065,69 +9866,59 @@
                 ],
                 "value": "set_base_pitch"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1474,
-                        1478
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1474,
+                      1478
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1479,
+                      1483
+                    ],
                     "value": {
-                      "span": [
-                        1479,
-                        1483
-                      ],
-                      "value": {
-                        "String": "p1"
-                      }
+                      "String": "p1"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1484,
-                        1488
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1484,
+                      1488
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1489,
+                      1493
+                    ],
                     "value": {
-                      "span": [
-                        1489,
-                        1493
-                      ],
-                      "value": {
-                        "String": "p2"
-                      }
+                      "String": "p2"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1494,
-                        1502
-                      ],
-                      "value": "relative"
-                    },
+                  "key": {
+                    "span": [
+                      1494,
+                      1502
+                    ],
+                    "value": "relative"
+                  },
+                  "value": {
+                    "span": [
+                      1503,
+                      1508
+                    ],
                     "value": {
-                      "span": [
-                        1503,
-                        1508
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Pitch": "^1|19"
-                        }
+                      "PitchOrNumber": {
+                        "Pitch": "^1|19"
                       }
                     }
                   }
@@ -10163,47 +9954,40 @@
                 ],
                 "value": "use_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1520,
-                        1525
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      1520,
+                      1525
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1526,
+                      1535
+                    ],
                     "value": {
-                      "span": [
-                        1526,
-                        1535
-                      ],
-                      "value": {
-                        "String": "default"
-                      }
+                      "String": "default"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        1536,
-                        1540
-                      ],
-                      "value": "part"
-                    },
+                  "key": {
+                    "span": [
+                      1536,
+                      1540
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1541,
+                      1545
+                    ],
                     "value": {
-                      "span": [
-                        1541,
-                        1545
-                      ],
-                      "value": {
-                        "String": "p4"
-                      }
+                      "String": "p4"
                     }
                   }
                 }
@@ -10241,7 +10025,6 @@
           "raw": "[p1.0]  1:p q r s\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1548,
@@ -10372,7 +10155,6 @@
           "raw": "[p2.0]  1:p q r s\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1566,
@@ -10503,15 +10285,6 @@
           "raw": "[p3.0]  1:p q r s ; uses global tuning\n",
           "t": {
             "NoteLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    1602,
-                    1622
-                  ],
-                  "value": "; uses global tuning"
-                }
-              },
               "leader": {
                 "span": [
                   1584,
@@ -10642,7 +10415,6 @@
           "raw": "[p4.0]  1:c# e% g b\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   1623,

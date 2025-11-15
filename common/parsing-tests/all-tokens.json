@@ -5222,106 +5222,93 @@
                 ],
                 "value": "onceThere"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        18,
-                        23
-                      ],
-                      "value": "quack"
-                    },
+                  "key": {
+                    "span": [
+                      18,
+                      23
+                    ],
+                    "value": "quack"
+                  },
+                  "value": {
+                    "span": [
+                      24,
+                      32
+                    ],
                     "value": {
-                      "span": [
-                        24,
-                        32
-                      ],
-                      "value": {
-                        "String": "moo π"
+                      "String": "moo π"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      33,
+                      34
+                    ],
+                    "value": "a"
+                  },
+                  "value": {
+                    "span": [
+                      35,
+                      39
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Ratio": [
+                          [
+                            157,
+                            50
+                          ],
+                          "157/50"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        33,
-                        34
-                      ],
-                      "value": "a"
-                    },
+                  "key": {
+                    "span": [
+                      40,
+                      41
+                    ],
+                    "value": "b"
+                  },
+                  "value": {
+                    "span": [
+                      44,
+                      51
+                    ],
                     "value": {
-                      "span": [
-                        35,
-                        39
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Ratio": [
-                            [
-                              157,
-                              50
-                            ],
-                            "157/50"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Pitch": "1/2*^15|17"
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        40,
-                        41
-                      ],
-                      "value": "b"
-                    },
+                  "key": {
+                    "span": [
+                      52,
+                      53
+                    ],
+                    "value": "d"
+                  },
+                  "value": {
+                    "span": [
+                      56,
+                      59
+                    ],
                     "value": {
-                      "span": [
-                        44,
-                        51
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Pitch": "1/2*^15|17"
-                        }
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        52,
-                        53
-                      ],
-                      "value": "d"
-                    },
-                    "value": {
-                      "span": [
-                        56,
-                        59
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Ratio": [
-                            [
-                              1,
-                              5
-                            ],
-                            "1/5"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Ratio": [
+                          [
+                            1,
+                            5
+                          ],
+                          "1/5"
+                        ]
                       }
                     }
                   }
@@ -5357,7 +5344,6 @@
                 ],
                 "value": "f"
               },
-              "opening_comment": null,
               "params": []
             }
           }
@@ -5389,113 +5375,76 @@
                 ],
                 "value": "something"
               },
-              "opening_comment": {
-                "content": {
-                  "span": [
-                    77,
-                    86
-                  ],
-                  "value": "; comment"
-                }
-              },
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        89,
-                        90
-                      ],
-                      "value": "a"
-                    },
-                    "value": {
-                      "span": [
-                        91,
-                        112
-                      ],
-                      "value": {
-                        "String": "trailing whitespace"
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        116,
-                        117
-                      ],
-                      "value": "b"
-                    },
-                    "value": {
-                      "span": [
-                        118,
-                        132
-                      ],
-                      "value": {
-                        "String": "newline only"
-                      }
-                    }
-                  }
-                },
-                {
-                  "comment": {
-                    "content": {
-                      "span": [
-                        160,
-                        168
-                      ],
-                      "value": ";comment"
-                    }
+                  "key": {
+                    "span": [
+                      89,
+                      90
+                    ],
+                    "value": "a"
                   },
-                  "kv": {
-                    "key": {
-                      "span": [
-                        135,
-                        136
-                      ],
-                      "value": "c"
-                    },
+                  "value": {
+                    "span": [
+                      91,
+                      112
+                    ],
                     "value": {
-                      "span": [
-                        137,
-                        160
-                      ],
-                      "value": {
-                        "String": "comment without space"
-                      }
+                      "String": "trailing whitespace"
                     }
                   }
                 },
                 {
-                  "comment": {
-                    "content": {
-                      "span": [
-                        184,
-                        201
-                      ],
-                      "value": "; another comment"
-                    }
+                  "key": {
+                    "span": [
+                      116,
+                      117
+                    ],
+                    "value": "b"
                   },
-                  "kv": {
-                    "key": {
-                      "span": [
-                        171,
-                        172
-                      ],
-                      "value": "d"
-                    },
+                  "value": {
+                    "span": [
+                      118,
+                      132
+                    ],
                     "value": {
-                      "span": [
-                        173,
-                        182
-                      ],
-                      "value": {
-                        "String": "comment"
-                      }
+                      "String": "newline only"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      135,
+                      136
+                    ],
+                    "value": "c"
+                  },
+                  "value": {
+                    "span": [
+                      137,
+                      160
+                    ],
+                    "value": {
+                      "String": "comment without space"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      171,
+                      172
+                    ],
+                    "value": "d"
+                  },
+                  "value": {
+                    "span": [
+                      173,
+                      182
+                    ],
+                    "value": {
+                      "String": "comment"
                     }
                   }
                 }
@@ -5530,60 +5479,45 @@
                 ],
                 "value": "else"
               },
-              "opening_comment": {
-                "content": {
-                  "span": [
-                    212,
-                    221
-                  ],
-                  "value": "; comment"
-                }
-              },
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        224,
-                        225
-                      ],
-                      "value": "a"
-                    },
+                  "key": {
+                    "span": [
+                      224,
+                      225
+                    ],
+                    "value": "a"
+                  },
+                  "value": {
+                    "span": [
+                      226,
+                      227
+                    ],
                     "value": {
-                      "span": [
-                        226,
-                        227
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        230,
-                        231
-                      ],
-                      "value": "b"
-                    },
+                  "key": {
+                    "span": [
+                      230,
+                      231
+                    ],
+                    "value": "b"
+                  },
+                  "value": {
+                    "span": [
+                      232,
+                      249
+                    ],
                     "value": {
-                      "span": [
-                        232,
-                        249
-                      ],
-                      "value": {
-                        "String": "immediate close"
-                      }
+                      "String": "immediate close"
                     }
                   }
                 }
@@ -5628,26 +5562,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        265,
-                        270
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      265,
+                      270
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      271,
+                      278
+                    ],
                     "value": {
-                      "span": [
-                        271,
-                        278
-                      ],
-                      "value": {
-                        "String": "5-EDO"
-                      }
+                      "String": "5-EDO"
                     }
                   }
                 }
@@ -5682,7 +5612,6 @@
                     286
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -5712,7 +5641,6 @@
                     292
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -5742,7 +5670,6 @@
                     298
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -5772,7 +5699,6 @@
                     304
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -5802,7 +5728,6 @@
                     312
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -5827,7 +5752,6 @@
                   }
                 }
               ],
-              "opening_comment": null,
               "span": [
                 280,
                 282
@@ -5862,26 +5786,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        329,
-                        334
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      329,
+                      334
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      335,
+                      342
+                    ],
                     "value": {
-                      "span": [
-                        335,
-                        342
-                      ],
-                      "value": {
-                        "String": "3-EDO"
-                      }
+                      "String": "3-EDO"
                     }
                   }
                 }
@@ -5916,7 +5836,6 @@
                     350
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -5946,7 +5865,6 @@
                     356
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -5976,7 +5894,6 @@
                     364
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6009,7 +5926,6 @@
                     372
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6037,7 +5953,6 @@
                   }
                 }
               ],
-              "opening_comment": null,
               "span": [
                 344,
                 346
@@ -6092,26 +6007,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        414,
-                        419
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      414,
+                      419
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      420,
+                      428
+                    ],
                     "value": {
-                      "span": [
-                        420,
-                        428
-                      ],
-                      "value": {
-                        "String": "random"
-                      }
+                      "String": "random"
                     }
                   }
                 }
@@ -6146,7 +6057,6 @@
                     456
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6173,7 +6083,6 @@
                     473
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6204,18 +6113,9 @@
                 {
                   "span": [
                     476,
-                    493
+                    483
                   ],
                   "value": {
-                    "comment": {
-                      "content": {
-                        "span": [
-                          484,
-                          493
-                        ],
-                        "value": ";comment\r"
-                      }
-                    },
                     "note_names": [
                       {
                         "span": [
@@ -6248,7 +6148,6 @@
                     504
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6275,7 +6174,6 @@
                     516
                   ],
                   "value": {
-                    "comment": null,
                     "note_names": [
                       {
                         "span": [
@@ -6303,15 +6201,6 @@
                   }
                 }
               ],
-              "opening_comment": {
-                "content": {
-                  "span": [
-                    433,
-                    450
-                  ],
-                  "value": "; opening comment"
-                }
-              },
               "span": [
                 430,
                 432
@@ -6349,7 +6238,6 @@
           "raw": "[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g(>)\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   521,
@@ -6772,7 +6660,6 @@
           "raw": "[p1.1]    1:d   c   d   c     |      e   1/2:d e   d e    d~ e\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   628,
@@ -7074,7 +6961,6 @@
           "raw": "[p1.2]    2:~     1:b,  b%,   |    2:c'2           b,2\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   691,
@@ -7277,15 +7163,6 @@
           "raw": "[p1.3]    4:~                 |    2:~             a,   ; comment on note line\n",
           "t": {
             "NoteLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    802,
-                    824
-                  ],
-                  "value": "; comment on note line"
-                }
-              },
               "leader": {
                 "span": [
                   746,
@@ -7416,7 +7293,6 @@
           "raw": "[p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   825,
@@ -7638,7 +7514,6 @@
           "raw": "[p1]   64@0    64@2<        |   96@0>          64@2\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -7815,15 +7690,6 @@
           "raw": "[p2]   64@0    64@2<        |   96@0>          64@2  ; comment on dynamic line\n",
           "t": {
             "DynamicLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    998,
-                    1023
-                  ],
-                  "value": "; comment on dynamic line"
-                }
-              },
               "dynamics": [
                 {
                   "span": [
@@ -8000,7 +7866,6 @@
           "raw": "[p3]   64@0    64@2<        |   96@0>          64@2\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [

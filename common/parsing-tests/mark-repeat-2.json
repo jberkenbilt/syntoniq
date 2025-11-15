@@ -537,30 +537,26 @@
                 ],
                 "value": "syntoniq"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        9,
-                        16
-                      ],
-                      "value": "version"
-                    },
+                  "key": {
+                    "span": [
+                      9,
+                      16
+                    ],
+                    "value": "version"
+                  },
+                  "value": {
+                    "span": [
+                      17,
+                      18
+                    ],
                     "value": {
-                      "span": [
-                        17,
-                        18
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -599,7 +595,6 @@
           "raw": "[p1.0] 1:c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   21,
@@ -684,26 +679,22 @@
                 ],
                 "value": "mark"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        38,
-                        43
-                      ],
-                      "value": "label"
-                    },
+                  "key": {
+                    "span": [
+                      38,
+                      43
+                    ],
+                    "value": "label"
+                  },
+                  "value": {
+                    "span": [
+                      44,
+                      47
+                    ],
                     "value": {
-                      "span": [
-                        44,
-                        47
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 }
@@ -731,7 +722,6 @@
           "raw": "[p1.0] 1:d\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   49,
@@ -806,26 +796,22 @@
                 ],
                 "value": "mark"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        65,
-                        70
-                      ],
-                      "value": "label"
-                    },
+                  "key": {
+                    "span": [
+                      65,
+                      70
+                    ],
+                    "value": "label"
+                  },
+                  "value": {
+                    "span": [
+                      71,
+                      74
+                    ],
                     "value": {
-                      "span": [
-                        71,
-                        74
-                      ],
-                      "value": {
-                        "String": "b"
-                      }
+                      "String": "b"
                     }
                   }
                 }
@@ -863,7 +849,6 @@
           "raw": "[p1.0] 1:e\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   77,

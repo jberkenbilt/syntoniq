@@ -5337,14 +5337,14 @@
           }
         },
         {
-          "code": "E1012 incorrect directive syntax",
+          "code": "E1011 incorrect syntax",
           "context": [],
           "message": {
             "span": [
-              283,
-              298
+              278,
+              282
             ],
-            "value": "this parameter must be followed by a space, comment, or newline"
+            "value": "unable to parse as directive; expected directive(k=v, ...)"
           }
         },
         {

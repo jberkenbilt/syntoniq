@@ -16,8 +16,8 @@ pub fn check_value<'s, T>(diags: &Diagnostics, d_name: &str, p: &Param<'s>) -> O
 where
     T: CheckValue<'s> + Serialize + Debug,
 {
-    let k = &p.kv.key;
-    let v = &p.kv.value;
+    let k = &p.key;
+    let v = &p.value;
     match T::check_value(&v.value) {
         Ok(x) => Some(Spanned::new(v.span, x)),
         Err(msg) => {

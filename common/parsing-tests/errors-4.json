@@ -2814,30 +2814,26 @@
                 ],
                 "value": "syntoniq"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        9,
-                        16
-                      ],
-                      "value": "version"
-                    },
+                  "key": {
+                    "span": [
+                      9,
+                      16
+                    ],
+                    "value": "version"
+                  },
+                  "value": {
+                    "span": [
+                      17,
+                      18
+                    ],
                     "value": {
-                      "span": [
-                        17,
-                        18
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -2913,82 +2909,72 @@
                 ],
                 "value": "tempo"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        43,
-                        46
-                      ],
-                      "value": "bpm"
-                    },
+                  "key": {
+                    "span": [
+                      43,
+                      46
+                    ],
+                    "value": "bpm"
+                  },
+                  "value": {
+                    "span": [
+                      47,
+                      49
+                    ],
                     "value": {
-                      "span": [
-                        47,
-                        49
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            60,
-                            "60"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          60,
+                          "60"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        50,
-                        57
-                      ],
-                      "value": "end_bpm"
-                    },
+                  "key": {
+                    "span": [
+                      50,
+                      57
+                    ],
+                    "value": "end_bpm"
+                  },
+                  "value": {
+                    "span": [
+                      58,
+                      60
+                    ],
                     "value": {
-                      "span": [
-                        58,
-                        60
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            80,
-                            "80"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          80,
+                          "80"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        61,
-                        69
-                      ],
-                      "value": "duration"
-                    },
+                  "key": {
+                    "span": [
+                      61,
+                      69
+                    ],
+                    "value": "duration"
+                  },
+                  "value": {
+                    "span": [
+                      70,
+                      71
+                    ],
                     "value": {
-                      "span": [
-                        70,
-                        71
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            2,
-                            "2"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          2,
+                          "2"
+                        ]
                       }
                     }
                   }
@@ -3024,56 +3010,49 @@
                 ],
                 "value": "tempo"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        79,
-                        82
-                      ],
-                      "value": "bpm"
-                    },
+                  "key": {
+                    "span": [
+                      79,
+                      82
+                    ],
+                    "value": "bpm"
+                  },
+                  "value": {
+                    "span": [
+                      83,
+                      85
+                    ],
                     "value": {
-                      "span": [
-                        83,
-                        85
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            90,
-                            "90"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          90,
+                          "90"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        86,
-                        96
-                      ],
-                      "value": "start_time"
-                    },
+                  "key": {
+                    "span": [
+                      86,
+                      96
+                    ],
+                    "value": "start_time"
+                  },
+                  "value": {
+                    "span": [
+                      97,
+                      98
+                    ],
                     "value": {
-                      "span": [
-                        97,
-                        98
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            1,
-                            "1"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
                       }
                     }
                   }
@@ -3169,26 +3148,22 @@
                 ],
                 "value": "mark"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        149,
-                        154
-                      ],
-                      "value": "label"
-                    },
+                  "key": {
+                    "span": [
+                      149,
+                      154
+                    ],
+                    "value": "label"
+                  },
+                  "value": {
+                    "span": [
+                      155,
+                      158
+                    ],
                     "value": {
-                      "span": [
-                        155,
-                        158
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 }
@@ -3223,111 +3198,98 @@
                 ],
                 "value": "tempo"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        166,
-                        169
-                      ],
-                      "value": "bpm"
-                    },
+                  "key": {
+                    "span": [
+                      166,
+                      169
+                    ],
+                    "value": "bpm"
+                  },
+                  "value": {
+                    "span": [
+                      170,
+                      172
+                    ],
                     "value": {
-                      "span": [
-                        170,
-                        172
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            60,
-                            "60"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          60,
+                          "60"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        173,
-                        183
-                      ],
-                      "value": "start_time"
-                    },
+                  "key": {
+                    "span": [
+                      173,
+                      183
+                    ],
+                    "value": "start_time"
+                  },
+                  "value": {
+                    "span": [
+                      184,
+                      185
+                    ],
                     "value": {
-                      "span": [
-                        184,
-                        185
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            3,
-                            "3"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          3,
+                          "3"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        186,
-                        193
-                      ],
-                      "value": "end_bpm"
-                    },
+                  "key": {
+                    "span": [
+                      186,
+                      193
+                    ],
+                    "value": "end_bpm"
+                  },
+                  "value": {
+                    "span": [
+                      194,
+                      196
+                    ],
                     "value": {
-                      "span": [
-                        194,
-                        196
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            80,
-                            "80"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          80,
+                          "80"
+                        ]
                       }
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        197,
-                        205
-                      ],
-                      "value": "duration"
-                    },
+                  "key": {
+                    "span": [
+                      197,
+                      205
+                    ],
+                    "value": "duration"
+                  },
+                  "value": {
+                    "span": [
+                      206,
+                      209
+                    ],
                     "value": {
-                      "span": [
-                        206,
-                        209
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Ratio": [
-                            [
-                              5,
-                              2
-                            ],
-                            "5/2"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Ratio": [
+                          [
+                            5,
+                            2
+                          ],
+                          "5/2"
+                        ]
                       }
                     }
                   }
@@ -3376,7 +3338,6 @@
           "raw": "[p1.0]  4:c~\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   237,
@@ -3447,7 +3408,6 @@
           "raw": "[p1.1]  4:e\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   250,
@@ -3515,7 +3475,6 @@
           "raw": "[p1] 32@2<\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -3597,26 +3556,22 @@
                 ],
                 "value": "mark"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        279,
-                        284
-                      ],
-                      "value": "label"
-                    },
+                  "key": {
+                    "span": [
+                      279,
+                      284
+                    ],
+                    "value": "label"
+                  },
+                  "value": {
+                    "span": [
+                      285,
+                      288
+                    ],
                     "value": {
-                      "span": [
-                        285,
-                        288
-                      ],
-                      "value": {
-                        "String": "b"
-                      }
+                      "String": "b"
                     }
                   }
                 }
@@ -3654,7 +3609,6 @@
           "raw": "[p1.0]  2:c 2:c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   291,
@@ -3752,7 +3706,6 @@
           "raw": "[p1.1]  2:e 2:e~\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   307,
@@ -3853,7 +3806,6 @@
           "raw": "[p1] 96@2 32@3<\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [
@@ -3963,47 +3915,40 @@
                 ],
                 "value": "repeat"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        348,
-                        353
-                      ],
-                      "value": "start"
-                    },
+                  "key": {
+                    "span": [
+                      348,
+                      353
+                    ],
+                    "value": "start"
+                  },
+                  "value": {
+                    "span": [
+                      354,
+                      357
+                    ],
                     "value": {
-                      "span": [
-                        354,
-                        357
-                      ],
-                      "value": {
-                        "String": "b"
-                      }
+                      "String": "b"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        358,
-                        361
-                      ],
-                      "value": "end"
-                    },
+                  "key": {
+                    "span": [
+                      358,
+                      361
+                    ],
+                    "value": "end"
+                  },
+                  "value": {
+                    "span": [
+                      362,
+                      365
+                    ],
                     "value": {
-                      "span": [
-                        362,
-                        365
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 }
@@ -4058,47 +4003,40 @@
                 ],
                 "value": "repeat"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        395,
-                        400
-                      ],
-                      "value": "start"
-                    },
+                  "key": {
+                    "span": [
+                      395,
+                      400
+                    ],
+                    "value": "start"
+                  },
+                  "value": {
+                    "span": [
+                      401,
+                      404
+                    ],
                     "value": {
-                      "span": [
-                        401,
-                        404
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        405,
-                        408
-                      ],
-                      "value": "end"
-                    },
+                  "key": {
+                    "span": [
+                      405,
+                      408
+                    ],
+                    "value": "end"
+                  },
+                  "value": {
+                    "span": [
+                      409,
+                      412
+                    ],
                     "value": {
-                      "span": [
-                        409,
-                        412
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 }
@@ -4153,47 +4091,40 @@
                 ],
                 "value": "repeat"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        440,
-                        445
-                      ],
-                      "value": "start"
-                    },
+                  "key": {
+                    "span": [
+                      440,
+                      445
+                    ],
+                    "value": "start"
+                  },
+                  "value": {
+                    "span": [
+                      446,
+                      449
+                    ],
                     "value": {
-                      "span": [
-                        446,
-                        449
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        450,
-                        453
-                      ],
-                      "value": "end"
-                    },
+                  "key": {
+                    "span": [
+                      450,
+                      453
+                    ],
+                    "value": "end"
+                  },
+                  "value": {
+                    "span": [
+                      454,
+                      457
+                    ],
                     "value": {
-                      "span": [
-                        454,
-                        457
-                      ],
-                      "value": {
-                        "String": "c"
-                      }
+                      "String": "c"
                     }
                   }
                 }
@@ -4248,47 +4179,40 @@
                 ],
                 "value": "repeat"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        480,
-                        485
-                      ],
-                      "value": "start"
-                    },
+                  "key": {
+                    "span": [
+                      480,
+                      485
+                    ],
+                    "value": "start"
+                  },
+                  "value": {
+                    "span": [
+                      486,
+                      489
+                    ],
                     "value": {
-                      "span": [
-                        486,
-                        489
-                      ],
-                      "value": {
-                        "String": "c"
-                      }
+                      "String": "c"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        490,
-                        493
-                      ],
-                      "value": "end"
-                    },
+                  "key": {
+                    "span": [
+                      490,
+                      493
+                    ],
+                    "value": "end"
+                  },
+                  "value": {
+                    "span": [
+                      494,
+                      497
+                    ],
                     "value": {
-                      "span": [
-                        494,
-                        497
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 }
@@ -4343,47 +4267,40 @@
                 ],
                 "value": "repeat"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        522,
-                        527
-                      ],
-                      "value": "start"
-                    },
+                  "key": {
+                    "span": [
+                      522,
+                      527
+                    ],
+                    "value": "start"
+                  },
+                  "value": {
+                    "span": [
+                      528,
+                      531
+                    ],
                     "value": {
-                      "span": [
-                        528,
-                        531
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        532,
-                        535
-                      ],
-                      "value": "end"
-                    },
+                  "key": {
+                    "span": [
+                      532,
+                      535
+                    ],
+                    "value": "end"
+                  },
+                  "value": {
+                    "span": [
+                      536,
+                      539
+                    ],
                     "value": {
-                      "span": [
-                        536,
-                        539
-                      ],
-                      "value": {
-                        "String": "b"
-                      }
+                      "String": "b"
                     }
                   }
                 }
@@ -4438,47 +4355,40 @@
                 ],
                 "value": "repeat"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        579,
-                        584
-                      ],
-                      "value": "start"
-                    },
+                  "key": {
+                    "span": [
+                      579,
+                      584
+                    ],
+                    "value": "start"
+                  },
+                  "value": {
+                    "span": [
+                      585,
+                      588
+                    ],
                     "value": {
-                      "span": [
-                        585,
-                        588
-                      ],
-                      "value": {
-                        "String": "a"
-                      }
+                      "String": "a"
                     }
                   }
                 },
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        589,
-                        592
-                      ],
-                      "value": "end"
-                    },
+                  "key": {
+                    "span": [
+                      589,
+                      592
+                    ],
+                    "value": "end"
+                  },
+                  "value": {
+                    "span": [
+                      593,
+                      596
+                    ],
                     "value": {
-                      "span": [
-                        593,
-                        596
-                      ],
-                      "value": {
-                        "String": "b"
-                      }
+                      "String": "b"
                     }
                   }
                 }
@@ -4536,7 +4446,6 @@
           "raw": "[p1.0]  4:c\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   630,
@@ -4604,7 +4513,6 @@
           "raw": "[p1.1]  4:e\n",
           "t": {
             "NoteLine": {
-              "comment": null,
               "leader": {
                 "span": [
                   642,
@@ -4672,7 +4580,6 @@
           "raw": "[p1] 64@1\n",
           "t": {
             "DynamicLine": {
-              "comment": null,
               "dynamics": [
                 {
                   "span": [

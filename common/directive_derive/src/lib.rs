@@ -201,14 +201,14 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
                 #(#var_decls)*
                 for p in &d.params {
                     let mut handled = false;
-                    let k = &p.kv.key;
-                    let v = &p.kv.value;
+                    let k = &p.key;
+                    let v = &p.value;
                     #(#arg_checks)*
                     if !handled {
                         diags.err(
                             code::UNKNOWN_DIRECTIVE_PARAM,
-                            p.kv.key.span,
-                            format!("'{}': unknown parameter '{}'", d.name.value, p.kv.key.value),
+                            p.key.span,
+                            format!("'{}': unknown parameter '{}'", d.name.value, p.key.value),
                         );
                     }
                 }

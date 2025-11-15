@@ -375,15 +375,6 @@
           "raw": "[p1.0]  1/2:e g,3(>)~   | 2:~  2:c#+ f  g ; comment no newline",
           "t": {
             "NoteLine": {
-              "comment": {
-                "content": {
-                  "span": [
-                    42,
-                    62
-                  ],
-                  "value": "; comment no newline"
-                }
-              },
               "leader": {
                 "span": [
                   0,

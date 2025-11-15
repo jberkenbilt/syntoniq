@@ -138,26 +138,22 @@
                 ],
                 "value": "define_scale"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        13,
-                        18
-                      ],
-                      "value": "scale"
-                    },
+                  "key": {
+                    "span": [
+                      13,
+                      18
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      19,
+                      34
+                    ],
                     "value": {
-                      "span": [
-                        19,
-                        34
-                      ],
-                      "value": {
-                        "String": "uninitialized"
-                      }
+                      "String": "uninitialized"
                     }
                   }
                 }
@@ -192,7 +188,6 @@
                 ],
                 "value": "ignored"
               },
-              "opening_comment": null,
               "params": []
             }
           }

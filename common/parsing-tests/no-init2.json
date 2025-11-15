@@ -101,30 +101,26 @@
                 ],
                 "value": "syntoniq"
               },
-              "opening_comment": null,
               "params": [
                 {
-                  "comment": null,
-                  "kv": {
-                    "key": {
-                      "span": [
-                        9,
-                        17
-                      ],
-                      "value": "bad_args"
-                    },
+                  "key": {
+                    "span": [
+                      9,
+                      17
+                    ],
+                    "value": "bad_args"
+                  },
+                  "value": {
+                    "span": [
+                      18,
+                      20
+                    ],
                     "value": {
-                      "span": [
-                        18,
-                        20
-                      ],
-                      "value": {
-                        "PitchOrNumber": {
-                          "Integer": [
-                            12,
-                            "12"
-                          ]
-                        }
+                      "PitchOrNumber": {
+                        "Integer": [
+                          12,
+                          "12"
+                        ]
                       }
                     }
                   }
