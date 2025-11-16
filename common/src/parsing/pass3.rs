@@ -20,7 +20,7 @@ fn check_init<'s>(
         match &tok.value.t {
             Pass2::Space | Pass2::Newline | Pass2::Comment => continue,
             Pass2::Directive(raw) if raw.name.value == "syntoniq" => {
-                if let Some(Directive::Syntoniq(x)) = Directive::from_raw(diags, raw) {
+                if let Some(Directive::Syntoniq(x)) = Directive::from_raw(diags, tok.span, raw) {
                     return Some((i + 1, Score::new(src, x)));
                 }
                 break;
@@ -34,10 +34,6 @@ fn check_init<'s>(
         "syntoniq file must start with syntoniq(version=n)",
     );
     None
-}
-
-fn is_space(t: &Pass2) -> bool {
-    matches!(t, Pass2::Space | Pass2::Comment | Pass2::Newline)
 }
 
 pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<Timeline<'s>, Diagnostics> {
@@ -57,7 +53,7 @@ pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<Timeline<'s>, Diagn
         let terminates_score_block = match &tok.value.t {
             Pass2::Space | Pass2::Comment => false,
             Pass2::Newline => next_newline_is_blank_line,
-            Pass2::Directive(_) | Pass2::ScaleBlock(_) => true,
+            Pass2::Directive(_) => true,
             Pass2::NoteLine(_) | Pass2::DynamicLine(_) => false,
         };
         if terminates_score_block {
@@ -70,33 +66,15 @@ pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<Timeline<'s>, Diagn
         // line, though we don't actually care.
         next_newline_is_blank_line = match &tok.value.t {
             Pass2::Space => next_newline_is_blank_line,
-            Pass2::Comment | Pass2::Directive(_) | Pass2::ScaleBlock(_) => false,
+            Pass2::Comment | Pass2::Directive(_) => false,
             Pass2::NoteLine(_) | Pass2::DynamicLine(_) | Pass2::Newline => true,
-        };
-
-        // Handle the token. We need special logic around scale blocks. They must appear directly
-        // after a define_scale directive, possibly separated by white space or comments.
-
-        // pending_scale will be `Some` when the last operation was a scale definition.
-        let mut pending_scale = if is_space(&tok.value.t) {
-            None
-        } else {
-            score.take_pending_scale()
         };
         match tok.value.t {
             Pass2::Space | Pass2::Newline | Pass2::Comment => continue,
-            Pass2::Directive(x) => score.handle_directive(&diags, &x),
+            Pass2::Directive(x) => score.handle_directive(&diags, tok.span, &x),
             Pass2::NoteLine(line) => score.add_note_line(line),
             Pass2::DynamicLine(line) => score.add_dynamic_line(line),
-            Pass2::ScaleBlock(x) => score.handle_scale_block(&diags, pending_scale.take(), &x),
         };
-        if pending_scale.is_some() {
-            diags.err(
-                code::USAGE,
-                tok.span,
-                "a scale block immediately follow a scale definition",
-            );
-        }
     }
     score.handle_score_block(&diags);
     score.do_final_checks(&diags);

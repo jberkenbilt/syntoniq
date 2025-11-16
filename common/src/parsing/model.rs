@@ -242,9 +242,17 @@ impl<'s> Display for Param<'s> {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
+pub enum DataBlock<'s> {
+    Scale(ScaleBlock<'s>),
+    Layout(LayoutBlock<'s>),
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct RawDirective<'s> {
     pub name: Spanned<&'s str>,
     pub params: Vec<Param<'s>>,
+    #[serde(skip_serializing_if = "Option::is_none")] // omit if None
+    pub block: Option<Spanned<DataBlock<'s>>>,
 }
 impl<'s> Display for RawDirective<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -258,7 +266,14 @@ impl<'s> Display for RawDirective<'s> {
             }
             write!(f, "{p}")?;
         }
-        color!(f, 39, ")")
+        color!(f, 39, ")")?;
+        if let Some(block) = &self.block {
+            match &block.value {
+                DataBlock::Scale(x) => write!(f, "{x}")?,
+                DataBlock::Layout(x) => write!(f, "{x}")?,
+            }
+        }
+        Ok(())
     }
 }
 
@@ -306,8 +321,8 @@ impl Display for Articulation {
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct RegularNote<'s> {
     pub duration: Option<Spanned<Ratio<u32>>>,
-    pub name: Spanned<&'s str>,
-    pub octave: Option<Spanned<i8>>,
+    #[serde(flatten)]
+    pub note: NoteOctave<'s>,
     pub articulation: Vec<Spanned<Articulation>>,
     pub sustained: Option<Span>,
 }
@@ -317,13 +332,7 @@ impl<'s> Display for RegularNote<'s> {
             color!(f, 3, "{}", x.value)?;
             color!(f, 55, ":")?;
         }
-        color!(f, 2, "{}", self.name.value)?;
-        if let Some(x) = self.octave {
-            match x.value {
-                x if x < 0 => color!(f, 4, ",{}", -x)?,
-                x => color!(f, 4, "'{x}")?,
-            }
-        }
+        write!(f, "{}", self.note)?;
         if !self.articulation.is_empty() {
             color!(f, 55, "(")?;
             for i in &self.articulation {
@@ -465,14 +474,46 @@ impl<'s> Display for ScaleNote<'s> {
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct ScaleBlock<'s> {
-    pub span: Span,
-    pub notes: Vec<Spanned<ScaleNote<'s>>>,
+    pub notes: Spanned<Vec<Spanned<ScaleNote<'s>>>>,
 }
 impl<'s> Display for ScaleBlock<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        write!(f, "<<|")?;
-        for n in &self.notes {
+        write!(f, "<<(scale)|")?;
+        for n in &self.notes.value {
             write!(f, "{}|", &n.value)?;
+        }
+        write!(f, ">>")
+    }
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct NoteOctave<'s> {
+    pub name: Spanned<&'s str>,
+    pub octave: Option<Spanned<i8>>,
+}
+impl<'s> Display for NoteOctave<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        color!(f, 2, "{}", self.name.value)?;
+        if let Some(x) = self.octave {
+            match x.value {
+                x if x < 0 => color!(f, 4, ",{}", -x)?,
+                x => color!(f, 4, "'{x}")?,
+            }
+        }
+        Ok(())
+    }
+}
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct LayoutBlock<'s> {
+    pub rows: Spanned<Vec<Spanned<Vec<Spanned<NoteOctave<'s>>>>>>,
+}
+impl<'s> Display for LayoutBlock<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "<<(layout)|")?;
+        for row in &self.rows.value {
+            for n in &row.value {
+                write!(f, "{}|", &n)?;
+            }
         }
         write!(f, ">>")
     }

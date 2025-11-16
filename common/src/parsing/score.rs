@@ -23,7 +23,6 @@ pub use directives::*;
 pub struct Score<'s> {
     src: &'s str,
     _version: u32,
-    pending_scale: Option<ScaleDefinition<'s>>,
     scales: HashMap<Cow<'s, str>, Arc<Scale<'s>>>,
     pending_score_block: Option<ScoreBlock<'s>>,
     score_blocks: Vec<ScoreBlock<'s>>,
@@ -415,12 +414,12 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
             if let Note::Regular(r_note) = &note.value
                 && let Some(scale) = self.score.scales.get(&tuning.scale_name)
             {
-                let note_name = r_note.name.value;
+                let note_name = r_note.note.name.value;
                 if let Some(scale_degree) = scale.notes.get(note_name).cloned() {
                     let time = beats_so_far + self.score.line_start_time;
                     let part = line.leader.value.name.value;
                     let note_number = line.leader.value.note.value;
-                    let cycle = r_note.octave.map(Spanned::value).unwrap_or(0);
+                    let cycle = r_note.note.octave.map(Spanned::value).unwrap_or(0);
                     let mut absolute_pitch = &tuning.base_pitch * &scale_degree.base_relative;
                     if cycle != 0 {
                         absolute_pitch *= &Pitch::from(scale.definition.cycle.pow(cycle as i32));
@@ -761,7 +760,6 @@ impl<'s> Score<'s> {
         Self {
             src,
             _version: s.version.value,
-            pending_scale: None,
             scales,
             pending_score_block: None,
             score_blocks: Default::default(),
@@ -781,10 +779,6 @@ impl<'s> Score<'s> {
 
     pub fn into_timeline(self) -> Timeline<'s> {
         self.timeline
-    }
-
-    pub fn take_pending_scale(&mut self) -> Option<ScaleDefinition<'s>> {
-        self.pending_scale.take()
     }
 
     fn insert_event(&mut self, time: Ratio<u32>, span: Span, data: TimelineData<'s>) {
@@ -813,8 +807,8 @@ impl<'s> Score<'s> {
         self.timeline.time_lcm = num_integer::lcm(self.timeline.time_lcm, *d);
     }
 
-    pub fn handle_directive(&mut self, diags: &Diagnostics, d: &RawDirective<'s>) {
-        let Some(directive) = Directive::from_raw(diags, d) else {
+    pub fn handle_directive(&mut self, diags: &Diagnostics, span: Span, d: &RawDirective<'s>) {
+        let Some(directive) = Directive::from_raw(diags, span, d) else {
             return;
         };
         match directive {
@@ -826,14 +820,15 @@ impl<'s> Score<'s> {
                 );
             }
             Directive::DefineScale(x) => {
-                self.pending_scale = Some(ScaleDefinition {
+                let scale = ScaleDefinition {
                     span: x.scale.span,
                     name: x.scale.value,
                     cycle: x
                         .cycle_ratio
                         .map(Spanned::value)
                         .unwrap_or(Ratio::from_integer(2)),
-                });
+                };
+                self.handle_scale_definition(diags, scale, x.scale_block.value);
             }
             Directive::UseScale(x) => self.use_scale(diags, x),
             Directive::Transpose(x) => self.transpose(diags, x),
@@ -847,15 +842,15 @@ impl<'s> Score<'s> {
         }
     }
 
-    pub fn handle_scale_block(
+    pub fn handle_scale_definition(
         &mut self,
         diags: &Diagnostics,
-        definition: Option<ScaleDefinition<'s>>,
-        sb: &ScaleBlock<'s>,
+        definition: ScaleDefinition<'s>,
+        scale_block: ScaleBlock<'s>,
     ) {
         let mut pitches = HashMap::new();
         let mut name_to_pitch = HashMap::new();
-        for note in &sb.notes {
+        for note in &scale_block.notes.value {
             let span = note.value.pitch.span;
             let pitch = note.value.pitch.value.as_pitch().clone();
             if let Some(old) = pitches.insert(pitch.clone(), span) {
@@ -875,15 +870,6 @@ impl<'s> Score<'s> {
                 }
             }
         }
-
-        let Some(definition) = definition else {
-            diags.err(
-                code::USAGE,
-                sb.span,
-                "a scale block must be immediately preceded by a scale definition",
-            );
-            return;
-        };
         let name = definition.name.clone();
         let scale = Scale::new(
             definition,
@@ -1358,13 +1344,6 @@ impl<'s> Score<'s> {
                 format!(
                     "for part '{part}', the last dynamic has an unresolved crescendo/diminuendo"
                 ),
-            );
-        }
-        if let Some(def) = &self.pending_scale {
-            diags.err(
-                code::SCALE,
-                def.span,
-                "this scale definition was incomplete at EOF",
             );
         }
     }

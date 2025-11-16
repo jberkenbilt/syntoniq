@@ -6581,12 +6581,160 @@
       {
         "span": [
           108,
-          135
+          186
         ],
         "value": {
-          "raw": "define_scale(scale=\"5-EDO\")",
+          "raw": "define_scale(scale=\"5-EDO\") <<\n  ^0|5 p\n  ^1|5 q\n  ^2|5 r\n  ^3|5 s\n  ^4|5 t\n>>",
           "t": {
             "Directive": {
+              "block": {
+                "span": [
+                  136,
+                  186
+                ],
+                "value": {
+                  "Scale": {
+                    "notes": {
+                      "span": [
+                        136,
+                        186
+                      ],
+                      "value": [
+                        {
+                          "span": [
+                            141,
+                            147
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  146,
+                                  147
+                                ],
+                                "value": "p"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                141,
+                                145
+                              ],
+                              "value": {
+                                "Pitch": "1"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "span": [
+                            150,
+                            156
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  155,
+                                  156
+                                ],
+                                "value": "q"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                150,
+                                154
+                              ],
+                              "value": {
+                                "Pitch": "^1|5"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "span": [
+                            159,
+                            165
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  164,
+                                  165
+                                ],
+                                "value": "r"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                159,
+                                163
+                              ],
+                              "value": {
+                                "Pitch": "^2|5"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "span": [
+                            168,
+                            174
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  173,
+                                  174
+                                ],
+                                "value": "s"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                168,
+                                172
+                              ],
+                              "value": {
+                                "Pitch": "^3|5"
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "span": [
+                            177,
+                            183
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  182,
+                                  183
+                                ],
+                                "value": "t"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                177,
+                                181
+                              ],
+                              "value": {
+                                "Pitch": "^4|5"
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
               "name": {
                 "span": [
                   108,
@@ -6620,165 +6768,6 @@
       },
       {
         "span": [
-          135,
-          136
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          136,
-          186
-        ],
-        "value": {
-          "raw": "<<\n  ^0|5 p\n  ^1|5 q\n  ^2|5 r\n  ^3|5 s\n  ^4|5 t\n>>",
-          "t": {
-            "ScaleBlock": {
-              "notes": [
-                {
-                  "span": [
-                    141,
-                    147
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          146,
-                          147
-                        ],
-                        "value": "p"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        141,
-                        145
-                      ],
-                      "value": {
-                        "Pitch": "1"
-                      }
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    150,
-                    156
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          155,
-                          156
-                        ],
-                        "value": "q"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        150,
-                        154
-                      ],
-                      "value": {
-                        "Pitch": "^1|5"
-                      }
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    159,
-                    165
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          164,
-                          165
-                        ],
-                        "value": "r"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        159,
-                        163
-                      ],
-                      "value": {
-                        "Pitch": "^2|5"
-                      }
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    168,
-                    174
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          173,
-                          174
-                        ],
-                        "value": "s"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        168,
-                        172
-                      ],
-                      "value": {
-                        "Pitch": "^3|5"
-                      }
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    177,
-                    183
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          182,
-                          183
-                        ],
-                        "value": "t"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        177,
-                        181
-                      ],
-                      "value": {
-                        "Pitch": "^4|5"
-                      }
-                    }
-                  }
-                }
-              ],
-              "span": [
-                136,
-                138
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
           186,
           187
         ],
@@ -6790,12 +6779,187 @@
       {
         "span": [
           187,
-          213
+          259
         ],
         "value": {
-          "raw": "define_scale(scale=\"5-JI\")",
+          "raw": "define_scale(scale=\"5-JI\") <<\n    1 p\n  5/4 q\n  4/3 r\n  3/2 u\n  7/4 v\n>>",
           "t": {
             "Directive": {
+              "block": {
+                "span": [
+                  214,
+                  259
+                ],
+                "value": {
+                  "Scale": {
+                    "notes": {
+                      "span": [
+                        214,
+                        259
+                      ],
+                      "value": [
+                        {
+                          "span": [
+                            221,
+                            224
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  223,
+                                  224
+                                ],
+                                "value": "p"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                221,
+                                222
+                              ],
+                              "value": {
+                                "Integer": [
+                                  1,
+                                  "1"
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "span": [
+                            227,
+                            232
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  231,
+                                  232
+                                ],
+                                "value": "q"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                227,
+                                230
+                              ],
+                              "value": {
+                                "Ratio": [
+                                  [
+                                    5,
+                                    4
+                                  ],
+                                  "5/4"
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "span": [
+                            235,
+                            240
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  239,
+                                  240
+                                ],
+                                "value": "r"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                235,
+                                238
+                              ],
+                              "value": {
+                                "Ratio": [
+                                  [
+                                    4,
+                                    3
+                                  ],
+                                  "4/3"
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "span": [
+                            243,
+                            248
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  247,
+                                  248
+                                ],
+                                "value": "u"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                243,
+                                246
+                              ],
+                              "value": {
+                                "Ratio": [
+                                  [
+                                    3,
+                                    2
+                                  ],
+                                  "3/2"
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        {
+                          "span": [
+                            251,
+                            256
+                          ],
+                          "value": {
+                            "note_names": [
+                              {
+                                "span": [
+                                  255,
+                                  256
+                                ],
+                                "value": "v"
+                              }
+                            ],
+                            "pitch": {
+                              "span": [
+                                251,
+                                254
+                              ],
+                              "value": {
+                                "Ratio": [
+                                  [
+                                    7,
+                                    4
+                                  ],
+                                  "7/4"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              },
               "name": {
                 "span": [
                   187,
@@ -6822,192 +6986,6 @@
                     }
                   }
                 }
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          213,
-          214
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          214,
-          259
-        ],
-        "value": {
-          "raw": "<<\n    1 p\n  5/4 q\n  4/3 r\n  3/2 u\n  7/4 v\n>>",
-          "t": {
-            "ScaleBlock": {
-              "notes": [
-                {
-                  "span": [
-                    221,
-                    224
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          223,
-                          224
-                        ],
-                        "value": "p"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        221,
-                        222
-                      ],
-                      "value": {
-                        "Integer": [
-                          1,
-                          "1"
-                        ]
-                      }
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    227,
-                    232
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          231,
-                          232
-                        ],
-                        "value": "q"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        227,
-                        230
-                      ],
-                      "value": {
-                        "Ratio": [
-                          [
-                            5,
-                            4
-                          ],
-                          "5/4"
-                        ]
-                      }
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    235,
-                    240
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          239,
-                          240
-                        ],
-                        "value": "r"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        235,
-                        238
-                      ],
-                      "value": {
-                        "Ratio": [
-                          [
-                            4,
-                            3
-                          ],
-                          "4/3"
-                        ]
-                      }
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    243,
-                    248
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          247,
-                          248
-                        ],
-                        "value": "u"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        243,
-                        246
-                      ],
-                      "value": {
-                        "Ratio": [
-                          [
-                            3,
-                            2
-                          ],
-                          "3/2"
-                        ]
-                      }
-                    }
-                  }
-                },
-                {
-                  "span": [
-                    251,
-                    256
-                  ],
-                  "value": {
-                    "note_names": [
-                      {
-                        "span": [
-                          255,
-                          256
-                        ],
-                        "value": "v"
-                      }
-                    ],
-                    "pitch": {
-                      "span": [
-                        251,
-                        254
-                      ],
-                      "value": {
-                        "Ratio": [
-                          [
-                            7,
-                            4
-                          ],
-                          "7/4"
-                        ]
-                      }
-                    }
-                  }
-                }
-              ],
-              "span": [
-                214,
-                216
               ]
             }
           }

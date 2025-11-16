@@ -61,7 +61,16 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
     // for required parameters. The generated code uses the CheckType trait to test for the correct
     // argument. If the generated function is able to fully initialize the struct from the raw
     // directive, it returns a Some value. Otherwise, it returns None. This ensures that additional
-    // semantic validation can safely operate on the fully-initialized type.
+    // semantic validation can safely operate on the fully-initialized type. As a special case,
+    // fields with specified names that correspond to data blocks are handled as a special case:
+    // if a data block field is present, require a data block to follow the directive. Otherwise,
+    // it is an error if a data block follows the directive.
+
+    enum DataBlockType {
+        None,
+        Scale,
+        Layout,
+    }
 
     let top_name = &input.ident;
     let directive_name = top_name.to_string().to_snake_case();
@@ -72,6 +81,7 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
     let mut help_statements = vec![quote! {
         write!(w, "\n*** '{}' ***\n", #directive_name)?;
     }];
+    let mut wanted_data_block = DataBlockType::None;
     let mut top_doc_comment = String::new();
     get_doc_comment(&input.attrs, &mut top_doc_comment, "  ");
     if !top_doc_comment.is_empty() {
@@ -96,6 +106,31 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
             continue;
         }
         let field_type = &f.ty;
+        if *field_name == "scale_block" || *field_name == "layout_block" {
+            var_decls.push(quote! {
+                let mut #field_name: Option<#field_type> = None;
+            });
+            inits.push(quote! { #field_name: #field_name? });
+            if *field_name == "scale_block" {
+                wanted_data_block = match wanted_data_block {
+                    DataBlockType::None => DataBlockType::Scale,
+                    _ => panic!("at most one data block field may appear"),
+                };
+                help_statements.push(quote! {
+                    write!(w, "  This directive must be followed by a scale block.\n")?;
+                });
+            }
+            if *field_name == "layout_block" {
+                wanted_data_block = match wanted_data_block {
+                    DataBlockType::None => DataBlockType::Layout,
+                    _ => panic!("at most one data block field may appear"),
+                };
+                help_statements.push(quote! {
+                    write!(w, "  This directive must be followed by a layout block.\n")?;
+                });
+            }
+            continue;
+        }
         let option_type = option_inner_type("Option", field_type);
         let vec_type = option_inner_type("Vec", field_type);
         let var_type = option_type.unwrap_or(field_type); // contains garbage if Vec
@@ -194,9 +229,66 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
         });
     }
 
+    let block_check = match wanted_data_block {
+        DataBlockType::None => quote! {
+            if let Some(block) = &d.block {
+                diags.err(
+                    code::DIRECTIVE_SYNTAX,
+                    block.span,
+                    "a data block is not expected here",
+                );
+            }
+        },
+        DataBlockType::Scale => quote! {
+            if let Some(x) = d.block.clone() {
+                match x.value {
+                    DataBlock::Scale(s) => {
+                        scale_block = Some(Spanned::new(x.span, s));
+                    }
+                    _ => {}
+                }
+            }
+            if scale_block.is_none() {
+                let mut diag = Diagnostic::new(
+                    code::DIRECTIVE_SYNTAX,
+                    span,
+                    "this directive must be followed by a scale block",
+                );
+                if let Some(s) = d.block.as_ref().map(|x| x.span) {
+                    diag = diag.with_context(s, "this is not a scale block");
+                }
+                diags.push(diag);
+                return None;
+            }
+        },
+        DataBlockType::Layout => quote! {
+            if let Some(x) = d.block.clone() {
+                match x.value {
+                    DataBlock::Layout(s) => {
+                        layout_block = Some(Spanned::new(x.span, s));
+                    }
+                    _ => {}
+                }
+            }
+            if layout_block.is_none() {
+                let mut diag = Diagnostic::new(
+                    code::DIRECTIVE_SYNTAX,
+                    span,
+                    "this directive must be followed by a layout block",
+                );
+                if let Some(s) = d.block.as_ref().map(|x| x.span) {
+                    diag = diag.with_context(s, "this is not a layout block");
+                }
+                diags.push(diag);
+                return None;
+            }
+        },
+    };
+    required_checks.push(block_check);
+
     quote! {
         impl<'s> FromRawDirective<'s> for #top_name<'s> {
-            fn from_raw(diags: &Diagnostics, d: &RawDirective<'s>) -> Option<Self> {
+            fn from_raw(diags: &Diagnostics, span: Span, d: &RawDirective<'s>) -> Option<Self> {
                 let mut params_seen = HashSet::new();
                 #(#var_decls)*
                 for p in &d.params {
@@ -255,7 +347,7 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
             .to_snake_case();
         match_arms.push(quote! {
             #directive_name => {
-                Some(#top_name::#variant(<#field_type as FromRawDirective>::from_raw(diags, d)?))
+                Some(#top_name::#variant(<#field_type as FromRawDirective>::from_raw(diags, span, d)?))
             }
         });
         help_calls.push(quote! {
@@ -265,7 +357,7 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
 
     quote! {
         impl<'s> FromRawDirective<'s> for #top_name<'s> {
-            fn from_raw(diags: &Diagnostics, d: &RawDirective<'s>) -> Option<Self> {
+            fn from_raw(diags: &Diagnostics, span: Span, d: &RawDirective<'s>) -> Option<Self> {
                 match d.name.value.as_ref() {
                     #(#match_arms)*
                     _ => {

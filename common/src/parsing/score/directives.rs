@@ -1,6 +1,6 @@
 // -*- fill-column: 80 -*-
-use crate::parsing::diagnostics::{Diagnostics, code};
-use crate::parsing::model::{Span, Spanned};
+use crate::parsing::diagnostics::{Diagnostic, Diagnostics, code};
+use crate::parsing::model::{DataBlock, ScaleBlock, Span, Spanned};
 use crate::parsing::score::HashSet;
 use crate::parsing::score::RawDirective;
 use crate::parsing::score_helpers;
@@ -11,7 +11,7 @@ use std::borrow::Cow;
 use std::io;
 
 pub trait FromRawDirective<'s>: Sized {
-    fn from_raw(diags: &Diagnostics, d: &RawDirective<'s>) -> Option<Self>;
+    fn from_raw(diags: &Diagnostics, span: Span, d: &RawDirective<'s>) -> Option<Self>;
     fn show_help(w: &mut impl io::Write) -> io::Result<()>;
 }
 
@@ -45,6 +45,7 @@ pub struct DefineScale<'s> {
     pub scale: Spanned<Cow<'s, str>>,
     /// ratio to be applied by the octave marker; default is 2 (one octave)
     pub cycle_ratio: Option<Spanned<Ratio<u32>>>,
+    pub scale_block: Spanned<ScaleBlock<'s>>,
 }
 impl<'s> DefineScale<'s> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}

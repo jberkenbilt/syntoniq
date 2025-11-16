@@ -253,6 +253,7 @@ fn test_directive() -> anyhow::Result<()> {
                     value: Spanned::new(28..36, ParamValue::String(Cow::Borrowed("17-EDO"))),
                 }
             ],
+            block: None,
         }
     );
     assert!(rest.is_empty());
@@ -305,6 +306,7 @@ fn test_directive() -> anyhow::Result<()> {
                     ),
                 },
             ],
+            block: None,
         }
     );
     assert!(rest.is_empty());

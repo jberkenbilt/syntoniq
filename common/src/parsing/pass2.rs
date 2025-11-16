@@ -3,9 +3,9 @@
 
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
-    Articulation, Dynamic, DynamicLine, GetSpan, Hold, Note, NoteLeader, NoteLine, Param,
-    ParamValue, PitchOrNumber, RawDirective, RegularNote, ScaleBlock, ScaleNote, Span, Spanned,
-    Token,
+    Articulation, DataBlock, Dynamic, DynamicLine, GetSpan, Hold, LayoutBlock, Note, NoteLeader,
+    NoteLine, NoteOctave, Param, ParamValue, PitchOrNumber, RawDirective, RegularNote, ScaleBlock,
+    ScaleNote, Span, Spanned, Token,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
@@ -41,7 +41,6 @@ pub enum Pass2<'s> {
     Directive(RawDirective<'s>),
     NoteLine(NoteLine<'s>),
     DynamicLine(DynamicLine<'s>),
-    ScaleBlock(ScaleBlock<'s>),
 }
 impl<'s> Display for Pass2<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -49,7 +48,6 @@ impl<'s> Display for Pass2<'s> {
             Pass2::Directive(x) => write!(f, "Directive{{{x}}}"),
             Pass2::NoteLine(x) => write!(f, "NoteLine{{{x}}}"),
             Pass2::DynamicLine(x) => write!(f, "DynamicLine:{{{x}}}"),
-            Pass2::ScaleBlock(x) => write!(f, "ScaleBlock:{{{x}}}"),
             Pass2::Space | Pass2::Newline | Pass2::Comment => write!(f, "{self:?}"),
         }
     }
@@ -425,7 +423,14 @@ fn directive<'s>(
             .map(|items: ((_, Vec<_>), _)| {
                 let ((name, params), tokens) = items;
                 let span = tokens.get_span().unwrap();
-                Spanned::new(span, RawDirective { name, params })
+                Spanned::new(
+                    span,
+                    RawDirective {
+                        name,
+                        params,
+                        block: None,
+                    },
+                )
             })
     }
 }
@@ -516,20 +521,31 @@ fn bar_check() -> impl FnMut(&mut Input2) -> winnow::Result<Span> {
     |input| character('|').parse_next(input).map(|c| c.span)
 }
 
+fn note_octave<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<NoteOctave<'s>>> {
+    |input| {
+        (note_name(), opt(octave(diags)))
+            .parse_next(input)
+            .map(|(name, octave)| {
+                let span = model::merge_spans(&[name.get_span(), octave.get_span()]).unwrap();
+                Spanned::new(span, NoteOctave { name, octave })
+            })
+    }
+}
 fn regular_note<'s>(
     diags: &Diagnostics,
 ) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Note<'s>>> {
     |input| {
         (
             opt(terminated(ratio(diags), character(':'))),
-            note_name(),
-            opt(octave(diags)),
+            note_octave(diags),
             opt(articulation(diags)),
             opt(note_behavior()),
         )
             .parse_next(input)
             .map(|items| {
-                let (duration, name, octave, articulation, sustained) = items;
+                let (duration, note_octave, articulation, sustained) = items;
                 // This merges these spans. Since `name` is definite set, we can safely unwrap
                 // the result.
                 let articulation_span = articulation.get_span().map(|x| {
@@ -539,8 +555,7 @@ fn regular_note<'s>(
                 });
                 let span = model::merge_spans(&[
                     duration.get_span(),
-                    name.get_span(),
-                    octave.get_span(),
+                    note_octave.get_span(),
                     articulation_span,
                     sustained,
                 ])
@@ -549,8 +564,7 @@ fn regular_note<'s>(
                     span,
                     Note::Regular(RegularNote {
                         duration,
-                        name,
-                        octave,
+                        note: note_octave.value,
                         articulation: articulation.unwrap_or_default(),
                         sustained,
                     }),
@@ -787,23 +801,84 @@ fn scale_note<'s>(
     }
 }
 
+fn check_scale_block<'s>(diags: &Diagnostics, input: &mut Input2<'_, 's>) -> bool {
+    peek((
+        opt(some_space),
+        definition_start,
+        opt(some_space),
+        pitch_or_number(diags),
+    ))
+    .parse_next(input)
+    .is_ok()
+}
+
 fn scale_block<'s>(
     diags: &Diagnostics,
 ) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<ScaleBlock<'s>>> {
     |input| {
         (
-            terminated(definition_start, opt(some_space)),
+            delimited(opt(some_space), definition_start, opt(some_space)),
             combinator::repeat(1.., scale_note(diags)),
             preceded(optional_space, definition_end),
         )
             .parse_next(input)
             .map(|items: (_, Vec<_>, _)| {
                 let (start, notes, end) = items;
+                let span = Span::from(start.span.start..end.span.end);
                 Spanned::new(
-                    start.span.start..end.span.end,
+                    span,
                     ScaleBlock {
-                        span: start.span,
-                        notes,
+                        notes: Spanned::new(span, notes),
+                    },
+                )
+            })
+    }
+}
+
+fn check_layout_block<'s>(input: &mut Input2<'_, 's>) -> bool {
+    peek((
+        opt(some_space),
+        definition_start,
+        opt(some_space),
+        note_name(),
+    ))
+    .parse_next(input)
+    .is_ok()
+}
+
+fn layout_line<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Vec<Spanned<NoteOctave<'s>>>>> {
+    |input| {
+        terminated(
+            combinator::repeat(1.., preceded(optional_space, note_octave(diags))),
+            terminated(opt(space(false)), newline_or_eof),
+        )
+        .parse_next(input)
+        .map(|notes: Vec<Spanned<NoteOctave>>| {
+            let span = notes.as_slice().get_span().unwrap();
+            Spanned::new(span, notes)
+        })
+    }
+}
+
+fn layout_block<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<LayoutBlock<'s>>> {
+    |input| {
+        (
+            delimited(opt(some_space), definition_start, (optional_space, newline)),
+            combinator::repeat(1.., layout_line(diags)),
+            preceded(optional_space, definition_end),
+        )
+            .parse_next(input)
+            .map(|items: (_, Vec<_>, _)| {
+                let (start, rows, end) = items;
+                let span = Span::from(start.span.start..end.span.end);
+                Spanned::new(
+                    span,
+                    LayoutBlock {
+                        rows: Spanned::new(span, rows),
                     },
                 )
             })
@@ -917,7 +992,8 @@ fn degraded_dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::R
 
 fn degraded_definition(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<()> {
     move |input| {
-        terminated(
+        delimited(
+            definition_start,
             combinator::repeat(
                 1..,
                 alt((
@@ -1017,8 +1093,26 @@ fn handle_token<'s>(
                 .is_ok()
             {
                 // Try to parse as a directive.
-                if let Ok(d) = directive(diags).parse_next(input) {
-                    // We got a directive, so keep that token.
+                if let Ok(mut d) = directive(diags).parse_next(input) {
+                    // We got a directive. If the next thing is a definition, attach it.
+                    let t: Option<Spanned<DataBlock>> = if check_scale_block(diags, input) {
+                        scale_block(diags)
+                            .parse_next(input)
+                            .ok()
+                            .map(|x| Spanned::new(x.span, DataBlock::Scale(x.value)))
+                    } else if check_layout_block(input) {
+                        layout_block(diags)
+                            .parse_next(input)
+                            .ok()
+                            .map(|x| Spanned::new(x.span, DataBlock::Layout(x.value)))
+                    } else {
+                        None
+                    };
+                    if let Some(data_block) = t {
+                        // Extend the span to cover the data block, and attach it.
+                        d.span.end = data_block.span.end;
+                        d.value.block = Some(data_block);
+                    }
                     Ok(Token::new_spanned(
                         &src[d.span],
                         d.span,
@@ -1076,20 +1170,12 @@ fn handle_token<'s>(
             }
         }
         Pass1::DefinitionStart => {
-            if let Ok(x) = scale_block(diags).parse_next(input) {
-                Ok(Token::new_spanned(
-                    &src[x.span],
-                    x.span,
-                    Pass2::ScaleBlock(x.value),
-                ))
-            } else {
-                diags.err(
-                    code::DEFINITION_SYNTAX,
-                    tok.span,
-                    "unable to parse as definition block",
-                );
-                Err(Degraded::Definition)
-            }
+            diags.err(
+                code::DEFINITION_SYNTAX,
+                tok.span,
+                "incorrect or misplaced definition block",
+            );
+            Err(Degraded::Definition)
         }
         _ => {
             // If we get anything else, fall into degraded mode. Continue with Pass2 Step 4.
