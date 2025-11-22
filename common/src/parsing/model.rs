@@ -186,12 +186,14 @@ impl PitchOrNumber {
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum ParamValue<'s> {
+    Zero,
     PitchOrNumber(PitchOrNumber),
     String(Cow<'s, str>),
 }
 impl<'s> Display for ParamValue<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
+            ParamValue::Zero => color!(f, 6, "0"),
             ParamValue::PitchOrNumber(pr) => Display::fmt(pr, f),
             ParamValue::String(s) => color!(f, 166, "\"{s}\""),
         }
@@ -201,6 +203,7 @@ impl<'s> Display for ParamValue<'s> {
 impl<'s> ParamValue<'s> {
     pub fn try_as_pitch(&self) -> Option<&Pitch> {
         match self {
+            ParamValue::Zero => None,
             ParamValue::PitchOrNumber(pr) => Some(pr.as_pitch()),
             ParamValue::String(_) => None,
         }
@@ -208,6 +211,7 @@ impl<'s> ParamValue<'s> {
 
     pub fn try_as_ratio(&self) -> Option<Ratio<u32>> {
         match self {
+            ParamValue::Zero => None, // 0 can be represented as a ratio, but we don't allow it
             ParamValue::PitchOrNumber(pr) => pr.try_as_ratio(),
             ParamValue::String(_) => None,
         }
@@ -215,6 +219,7 @@ impl<'s> ParamValue<'s> {
 
     pub fn try_as_int(&self) -> Option<u32> {
         match self {
+            ParamValue::Zero => Some(0),
             ParamValue::PitchOrNumber(pr) => pr.try_as_int(),
             ParamValue::String(_) => None,
         }
@@ -222,6 +227,7 @@ impl<'s> ParamValue<'s> {
 
     pub fn try_as_string(&self) -> Option<&Cow<'s, str>> {
         match self {
+            ParamValue::Zero => None,
             ParamValue::PitchOrNumber(_r) => None,
             ParamValue::String(s) => Some(s),
         }
@@ -503,17 +509,48 @@ impl<'s> Display for NoteOctave<'s> {
         Ok(())
     }
 }
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub enum LayoutItemType<'s> {
+    Note(Spanned<NoteOctave<'s>>),
+    Empty(Span),
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct LayoutItem<'s> {
+    pub item: LayoutItemType<'s>,
+    pub is_anchor: Option<Span>,
+}
+impl<'s> Display for LayoutItem<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        if self.is_anchor.is_some() {
+            write!(f, "@")?;
+        }
+        match &self.item {
+            LayoutItemType::Note(n) => write!(f, "{n}"),
+            LayoutItemType::Empty(_) => write!(f, "~"),
+        }
+    }
+}
+
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct LayoutBlock<'s> {
-    pub rows: Spanned<Vec<Spanned<Vec<Spanned<NoteOctave<'s>>>>>>,
+    pub rows: Spanned<Vec<Spanned<Vec<Spanned<LayoutItem<'s>>>>>>,
 }
 impl<'s> Display for LayoutBlock<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "<<(layout)|")?;
         for row in &self.rows.value {
+            let mut first = true;
             for n in &row.value {
-                write!(f, "{}|", &n)?;
+                if first {
+                    first = false;
+                } else {
+                    write!(f, " ")?;
+                }
+                write!(f, "{}", &n.value)?;
             }
+            write!(f, "|")?;
         }
         write!(f, ">>")
     }
@@ -607,6 +644,11 @@ mod tests {
         assert_eq!(pv.try_as_int().unwrap(), 12);
         assert_eq!(pv.try_as_ratio().unwrap(), Ratio::from_integer(12));
         assert_eq!(*pv.try_as_pitch().unwrap(), Pitch::must_parse("12"));
+        assert!(pv.try_as_string().is_none());
+        let pv = ParamValue::Zero;
+        assert_eq!(pv.try_as_int().unwrap(), 0);
+        assert!(pv.try_as_ratio().is_none());
+        assert!(pv.try_as_pitch().is_none());
         assert!(pv.try_as_string().is_none());
     }
 }

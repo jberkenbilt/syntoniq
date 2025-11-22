@@ -1,0 +1,77 @@
+syntoniq(version=1)
+; Isomorphic mapping on default scale
+define_scale(scale="19-EDO") <<
+ ^0|19 c
+ ^1|19 c#
+ ^2|19 d%
+ ^3|19 d
+ ^4|19 d#
+ ^5|19 e%
+ ^6|19 e
+ ^7|19 e# f%
+ ^8|19 f
+ ^9|19 f#
+^10|19 g%
+^11|19 g
+^12|19 g#
+^13|19 a%
+^14|19 a
+^15|19 a#
+^16|19 b%
+^17|19 b
+^18|19 b# c%
+     2 c2  ; for testing a note out of cycle that repeats another pitch class
+^21|20 q   ; for testing a note out of cycle that has its own pitch class
+>>
+define_manual_mapping(
+    mapping="m1"
+    scale="19-EDO"
+    h_factor=1.5
+    v_factor=^1|2
+) <<
+g% g, g# c' ~
+~ e @e# f f#
+c c# d% c2 q
+>>
+define_isomorphic_mapping(mapping="m2" steps_h=2 steps_v=5)
+; l1 only has a manual layout that covers part of the keyboard
+create_layout(layout="l1" keyboard="potato")
+place_mapping(
+    layout="l1"
+    mapping="m1"
+    base_pitch=400
+    anchor_row=5
+    anchor_col=4
+    ; The mapping's anchor is on row 1 (numbered from 0) and is three rows high.
+    ; This gives us two vertical copies.
+    rows_above=4
+    rows_below=1
+    ; The mapping's anchor is on column 2 (from 0) of 5. This gives us two
+    ; horizontal copies.
+    cols_left=2
+    cols_right=7
+)
+; l2 only has the same manual layout as l1 and also an isomorphic layout
+create_layout(layout="l2" keyboard="potato")
+place_mapping(
+    layout="l2"
+    mapping="m1"
+    base_pitch=400
+    anchor_row=5
+    anchor_col=4
+    ; The mapping's anchor is on row 1 (numbered from 0) and is three rows high.
+    ; This gives us two vertical copies.
+    rows_above=4
+    rows_below=1
+    ; The mapping's anchor is on column 2 (from 0) of 5. This gives us two
+    ; horizontal copies.
+    cols_left=2
+    cols_right=7
+)
+place_mapping(
+    layout="l2"
+    mapping="m2"
+    base_pitch=300
+    anchor_row=10
+    anchor_col=7
+)

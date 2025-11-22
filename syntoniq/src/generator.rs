@@ -50,7 +50,7 @@ pub fn run(options: GenerateOptions) -> anyhow::Result<()> {
     let data = fs::read(&options.score)?;
     let score_file = options.score.display();
     let src = str::from_utf8(&data)?;
-    let timeline = crate::parse(
+    let timeline = parsing::timeline(
         &options.score.display().to_string(),
         src,
         &options.parse_options,

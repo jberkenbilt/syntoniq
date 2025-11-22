@@ -21,7 +21,7 @@ oops(missing="space"a=1)
 *1 q+
 *^2|17 r* potato | 3.14 pi ; comment
 z ; no pitch
-22/7 w/x/yZ /
+22/7 w/x/yZ / @~ @a
 >>
 
 valid(

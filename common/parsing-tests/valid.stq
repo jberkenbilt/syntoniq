@@ -19,6 +19,8 @@ define_scale(
   ^2|5 r
   ^3|5 s
   ^4|5 t
+     2 w  ; same pitch class as p but out of cycle
+  ^7|6 x  ; out of cycle, unique pitch class
 >>
 define_scale(scale="5-JI" cycle_ratio=2) <<
     1 p
@@ -51,14 +53,14 @@ mark(label="b")
 ; extend outside the cycle (beyond b#). This ensures notes are sorted
 ; properly. These go up by fifths.
 define_scale(scale="fifths" cycle_ratio=2) <<
-   1    c
+   1    c cc
    3/2  g
    9/4  d  ;  9/8
   27/8  a  ; 27/16
   81/16 e  ; 81/64
 >>
 define_scale(scale="fifths-3" cycle_ratio=3) <<
-   1    c!
+   1    c! c!!
    1/2  g!  ;  3/2  * cycle
    9/4  d!
   27/8  a!  ;  9/8  * cycle
@@ -70,3 +72,42 @@ use_scale(scale="fifths-3" part="p2") set_base_pitch(absolute=264 part="p2")
 [p2.1] 2/5:c!' a! g!'2 e! d!'
 
 repeat(start="a" end="b")
+
+create_layout(keyboard="k" layout="l1")
+; Create a manual mapping that has all the notes from 5-EDO
+define_manual_mapping(mapping="m1" scale="5-EDO") <<
+t ~ w x p'
+p @q r s p,
+>>
+define_isomorphic_mapping(mapping="m2" steps_h=2 steps_v=5)
+; Place the manual mapping in two distinct spots with different parameters.
+place_mapping(
+    layout="l1"
+    mapping="m1"
+    base_pitch=400
+    anchor_row=5
+    anchor_col=4
+    rows_above=3
+    rows_below=1
+    cols_left=2
+    cols_right=6
+)
+place_mapping(
+    layout="l1"
+    mapping="m1"
+    base_pitch=500
+    anchor_row=1
+    anchor_col=8
+    rows_above=1
+    rows_below=0
+    cols_left=1
+    cols_right=2
+)
+; Place the isomorphic mapping to cover the whole keyboard
+place_mapping(
+    layout="l1"
+    mapping="m2"
+    base_pitch=300
+    anchor_row=12
+    anchor_col=7
+)

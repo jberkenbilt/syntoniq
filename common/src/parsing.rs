@@ -57,6 +57,7 @@
 // describes.
 
 pub mod diagnostics;
+pub mod layout;
 pub mod model;
 pub mod pass1;
 pub mod pass2;
@@ -64,10 +65,10 @@ pub mod pass3;
 pub mod score;
 pub(crate) mod score_helpers;
 mod timeline;
-
-use crate::parsing::diagnostics::Diagnostics;
+use crate::parsing::layout::Layouts;
 use crate::parsing::score::{Directive, FromRawDirective};
 use clap::Parser;
+pub use score::ScoreOutput;
 use serde::Deserialize;
 pub use timeline::*;
 
@@ -87,8 +88,26 @@ pub struct Options {
     pub tempo_percent: Option<u32>,
 }
 
-pub fn parse<'s>(input: &'s str, options: &Options) -> Result<Timeline<'s>, Diagnostics> {
-    pass3::parse3(input, options)
+fn parse<'s>(filename: &str, src: &'s str, options: &Options) -> anyhow::Result<ScoreOutput<'s>> {
+    match pass3::parse3(src, options) {
+        Ok(output) => Ok(output),
+        Err(diags) => {
+            anstream::eprintln!("{}", diags.render(filename, src));
+            std::process::exit(2);
+        }
+    }
+}
+
+pub fn timeline<'s>(
+    filename: &str,
+    src: &'s str,
+    options: &Options,
+) -> anyhow::Result<Timeline<'s>> {
+    Ok(parse(filename, src, options)?.timeline)
+}
+
+pub fn layouts<'s>(filename: &str, src: &'s str, options: &Options) -> anyhow::Result<Layouts<'s>> {
+    Ok(parse(filename, src, options)?.layouts)
 }
 
 pub fn show_help() -> anyhow::Result<()> {

@@ -170,7 +170,7 @@ impl EngineState {
     }
 
     pub fn current_played_notes(&self) -> Vec<String> {
-        // It would more efficient to directly print, but this is not performance-critical,
+        // It would be more efficient to directly print, but this is not performance-critical,
         // and generating a Vec makes testing easier.
         let mut result = Vec::new();
         // Scale name -> notes in the scale

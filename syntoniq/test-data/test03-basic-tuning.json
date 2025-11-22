@@ -1030,6 +1030,20 @@
           "degree": 12
         }
       ],
+      "primary_names": [
+        "c",
+        "c#",
+        "d",
+        "e%",
+        "e",
+        "f",
+        "f#",
+        "g",
+        "a%",
+        "a",
+        "b%",
+        "b"
+      ],
       "pitches": [
         "1",
         "^1|12",
@@ -1077,6 +1091,13 @@
           "base_relative": "^4|5",
           "degree": 4
         }
+      ],
+      "primary_names": [
+        "p",
+        "q",
+        "r",
+        "s",
+        "t"
       ],
       "pitches": [
         "1",

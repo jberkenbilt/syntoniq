@@ -73,8 +73,9 @@ static NOTE_PUNCTUATION: &str = "|/.:>~,'";
 static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!#%&";
 /// Characters allowed in dynamics
 static DYNAMIC_PUNCTUATION: &str = "|<>@/.";
-/// Characters allowed in pitches (other than numbers)
-static PITCH_CHARACTERS: &str = "^*|/.";
+/// Characters allowed in definitions outside note names and numbers, including pitch characters,
+/// anchor/place-holder characters for layouts, and octave markers.
+static DEFINITION_PUNCTUATION: &str = "^*|/.@~,'";
 
 #[derive(Serialize, Debug, Clone, Copy)]
 /// The Pass1 type contains payload for pass-1 tokens. These contain only spans and numbers, which
@@ -572,7 +573,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
                     _ => None,
                 },
                 LexState::Definition => match ch {
-                    x if PITCH_CHARACTERS.contains(x) => parse_next!(punctuation()),
+                    x if DEFINITION_PUNCTUATION.contains(x) => parse_next!(punctuation()),
                     x if AsChar::is_alpha(x) => parse_next!(note_name()),
                     _ => None,
                 },

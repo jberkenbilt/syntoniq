@@ -1,18 +1,21 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
-    Articulation, Dynamic, DynamicChange, DynamicLeader, DynamicLine, Note, NoteLeader, NoteLine,
-    RawDirective, RegularDynamic, RegularNote, ScaleBlock, Span, Spanned,
+    Articulation, Dynamic, DynamicChange, DynamicLeader, DynamicLine, LayoutItemType, Note,
+    NoteLeader, NoteLine, RawDirective, RegularDynamic, RegularNote, ScaleBlock, Span, Spanned,
 };
 use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::Bound::Excluded;
 use std::collections::{HashMap, HashSet};
-use std::sync::{Arc, LazyLock};
+use std::sync::{Arc, LazyLock, RwLock};
 use std::{cmp, mem};
 
 mod directives;
+use crate::parsing::layout::{
+    Coordinate, IsomorphicMapping, Layout, LayoutMapping, Layouts, ManualMapping, MappingDetails,
+};
 use crate::parsing::{
     CsoundInstrumentId, DynamicEvent, MarkEvent, MidiInstrumentNumber, NoteEvent, NoteValue,
     Options, PartNote, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, score_helpers,
@@ -37,7 +40,75 @@ pub struct Score<'s> {
     csound_instruments: HashMap<Cow<'s, str>, Span>,
     known_parts: HashSet<Cow<'s, str>>,
     marks: HashMap<Cow<'s, str>, MarkData<'s>>,
+    layouts: HashMap<Cow<'s, str>, LayoutData<'s>>,
+    mappings: HashMap<Cow<'s, str>, MappingData<'s>>,
     timeline: Timeline<'s>,
+}
+
+pub(crate) mod layouts {
+    use super::{Layouts, Scale};
+    use crate::parsing::layout::Layout;
+    use serde::Serialize;
+    use serde::Serializer;
+    use std::borrow::Cow;
+    use std::sync::{Arc, RwLockReadGuard};
+
+    #[derive(Serialize)]
+    struct NamedScale<'a> {
+        name: &'a Cow<'a, str>,
+        scale: &'a Arc<Scale<'a>>,
+    }
+    #[derive(Serialize)]
+    struct NamedLayout<'a> {
+        name: &'a Cow<'a, str>,
+        layout: &'a Layout<'a>,
+    }
+    #[derive(Serialize)]
+    struct SerializeLayouts<'a> {
+        layouts: Vec<NamedLayout<'a>>,
+        scales: Vec<NamedScale<'a>>,
+    }
+
+    pub fn serialize<S: Serializer>(v: &Layouts, s: S) -> Result<S::Ok, S::Error> {
+        // Convert maps to sorted arrays for consistent output.
+        let guards: Vec<(&Cow<str>, RwLockReadGuard<Layout>)> = v
+            .layouts
+            .iter()
+            .map(|(name, layout)| (name, layout.read().unwrap()))
+            .collect();
+        let mut layouts: Vec<NamedLayout> = Vec::new();
+        layouts.sort_by_key(|x| x.name);
+        for (name, layout) in &guards {
+            let nl = NamedLayout { name, layout };
+            layouts.push(nl);
+        }
+        let mut scales: Vec<NamedScale> = v
+            .scales
+            .iter()
+            .map(|(name, scale)| NamedScale { name, scale })
+            .collect();
+        scales.sort_by_key(|x| x.name);
+        let sl = SerializeLayouts { layouts, scales };
+        sl.serialize(s)
+    }
+}
+
+#[derive(Serialize)]
+pub struct ScoreOutput<'s> {
+    pub timeline: Timeline<'s>,
+    #[serde(with = "layouts")]
+    pub layouts: Layouts<'s>,
+}
+
+pub struct LayoutData<'s> {
+    span: Span,
+    layout: Arc<RwLock<Layout<'s>>>,
+}
+
+pub struct MappingData<'s> {
+    span: Span,
+    mapping: Arc<MappingDetails<'s>>,
+    scale: Arc<Scale<'s>>,
 }
 
 pub struct MarkData<'s> {
@@ -79,6 +150,7 @@ pub struct Scale<'s> {
     pub definition: ScaleDefinition<'s>,
     #[serde(with = "scale_notes")]
     pub notes: HashMap<&'s str, ScaleDegree>,
+    pub primary_names: Vec<&'s str>,
     pub pitches: Vec<Pitch>,
 }
 #[derive(Serialize, Clone)]
@@ -93,10 +165,17 @@ pub struct NamedScaleDegree<'s> {
     pub degree: &'s ScaleDegree,
 }
 
+#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq)]
+pub struct NamedPitch<'s> {
+    pub name: Cow<'s, str>,
+    pub base_factor: Pitch,
+}
+
 impl<'s> Scale<'s> {
     pub fn new(
         definition: ScaleDefinition<'s>,
         note_pitches: HashMap<&'s str, Pitch>,
+        mut pitch_primary_names: HashMap<Pitch, &'s str>,
     ) -> Arc<Self> {
         // For each note, calculate its pitch relative to the base and normalized to within the
         // cycle. The results in a revised base-relative pitch and cycle offset. Sort the resulting
@@ -131,6 +210,11 @@ impl<'s> Scale<'s> {
                 cycle_offset += 1;
             }
             distinct_base_relative.insert(normalized_base.clone());
+            // Update the primary name map in case the only appearance of a pitch is not within
+            // the cycle.
+            pitch_primary_names
+                .entry(normalized_base.clone())
+                .or_insert(name);
             intermediate.push(Intermediate {
                 name,
                 orig_base,
@@ -141,11 +225,15 @@ impl<'s> Scale<'s> {
         // Get a sorted list of distinct normalized base-relative pitches
         let mut pitches: Vec<Pitch> = distinct_base_relative.into_iter().collect();
         pitches.sort();
-        // Map these to degree
+        // Map these to degree and primary note name.
         let degrees: HashMap<Pitch, i32> = pitches
             .iter()
             .enumerate()
             .map(|(i, pitch)| (pitch.clone(), i as i32))
+            .collect();
+        let primary_names: Vec<&str> = pitches
+            .iter()
+            .map(|p| *pitch_primary_names.get(p).unwrap())
             .collect();
         // Now we can compute the scale degree of each note
         let degrees_per_cycle = pitches.len() as i32;
@@ -163,6 +251,7 @@ impl<'s> Scale<'s> {
         Arc::new(Self {
             definition,
             notes,
+            primary_names,
             pitches,
         })
     }
@@ -180,8 +269,8 @@ pub struct ScoreBlock<'s> {
     pub dynamic_lines: Vec<DynamicLine<'s>>,
 }
 
-static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
-    let start_pitch = Pitch::must_parse("1");
+pub(crate) static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
+    let start_pitch = Pitch::unit();
     let mut pitches = Vec::new();
     let mut next_pitch = start_pitch.clone();
     let increment = Pitch::must_parse("^1|12");
@@ -213,6 +302,23 @@ static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
     ]
     .into_iter()
     .collect();
+    // For primary names of accidentals, pick the one that appears first in key signatures.
+    let pitch_primary_names = [
+        (pitches[0].clone(), "c"),
+        (pitches[1].clone(), "c#"),
+        (pitches[2].clone(), "d"),
+        (pitches[3].clone(), "e%"),
+        (pitches[4].clone(), "e"),
+        (pitches[5].clone(), "f"),
+        (pitches[6].clone(), "f#"),
+        (pitches[7].clone(), "g"),
+        (pitches[8].clone(), "a%"),
+        (pitches[9].clone(), "a"),
+        (pitches[10].clone(), "b%"),
+        (pitches[11].clone(), "b"),
+    ]
+    .into_iter()
+    .collect();
     Scale::new(
         ScaleDefinition {
             span: (0..1).into(),
@@ -220,6 +326,7 @@ static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
             cycle: Ratio::from_integer(2),
         },
         notes,
+        pitch_primary_names,
     )
 });
 static DEFAULT_TUNING: LazyLock<Tuning<'static>> = LazyLock::new(|| {
@@ -773,12 +880,26 @@ impl<'s> Score<'s> {
             csound_instruments: Default::default(),
             known_parts: Default::default(),
             marks: Default::default(),
+            layouts: Default::default(),
+            mappings: Default::default(),
             timeline,
         }
     }
 
-    pub fn into_timeline(self) -> Timeline<'s> {
-        self.timeline
+    pub fn into_output(self) -> ScoreOutput<'s> {
+        let layout_map: HashMap<_, _> = self
+            .layouts
+            .into_iter()
+            .map(|(k, v)| (k, v.layout))
+            .collect();
+        let layouts = Layouts {
+            scales: self.scales,
+            layouts: layout_map,
+        };
+        ScoreOutput {
+            timeline: self.timeline,
+            layouts,
+        }
     }
 
     fn insert_event(&mut self, time: Ratio<u32>, span: Span, data: TimelineData<'s>) {
@@ -839,6 +960,10 @@ impl<'s> Score<'s> {
             Directive::Tempo(x) => self.tempo(diags, x),
             Directive::Mark(x) => self.mark(diags, x),
             Directive::Repeat(x) => self.repeat(diags, x),
+            Directive::CreateLayout(x) => self.create_layout(diags, x),
+            Directive::DefineIsomorphicMapping(x) => self.create_isomorphic_mapping(diags, x),
+            Directive::DefineManualMapping(x) => self.create_manual_mapping(diags, x),
+            Directive::PlaceMapping(x) => self.place_mapping(diags, x),
         }
     }
 
@@ -850,6 +975,7 @@ impl<'s> Score<'s> {
     ) {
         let mut pitches = HashMap::new();
         let mut name_to_pitch = HashMap::new();
+        let mut pitch_to_name = HashMap::new();
         for note in &scale_block.notes.value {
             let span = note.value.pitch.span;
             let pitch = note.value.pitch.value.as_pitch().clone();
@@ -861,6 +987,8 @@ impl<'s> Score<'s> {
             }
             for note_name in &note.value.note_names {
                 let name = note_name.value;
+                // Insert the first name encountered for a pitch.
+                pitch_to_name.entry(pitch.clone()).or_insert(name);
                 let span = note_name.span;
                 if let Some((_, old)) = name_to_pitch.insert(name, (pitch.clone(), span)) {
                     diags.push(
@@ -877,6 +1005,7 @@ impl<'s> Score<'s> {
                 .into_iter()
                 .map(|(name, (pitch, _))| (name, pitch))
                 .collect(),
+            pitch_to_name,
         );
         let span = scale.definition.span;
         if let Some(old) = self.scales.insert(name.clone(), scale.clone()) {
@@ -940,7 +1069,7 @@ impl<'s> Score<'s> {
         self.score_blocks.push(sb);
     }
 
-    fn tuning_for_part(&mut self, part: &Cow<'s, str>) -> Tuning<'s> {
+    fn tuning_for_part(&self, part: &Cow<'s, str>) -> Tuning<'s> {
         // Determine the name of the part we should use. If the part has a tuning, use it.
         // Otherwise, fall back to the empty string, which indicates the global tuning.
         let part_to_use = self
@@ -1324,6 +1453,224 @@ impl<'s> Score<'s> {
             }),
         );
         self.line_start_time += duration;
+    }
+
+    pub fn create_layout(&mut self, diags: &Diagnostics, directive: CreateLayout<'s>) {
+        let layout = Layout {
+            keyboard: directive.keyboard.value,
+            mappings: Vec::new(),
+        };
+        let span = directive.layout.span;
+        let layout_data = LayoutData {
+            span,
+            layout: Arc::new(RwLock::new(layout)),
+        };
+        if let Some(old) = self.layouts.insert(directive.layout.value, layout_data) {
+            diags.push(
+                Diagnostic::new(
+                    code::LAYOUT,
+                    span,
+                    "a layout by this name has already been created",
+                )
+                .with_context(old.span, "here is the previous definition"),
+            );
+        }
+    }
+
+    pub fn insert_mapping(
+        &mut self,
+        diags: &Diagnostics,
+        name: Cow<'s, str>,
+        mapping: MappingData<'s>,
+    ) {
+        let span = mapping.span;
+        if let Some(old) = self.mappings.insert(name, mapping) {
+            diags.push(
+                Diagnostic::new(
+                    code::DIRECTIVE_USAGE,
+                    span,
+                    "a mapping by this name has already been defined",
+                )
+                .with_context(old.span, "here is the previous definition"),
+            );
+        }
+    }
+
+    fn check_known_scale(
+        &self,
+        diags: &Diagnostics,
+        scale_name: &Option<Spanned<Cow<'s, str>>>,
+    ) -> Option<Arc<Scale<'s>>> {
+        let Some(scale) = scale_name else {
+            return Some(DEFAULT_SCALE.clone());
+        };
+        let r = self.scales.get(&scale.value);
+        if r.is_none() {
+            diags.err(
+                code::DIRECTIVE_USAGE,
+                scale.span,
+                format!("scale '{}' is not known", scale.value),
+            );
+        }
+        r.cloned()
+    }
+
+    pub fn create_isomorphic_mapping(
+        &mut self,
+        diags: &Diagnostics,
+        directive: DefineIsomorphicMapping<'s>,
+    ) {
+        let Some(scale) = self.check_known_scale(diags, &directive.scale) else {
+            return;
+        };
+        let mapping = MappingDetails::Isomorphic(IsomorphicMapping {
+            name: directive.mapping.value.clone(),
+            steps_h: directive.steps_h.value as i32,
+            steps_v: directive.steps_v.value as i32,
+        });
+        let mapping_data = MappingData {
+            span: directive.mapping.span,
+            mapping: Arc::new(mapping),
+            scale,
+        };
+        self.insert_mapping(diags, directive.mapping.value, mapping_data);
+    }
+
+    pub fn create_manual_mapping(
+        &mut self,
+        diags: &Diagnostics,
+        directive: DefineManualMapping<'s>,
+    ) {
+        let Some(scale) = self.check_known_scale(diags, &directive.scale) else {
+            // Skip additional diagnostics if the scale is not known.
+            return;
+        };
+        let mut anchor: Option<Spanned<Coordinate>> = None;
+        let mut notes: Vec<Vec<Option<NamedPitch>>> = Vec::new();
+        let mut prev_row_len = 0usize;
+        for (row_idx, row) in directive.layout_block.value.rows.value.iter().enumerate() {
+            let mut note_row: Vec<Option<NamedPitch>> = Vec::new();
+            for (col_idx, item) in row.value.iter().enumerate() {
+                if let Some(anchor_span) = item.value.is_anchor {
+                    let anchor_coords = Coordinate {
+                        row: row_idx as i32,
+                        col: col_idx as i32,
+                    };
+                    if let Some(old_anchor) = anchor.take() {
+                        diags.push(
+                            Diagnostic::new(
+                                code::LAYOUT,
+                                anchor_span,
+                                "a manual layout must have exactly one anchor",
+                            )
+                            .with_context(old_anchor.span, "here is the previous anchor"),
+                        );
+                    }
+                    anchor = Some(Spanned::new(anchor_span, anchor_coords));
+                }
+                match &item.value.item {
+                    LayoutItemType::Note(note) => {
+                        match scale.notes.get(&note.value.name.value) {
+                            None => {
+                                diags.err(
+                                    code::LAYOUT,
+                                    note.span,
+                                    "this note is not in the scale for this mapping",
+                                );
+                                // Push something so counts are accurate.
+                                note_row.push(None);
+                            }
+                            Some(sd) => {
+                                let cycle = note.value.octave.map(|x| x.value as i32).unwrap_or(0);
+                                let base_factor = &sd.base_relative
+                                    * &Pitch::from(scale.definition.cycle.pow(cycle));
+                                let name =
+                                    score_helpers::format_note_cycle(note.value.name.value, cycle);
+                                note_row.push(Some(NamedPitch { name, base_factor }));
+                            }
+                        };
+                    }
+                    LayoutItemType::Empty(_) => note_row.push(None),
+                }
+            }
+            notes.push(note_row);
+            let row_len = row.value.len();
+            if row_idx >= 1 && row_len != prev_row_len {
+                diags.err(
+                    code::LAYOUT,
+                    row.value[0].span,
+                    format!(
+                        "layout rows must be the same length; count for this row: {row_len}, previous row: {prev_row_len}"
+                    ),
+                )
+            }
+            prev_row_len = row_len;
+        }
+        let Some(mut anchor) = anchor else {
+            diags.err(
+                code::LAYOUT,
+                directive.layout_block.span,
+                "this layout has no anchor note; exactly one is required",
+            );
+            return;
+        };
+        // Rows appear in reverse order in the input since the lowest row is on the bottom.
+        notes.reverse();
+        anchor.value.row = notes.len() as i32 - 1 - anchor.value.row;
+        let mapping = MappingDetails::Manual(ManualMapping {
+            name: directive.mapping.value.clone(),
+            h_factor: directive.h_factor.map(|x| x.value).unwrap_or_default(),
+            v_factor: directive
+                .v_factor
+                .map(|x| x.value)
+                .unwrap_or(Pitch::must_parse("2")),
+            anchor_row: anchor.value.row,
+            anchor_col: anchor.value.col,
+            notes,
+        });
+        let mapping_data = MappingData {
+            span: directive.mapping.span,
+            mapping: Arc::new(mapping),
+            scale,
+        };
+        self.insert_mapping(diags, directive.mapping.value, mapping_data);
+    }
+
+    pub fn place_mapping(&mut self, diags: &Diagnostics, directive: PlaceMapping<'s>) {
+        let Some(layout) = self.layouts.get(&directive.layout.value) else {
+            diags.err(
+                code::LAYOUT,
+                directive.layout.span,
+                format!("unknown layout '{}'", directive.layout.value),
+            );
+            return;
+        };
+        let Some(mapping) = self.mappings.get(&directive.mapping.value) else {
+            diags.err(
+                code::LAYOUT,
+                directive.mapping.span,
+                format!("unknown mapping '{}'", directive.mapping.value),
+            );
+            return;
+        };
+        let base_pitch = directive
+            .base_pitch
+            .map(|x| x.value)
+            .unwrap_or(self.tuning_for_part(&Cow::Borrowed("")).base_pitch.clone());
+        let mut l = layout.layout.write().unwrap();
+        l.mappings.push(LayoutMapping {
+            name: mapping.mapping.name().clone(),
+            scale: mapping.scale.clone(),
+            base_pitch,
+            anchor_row: directive.anchor_row.value as i32,
+            anchor_col: directive.anchor_col.value as i32,
+            rows_above: directive.rows_above.map(|x| x.value as i32),
+            rows_below: directive.rows_below.map(|x| x.value as i32),
+            cols_left: directive.cols_left.map(|x| x.value as i32),
+            cols_right: directive.cols_right.map(|x| x.value as i32),
+            details: mapping.mapping.clone(),
+            offsets: Default::default(),
+        })
     }
 
     pub fn do_final_checks(&mut self, diags: &Diagnostics) {

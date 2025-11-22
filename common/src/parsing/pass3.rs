@@ -9,7 +9,7 @@
 use crate::parsing::diagnostics::{Diagnostics, code};
 use crate::parsing::pass2::{Pass2, Token2};
 use crate::parsing::score::{Directive, FromRawDirective, Score};
-use crate::parsing::{Options, Timeline, pass2};
+use crate::parsing::{Options, ScoreOutput, pass2};
 
 fn check_init<'s>(
     src: &'s str,
@@ -36,7 +36,7 @@ fn check_init<'s>(
     None
 }
 
-pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<Timeline<'s>, Diagnostics> {
+pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<ScoreOutput<'s>, Diagnostics> {
     let tokens = pass2::parse2(src)?;
     let diags = Diagnostics::new();
     let Some((skip, mut score)) = check_init(src, &tokens, &diags) else {
@@ -82,6 +82,6 @@ pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<Timeline<'s>, Diagn
     if diags.has_errors() {
         Err(diags)
     } else {
-        Ok(score.into_timeline())
+        Ok(score.into_output())
     }
 }

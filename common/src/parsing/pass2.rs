@@ -3,9 +3,9 @@
 
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
-    Articulation, DataBlock, Dynamic, DynamicLine, GetSpan, Hold, LayoutBlock, Note, NoteLeader,
-    NoteLine, NoteOctave, Param, ParamValue, PitchOrNumber, RawDirective, RegularNote, ScaleBlock,
-    ScaleNote, Span, Spanned, Token,
+    Articulation, DataBlock, Dynamic, DynamicLine, GetSpan, Hold, LayoutBlock, LayoutItem,
+    LayoutItemType, Note, NoteLeader, NoteLine, NoteOctave, Param, ParamValue, PitchOrNumber,
+    RawDirective, RegularNote, ScaleBlock, ScaleNote, Span, Spanned, Token,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
@@ -367,12 +367,21 @@ fn string<'s>(
     }
 }
 
+fn zero<'s>() -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<u32>> {
+    move |input| {
+        one_of(|x: Token1| matches!(x.value.t, Pass1::Number { n } if n.value == 0))
+            .parse_next(input)
+            .map(|tok| Spanned::new(tok.span, Pass1::get_number(&tok).unwrap()))
+    }
+}
+
 fn param_value<'s>(
     diags: &Diagnostics,
 ) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<ParamValue<'s>>> {
     move |input| {
         alt((
             string(diags).map(|x| ParamValue::String(x.value)),
+            zero().map(|_| ParamValue::Zero),
             pitch_or_number(diags).map(|x| ParamValue::PitchOrNumber(x.value)),
         ))
         .with_taken()
@@ -835,12 +844,39 @@ fn scale_block<'s>(
     }
 }
 
-fn check_layout_block<'s>(input: &mut Input2<'_, 's>) -> bool {
+fn layout_item<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<LayoutItem<'s>>> {
+    |input| {
+        (
+            opt(character('@')),
+            alt((
+                character('~')
+                    .map(|x| Spanned::<LayoutItemType>::new(x.span, LayoutItemType::Empty(x.span))),
+                note_octave(diags)
+                    .map(|x| Spanned::<LayoutItemType>::new(x.span, LayoutItemType::Note(x))),
+            )),
+        )
+            .parse_next(input)
+            .map(|(anchor, item)| {
+                let span = model::merge_spans(&[anchor.get_span(), item.get_span()]).unwrap();
+                Spanned::new(
+                    span,
+                    LayoutItem {
+                        item: item.value,
+                        is_anchor: anchor.map(|x| x.span),
+                    },
+                )
+            })
+    }
+}
+
+fn check_layout_block<'s>(diags: &Diagnostics, input: &mut Input2<'_, 's>) -> bool {
     peek((
         opt(some_space),
         definition_start,
         opt(some_space),
-        note_name(),
+        layout_item(diags),
     ))
     .parse_next(input)
     .is_ok()
@@ -848,16 +884,16 @@ fn check_layout_block<'s>(input: &mut Input2<'_, 's>) -> bool {
 
 fn layout_line<'s>(
     diags: &Diagnostics,
-) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Vec<Spanned<NoteOctave<'s>>>>> {
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Vec<Spanned<LayoutItem<'s>>>>> {
     |input| {
         terminated(
-            combinator::repeat(1.., preceded(optional_space, note_octave(diags))),
+            combinator::repeat(1.., preceded(optional_space, layout_item(diags))),
             terminated(opt(space(false)), newline_or_eof),
         )
         .parse_next(input)
-        .map(|notes: Vec<Spanned<NoteOctave>>| {
-            let span = notes.as_slice().get_span().unwrap();
-            Spanned::new(span, notes)
+        .map(|items: Vec<Spanned<LayoutItem>>| {
+            let span = items.as_slice().get_span().unwrap();
+            Spanned::new(span, items)
         })
     }
 }
@@ -1001,7 +1037,9 @@ fn degraded_definition(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow
                     newline.map(|_| ()),
                     pitch_or_number(diags).map(|_| ()),
                     character('|').map(|_| ()),
-                    note_name().map(|_| ()),
+                    character('@').map(|_| ()),
+                    character('~').map(|_| ()),
+                    note_octave(diags).map(|_| ()),
                     one_of(|x: Token1| !matches!(x.value.t, Pass1::DefinitionEnd)).map(
                         |tok: Token1| {
                             diags.err(
@@ -1100,7 +1138,7 @@ fn handle_token<'s>(
                             .parse_next(input)
                             .ok()
                             .map(|x| Spanned::new(x.span, DataBlock::Scale(x.value)))
-                    } else if check_layout_block(input) {
+                    } else if check_layout_block(diags, input) {
                         layout_block(diags)
                             .parse_next(input)
                             .ok()

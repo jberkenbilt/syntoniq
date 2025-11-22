@@ -55,7 +55,7 @@ impl Engine {
         }
         tx.send(Event::SetLayoutNames(LayoutNamesEvent { names }))?;
 
-        // Turn off all notes
+        // TODO: have an event to turn off all notes; midi player send 120, 0.
         for (pitch, count) in &self.transient_state.pitch_on_count {
             if *count > 0 {
                 tx.send(Event::PlayNote(PlayNoteEvent {

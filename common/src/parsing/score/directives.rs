@@ -1,6 +1,6 @@
 // -*- fill-column: 80 -*-
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics, code};
-use crate::parsing::model::{DataBlock, ScaleBlock, Span, Spanned};
+use crate::parsing::model::{DataBlock, LayoutBlock, ScaleBlock, Span, Spanned};
 use crate::parsing::score::HashSet;
 use crate::parsing::score::RawDirective;
 use crate::parsing::score_helpers;
@@ -52,9 +52,9 @@ impl<'s> DefineScale<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Change the scale for the specified parts. If no parts are specified, change the scale used
-/// by parts with no explicit scale. This creates a tuning with the specified scale and the current
-/// base pitch.
+/// Change the scale for the specified parts. If no parts are specified, change
+/// the scale used by parts with no explicit scale. This creates a tuning with
+/// the specified scale and the current base pitch.
 pub struct UseScale<'s> {
     pub span: Span,
     /// Scale name
@@ -69,19 +69,22 @@ impl<'s> UseScale<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Change the base pitch of the scale in a way that makes the new pitch of `written` equal to the
-/// current pitch of `pitch_from`. For example, you could transpose up a whole step in 12-TET with
-/// `transpose(written="c" pitch_from="d")`. This method of specifying transposition is easily
-/// reversible even in non-EDO tunings by simply swapping `written` and `pitch_from`. This can be
-/// applied to multiple parts or to the default tuning. The parts do not all have to be using the
-/// same scale as long as they are all using scales that have both named notes.
+/// Change the base pitch of the scale in a way that makes the new pitch of
+/// `written` equal to the current pitch of `pitch_from`. For example, you could
+/// transpose up a whole step in 12-TET with `transpose(written="c"
+/// pitch_from="d")`. This method of specifying transposition is easily
+/// reversible even in non-EDO tunings by simply swapping `written` and
+/// `pitch_from`. This can be applied to multiple parts or to the default
+/// tuning. The parts do not all have to be using the same scale as long as they
+/// are all using scales that have both named notes.
 pub struct Transpose<'s> {
     pub span: Span,
-    /// Name of note used as anchor pitch for transposition. In the new tuning, this note will have
-    /// the pitch that the note in `pitch_from` has before the transposition.
+    /// Name of note used as anchor pitch for transposition. In the new tuning,
+    /// this note will have the pitch that the note in `pitch_from` has before
+    /// the transposition.
     pub written: Spanned<Cow<'s, str>>,
-    /// Name of the note in the existing tuning whose pitch will be given to the `written` note
-    /// after transposition.
+    /// Name of the note in the existing tuning whose pitch will be given to the
+    /// `written` note after transposition.
     pub pitch_from: Spanned<Cow<'s, str>>,
     /// Which parts the tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Cow<'s, str>>>,
@@ -93,10 +96,11 @@ impl<'s> Transpose<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Change the base pitch of the current tuning for the named parts, or if no parts are named, for
-/// the default tuning. If `absolute`, use the pitch as the absolute base pitch. If `relative`,
-/// multiply the base pitch by the given factor. Example: `set_base_pitch(relative="^1|12")` would
-/// transpose the tuning up one 12-TET half step. Only one of `absolute` or `relative` may be
+/// Change the base pitch of the current tuning for the named parts, or if no
+/// parts are named, for the default tuning. If `absolute`, use the pitch as the
+/// absolute base pitch. If `relative`, multiply the base pitch by the given
+/// factor. Example: `set_base_pitch(relative="^1|12")` would transpose the
+/// tuning up one 12-TET half step. Only one of `absolute` or `relative` may be
 /// given.
 pub struct SetBasePitch<'s> {
     pub span: Span,
@@ -138,16 +142,18 @@ impl<'s> ResetTuning<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Set the MIDI instrument number for zero or more parts. If no part is specified, this becomes
-/// the default instrument for all parts without a specific instrument. It is an error to name
-/// a part that doesn't appear somewhere in the score.
+/// Set the MIDI instrument number for zero or more parts. If no part is
+/// specified, this becomes the default instrument for all parts without a
+/// specific instrument. It is an error to name a part that doesn't appear
+/// somewhere in the score.
 pub struct MidiInstrument<'s> {
     pub span: Span,
     /// Midi instrument number from 1 to 128
     pub instrument: Spanned<u32>,
     /// Optional bank number from 1 to 16384
     pub bank: Option<Spanned<u32>>,
-    /// Which parts use this instrument; if not specified, all unassigned parts use it
+    /// Which parts use this instrument; if not specified, all unassigned parts
+    /// use it
     pub part: Vec<Spanned<Cow<'s, str>>>,
 }
 impl<'s> MidiInstrument<'s> {
@@ -174,17 +180,18 @@ impl<'s> MidiInstrument<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Set the CSound instrument number or name for zero or more parts. If no part is specified, this
-/// becomes the default instrument for all parts without a specific instrument. It is an error to
-/// name a part that doesn't appear somewhere in the score. You must specify exactly one of number
-/// or name.
+/// Set the CSound instrument number or name for zero or more parts. If no part
+/// is specified, this becomes the default instrument for all parts without a
+/// specific instrument. It is an error to name a part that doesn't appear
+/// somewhere in the score. You must specify exactly one of number or name.
 pub struct CsoundInstrument<'s> {
     pub span: Span,
     /// CSound instrument number
     pub number: Option<Spanned<u32>>,
     /// CSound instrument name
     pub name: Option<Spanned<Cow<'s, str>>>,
-    /// Which parts use this instrument; if not specified, all unassigned parts use it
+    /// Which parts use this instrument; if not specified, all unassigned parts
+    /// use it
     pub part: Vec<Spanned<Cow<'s, str>>>,
 }
 impl<'s> CsoundInstrument<'s> {
@@ -210,13 +217,16 @@ pub struct Tempo<'s> {
     pub span: Span,
     /// Tempo in beats per minute
     pub bpm: Spanned<Ratio<u32>>,
-    /// Optional effective time relative to the current score time. This can be useful
-    /// for inserting a tempo change part way through a score line. Defaults to 0.
+    /// Optional effective time relative to the current score time. This can be
+    /// useful for inserting a tempo change part way through a score line.
+    /// Defaults to 0.
     pub start_time: Option<Spanned<Ratio<u32>>>,
-    /// Optional end tempo; if specified, duration is required. Indicates that the tempo should
-    /// change gradually from `bpm` to `end_bpm` over `duration` beats.
+    /// Optional end tempo; if specified, duration is required. Indicates that
+    /// the tempo should change gradually from `bpm` to `end_bpm` over
+    /// `duration` beats.
     pub end_bpm: Option<Spanned<Ratio<u32>>>,
-    /// Must appear with `end_bpm` to indicate the duration of a gradual tempo change.
+    /// Must appear with `end_bpm` to indicate the duration of a gradual tempo
+    /// change.
     pub duration: Option<Spanned<Ratio<u32>>>,
 }
 impl<'s> Tempo<'s> {
@@ -235,9 +245,10 @@ impl<'s> Tempo<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Mark a moment in the score. The mark may be used for repeats or to generate a subset of musical
-/// output. There are no restrictions around the placement of marks, but there are restrictions
-/// on what marks may be used as repeat delimiters. See the `repeat` directive.
+/// Mark a moment in the score. The mark may be used for repeats or to generate
+/// a subset of musical output. There are no restrictions around the placement
+/// of marks, but there are restrictions on what marks may be used as repeat
+/// delimiters. See the `repeat` directive.
 pub struct Mark<'s> {
     pub span: Span,
     /// The mark's label
@@ -248,9 +259,9 @@ impl<'s> Mark<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Repeat a section of the timeline delimited by two marks. The start mark must strictly precede
-/// the end mark. No tied notes or pending dynamic changes may be unresolved at the point of the
-/// end mark.
+/// Repeat a section of the timeline delimited by two marks. The start mark must
+/// strictly precede the end mark. No tied notes or pending dynamic changes may
+/// be unresolved at the point of the end mark.
 pub struct Repeat<'s> {
     pub span: Span,
     /// Label of mark at the beginning of the repeated section
@@ -260,6 +271,98 @@ pub struct Repeat<'s> {
     pub times: Option<Spanned<u32>>,
 }
 impl<'s> Repeat<'s> {
+    pub fn validate(&mut self, _diags: &Diagnostics) {}
+}
+
+#[derive(FromRawDirective)]
+/// Define a manual mapping of notes to keyboard positions. The mapping is
+/// placed into a layout with the 'place_mapping' directive.
+pub struct CreateLayout<'s> {
+    pub span: Span,
+    /// Name of layout
+    pub layout: Spanned<Cow<'s, str>>,
+    /// Keyboard type; not validated here, but the keyboard application ignores layouts whose
+    /// keyboard value is unknown to it.
+    pub keyboard: Spanned<Cow<'s, str>>,
+}
+impl<'s> CreateLayout<'s> {
+    pub fn validate(&mut self, _diags: &Diagnostics) {}
+}
+
+#[derive(FromRawDirective)]
+/// Define an isomorphic mapping for a tuning. The mapping is placed into a
+/// layout with the 'place_mapping' directive.
+pub struct DefineIsomorphicMapping<'s> {
+    pub span: Span,
+    /// Name of mapping
+    pub mapping: Spanned<Cow<'s, str>>,
+    /// Scale; if omitted, use the current default scale
+    pub scale: Option<Spanned<Cow<'s, str>>>,
+    /// Number of scale degrees to go up in the horizontal direction
+    pub steps_h: Spanned<u32>,
+    /// Number of scale degrees to go up in the vertical or up-right direction
+    pub steps_v: Spanned<u32>,
+}
+impl<'s> DefineIsomorphicMapping<'s> {
+    pub fn validate(&mut self, _diags: &Diagnostics) {}
+}
+
+#[derive(FromRawDirective, Clone)]
+/// Define a manual mapping of notes to keyboard positions. The mapping is
+/// placed into a layout with the 'place_mapping' directive.
+pub struct DefineManualMapping<'s> {
+    pub span: Span,
+    /// Name of mapping
+    pub mapping: Spanned<Cow<'s, str>>,
+    /// Scale; if omitted, use the current default scale
+    pub scale: Option<Spanned<Cow<'s, str>>>,
+    /// Factor to multiply by the pitches for horizontal tiling of the mapping;
+    /// default is 1
+    pub h_factor: Option<Spanned<Pitch>>,
+    /// Factor to multiply by the pitches for vertical tiling of the mapping;
+    /// default is 2
+    pub v_factor: Option<Spanned<Pitch>>,
+    pub layout_block: Spanned<LayoutBlock<'s>>,
+}
+impl<'s> DefineManualMapping<'s> {
+    pub fn validate(&mut self, _diags: &Diagnostics) {}
+}
+
+#[derive(FromRawDirective)]
+/// Define a manual mapping of notes to keyboard positions. The mapping is
+/// placed into a layout with the 'place_mapping' directive.
+pub struct PlaceMapping<'s> {
+    pub span: Span,
+    /// Name of layout
+    pub layout: Spanned<Cow<'s, str>>,
+    /// Name of mapping
+    pub mapping: Spanned<Cow<'s, str>>,
+    /// Base pitch; defaults to the base pitch of the default tuning
+    pub base_pitch: Option<Spanned<Pitch>>,
+    /// Row of the base note for isomorphic layouts or the anchor note for
+    /// manual layouts
+    pub anchor_row: Spanned<u32>,
+    /// Column of the base note for isomorphic layouts or the anchor note for
+    /// manual layouts
+    pub anchor_col: Spanned<u32>,
+    /// Number of rows *above* the anchor position to include in the region
+    /// containing the mapping; default is to extend to the top of the keyboard.
+    /// May be 0.
+    pub rows_above: Option<Spanned<u32>>,
+    /// Number of rows *below* the anchor position to include in the region
+    /// containing the mapping; default is to extend to the bottom of the
+    /// keyboard. May be 0.
+    pub rows_below: Option<Spanned<u32>>,
+    /// Number of columns to the *left* of the anchor position to include in the
+    /// region containing the mapping; default is to extend to the leftmost
+    /// column of the keyboard. May be 0.
+    pub cols_left: Option<Spanned<u32>>,
+    /// Number of columns to the *right* of the anchor position to include in
+    /// the region containing the mapping; default is to extend to the rightmost
+    /// column of the keyboard. May be 0.
+    pub cols_right: Option<Spanned<u32>>,
+}
+impl<'s> PlaceMapping<'s> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 
@@ -276,4 +379,8 @@ pub enum Directive<'s> {
     Tempo(Tempo<'s>),
     Mark(Mark<'s>),
     Repeat(Repeat<'s>),
+    CreateLayout(CreateLayout<'s>),
+    DefineIsomorphicMapping(DefineIsomorphicMapping<'s>),
+    DefineManualMapping(DefineManualMapping<'s>),
+    PlaceMapping(PlaceMapping<'s>),
 }

@@ -111,3 +111,13 @@ pub fn check_duplicate_by_part<'s, T: Clone>(
         }
     }
 }
+
+pub fn format_note_cycle(note_name: &str, cycle: i32) -> Cow<'_, str> {
+    match cycle {
+        1 => Cow::Owned(format!("{note_name}'")),
+        -1 => Cow::Owned(format!("{note_name},")),
+        x if x > 1 => Cow::Owned(format!("{note_name}'{x}")),
+        x if x < -1 => Cow::Owned(format!("{note_name},{}", -x)),
+        _ => Cow::Borrowed(note_name),
+    }
+}

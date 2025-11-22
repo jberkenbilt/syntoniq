@@ -11,6 +11,37 @@ cargo build --config .cargo/windows-cross.toml --no-default-features
 
 Primary goal: separate Launchpad-specific parts from the rest.
 
+New transpose workflow:
+* Transpose -> key 1 -> key 2 assigns key 1's pitch to key 2 by transposing key 2's tuning. This makes it similar to shift in its UI. We can also make the transpose key behave like the shift key.
+
+Note that octave transpose shifts by octaves, not cycles. It does this uniformly for everything in the current layout, which may consist of scales with different cycles. You can always transpose by a cycle by finding the note a cycle up or down, shifting if needed to get to it. On octave may not be available in the current scale.
+
+Keyboard functions
+* reset
+* sustain
+* shift
+* transpose
+* octave up
+* octave down
+* print
+* layout selection
+
+HexBoard UI
+* Menu
+  * Reset
+  * Layout
+* Command buttons
+  * shift
+  * transpose
+  * octave up
+  * octave down
+  * 
+  * 
+  * toggle sustain
+
+Maybe we can dump print and make that a continuous function?
+Do we want a layout quick select that would temporarily change note keys to layout selection?
+
 ## Refactor engine and controller
 
 Initial state:

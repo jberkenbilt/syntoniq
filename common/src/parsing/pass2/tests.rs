@@ -276,10 +276,7 @@ fn test_directive() -> anyhow::Result<()> {
                     key: Spanned::new(41..44, "one"),
                     value: Spanned::new(
                         49..50,
-                        ParamValue::PitchOrNumber(PitchOrNumber::Integer((
-                            1,
-                            Pitch::must_parse("1")
-                        )))
+                        ParamValue::PitchOrNumber(PitchOrNumber::Integer((1, Pitch::unit(),)))
                     ),
                 },
                 Param {

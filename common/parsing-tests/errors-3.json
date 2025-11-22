@@ -13542,14 +13542,25 @@
                                 527
                               ],
                               "value": {
-                                "name": {
-                                  "span": [
-                                    521,
-                                    527
-                                  ],
-                                  "value": "potato"
-                                },
-                                "octave": null
+                                "is_anchor": null,
+                                "item": {
+                                  "Note": {
+                                    "span": [
+                                      521,
+                                      527
+                                    ],
+                                    "value": {
+                                      "name": {
+                                        "span": [
+                                          521,
+                                          527
+                                        ],
+                                        "value": "potato"
+                                      },
+                                      "octave": null
+                                    }
+                                  }
+                                }
                               }
                             }
                           ]

@@ -14,6 +14,11 @@ use std::{cmp, fmt};
 pub struct Pitch {
     factors: Vec<Factor>,
 }
+impl Default for Pitch {
+    fn default() -> Self {
+        Self::unit()
+    }
+}
 impl PartialOrd for Pitch {
     fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
         Some(self.cmp(other))
@@ -254,6 +259,10 @@ impl Pitch {
         }
 
         Self { factors: result }
+    }
+
+    pub fn unit() -> Self {
+        Self::new(vec![Factor::from(Ratio::from_integer(1))])
     }
 
     pub fn concat(&self, other: &Self) -> Self {

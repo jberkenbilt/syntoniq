@@ -61,6 +61,7 @@ reset_tuning(part="p2")
 use_scale(scale="5-EDO" part="p1" part="p2")
 set_base_pitch(part="p1" part="p2" absolute=440)
 set_base_pitch(part="p1" part="p2" relative=^1|19)
+set_base_pitch(part="p1" part="p2")
 use_scale(scale="default" part="p4")
 
 [p1.0]  1:p q r s
