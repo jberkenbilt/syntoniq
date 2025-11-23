@@ -7,8 +7,9 @@ use std::fmt::{Debug, Display, Formatter};
 use std::ops::Index;
 use std::ops::Range;
 use std::sync::LazyLock;
+use to_static_derive::ToStatic;
 
-#[derive(Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Clone, Copy, ToStatic)]
 pub struct Span {
     pub start: usize,
     pub end: usize,

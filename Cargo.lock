@@ -1565,6 +1565,7 @@ dependencies = [
  "primal",
  "serde",
  "serde_json",
+ "to_static_derive",
  "winnow",
 ]
 
@@ -1603,6 +1604,15 @@ dependencies = [
  "once_cell",
  "rustix",
  "windows-sys 0.61.0",
+]
+
+[[package]]
+name = "to_static_derive"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]

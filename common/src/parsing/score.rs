@@ -22,6 +22,7 @@ use crate::parsing::{
 };
 use crate::pitch::Pitch;
 pub use directives::*;
+use to_static_derive::ToStatic;
 
 pub struct Score<'s> {
     src: &'s str,
@@ -117,7 +118,7 @@ pub struct MarkData<'s> {
     pending_notes: HashMap<PartNote<'s>, WithTime<Spanned<NoteEvent<'s>>>>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToStatic)]
 pub struct ScaleDefinition<'s> {
     #[serde(skip)]
     pub span: Span,
@@ -129,10 +130,11 @@ pub(crate) mod scale_notes {
     use crate::parsing::score::{NamedScaleDegree, ScaleDegree};
     use serde::Serialize;
     use serde::Serializer;
+    use std::borrow::Cow;
     use std::collections::HashMap;
 
     pub fn serialize<S: Serializer>(
-        v: &HashMap<&str, ScaleDegree>,
+        v: &HashMap<Cow<str>, ScaleDegree>,
         s: S,
     ) -> Result<S::Ok, S::Error> {
         let mut notes: Vec<NamedScaleDegree> = v
@@ -144,20 +146,22 @@ pub(crate) mod scale_notes {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToStatic)]
 pub struct Scale<'s> {
     #[serde(flatten)]
     pub definition: ScaleDefinition<'s>,
     #[serde(with = "scale_notes")]
-    pub notes: HashMap<&'s str, ScaleDegree>,
-    pub primary_names: Vec<&'s str>,
+    pub notes: HashMap<Cow<'s, str>, ScaleDegree>,
+    pub primary_names: Vec<Cow<'s, str>>,
     pub pitches: Vec<Pitch>,
 }
-#[derive(Serialize, Clone)]
+
+#[derive(Serialize, Clone, ToStatic)]
 pub struct ScaleDegree {
     pub base_relative: Pitch,
     pub degree: i32,
 }
+
 #[derive(Serialize)]
 pub struct NamedScaleDegree<'s> {
     pub name: &'s str,
@@ -165,7 +169,7 @@ pub struct NamedScaleDegree<'s> {
     pub degree: &'s ScaleDegree,
 }
 
-#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq)]
+#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, ToStatic)]
 pub struct NamedPitch<'s> {
     pub name: Cow<'s, str>,
     pub base_factor: Pitch,
@@ -174,8 +178,8 @@ pub struct NamedPitch<'s> {
 impl<'s> Scale<'s> {
     pub fn new(
         definition: ScaleDefinition<'s>,
-        note_pitches: HashMap<&'s str, Pitch>,
-        mut pitch_primary_names: HashMap<Pitch, &'s str>,
+        note_pitches: HashMap<Cow<'s, str>, Pitch>,
+        mut pitch_primary_names: HashMap<Pitch, Cow<'s, str>>,
     ) -> Arc<Self> {
         // For each note, calculate its pitch relative to the base and normalized to within the
         // cycle. The results in a revised base-relative pitch and cycle offset. Sort the resulting
@@ -185,7 +189,7 @@ impl<'s> Scale<'s> {
 
         // Gather notes based on normalized base pitch and cycle offset.
         struct Intermediate<'s> {
-            name: &'s str,
+            name: Cow<'s, str>,
             orig_base: Pitch,
             normalized_base: Pitch,
             cycle_offset: i32,
@@ -214,7 +218,7 @@ impl<'s> Scale<'s> {
             // the cycle.
             pitch_primary_names
                 .entry(normalized_base.clone())
-                .or_insert(name);
+                .or_insert(name.clone());
             intermediate.push(Intermediate {
                 name,
                 orig_base,
@@ -231,9 +235,9 @@ impl<'s> Scale<'s> {
             .enumerate()
             .map(|(i, pitch)| (pitch.clone(), i as i32))
             .collect();
-        let primary_names: Vec<&str> = pitches
+        let primary_names: Vec<_> = pitches
             .iter()
-            .map(|p| *pitch_primary_names.get(p).unwrap())
+            .map(|p| pitch_primary_names.get(p).cloned().unwrap())
             .collect();
         // Now we can compute the scale degree of each note
         let degrees_per_cycle = pitches.len() as i32;
@@ -301,6 +305,7 @@ pub(crate) static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
         ("b#", pitches[12].clone()),
     ]
     .into_iter()
+    .map(|(k, v)| (Cow::Borrowed(k), v))
     .collect();
     // For primary names of accidentals, pick the one that appears first in key signatures.
     let pitch_primary_names = [
@@ -318,6 +323,7 @@ pub(crate) static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
         (pitches[11].clone(), "b"),
     ]
     .into_iter()
+    .map(|(k, v)| (k, Cow::Borrowed(v)))
     .collect();
     Scale::new(
         ScaleDefinition {
@@ -986,9 +992,9 @@ impl<'s> Score<'s> {
                 );
             }
             for note_name in &note.value.note_names {
-                let name = note_name.value;
+                let name = Cow::Borrowed(note_name.value);
                 // Insert the first name encountered for a pitch.
-                pitch_to_name.entry(pitch.clone()).or_insert(name);
+                pitch_to_name.entry(pitch.clone()).or_insert(name.clone());
                 let span = note_name.span;
                 if let Some((_, old)) = name_to_pitch.insert(name, (pitch.clone(), span)) {
                     diags.push(
@@ -1127,7 +1133,7 @@ impl<'s> Score<'s> {
         note: &Spanned<&str>,
     ) -> Pitch {
         if let Some(scale) = self.scales.get(&tuning.scale_name)
-            && let Some(sd) = scale.notes.get(&note.value)
+            && let Some(sd) = scale.notes.get(&Cow::Borrowed(note.value))
         {
             &sd.base_relative * &tuning.base_pitch
         } else {
@@ -1570,7 +1576,7 @@ impl<'s> Score<'s> {
                 }
                 match &item.value.item {
                     LayoutItemType::Note(note) => {
-                        match scale.notes.get(&note.value.name.value) {
+                        match scale.notes.get(&Cow::Borrowed(note.value.name.value)) {
                             None => {
                                 diags.err(
                                     code::LAYOUT,
@@ -1584,8 +1590,10 @@ impl<'s> Score<'s> {
                                 let cycle = note.value.octave.map(|x| x.value as i32).unwrap_or(0);
                                 let base_factor = &sd.base_relative
                                     * &Pitch::from(scale.definition.cycle.pow(cycle));
-                                let name =
-                                    score_helpers::format_note_cycle(note.value.name.value, cycle);
+                                let name = score_helpers::format_note_cycle(
+                                    Cow::Borrowed(note.value.name.value),
+                                    cycle,
+                                );
                                 note_row.push(Some(NamedPitch { name, base_factor }));
                             }
                         };

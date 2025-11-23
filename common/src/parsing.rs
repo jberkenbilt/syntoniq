@@ -67,6 +67,7 @@ pub(crate) mod score_helpers;
 mod timeline;
 use crate::parsing::layout::Layouts;
 use crate::parsing::score::{Directive, FromRawDirective};
+use crate::parsing::score_helpers::{ArcContext, ToStatic};
 use clap::Parser;
 pub use score::ScoreOutput;
 use serde::Deserialize;
@@ -106,8 +107,15 @@ pub fn timeline<'s>(
     Ok(parse(filename, src, options)?.timeline)
 }
 
-pub fn layouts<'s>(filename: &str, src: &'s str, options: &Options) -> anyhow::Result<Layouts<'s>> {
-    Ok(parse(filename, src, options)?.layouts)
+pub fn layouts<'s>(
+    filename: &str,
+    src: &'s str,
+    options: &Options,
+) -> anyhow::Result<Layouts<'static>> {
+    let mut arc_context = ArcContext::default();
+    Ok(parse(filename, src, options)?
+        .layouts
+        .to_static(&mut arc_context))
 }
 
 pub fn show_help() -> anyhow::Result<()> {

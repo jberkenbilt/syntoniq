@@ -5,6 +5,7 @@ edition.workspace = true
 
 [dependencies]
 directive_derive = { path = "directive_derive" }
+to_static_derive = { path = "to_static_derive" }
 log.workspace = true
 serde.workspace = true
 anyhow.workspace = true

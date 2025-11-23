@@ -9,8 +9,9 @@ use std::collections::HashMap;
 use std::fmt::{Display, Formatter};
 use std::str::FromStr;
 use std::{cmp, fmt};
+use to_static_derive::ToStatic;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, ToStatic)]
 pub struct Pitch {
     factors: Vec<Factor>,
 }
@@ -47,7 +48,7 @@ impl Ord for Pitch {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, ToStatic)]
 pub struct Factor {
     base: Ratio<u32>,
     exp: Ratio<i32>,

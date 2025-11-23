@@ -4,9 +4,164 @@ use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
+use std::collections::hash_map::Entry;
 use std::collections::{BTreeMap, HashMap};
 use std::fmt::Debug;
 use std::hash::Hash;
+use std::sync::{Arc, RwLock};
+use std::{mem, ptr};
+
+struct ArcPtr {
+    p: *mut (),
+    delete: Box<dyn Fn(*mut ())>,
+}
+#[derive(Default)]
+pub struct ArcContext {
+    converted: HashMap<*const (), Option<ArcPtr>>,
+}
+impl Drop for ArcContext {
+    fn drop(&mut self) {
+        for v in mem::take(&mut self.converted).into_values().flatten() {
+            (*v.delete)(v.p);
+        }
+    }
+}
+
+pub trait ToStatic<'s> {
+    type Static;
+    fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static;
+}
+
+impl<'s> ToStatic<'s> for i32 {
+    type Static = i32;
+    fn to_static(&self, _: &mut ArcContext) -> Self::Static {
+        *self
+    }
+}
+
+impl<'s> ToStatic<'s> for u32 {
+    type Static = u32;
+    fn to_static(&self, _: &mut ArcContext) -> Self::Static {
+        *self
+    }
+}
+
+impl<'s> ToStatic<'s> for usize {
+    type Static = usize;
+    fn to_static(&self, _: &mut ArcContext) -> Self::Static {
+        *self
+    }
+}
+
+impl<'s, T: Copy> ToStatic<'s> for Ratio<T> {
+    type Static = Ratio<T>;
+
+    fn to_static(&self, _: &mut ArcContext) -> Self::Static {
+        *self
+    }
+}
+
+impl<'s, T> ToStatic<'s> for Arc<T>
+where
+    T: ToStatic<'s>,
+{
+    type Static = Arc<T::Static>;
+
+    fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static {
+        let from_ptr = self.as_ref() as *const _ as *const ();
+        let entry = match arc_context.converted.entry(from_ptr) {
+            Entry::Occupied(e) => {
+                let Some(p) = e.get().as_ref() else {
+                    panic!("loop_detected in to_static");
+                };
+                p.p as *const Arc<T::Static>
+            }
+            Entry::Vacant(v) => {
+                // Can't allocate and insert here since it would require two mutable references
+                // to arc_context.
+                v.insert(None);
+                ptr::null_mut()
+            }
+        };
+        let to_ptr = if entry.is_null() {
+            let new = Arc::new(self.as_ref().to_static(arc_context));
+            // Create a raw pointer to one copy of the Arc. This keeps the Arc alive. This will
+            // get cleaned up by the Drop implementation for ArcContext.
+            let p = Box::into_raw(Box::new(new));
+            let ap = ArcPtr {
+                p: p as *mut _,
+                delete: Box::new(|p| {
+                    drop(unsafe { Box::from_raw(p as *mut Arc<T::Static>) });
+                }),
+            };
+            arc_context.converted.insert(from_ptr, Some(ap));
+            p as *const _
+        } else {
+            entry
+        };
+
+        // Safety: at this moment, we know to_ptr is a non-null pointer to memory that was taken
+        // from a Box<Arc<T::Static>>. Taking it as a ref and cloning it will make a new copy of
+        // the Arc.
+        unsafe { to_ptr.as_ref() }.unwrap().clone()
+    }
+}
+
+impl<'s, T> ToStatic<'s> for Option<T>
+where
+    T: ToStatic<'s>,
+{
+    type Static = Option<T::Static>;
+
+    fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static {
+        self.as_ref().map(|x| x.to_static(arc_context))
+    }
+}
+
+impl<'s, T> ToStatic<'s> for RwLock<T>
+where
+    T: ToStatic<'s>,
+{
+    type Static = RwLock<T::Static>;
+
+    fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static {
+        RwLock::new(self.read().unwrap().to_static(arc_context))
+    }
+}
+
+impl<'s> ToStatic<'s> for Cow<'s, str> {
+    type Static = Cow<'static, str>;
+
+    fn to_static(&self, _: &mut ArcContext) -> Self::Static {
+        Cow::Owned(self.to_string())
+    }
+}
+
+impl<'s, K, V> ToStatic<'s> for HashMap<K, V>
+where
+    K: Eq + Hash + ToStatic<'s>,
+    K::Static: Eq + Hash,
+    V: ToStatic<'s>,
+{
+    type Static = HashMap<K::Static, V::Static>;
+
+    fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static {
+        self.iter()
+            .map(|(k, v)| (k.to_static(arc_context), v.to_static(arc_context)))
+            .collect()
+    }
+}
+
+impl<'s, T> ToStatic<'s> for Vec<T>
+where
+    T: ToStatic<'s>,
+{
+    type Static = Vec<T::Static>;
+
+    fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static {
+        self.iter().map(|x| x.to_static(arc_context)).collect()
+    }
+}
 
 pub trait CheckValue<'s>: Sized {
     fn check_value(p: &ParamValue<'s>) -> Result<Self, impl AsRef<str>>;
@@ -112,12 +267,39 @@ pub fn check_duplicate_by_part<'s, T: Clone>(
     }
 }
 
-pub fn format_note_cycle(note_name: &str, cycle: i32) -> Cow<'_, str> {
+pub fn format_note_cycle<'s>(note_name: Cow<'s, str>, cycle: i32) -> Cow<'s, str> {
     match cycle {
         1 => Cow::Owned(format!("{note_name}'")),
         -1 => Cow::Owned(format!("{note_name},")),
         x if x > 1 => Cow::Owned(format!("{note_name}'{x}")),
         x if x < -1 => Cow::Owned(format!("{note_name},{}", -x)),
-        _ => Cow::Borrowed(note_name),
+        _ => note_name,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_to_static() {
+        // Tests pass with valgrind. The implementation was done with no AI help and passed AI code
+        // review.
+        let a1 = Arc::new(3);
+        let a2 = a1.clone();
+        assert_eq!(Arc::strong_count(&a1), 2);
+        assert!(ptr::eq(a1.as_ref(), a2.as_ref()));
+        let mut arc_context = ArcContext::default();
+        let a3: Arc<i32> = a1.to_static(&mut arc_context);
+        let a4: Arc<i32> = a2.to_static(&mut arc_context);
+        let a5: Arc<i32> = a1.clone().to_static(&mut arc_context);
+        assert!(!ptr::eq(a1.as_ref(), a3.as_ref()));
+        assert!(ptr::eq(a3.as_ref(), a4.as_ref()));
+        assert!(ptr::eq(a3.as_ref(), a5.as_ref()));
+        assert_eq!(Arc::strong_count(&a1), 2);
+        assert_eq!(Arc::strong_count(&a3), 4);
+        drop(arc_context);
+        assert_eq!(Arc::strong_count(&a1), 2);
+        assert_eq!(Arc::strong_count(&a3), 3);
     }
 }

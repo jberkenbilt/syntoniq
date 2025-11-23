@@ -6,14 +6,15 @@ use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::sync::{Arc, RwLock};
+use to_static_derive::ToStatic;
 
-#[derive(Serialize, Default)]
+#[derive(Serialize, Default, ToStatic)]
 pub struct Layouts<'s> {
     pub scales: HashMap<Cow<'s, str>, Arc<Scale<'s>>>,
     pub layouts: HashMap<Cow<'s, str>, Arc<RwLock<Layout<'s>>>>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToStatic)]
 pub struct Layout<'s> {
     pub keyboard: Cow<'s, str>,
     pub mappings: Vec<LayoutMapping<'s>>,
@@ -80,7 +81,7 @@ pub struct PlacedNote<'s> {
     pub pitch: Pitch,
 }
 
-#[derive(Default, Clone)]
+#[derive(Default, Clone, ToStatic)]
 pub struct Offsets {
     /// Amount the layout is shifted vertically.
     pub shift_v: i32,
@@ -101,7 +102,7 @@ pub(crate) mod scale_name {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToStatic)]
 pub struct LayoutMapping<'s> {
     pub name: Cow<'s, str>,
     #[serde(with = "scale_name")]
@@ -163,7 +164,7 @@ impl<'s> LayoutMapping<'s> {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToStatic)]
 pub enum MappingDetails<'s> {
     Isomorphic(IsomorphicMapping<'s>),
     Manual(ManualMapping<'s>),
@@ -202,7 +203,7 @@ impl<'s> MappingDetails<'s> {
     }
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, ToStatic)]
 pub struct IsomorphicMapping<'s> {
     pub name: Cow<'s, str>,
     pub steps_h: i32,
@@ -221,12 +222,12 @@ impl<'s> IsomorphicMapping<'s> {
         let cycle = full_degree.div_euclid(num_degrees);
         let base_factor =
             &scale.pitches[pitch_idx as usize] * &Pitch::from(scale.definition.cycle.pow(cycle));
-        let given_name = scale.primary_names[pitch_idx as usize];
+        let given_name = scale.primary_names[pitch_idx as usize].clone();
         let name = score_helpers::format_note_cycle(given_name, cycle);
         Some(NamedPitch { name, base_factor })
     }
 }
-#[derive(Serialize)]
+#[derive(Serialize, ToStatic)]
 pub struct ManualMapping<'s> {
     pub name: Cow<'s, str>,
     pub h_factor: Pitch,
@@ -238,6 +239,7 @@ pub struct ManualMapping<'s> {
     /// Outer vec is rows, inner vec is columns; all rows have the same number of columns.
     pub notes: Vec<Vec<Option<NamedPitch<'s>>>>,
 }
+
 impl<'s> ManualMapping<'s> {
     /// It is required that all elements of `notes` are the same length and that
     /// `anchor_row` and `anchor_column` are valid indices into notes.
