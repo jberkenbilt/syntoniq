@@ -52,7 +52,7 @@ pub(crate) mod layouts {
     use serde::Serialize;
     use serde::Serializer;
     use std::borrow::Cow;
-    use std::sync::{Arc, RwLockReadGuard};
+    use std::sync::Arc;
 
     #[derive(Serialize)]
     struct NamedScale<'a> {
@@ -60,29 +60,14 @@ pub(crate) mod layouts {
         scale: &'a Arc<Scale<'a>>,
     }
     #[derive(Serialize)]
-    struct NamedLayout<'a> {
-        name: &'a Cow<'a, str>,
-        layout: &'a Layout<'a>,
-    }
-    #[derive(Serialize)]
     struct SerializeLayouts<'a> {
-        layouts: Vec<NamedLayout<'a>>,
+        layouts: Vec<&'a Layout<'a>>,
         scales: Vec<NamedScale<'a>>,
     }
 
     pub fn serialize<S: Serializer>(v: &Layouts, s: S) -> Result<S::Ok, S::Error> {
         // Convert maps to sorted arrays for consistent output.
-        let guards: Vec<(&Cow<str>, RwLockReadGuard<Layout>)> = v
-            .layouts
-            .iter()
-            .map(|(name, layout)| (name, layout.read().unwrap()))
-            .collect();
-        let mut layouts: Vec<NamedLayout> = Vec::new();
-        layouts.sort_by_key(|x| x.name);
-        for (name, layout) in &guards {
-            let nl = NamedLayout { name, layout };
-            layouts.push(nl);
-        }
+        let layouts = v.layouts.iter().map(Arc::as_ref).collect();
         let mut scales: Vec<NamedScale> = v
             .scales
             .iter()
@@ -172,7 +157,13 @@ pub struct NamedScaleDegree<'s> {
 #[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, ToStatic)]
 pub struct NamedPitch<'s> {
     pub name: Cow<'s, str>,
+    /// Normalized interval over base pitch; always < 1 cycle
+    pub base_interval: Pitch,
+    /// Factor of base pitch; may fall outside the cycle
     pub base_factor: Pitch,
+    /// Normalized degree; always between 0 and number-of-notes - 1
+    pub degree: u32,
+    pub isomorphic: bool,
 }
 
 impl<'s> Scale<'s> {
@@ -893,14 +884,19 @@ impl<'s> Score<'s> {
     }
 
     pub fn into_output(self) -> ScoreOutput<'s> {
-        let layout_map: HashMap<_, _> = self
+        let mut layout_vec: Vec<(Span, Arc<RwLock<Layout>>)> = self
             .layouts
+            .into_values()
+            .map(|x| (x.span, x.layout))
+            .collect();
+        layout_vec.sort_by_key(|(span, _)| *span);
+        let layouts = layout_vec
             .into_iter()
-            .map(|(k, v)| (k, v.layout))
+            .map(|(_, layout)| Arc::new(mem::take(&mut *layout.write().unwrap())))
             .collect();
         let layouts = Layouts {
             scales: self.scales,
-            layouts: layout_map,
+            layouts,
         };
         ScoreOutput {
             timeline: self.timeline,
@@ -967,8 +963,8 @@ impl<'s> Score<'s> {
             Directive::Mark(x) => self.mark(diags, x),
             Directive::Repeat(x) => self.repeat(diags, x),
             Directive::CreateLayout(x) => self.create_layout(diags, x),
-            Directive::DefineIsomorphicMapping(x) => self.create_isomorphic_mapping(diags, x),
-            Directive::DefineManualMapping(x) => self.create_manual_mapping(diags, x),
+            Directive::DefineIsomorphicMapping(x) => self.define_isomorphic_mapping(diags, x),
+            Directive::DefineManualMapping(x) => self.define_manual_mapping(diags, x),
             Directive::PlaceMapping(x) => self.place_mapping(diags, x),
         }
     }
@@ -1463,6 +1459,7 @@ impl<'s> Score<'s> {
 
     pub fn create_layout(&mut self, diags: &Diagnostics, directive: CreateLayout<'s>) {
         let layout = Layout {
+            name: directive.layout.value.clone(),
             keyboard: directive.keyboard.value,
             mappings: Vec::new(),
         };
@@ -1521,7 +1518,7 @@ impl<'s> Score<'s> {
         r.cloned()
     }
 
-    pub fn create_isomorphic_mapping(
+    pub fn define_isomorphic_mapping(
         &mut self,
         diags: &Diagnostics,
         directive: DefineIsomorphicMapping<'s>,
@@ -1542,7 +1539,7 @@ impl<'s> Score<'s> {
         self.insert_mapping(diags, directive.mapping.value, mapping_data);
     }
 
-    pub fn create_manual_mapping(
+    pub fn define_manual_mapping(
         &mut self,
         diags: &Diagnostics,
         directive: DefineManualMapping<'s>,
@@ -1588,13 +1585,22 @@ impl<'s> Score<'s> {
                             }
                             Some(sd) => {
                                 let cycle = note.value.octave.map(|x| x.value as i32).unwrap_or(0);
+                                let degree =
+                                    sd.degree.rem_euclid(scale.pitches.len() as i32) as u32;
+                                let base_interval = scale.pitches[degree as usize].clone();
                                 let base_factor = &sd.base_relative
                                     * &Pitch::from(scale.definition.cycle.pow(cycle));
                                 let name = score_helpers::format_note_cycle(
                                     Cow::Borrowed(note.value.name.value),
                                     cycle,
                                 );
-                                note_row.push(Some(NamedPitch { name, base_factor }));
+                                note_row.push(Some(NamedPitch {
+                                    name,
+                                    base_interval,
+                                    base_factor,
+                                    degree,
+                                    isomorphic: false,
+                                }));
                             }
                         };
                     }

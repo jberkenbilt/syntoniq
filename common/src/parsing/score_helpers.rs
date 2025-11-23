@@ -32,6 +32,13 @@ pub trait ToStatic<'s> {
     fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static;
 }
 
+impl<'s> ToStatic<'s> for bool {
+    type Static = bool;
+    fn to_static(&self, _: &mut ArcContext) -> Self::Static {
+        *self
+    }
+}
+
 impl<'s> ToStatic<'s> for i32 {
     type Static = i32;
     fn to_static(&self, _: &mut ArcContext) -> Self::Static {

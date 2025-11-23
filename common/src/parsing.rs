@@ -65,10 +65,12 @@ pub mod pass3;
 pub mod score;
 pub(crate) mod score_helpers;
 mod timeline;
-use crate::parsing::layout::Layouts;
+
 use crate::parsing::score::{Directive, FromRawDirective};
 use crate::parsing::score_helpers::{ArcContext, ToStatic};
+use anyhow::anyhow;
 use clap::Parser;
+pub use layout::*;
 pub use score::ScoreOutput;
 use serde::Deserialize;
 pub use timeline::*;
@@ -90,13 +92,10 @@ pub struct Options {
 }
 
 fn parse<'s>(filename: &str, src: &'s str, options: &Options) -> anyhow::Result<ScoreOutput<'s>> {
-    match pass3::parse3(src, options) {
-        Ok(output) => Ok(output),
-        Err(diags) => {
-            anstream::eprintln!("{}", diags.render(filename, src));
-            std::process::exit(2);
-        }
-    }
+    pass3::parse3(src, options).map_err(|diags| {
+        anstream::eprintln!("{}", diags.render(filename, src));
+        anyhow!("{filename} contains errors")
+    })
 }
 
 pub fn timeline<'s>(

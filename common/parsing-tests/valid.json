@@ -13627,155 +13627,207 @@
       "layouts": {
         "layouts": [
           {
-            "layout": {
-              "keyboard": "k",
-              "mappings": [
-                {
-                  "anchor_col": 4,
-                  "anchor_row": 5,
-                  "base_pitch": "400",
-                  "cols_left": 2,
-                  "cols_right": 6,
-                  "details": {
-                    "Manual": {
-                      "anchor_col": 1,
-                      "anchor_row": 0,
-                      "h_factor": "1",
-                      "name": "m1",
-                      "notes": [
-                        [
-                          {
-                            "base_factor": "1",
-                            "name": "p"
-                          },
-                          {
-                            "base_factor": "^1|5",
-                            "name": "q"
-                          },
-                          {
-                            "base_factor": "^2|5",
-                            "name": "r"
-                          },
-                          {
-                            "base_factor": "^3|5",
-                            "name": "s"
-                          },
-                          {
-                            "base_factor": "1/2",
-                            "name": "p,"
-                          }
-                        ],
-                        [
-                          {
-                            "base_factor": "^4|5",
-                            "name": "t"
-                          },
-                          null,
-                          {
-                            "base_factor": "2",
-                            "name": "w"
-                          },
-                          {
-                            "base_factor": "2*^1|6",
-                            "name": "x"
-                          },
-                          {
-                            "base_factor": "2",
-                            "name": "p'"
-                          }
-                        ]
+            "keyboard": "k",
+            "mappings": [
+              {
+                "anchor_col": 4,
+                "anchor_row": 5,
+                "base_pitch": "400",
+                "cols_left": 2,
+                "cols_right": 6,
+                "details": {
+                  "Manual": {
+                    "anchor_col": 1,
+                    "anchor_row": 0,
+                    "h_factor": "1",
+                    "name": "m1",
+                    "notes": [
+                      [
+                        {
+                          "base_factor": "1",
+                          "base_interval": "1",
+                          "degree": 0,
+                          "isomorphic": false,
+                          "name": "p"
+                        },
+                        {
+                          "base_factor": "^1|5",
+                          "base_interval": "^1|5",
+                          "degree": 2,
+                          "isomorphic": false,
+                          "name": "q"
+                        },
+                        {
+                          "base_factor": "^2|5",
+                          "base_interval": "^2|5",
+                          "degree": 3,
+                          "isomorphic": false,
+                          "name": "r"
+                        },
+                        {
+                          "base_factor": "^3|5",
+                          "base_interval": "^3|5",
+                          "degree": 4,
+                          "isomorphic": false,
+                          "name": "s"
+                        },
+                        {
+                          "base_factor": "1/2",
+                          "base_interval": "1",
+                          "degree": 0,
+                          "isomorphic": false,
+                          "name": "p,"
+                        }
                       ],
-                      "v_factor": "2"
-                    }
-                  },
-                  "name": "m1",
-                  "rows_above": 3,
-                  "rows_below": 1,
-                  "scale": "5-EDO"
+                      [
+                        {
+                          "base_factor": "^4|5",
+                          "base_interval": "^4|5",
+                          "degree": 5,
+                          "isomorphic": false,
+                          "name": "t"
+                        },
+                        null,
+                        {
+                          "base_factor": "2",
+                          "base_interval": "1",
+                          "degree": 0,
+                          "isomorphic": false,
+                          "name": "w"
+                        },
+                        {
+                          "base_factor": "2*^1|6",
+                          "base_interval": "^1|6",
+                          "degree": 1,
+                          "isomorphic": false,
+                          "name": "x"
+                        },
+                        {
+                          "base_factor": "2",
+                          "base_interval": "1",
+                          "degree": 0,
+                          "isomorphic": false,
+                          "name": "p'"
+                        }
+                      ]
+                    ],
+                    "v_factor": "2"
+                  }
                 },
-                {
-                  "anchor_col": 8,
-                  "anchor_row": 1,
-                  "base_pitch": "500",
-                  "cols_left": 1,
-                  "cols_right": 2,
-                  "details": {
-                    "Manual": {
-                      "anchor_col": 1,
-                      "anchor_row": 0,
-                      "h_factor": "1",
-                      "name": "m1",
-                      "notes": [
-                        [
-                          {
-                            "base_factor": "1",
-                            "name": "p"
-                          },
-                          {
-                            "base_factor": "^1|5",
-                            "name": "q"
-                          },
-                          {
-                            "base_factor": "^2|5",
-                            "name": "r"
-                          },
-                          {
-                            "base_factor": "^3|5",
-                            "name": "s"
-                          },
-                          {
-                            "base_factor": "1/2",
-                            "name": "p,"
-                          }
-                        ],
-                        [
-                          {
-                            "base_factor": "^4|5",
-                            "name": "t"
-                          },
-                          null,
-                          {
-                            "base_factor": "2",
-                            "name": "w"
-                          },
-                          {
-                            "base_factor": "2*^1|6",
-                            "name": "x"
-                          },
-                          {
-                            "base_factor": "2",
-                            "name": "p'"
-                          }
-                        ]
+                "name": "m1",
+                "rows_above": 3,
+                "rows_below": 1,
+                "scale": "5-EDO"
+              },
+              {
+                "anchor_col": 8,
+                "anchor_row": 1,
+                "base_pitch": "500",
+                "cols_left": 1,
+                "cols_right": 2,
+                "details": {
+                  "Manual": {
+                    "anchor_col": 1,
+                    "anchor_row": 0,
+                    "h_factor": "1",
+                    "name": "m1",
+                    "notes": [
+                      [
+                        {
+                          "base_factor": "1",
+                          "base_interval": "1",
+                          "degree": 0,
+                          "isomorphic": false,
+                          "name": "p"
+                        },
+                        {
+                          "base_factor": "^1|5",
+                          "base_interval": "^1|5",
+                          "degree": 2,
+                          "isomorphic": false,
+                          "name": "q"
+                        },
+                        {
+                          "base_factor": "^2|5",
+                          "base_interval": "^2|5",
+                          "degree": 3,
+                          "isomorphic": false,
+                          "name": "r"
+                        },
+                        {
+                          "base_factor": "^3|5",
+                          "base_interval": "^3|5",
+                          "degree": 4,
+                          "isomorphic": false,
+                          "name": "s"
+                        },
+                        {
+                          "base_factor": "1/2",
+                          "base_interval": "1",
+                          "degree": 0,
+                          "isomorphic": false,
+                          "name": "p,"
+                        }
                       ],
-                      "v_factor": "2"
-                    }
-                  },
-                  "name": "m1",
-                  "rows_above": 1,
-                  "rows_below": 0,
-                  "scale": "5-EDO"
+                      [
+                        {
+                          "base_factor": "^4|5",
+                          "base_interval": "^4|5",
+                          "degree": 5,
+                          "isomorphic": false,
+                          "name": "t"
+                        },
+                        null,
+                        {
+                          "base_factor": "2",
+                          "base_interval": "1",
+                          "degree": 0,
+                          "isomorphic": false,
+                          "name": "w"
+                        },
+                        {
+                          "base_factor": "2*^1|6",
+                          "base_interval": "^1|6",
+                          "degree": 1,
+                          "isomorphic": false,
+                          "name": "x"
+                        },
+                        {
+                          "base_factor": "2",
+                          "base_interval": "1",
+                          "degree": 0,
+                          "isomorphic": false,
+                          "name": "p'"
+                        }
+                      ]
+                    ],
+                    "v_factor": "2"
+                  }
                 },
-                {
-                  "anchor_col": 7,
-                  "anchor_row": 12,
-                  "base_pitch": "300",
-                  "cols_left": null,
-                  "cols_right": null,
-                  "details": {
-                    "Isomorphic": {
-                      "name": "m2",
-                      "steps_h": 2,
-                      "steps_v": 5
-                    }
-                  },
-                  "name": "m2",
-                  "rows_above": null,
-                  "rows_below": null,
-                  "scale": "default"
-                }
-              ]
-            },
+                "name": "m1",
+                "rows_above": 1,
+                "rows_below": 0,
+                "scale": "5-EDO"
+              },
+              {
+                "anchor_col": 7,
+                "anchor_row": 12,
+                "base_pitch": "300",
+                "cols_left": null,
+                "cols_right": null,
+                "details": {
+                  "Isomorphic": {
+                    "name": "m2",
+                    "steps_h": 2,
+                    "steps_v": 5
+                  }
+                },
+                "name": "m2",
+                "rows_above": null,
+                "rows_below": null,
+                "scale": "default"
+              }
+            ],
             "name": "l1"
           }
         ],

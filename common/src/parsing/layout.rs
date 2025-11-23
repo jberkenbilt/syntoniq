@@ -5,22 +5,24 @@ use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::fmt::Debug;
 use std::sync::{Arc, RwLock};
 use to_static_derive::ToStatic;
 
 #[derive(Serialize, Default, ToStatic)]
 pub struct Layouts<'s> {
     pub scales: HashMap<Cow<'s, str>, Arc<Scale<'s>>>,
-    pub layouts: HashMap<Cow<'s, str>, Arc<RwLock<Layout<'s>>>>,
+    pub layouts: Vec<Arc<Layout<'s>>>,
 }
 
-#[derive(Serialize, ToStatic)]
+#[derive(Serialize, Default, ToStatic)]
 pub struct Layout<'s> {
+    pub name: Cow<'s, str>,
     pub keyboard: Cow<'s, str>,
     pub mappings: Vec<LayoutMapping<'s>>,
 }
 impl<'s> Layout<'s> {
-    pub fn note_at_location(&self, location: Coordinate) -> Option<PlacedNote<'s>> {
+    pub fn note_at_location(self: &Arc<Self>, location: Coordinate) -> Option<PlacedNote<'s>> {
         // Return information from the first mapping that has the note, if any.
         for m in &self.mappings {
             if let Some(r) = m.note_at_location(location) {
@@ -53,7 +55,7 @@ impl<'s> Layout<'s> {
 
     /// Transpose the mapping so that the specified location's pitch is the specified pitch.
     /// The key must be mapped.
-    pub fn transpose(&self, pitch: &Pitch, location: Coordinate) -> bool {
+    pub fn transpose(self: &Arc<Self>, pitch: &Pitch, location: Coordinate) -> bool {
         for mapping in &self.mappings {
             if let Some(Some(np)) = mapping.note_at_location(location) {
                 let factor = pitch / &np.pitch;
@@ -63,9 +65,22 @@ impl<'s> Layout<'s> {
         }
         false
     }
+
+    /// Transpose all mappings up or down an octave. We use octave here rather than cycle because
+    /// this applies to all mappings uniformly.
+    pub fn octave_shift(&self, up: bool) {
+        let transposition = if up {
+            Pitch::from(Ratio::new(2, 1))
+        } else {
+            Pitch::from(Ratio::new(1, 2))
+        };
+        for m in &self.mappings {
+            m.offsets.write().unwrap().transpose *= &transposition;
+        }
+    }
 }
 
-#[derive(Serialize, Debug, Clone, Copy)]
+#[derive(Serialize, Debug, Clone, Copy, PartialOrd, PartialEq, Eq, Hash)]
 pub struct Coordinate {
     pub row: i32,
     pub col: i32,
@@ -76,9 +91,18 @@ pub struct PlacedNote<'s> {
     pub name: Cow<'s, str>,
     /// Scale the note came from
     pub scale: Arc<Scale<'s>>,
-    /// Pitch, including base pitch and cycle offset, but not including any keyboard-controlled
-    /// transpositions.
+    /// Configured base pitch of the mapping
+    pub scale_base: Pitch,
+    /// Current transposition
+    pub transposition: Pitch,
+    /// Final pitch
     pub pitch: Pitch,
+    /// Normalized interval over the base pitch
+    pub base_interval: Pitch,
+    /// Normalized scale degree (from 0 to degrees-1)
+    pub degree: u32,
+    /// Whether this comes from an isomorphic layout
+    pub isomorphic: bool,
 }
 
 #[derive(Default, Clone, ToStatic)]
@@ -147,13 +171,19 @@ impl<'s> LayoutMapping<'s> {
             Some(
                 self.details
                     .note_at_anchor_delta(&self.scale, row_delta, col_delta)
-                    .map(|mut x| {
-                        x.base_factor *= &self.base_pitch;
-                        x.base_factor *= &offsets.transpose;
+                    .map(|x| {
+                        let mut pitch = x.base_factor;
+                        pitch *= &self.base_pitch;
+                        pitch *= &offsets.transpose;
                         PlacedNote {
                             name: x.name,
                             scale: self.scale.clone(),
-                            pitch: x.base_factor,
+                            scale_base: self.base_pitch.clone(),
+                            transposition: offsets.transpose.clone(),
+                            pitch,
+                            base_interval: x.base_interval,
+                            degree: x.degree,
+                            isomorphic: x.isomorphic,
                         }
                     }),
             )
@@ -220,11 +250,17 @@ impl<'s> IsomorphicMapping<'s> {
         let num_degrees = scale.pitches.len() as i32;
         let pitch_idx = full_degree.rem_euclid(num_degrees);
         let cycle = full_degree.div_euclid(num_degrees);
-        let base_factor =
-            &scale.pitches[pitch_idx as usize] * &Pitch::from(scale.definition.cycle.pow(cycle));
+        let base_interval = scale.pitches[pitch_idx as usize].clone();
+        let base_factor = &base_interval * &Pitch::from(scale.definition.cycle.pow(cycle));
         let given_name = scale.primary_names[pitch_idx as usize].clone();
         let name = score_helpers::format_note_cycle(given_name, cycle);
-        Some(NamedPitch { name, base_factor })
+        Some(NamedPitch {
+            name,
+            base_factor,
+            base_interval,
+            degree: pitch_idx as u32,
+            isomorphic: true,
+        })
     }
 }
 #[derive(Serialize, ToStatic)]
@@ -300,7 +336,8 @@ mod tests {
 
     #[test]
     fn test_isomorphic() {
-        let layout = LAYOUTS.layouts.get("l2").unwrap().read().unwrap();
+        let layout = &LAYOUTS.layouts[1];
+        assert_eq!(layout.name, "l2");
         let mapping = &layout.mappings[1];
         assert_eq!(mapping.name, "m2");
         assert!(mapping.details.as_manual().is_none());
@@ -310,6 +347,9 @@ mod tests {
             NamedPitch {
                 name: "c".into(),
                 base_factor: Pitch::unit(),
+                base_interval: Pitch::unit(),
+                degree: 0,
+                isomorphic: true,
             }
         );
         assert_eq!(
@@ -317,6 +357,9 @@ mod tests {
             NamedPitch {
                 name: "d".into(),
                 base_factor: Pitch::must_parse("^1|6"),
+                base_interval: Pitch::must_parse("^1|6"),
+                degree: 2,
+                isomorphic: true,
             }
         );
         assert_eq!(
@@ -324,6 +367,9 @@ mod tests {
             NamedPitch {
                 name: "b%,".into(),
                 base_factor: Pitch::must_parse("1/2*^5|6"),
+                base_interval: Pitch::must_parse("^5|6"),
+                degree: 10,
+                isomorphic: true,
             }
         );
         assert_eq!(
@@ -331,6 +377,9 @@ mod tests {
             NamedPitch {
                 name: "e%".into(),
                 base_factor: Pitch::must_parse("^1|4"),
+                base_interval: Pitch::must_parse("^1|4"),
+                degree: 3,
+                isomorphic: true,
             }
         );
         assert_eq!(
@@ -338,6 +387,9 @@ mod tests {
             NamedPitch {
                 name: "a,".into(),
                 base_factor: Pitch::must_parse("^-1|4"),
+                base_interval: Pitch::must_parse("^3|4"),
+                degree: 9,
+                isomorphic: true,
             }
         );
         assert_eq!(
@@ -345,6 +397,9 @@ mod tests {
             NamedPitch {
                 name: "f'".into(),
                 base_factor: Pitch::must_parse("2*^5|12"),
+                base_interval: Pitch::must_parse("^5|12"),
+                degree: 5,
+                isomorphic: true,
             }
         );
         assert_eq!(
@@ -352,6 +407,9 @@ mod tests {
             NamedPitch {
                 name: "e%'2".into(),
                 base_factor: Pitch::must_parse("4*^1|4"),
+                base_interval: Pitch::must_parse("^1|4"),
+                degree: 3,
+                isomorphic: true,
             }
         );
         assert_eq!(
@@ -359,6 +417,9 @@ mod tests {
             NamedPitch {
                 name: "c,".into(),
                 base_factor: Pitch::must_parse("1/2"),
+                base_interval: Pitch::must_parse("1"),
+                degree: 0,
+                isomorphic: true,
             }
         );
         assert_eq!(
@@ -366,13 +427,17 @@ mod tests {
             NamedPitch {
                 name: "b,2".into(),
                 base_factor: Pitch::must_parse("1/2*^-1|12"),
+                base_interval: Pitch::must_parse("^11|12"),
+                degree: 11,
+                isomorphic: true,
             }
         );
     }
 
     #[test]
     fn test_manual() {
-        let layout = LAYOUTS.layouts.get("l1").unwrap().read().unwrap();
+        let layout = &LAYOUTS.layouts[0];
+        assert_eq!(layout.name, "l1");
         let mapping = &layout.mappings[0];
         assert_eq!(mapping.name, "m1");
         assert!(mapping.details.as_isomorphic().is_none());
@@ -382,6 +447,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("e#"),
                 base_factor: Pitch::must_parse("^7|19"),
+                base_interval: Pitch::must_parse("^7|19"),
+                degree: 8,
+                isomorphic: false,
             }
         );
         assert!(mm.note_at_anchor_delta(0, -2).is_none());
@@ -393,6 +461,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("f"),
                 base_factor: Pitch::must_parse("^8|19"),
+                base_interval: Pitch::must_parse("^8|19"),
+                degree: 9,
+                isomorphic: false,
             }
         );
         assert_eq!(
@@ -400,6 +471,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("g#"),
                 base_factor: Pitch::must_parse("^12|19"),
+                base_interval: Pitch::must_parse("^12|19"),
+                degree: 13,
+                isomorphic: false,
             }
         );
         assert_eq!(
@@ -407,6 +481,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("c'"),
                 base_factor: Pitch::must_parse("2"),
+                base_interval: Pitch::must_parse("1"),
+                degree: 0,
+                isomorphic: false,
             }
         );
         // Go up one vertical repetition
@@ -415,6 +492,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("c'"),
                 base_factor: Pitch::must_parse("2*^1|2"),
+                base_interval: Pitch::must_parse("1"),
+                degree: 0,
+                isomorphic: false,
             }
         );
         // Go right one horizontal repetition
@@ -423,6 +503,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("c'"),
                 base_factor: Pitch::must_parse("2*^1|2*1.5"),
+                base_interval: Pitch::must_parse("1"),
+                degree: 0,
+                isomorphic: false,
             }
         );
         assert_eq!(
@@ -430,6 +513,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("d%"),
                 base_factor: Pitch::must_parse("^2|19"),
+                base_interval: Pitch::must_parse("^2|19"),
+                degree: 3,
+                isomorphic: false,
             }
         );
         assert_eq!(
@@ -437,6 +523,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("c2"),
                 base_factor: Pitch::must_parse("2"),
+                base_interval: Pitch::must_parse("1"),
+                degree: 0,
+                isomorphic: false,
             }
         );
         assert_eq!(
@@ -444,6 +533,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("q"),
                 base_factor: Pitch::must_parse("^21|20"),
+                base_interval: Pitch::must_parse("^1|20"),
+                degree: 1,
+                isomorphic: false,
             }
         );
         assert_eq!(
@@ -451,6 +543,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("g#"),
                 base_factor: Pitch::must_parse("0.5*^12|19*^1|2"),
+                base_interval: Pitch::must_parse("^12|19"),
+                degree: 13,
+                isomorphic: false,
             }
         );
         assert_eq!(
@@ -458,6 +553,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("g#"),
                 base_factor: Pitch::must_parse("0.5*^12|19"),
+                base_interval: Pitch::must_parse("^12|19"),
+                degree: 13,
+                isomorphic: false,
             }
         );
         assert_eq!(
@@ -465,6 +563,9 @@ mod tests {
             NamedPitch {
                 name: Cow::Borrowed("g,"),
                 base_factor: Pitch::must_parse("1/6*^11|19*^1|2"),
+                base_interval: Pitch::must_parse("^11|19"),
+                degree: 12,
+                isomorphic: false,
             }
         );
     }
@@ -475,7 +576,8 @@ mod tests {
         // 4..=9. The rest of the board is unmapped. We can't tell the difference between an
         // unmapped key within the mapped region and something that falls outside the map. That
         // comes later.
-        let layout = LAYOUTS.layouts.get("l1").unwrap().read().unwrap();
+        let layout = &LAYOUTS.layouts[0];
+        assert_eq!(layout.name, "l1");
         // Start with the anchor. The answer takes shifting into consideration. The anchor in the
         // mapping is "7".
         let r = layout
@@ -533,7 +635,8 @@ mod tests {
         // Now switch to layout l2, which adds another mapping that fills the whole area.
         // Save the offsets we applied to the mapping so we can replicate.
         let offsets = layout.mappings[0].offsets.write().unwrap().clone();
-        let layout = LAYOUTS.layouts.get("l2").unwrap().read().unwrap();
+        let layout = &LAYOUTS.layouts[1];
+        assert_eq!(layout.name, "l2");
         // Re-establish the shift for the first mapping to match above.
         *layout.mappings[0].offsets.write().unwrap() = offsets;
         // Apply a transposition the second mapping. Effective base pitch is 450.
@@ -559,5 +662,28 @@ mod tests {
             Coordinate { row: 4, col: 4 },
             Coordinate { row: 12, col: 12 }
         ));
+        // Exercise octave transpositions. Check notes from both mappings.
+        layout.octave_shift(true);
+        let r = layout
+            .note_at_location(Coordinate { row: 9, col: 9 })
+            .unwrap();
+        assert_eq!(r.name, "f");
+        assert_eq!(r.pitch, Pitch::must_parse("1200*^8|19*^1|2"));
+        let r = layout
+            .note_at_location(Coordinate { row: 10, col: 9 })
+            .unwrap();
+        assert_eq!(r.name, "e");
+        assert_eq!(r.pitch, Pitch::must_parse("900*^1|3"));
+        layout.octave_shift(false);
+        let r = layout
+            .note_at_location(Coordinate { row: 9, col: 9 })
+            .unwrap();
+        assert_eq!(r.name, "f");
+        assert_eq!(r.pitch, Pitch::must_parse("600*^8|19*^1|2"));
+        let r = layout
+            .note_at_location(Coordinate { row: 10, col: 9 })
+            .unwrap();
+        assert_eq!(r.name, "e");
+        assert_eq!(r.pitch, Pitch::must_parse("450*^1|3"));
     }
 }
