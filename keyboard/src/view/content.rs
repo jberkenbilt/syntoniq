@@ -46,9 +46,9 @@ impl Cell {
         }
     }
 
-    pub fn empty() -> Self {
+    pub fn empty(position: u8) -> Self {
         Cell {
-            position: 127,
+            position,
             color: "var(--control-background)".to_string(),
             cell_text: Default::default(),
         }
@@ -91,7 +91,7 @@ impl<'a> App<'a> {
         };
         let pad_col = *grid_col;
         let position = 10 * pad_row + pad_col;
-        let empty = Cell::empty();
+        let empty = Cell::empty(position);
         let t = self.cells.get(&position).unwrap_or(&empty);
         t.render().unwrap()
     }

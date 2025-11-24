@@ -79,9 +79,7 @@ impl AppState {
         let Some(tx) = self.sse_tx.clone() else {
             return;
         };
-        if let Some(old) = old
-            && old != cell
-        {
+        if !matches!(old, Some(x) if x == cell) {
             let event = Event::default()
                 .event(cell.event_name())
                 .data(cell.render().unwrap());
