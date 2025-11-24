@@ -1,7 +1,12 @@
-use crate::engine::SoundType;
-use crate::events::{EngineState, Event, Events, KeyData, KeyEvent, StateView, TestEvent};
+use crate::engine::{Keyboard, SoundType};
+use crate::events::{
+    Color, EngineState, Event, Events, KeyData, KeyEvent, Note, RawLightEvent, StateView,
+    TestEvent, ToDevice,
+};
 use crate::view::web;
 use crate::{engine, events};
+use std::sync::{Arc, LazyLock};
+use syntoniq_common::parsing::{Coordinate, Layout};
 use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
 
@@ -13,6 +18,46 @@ impl<T> Default for ChannelPair<T> {
     fn default() -> Self {
         let (tx, rx) = mpsc::channel(100);
         Self { tx, rx }
+    }
+}
+
+struct TestKeyboard;
+impl Keyboard for TestKeyboard {
+    fn reset(&self) -> anyhow::Result<()> {
+        Ok(())
+    }
+
+    fn layout_supported(&self, _layout: &Layout) -> bool {
+        true
+    }
+
+    fn note_positions(&self, _keyboard: &str) -> &'static [Coordinate] {
+        // This is gratuitously different from the launchpad implementation to avoid complaints
+        // from the IDE about duplicated code.
+        static COORDS: LazyLock<Vec<Coordinate>> = LazyLock::new(|| {
+            let mut vec = Vec::with_capacity(64);
+            for row in 1..9 {
+                for col in 1..9 {
+                    vec.push(Coordinate { row, col });
+                }
+            }
+            vec
+        });
+        &COORDS
+    }
+
+    fn note_light_event(
+        &self,
+        _note: Option<&Note>,
+        _position: Coordinate,
+        _velocity: u8,
+    ) -> Event {
+        Event::ToDevice(ToDevice::Light(RawLightEvent {
+            position: 0,
+            color: Color::Off,
+            label1: String::new(),
+            label2: String::new(),
+        }))
     }
 }
 
@@ -33,8 +78,17 @@ impl TestController {
         let events_rx = events.receiver();
         let tx2 = events_tx_weak.clone();
         let rx2 = events_rx.resubscribe();
+        let lp = TestKeyboard;
+        let keyboard = Arc::new(lp);
         let engine_handle = tokio::spawn(async move {
-            engine::run("testdata/conf.toml".into(), SoundType::None, tx2, rx2).await
+            engine::run(
+                "test-data/keyboard.stq",
+                SoundType::None,
+                keyboard,
+                tx2,
+                rx2,
+            )
+            .await
         });
         let tx2 = events_tx_weak.clone();
         let rx2 = events_rx.resubscribe();
@@ -132,6 +186,18 @@ impl TestController {
     pub async fn press_and_release_key(&mut self, key: KeyData) -> anyhow::Result<()> {
         self.press_key(key).await?;
         self.release_key(key).await
+    }
+
+    pub async fn shift(&mut self) -> anyhow::Result<EngineState> {
+        self.press_and_release_key(KeyData::Shift).await?;
+        self.wait_for_test_event(TestEvent::HandledKey).await;
+        Ok(self.get_engine_state().await)
+    }
+
+    pub async fn transpose(&mut self) -> anyhow::Result<EngineState> {
+        self.press_and_release_key(KeyData::Transpose).await?;
+        self.wait_for_test_event(TestEvent::HandledKey).await;
+        Ok(self.get_engine_state().await)
     }
 
     pub async fn sync(&mut self) -> anyhow::Result<()> {

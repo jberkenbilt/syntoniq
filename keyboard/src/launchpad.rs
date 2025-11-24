@@ -1,15 +1,17 @@
 use crate::controller::{Controller, Device};
+use crate::engine::Keyboard;
 use crate::events;
 #[cfg(test)]
 use crate::events::TestEvent;
 use crate::events::{
-    Color, Event, FromDevice, KeyData, KeyEvent, LightData, LightEvent, RawKeyEvent, RawLightEvent,
-    RawPressureEvent, ToDevice,
+    Color, Event, FromDevice, KeyData, KeyEvent, LightData, LightEvent, Note, RawKeyEvent,
+    RawLightEvent, RawPressureEvent, ToDevice,
 };
 use midir::MidiOutputConnection;
 use midly::MidiMessage;
 use midly::live::LiveEvent;
-use std::sync::{Arc, RwLock};
+use std::sync::{Arc, LazyLock, RwLock};
+use syntoniq_common::parsing::{Coordinate, Layout};
 use tokio::task;
 use tokio::task::JoinHandle;
 
@@ -65,51 +67,6 @@ impl Launchpad {
         for position in 1..=108 {
             Self::set_light(output_connection, position, Color::Off)?;
         }
-        Ok(())
-    }
-
-    fn reset(&self) -> anyhow::Result<()> {
-        let Some(tx) = self.events_tx.upgrade() else {
-            return Ok(());
-        };
-        *self.state.write().expect("lock") = Default::default();
-        // Draw the logo.
-        tx.send(Event::ToDevice(ToDevice::ClearLights))?;
-        for (color, positions) in [
-            (
-                Color::FifthOn, // green
-                vec![63u8, 64, 65, 66, 52, 57, 42, 47, 32, 37, 23, 24, 25],
-            ),
-            (Color::FifthOff, vec![34, 35, 16, 17, 18]), // blue
-            (Color::MajorThirdOn, vec![26]),             // pink
-            (Color::MajorThirdOff, vec![72, 73, 83, 84, 85, 86, 76, 77]), // purple
-            (Color::TonicOff, vec![74, 75]),             // cyan
-        ] {
-            for position in positions {
-                tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
-                    position,
-                    color,
-                    label1: String::new(),
-                    label2: String::new(),
-                })))?;
-            }
-        }
-        for (position, label1, label2) in [
-            (keys::UP_ARROW, "▲", ""),
-            (keys::DOWN_ARROW, "▼", ""),
-            (keys::CLEAR, "Reset", ""),
-            (keys::RECORD, "Show", "Notes"),
-        ] {
-            tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
-                position,
-                color: Color::Active,
-                label1: label1.to_string(),
-                label2: label2.to_string(),
-            })))?;
-        }
-        self.fix_layout_lights()?;
-        #[cfg(test)]
-        events::send_test_event(&self.events_tx, TestEvent::DeviceResetComplete);
         Ok(())
     }
 
@@ -252,7 +209,6 @@ impl Launchpad {
                 self.state.write().expect("lock").cur_layout = Some(e.idx);
                 self.fix_layout_lights()?;
             }
-            Event::ResetDevice => self.reset()?,
             Event::ToDevice(_) | Event::KeyEvent(_) => {}
             Event::LightEvent(e) => self.handle_light_event(e)?,
             Event::SetLayoutNames(e) => {
@@ -304,10 +260,29 @@ impl Launchpad {
             keys::UP_ARROW => send(KeyData::OctaveShift { up: true })?,
             keys::DOWN_ARROW => send(KeyData::OctaveShift { up: false })?,
             keys::RECORD => send(KeyData::Print)?,
-            position if Self::is_note_key(position) => send(KeyData::Note { position })?,
+            key if Self::is_note_key(key) => send(KeyData::Note {
+                position: Self::key_to_coordinate(key),
+            })?,
             _ => {}
         }
         Ok(())
+    }
+
+    fn key_to_coordinate(key: u8) -> Coordinate {
+        // Launchpad keys are RC where R is numbered from 1 (bottom) to 8 (top) and C is numbered
+        // from 1 (left) to 8 (right). This turns out to match Syntoniq coordinates, not because
+        // launchpad was first, but more likely because it's the most logical way to lay out a
+        // musical keyboard.
+        Coordinate {
+            row: (key / 10) as i32,
+            col: (key % 10) as i32,
+        }
+    }
+
+    fn coordinate_to_key(position: Coordinate) -> u8 {
+        // See key_to_coordinate. This won't overflow because it is only called internally when
+        // we know we have values in range.
+        (position.row * 10 + position.col) as u8
     }
 }
 
@@ -370,6 +345,93 @@ impl Device for Launchpad {
 
     fn shutdown(output_connection: &mut MidiOutputConnection) {
         let _ = output_connection.send(ENTER_LIVE);
+    }
+}
+
+impl Keyboard for Launchpad {
+    fn reset(&self) -> anyhow::Result<()> {
+        let Some(tx) = self.events_tx.upgrade() else {
+            return Ok(());
+        };
+        *self.state.write().expect("lock") = Default::default();
+        // Draw the logo.
+        tx.send(Event::ToDevice(ToDevice::ClearLights))?;
+        for (color, positions) in [
+            (
+                Color::FifthOn, // green
+                vec![63u8, 64, 65, 66, 52, 57, 42, 47, 32, 37, 23, 24, 25],
+            ),
+            (Color::FifthOff, vec![34, 35, 16, 17, 18]), // blue
+            (Color::MajorThirdOn, vec![26]),             // pink
+            (Color::MajorThirdOff, vec![72, 73, 83, 84, 85, 86, 76, 77]), // purple
+            (Color::TonicOff, vec![74, 75]),             // cyan
+        ] {
+            for position in positions {
+                tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
+                    position,
+                    color,
+                    label1: String::new(),
+                    label2: String::new(),
+                })))?;
+            }
+        }
+        for (position, label1, label2) in [
+            (keys::UP_ARROW, "▲", ""),
+            (keys::DOWN_ARROW, "▼", ""),
+            (keys::CLEAR, "Reset", ""),
+            (keys::RECORD, "Show", "Notes"),
+        ] {
+            tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
+                position,
+                color: Color::Active,
+                label1: label1.to_string(),
+                label2: label2.to_string(),
+            })))?;
+        }
+        self.fix_layout_lights()?;
+        Ok(())
+    }
+
+    fn layout_supported(&self, layout: &Layout) -> bool {
+        layout.keyboard == "launchpad"
+    }
+
+    fn note_positions(&self, _keyboard: &str) -> &'static [Coordinate] {
+        static POSITIONS: LazyLock<Vec<Coordinate>> = LazyLock::new(|| {
+            let mut v = Vec::with_capacity(64);
+            for row in 1..=8 {
+                for col in 1..=8 {
+                    v.push(Coordinate { row, col });
+                }
+            }
+            v
+        });
+        &POSITIONS
+    }
+
+    fn note_light_event(&self, note: Option<&Note>, position: Coordinate, velocity: u8) -> Event {
+        let position = Self::coordinate_to_key(position);
+        match note {
+            None => Event::ToDevice(ToDevice::Light(RawLightEvent {
+                position,
+                color: Color::Off,
+                label1: String::new(),
+                label2: String::new(),
+            })),
+            Some(note) => {
+                let color = if velocity == 0 {
+                    note.off_color
+                } else {
+                    note.on_color
+                };
+                Event::ToDevice(ToDevice::Light(RawLightEvent {
+                    position,
+                    color,
+                    label1: note.placed.name.to_string(),
+                    label2: note.placed.base_interval.to_string(),
+                }))
+            }
+        }
     }
 }
 

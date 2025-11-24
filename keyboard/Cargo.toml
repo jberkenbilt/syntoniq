@@ -11,8 +11,6 @@ midir.workspace = true
 midly.workspace = true
 log.workspace = true
 env_logger.workspace = true
-toml.workspace = true
-serde.workspace = true
 anyhow.workspace = true
 askama.workspace = true
 chrono.workspace = true
@@ -21,6 +19,7 @@ tokio = { version = "1.47.1", features = ["full"] }
 axum = { version = "0.8.4", features = ["macros", "json"] }
 tokio-stream = { version = "0.1.17", features = ["sync"] }
 rust-embed = "8.7.2"
+derive_more = { version = "2.0.1", features = ["debug"] }
 
 [build-dependencies]
 bindgen = "0.72.1"

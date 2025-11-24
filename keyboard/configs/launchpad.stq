@@ -1,0 +1,110 @@
+syntoniq(version=1)
+
+; layout 1
+create_layout(layout="12-EDO-h2v5" keyboard="launchpad")
+define_isomorphic_mapping(mapping="12-EDO-h2v5" steps_h=2 steps_v=5)
+place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" anchor_row=4 anchor_col=3)
+
+define_scale(scale="17-EDO") <<
+ ^0|17 c | ^1|17 c# | ^2|17 d%
+ ^3|17 d | ^4|17 d# | ^5|17 e%
+ ^6|17 e
+ ^7|17 f | ^8|17 f# | ^9|17 g%
+^10|17 g | ^11|17 g# | ^12|17 a%
+^13|17 a | ^14|17 a# | ^15|17 b%
+^16|17 b
+>>
+; layout 2
+create_layout(layout="17-EDO-h3v7" keyboard="launchpad")
+define_isomorphic_mapping(mapping="17-EDO-h3v7" scale="17-EDO" steps_h=3 steps_v=7)
+place_mapping(layout="17-EDO-h3v7" mapping="17-EDO-h3v7" anchor_row=4 anchor_col=3)
+
+define_scale(scale="19-EDO") <<
+ ^0|19 c | ^1|19 c# | ^2|19 d%
+ ^3|19 d | ^4|19 d# | ^5|19 e%
+ ^6|19 e | ^7|19 e# f%
+ ^8|19 f | ^9|19 f# | ^10|19 g%
+^11|19 g | ^12|19 g# | ^13|19 a%
+^14|19 a | ^15|19 a# | ^16|19 b%
+^17|19 b | ^18|19 b#
+>>
+; layout 3
+create_layout(layout="19-EDO-h3v8" keyboard="launchpad")
+define_isomorphic_mapping(mapping="19-EDO-h3v8" scale="19-EDO" steps_h=3 steps_v=8)
+place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" anchor_row=4 anchor_col=3)
+
+define_scale(scale="31-EDO") <<
+ ^0|31 c | ^1|31 c+ d%% | ^2|31 c# | ^3|31 d% | ^4|31 d- c##
+ ^5|31 d | ^6|31 d+ e%% | ^7|31 d# | ^8|31 e% | ^9|31 e- d##
+^10|31 e | ^11|31 f% e+ | ^12|31 e# f-
+^13|31 f | ^14|31 f+ g%% | ^15|31 f# | ^16|31 g% | ^17|31 g- f##
+^18|31 g | ^19|31 g+ a%% | ^20|31 g# | ^21|31 a% | ^22|31 a- g##
+^23|31 a | ^24|31 a+ b%% | ^25|31 a# | ^26|31 b% | ^27|31 b- a##
+^28|31 b | ^29|31 c% b+ | ^30|31 b# c-
+>>
+; layout 4
+create_layout(layout="31-EDO-h5v3" keyboard="launchpad")
+define_isomorphic_mapping(mapping="31-EDO-h5v3" scale="31-EDO" steps_h=5 steps_v=3)
+place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" anchor_row=4 anchor_col=3)
+
+define_scale(scale="JI-11") <<
+1     c
+9/8   d
+5/4   e
+4/3   f
+3/2   g
+5/3   a
+15/8  b
+17/16 c#
+16/15 d%
+6/5   e%
+11/8  h11
+17/12 f#
+8/5   a%
+7/4   h7
+16/9  b%
+>>
+; layout 5
+create_layout(layout="JI-11" keyboard="launchpad")
+define_manual_mapping(mapping="JI-11" scale="JI-11") <<
+ c# d% e% h11 f# a% h7 b%
+@c  d  e  f   g  a  b  c'
+>>
+place_mapping(
+    layout="JI-11"
+    base_pitch=264
+    mapping="JI-11"
+    anchor_row=5
+    anchor_col=1
+)
+
+define_scale(scale="harmonics") <<
+1 h1 | 2 h2 | 3 h3 | 4 h4 | 5 h5 | 6 h6 | 7 h7 | 8 h8
+9 h9 | 10 h10 | 11 h11 | 12 h12 | 13 h13 | 14 h14 | 15 h15 | 16 h16
+17 h17 | 18 h18 | 19 h19 | 20 h20 | 21 h21 | 22 h22 | 23 h23 | 24 h24
+25 h25 | 26 h26 | 27 h27 | 28 h28 | 29 h29 | 30 h30 | 31 h31 | 32 h32
+33 h33 | 34 h34 | 35 h35 | 36 h36 | 37 h37 | 38 h38 | 39 h39 | 40 h40
+41 h41 | 42 h42 | 43 h43 | 44 h44 | 45 h45 | 46 h46 | 47 h47 | 48 h48
+49 h49 | 50 h50 | 51 h51 | 52 h52 | 53 h53 | 54 h54 | 55 h55 | 56 h56
+57 h57 | 58 h58 | 59 h59 | 60 h60 | 61 h61 | 62 h62 | 63 h63 | 64 h64
+>>
+
+; layout 6
+create_layout(layout="harmonics" keyboard="launchpad")
+define_manual_mapping(mapping="harmonics" scale="harmonics") <<
+h57 h58 h59 h60 h61 h62 h63 h64
+h49 h50 h51 h52 h53 h54 h55 h56
+h41 h42 h43 h44 h45 h46 h47 h48
+h33 h34 h35 h36 h37 h38 h39 h40
+h25 h26 h27 h28 h29 h30 h31 h32
+h17 h18 h19 h20 h21 h22 h23 h24
+h9 h10 h11 h12 h13 h14 h15 h16
+@h1 h2 h3 h4 h5 h6 h7 h8
+>>
+place_mapping(
+    layout="harmonics"
+    base_pitch=50
+    mapping="harmonics"
+    anchor_row=1
+    anchor_col=1
+)

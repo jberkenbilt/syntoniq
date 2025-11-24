@@ -114,12 +114,7 @@ impl AppState {
     }
 
     pub async fn handle_select_layout(&mut self, e: SelectLayoutEvent) {
-        {
-            let layout = e.layout.read().await;
-            self.state_view.base_pitch = layout.scale.base_pitch.to_string();
-            self.state_view.selected_layout = layout.name.clone();
-            self.state_view.scale_name = layout.scale.name.clone();
-        }
+        self.state_view.selected_layout = e.layout.name.to_string();
         self.send_state_view().await;
     }
 

@@ -1,5 +1,8 @@
 # TODO
 
+* Handle down for shift and transpose so they "just work" as modifiers.
+* Make the web part generic (it almost is)
+
 Remember: Windows:
 * Install https://www.tobias-erichsen.de/software/loopmidi.html
 * Create a loop port called `syntoniq-loop`
@@ -10,6 +13,12 @@ cargo build --config .cargo/windows-cross.toml --no-default-features
 # Redesign
 
 Primary goal: separate Launchpad-specific parts from the rest.
+
+New shift/transpose:
+* Hit shift or transpose (no more modifier key behavior)
+* Hit note 1, then note 2
+* For shift, note 1 moves to note 2's position. For transpose, note 2 takes note 1's pitch
+* Shift and layout selection cancel transpose, and transpose cancels shift
 
 New transpose workflow:
 * Transpose -> key 1 -> key 2 assigns key 1's pitch to key 2 by transposing key 2's tuning. This makes it similar to shift in its UI. We can also make the transpose key behave like the shift key.

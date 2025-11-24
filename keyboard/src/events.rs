@@ -1,9 +1,9 @@
-use crate::engine::PlayedNote;
-use crate::layout::Layout;
-use crate::scale::{Note, ScaleDescription};
 use askama::Template;
+use derive_more::Debug as DebugMore;
 use std::collections::{HashMap, HashSet};
+use std::fmt::{Display, Formatter};
 use std::sync::Arc;
+use syntoniq_common::parsing::{Coordinate, Layout, Layouts, PlacedNote};
 use syntoniq_common::pitch::Pitch;
 use tokio::sync::broadcast::error::RecvError;
 #[cfg(test)]
@@ -29,6 +29,48 @@ pub enum Color {
     OtherOff,
     OtherOn,
     NoteSelected,
+}
+
+#[derive(Copy, Clone)]
+pub struct NoteColors {
+    pub off: Color,
+    pub on: Color,
+}
+
+pub fn interval_color(mut interval: f32) -> NoteColors {
+    while interval <= 1.0 {
+        interval *= 2.0;
+    }
+    while interval > 2.0 {
+        interval /= 2.0;
+    }
+    // If the color is very close to of the 5-limit Just Intonation ratios below or their
+    // reciprocals, assign a color. Otherwise, assign a default.
+    // Note: 12-EDO minor third is by 15.64 cents.
+    let tolerance_cents = 2.0f32.powf(16.0 / 1200.0);
+    for (ratio, (off, on)) in [
+        (1.0, (Color::TonicOff, Color::TonicOn)),
+        (3.0 / 2.0, (Color::FifthOff, Color::FifthOn)),
+        (5.0 / 4.0, (Color::MajorThirdOff, Color::MajorThirdOn)),
+        (6.0 / 5.0, (Color::MinorThirdOff, Color::MinorThirdOn)),
+    ] {
+        // Interval will never be zero unless someone put zeros in their scale files, and we
+        // check against that when validating the config file.
+        for target in [ratio, 2.0 / ratio] {
+            let difference = if interval > target {
+                interval / target
+            } else {
+                target / interval
+            };
+            if difference < tolerance_cents {
+                return NoteColors { off, on };
+            }
+        }
+    }
+    NoteColors {
+        off: Color::OtherOff,
+        on: Color::OtherOn,
+    }
 }
 
 #[derive(Clone, Debug)]
@@ -60,7 +102,7 @@ pub enum KeyData {
     Transpose,
     OctaveShift { up: bool },
     Print,
-    Note { position: u8 },
+    Note { position: Coordinate },
 }
 
 #[derive(Clone, Debug)]
@@ -88,18 +130,52 @@ pub struct LayoutNamesEvent {
     pub names: Vec<String>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, DebugMore)]
 pub struct SelectLayoutEvent {
     pub idx: usize,
-    pub layout: Arc<RwLock<Layout>>,
+    #[debug("{}", layout.name)]
+    pub layout: Arc<Layout<'static>>,
 }
 
 #[derive(Clone, Debug)]
 pub struct UpdateNoteEvent {
-    pub position: u8,
-    pub played_note: Option<PlayedNote>,
+    pub position: Coordinate,
+    pub note: Option<Arc<Note>>,
 }
 
+#[derive(DebugMore)]
+pub struct Note {
+    #[debug("placed:name={},scale={}", placed.name, placed.scale.definition.name)]
+    pub placed: PlacedNote<'static>,
+    pub off_color: Color,
+    pub on_color: Color,
+}
+impl Display for Note {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let name = self.placed.name.as_ref();
+        let scale_description = self.format_mapping();
+        let base_factor = &self.placed.base_interval;
+        write!(
+            f,
+            "Note: {name} pitch=base*{base_factor}, scale={scale_description}"
+        )
+    }
+}
+impl Note {
+    fn format_mapping(&self) -> String {
+        let scale_name = self.placed.scale.definition.name.as_ref();
+        let orig_base_pitch = &self.placed.scale_base;
+        let transposition = &self.placed.transposition;
+        let base_pitch = orig_base_pitch * transposition;
+        let mut result = format!("{scale_name}, base={base_pitch}");
+        if transposition != &Pitch::unit() {
+            result.push_str(&format!(
+                " (transposition: {orig_base_pitch} × {transposition})"
+            ));
+        }
+        result
+    }
+}
 #[derive(Clone, Debug)]
 pub struct PlayNoteEvent {
     pub pitch: Pitch,
@@ -107,66 +183,39 @@ pub struct PlayNoteEvent {
     pub note: Option<Arc<Note>>,
 }
 
-#[derive(Default, Debug, Copy, Clone, PartialEq)]
-pub enum ShiftKeyState {
-    #[default]
-    Off, // Next on event turns on
-    On,   // Next off event turns on
-    Down, // Next off event leaves on
-}
-
 #[derive(Debug, Clone)]
 pub struct SpecificNote {
     pub layout_idx: usize,
     pub note: Arc<Note>,
-    pub position: u8,
+    pub position: Coordinate,
 }
 
-#[derive(Default, Debug, Clone)]
-pub enum TransposeState {
-    #[default]
-    Off,
-    Pending {
-        initial_layout: usize,
-    },
-    FirstSelected {
-        initial_layout: usize,
-        note1: SpecificNote,
-    },
-}
-
-#[derive(Default, Debug, Clone)]
-pub enum ShiftLayoutState {
-    #[default]
-    Off,
-    FirstSelected(SpecificNote),
-}
-
-#[derive(Default, Clone, Debug)]
+#[derive(Default, Clone, DebugMore)]
 pub struct EngineState {
     /// Currently selected layout
     pub layout: Option<usize>,
     /// All available layouts
-    pub layouts: Vec<Arc<RwLock<Layout>>>,
+    #[debug(skip)]
+    pub layouts: Arc<Layouts<'static>>,
     /// Mapping from position to note in the current layout
-    pub notes: HashMap<u8, Option<Arc<Note>>>,
+    pub notes: HashMap<Coordinate, Option<Arc<Note>>>,
     /// Mapping from pitch to all positions with that pitch in the current layout
-    pub pitch_positions: HashMap<Pitch, HashSet<u8>>,
+    pub pitch_positions: HashMap<Pitch, HashSet<Coordinate>>,
     /// Number of times a pitch is on; > 1 if simultaneously touching more than one position
     /// with the same pitch in non-sustain mode
     pub pitch_on_count: HashMap<Pitch, u8>,
     /// Last note played for a given pitch
     pub last_note_for_pitch: HashMap<Pitch, Arc<Note>>,
     /// Positions that are actually being touched
-    pub positions_down: HashMap<u8, Arc<Note>>,
+    pub positions_down: HashMap<Coordinate, Arc<Note>>,
     pub sustain: bool,
-    pub shift_key_state: ShiftKeyState,
-    pub transpose_state: TransposeState,
-    pub shift_layout_state: ShiftLayoutState,
+    pub shift: Option<Option<SpecificNote>>,
+    pub transpose: Option<Option<SpecificNote>>,
 }
 impl EngineState {
-    pub fn current_layout(&self) -> Option<Arc<RwLock<Layout>>> {
-        self.layout.and_then(|x| self.layouts.get(x).cloned())
+    pub fn current_layout(&self) -> Option<Arc<Layout<'static>>> {
+        self.layout
+            .and_then(|x| self.layouts.layouts.get(x).cloned())
     }
 
     pub fn current_played_notes(&self) -> Vec<String> {
@@ -174,29 +223,23 @@ impl EngineState {
         // and generating a Vec makes testing easier.
         let mut result = Vec::new();
         // Scale name -> notes in the scale
-        let mut scale_to_notes: HashMap<ScaleDescription, Vec<&Arc<Note>>> = HashMap::new();
+        let mut scale_to_notes: HashMap<String, Vec<&Note>> = HashMap::new();
         for note in self.last_note_for_pitch.values() {
-            let key = note.scale_description.clone();
-            scale_to_notes.entry(key).or_default().push(note);
+            let key = note.format_mapping();
+            scale_to_notes.entry(key).or_default().push(note.as_ref());
         }
-        let mut keys: Vec<ScaleDescription> = scale_to_notes.keys().cloned().collect();
+        let mut keys: Vec<String> = scale_to_notes.keys().cloned().collect();
         keys.sort();
         for scale in keys {
             result.push(format!("Scale: {scale}"));
             let mut notes = scale_to_notes.remove(&scale).unwrap();
-            notes.sort_by_key(|note| note.pitch.clone());
+            notes.sort_by_key(|note| note.placed.pitch.clone());
             for note in notes {
-                let Note {
-                    name,
-                    description,
-                    pitch,
-                    scale_description,
-                    base_factor,
-                    colors: _,
-                } = note.as_ref();
-                let scale_base_pitch = &scale_description.base_pitch;
+                let name = note.placed.name.as_ref();
+                let pitch = &note.placed.pitch;
+                let base_factor = &note.placed.base_interval;
                 result.push(format!(
-                    "  Note: {name} ({description}), pitch={pitch} ({scale_base_pitch} × {base_factor})"
+                    "  Note: {name} (pitch={pitch}, interval={base_factor})"
                 ));
             }
         }
@@ -208,8 +251,6 @@ impl EngineState {
 #[template(path = "state-view.html")]
 pub struct StateView {
     pub selected_layout: String,
-    pub scale_name: String,
-    pub base_pitch: String,
     pub layout_names: Vec<String>,
 }
 
@@ -217,7 +258,6 @@ pub struct StateView {
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum TestEvent {
     ResetComplete,
-    DeviceResetComplete,
     LayoutSelected,
     LayoutsHandled,
     HandledNote,
@@ -244,7 +284,6 @@ pub enum Event {
     Shutdown,
     ToDevice(ToDevice),
     Reset,
-    ResetDevice,
     KeyEvent(KeyEvent),
     LightEvent(LightEvent),
     SetLayoutNames(LayoutNamesEvent),
@@ -328,5 +367,23 @@ impl Events {
 
     pub async fn shutdown(&self) {
         self.tx.write().await.take();
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_interval_colors() {
+        fn get_color(pitch: &str) -> Color {
+            let NoteColors { off, .. } = interval_color(Pitch::must_parse(pitch).as_float());
+            off
+        }
+        assert_eq!(get_color("1*3/2"), Color::FifthOff); // JI 5th
+        assert_eq!(get_color("1*^9|12"), Color::MinorThirdOff); // 12-EDO major sixth
+        assert_eq!(get_color("1*^10|31"), Color::MajorThirdOff); // 31-EDO major third
+        assert_eq!(get_color("1*^7|17"), Color::FifthOff); // 17-EDO fourth
+        assert_eq!(get_color("1*^5|17"), Color::OtherOff); // nope
     }
 }

@@ -5,8 +5,8 @@ use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 use log::LevelFilter;
 use std::env;
-use std::path::PathBuf;
-use syntoniq_kbd::engine::SoundType;
+use std::sync::Arc;
+use syntoniq_kbd::engine::{Keyboard, SoundType};
 use syntoniq_kbd::events::Events;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
@@ -35,9 +35,9 @@ struct Cli {
 enum Commands {
     /// Main command -- handle events and send music commands
     Run {
-        /// toml-format config file
+        /// Syntoniq score file containing layouts
         #[arg(long)]
-        config_file: PathBuf,
+        score: String,
         /// Send notes to a virtual output port named Syntoniq
         #[arg(long)]
         midi: bool,
@@ -77,8 +77,13 @@ async fn main() -> anyhow::Result<()> {
     // Create midi controller.
     let tx2 = events_tx.clone();
     let mut rx2 = events_rx.resubscribe();
+    let mut keyboard: Option<Arc<dyn Keyboard>> = None;
     let main_handle = match cli.port {
-        Some(port) => Launchpad::new(tx2).run(port.to_string(), rx2).await?,
+        Some(port) => {
+            let lp = Arc::new(Launchpad::new(tx2));
+            keyboard = Some(lp.clone());
+            lp.run(port.to_string(), rx2).await?
+        }
         None => tokio::spawn(async move {
             while events::receive_check_lag(&mut rx2, None).await.is_some() {}
             Ok(())
@@ -101,7 +106,7 @@ async fn main() -> anyhow::Result<()> {
     match cli.command {
         Commands::Completion { .. } => unreachable!("already handled"),
         Commands::Events => events_main(events_rx.resubscribe()).await,
-        Commands::Run { config_file, midi } => {
+        Commands::Run { score, midi } => {
             let sound_type = if midi {
                 SoundType::Midi
             } else {
@@ -112,9 +117,11 @@ async fn main() -> anyhow::Result<()> {
                 #[cfg(not(feature = "csound"))]
                 bail!("MIDI not requested and csound not available");
             };
+            // TODO: keyboard
             engine::run(
-                config_file,
+                &score,
                 sound_type,
+                keyboard.unwrap(), // TODO: is no-device dead?
                 events_tx.clone(),
                 events_rx.resubscribe(),
             )

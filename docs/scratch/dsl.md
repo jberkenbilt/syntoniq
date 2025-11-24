@@ -2,6 +2,9 @@
 
 Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep.
 
+* Probably want some kind of tile shift parameter for tiling manual mappings, e.g., right_shift_rows=2, meaning to offset horizontally by 1 position every 2 rows. This keeps repeated tiles from shifting to the left on hex keyboards.
+* Consider allowing a layout to have multiple keyboards allowing requiring place_mapping to take a repeatable keyboard option.
+
 Bugs
 * Polyphony for csound doesn't work correctly when splitting parts to use simultaneous tunings. We need something else...perhaps polyphony groups that default to instrument or maybe that default to global but you can assign parts to polyphony groups along with instruments. Maybe csound_instrument takes an optional polyphony group parameter?
 
@@ -44,11 +47,11 @@ Note somewhere that coverage should be 100% for the following:
 * common/parsing/pass1
 * common/parsing/pass2
 * in common/parsing/
+  * layout.rs
+  * model.rs
   * pass*.rs
   * score.rs
-  * model.rs
   * timeline.rs
-  * layout.rs
 
 as this ensures all error conditions are tested and that there are no unreachable code paths. Unreachable code paths would indicate that the parser isn't coded as tightly as it should be. These would arise if later code relies on earlier validations, which is fragile.
 
