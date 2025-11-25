@@ -55,11 +55,12 @@ impl<D: Device> Controller<D> {
         to_device_rx: flume::Receiver<ToDevice>,
         from_device_tx: flume::Sender<FromDevice>,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
-        let handle: JoinHandle<anyhow::Result<()>> = tokio::task::spawn_blocking(move || {
-            let controller =
-                Self::new(&port_name, to_device_rx, from_device_tx).map_err(to_anyhow)?;
-            controller.relay_to_device()
-        });
+        let mut controller =
+            Self::new(&port_name, to_device_rx, from_device_tx).map_err(to_anyhow)?;
+        // Ensure init is called synchronously before we return.
+        D::init(&mut controller.output_connection)?;
+        let handle: JoinHandle<anyhow::Result<()>> =
+            tokio::task::spawn_blocking(move || controller.relay_to_device());
         Ok(handle)
     }
 
@@ -107,7 +108,6 @@ impl<D: Device> Controller<D> {
     }
 
     fn relay_to_device(mut self) -> anyhow::Result<()> {
-        D::init(&mut self.output_connection)?;
         while let Ok(e) = self.to_device.recv() {
             D::handle_event(e, &mut self.output_connection)?;
         }

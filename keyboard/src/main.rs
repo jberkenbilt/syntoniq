@@ -117,7 +117,6 @@ async fn main() -> anyhow::Result<()> {
                 #[cfg(not(feature = "csound"))]
                 bail!("MIDI not requested and csound not available");
             };
-            // TODO: keyboard
             engine::run(
                 &score,
                 sound_type,

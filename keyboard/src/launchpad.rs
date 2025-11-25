@@ -149,17 +149,20 @@ impl Launchpad {
         mut events_rx: events::Receiver,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         let launchpad = self.clone();
+        let controller_h = if port_name.is_empty() {
+            None
+        } else {
+            Some(
+                // Start controller doesn't return until the device is initialized.
+                launchpad
+                    .clone()
+                    .start_controller(port_name, events_rx.resubscribe())
+                    .await?,
+            )
+        };
+        // Start the background task after the device is initialized so we're fully up before this
+        // function returns.
         Ok(task::spawn(async move {
-            let controller_h = if port_name.is_empty() {
-                None
-            } else {
-                Some(
-                    launchpad
-                        .clone()
-                        .start_controller(port_name, events_rx.resubscribe())
-                        .await?,
-                )
-            };
             while let Some(event) = events::receive_check_lag(&mut events_rx, Some("engine")).await
             {
                 launchpad.main_event_loop(event)?;
