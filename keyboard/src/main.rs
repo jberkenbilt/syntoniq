@@ -1,3 +1,4 @@
+use anyhow::bail;
 #[cfg(not(feature = "csound"))]
 use anyhow::bail;
 use clap::CommandFactory;
@@ -7,11 +8,13 @@ use log::LevelFilter;
 use std::env;
 use std::sync::Arc;
 use syntoniq_kbd::DeviceType;
+use syntoniq_kbd::controller::Controller;
 use syntoniq_kbd::engine::{Keyboard, SoundType};
 use syntoniq_kbd::events::Events;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
 use syntoniq_kbd::{engine, events};
+use tokio::sync::oneshot;
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
 /// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
@@ -71,11 +74,18 @@ async fn main() -> anyhow::Result<()> {
     // Create midi controller.
     let tx2 = events_tx.clone();
     let rx2 = events_rx.resubscribe();
+    let (id_tx, id_rx) = oneshot::channel();
+    let controller = Controller::new(&cli.port, id_tx)?;
     let keyboard: Arc<dyn Keyboard>;
-    let main_handle = {
-        let lp = Arc::new(Launchpad::new(tx2));
-        keyboard = lp.clone();
-        lp.run(cli.port.to_string(), rx2).await?
+    let main_handle = match id_rx.await? {
+        DeviceType::Empty => {
+            bail!("unable to identify device on port {}", cli.port);
+        }
+        DeviceType::Launchpad => {
+            let lp = Arc::new(Launchpad::new(tx2));
+            keyboard = lp.clone();
+            lp.run(Some(controller), rx2).await?
+        }
     };
 
     let tx2 = events_tx.clone();

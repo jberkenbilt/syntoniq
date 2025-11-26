@@ -153,20 +153,21 @@ impl Launchpad {
 
     pub async fn run(
         &self,
-        port_name: String,
+        controller: Option<Controller>,
         mut events_rx: events::Receiver,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         let launchpad = self.clone();
-        let controller_h = if port_name.is_empty() {
-            None
-        } else {
-            Some(
+        let controller_h = match controller {
+            None => None,
+            Some(c) => {
                 // Start controller doesn't return until the device is initialized.
-                launchpad
-                    .clone()
-                    .start_controller(port_name, events_rx.resubscribe())
-                    .await?,
-            )
+                Some(
+                    launchpad
+                        .clone()
+                        .start_controller(c, events_rx.resubscribe())
+                        .await?,
+                )
+            }
         };
         // Start the background task after the device is initialized so we're fully up before this
         // function returns.
@@ -184,7 +185,7 @@ impl Launchpad {
 
     pub async fn start_controller(
         self,
-        port_name: String,
+        controller: Controller,
         mut events_rx: events::Receiver,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         // Communicating with the MIDI device must be sync. The rest of the application must be
@@ -211,7 +212,7 @@ impl Launchpad {
             }
         });
         let device = Arc::new(LaunchpadDevice);
-        Controller::new(&port_name)?.run(to_device_rx, from_device_tx, device)
+        controller.run(to_device_rx, from_device_tx, device)
     }
 
     pub fn main_event_loop(&self, event: Event) -> anyhow::Result<()> {
@@ -560,7 +561,7 @@ mod tests {
         let events_rx = tc.rx();
         let tx = events_tx.upgrade().unwrap();
         let launchpad = Launchpad::new(events_tx);
-        launchpad.run(String::new(), events_rx).await?;
+        launchpad.run(None, events_rx).await?;
         let layout_names: Vec<_> = (0..12).map(|x| x.to_string()).collect();
         tx.send(Event::SetLayoutNames(LayoutNamesEvent {
             names: layout_names.clone(),
