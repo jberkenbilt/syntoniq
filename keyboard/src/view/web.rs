@@ -1,8 +1,7 @@
 use crate::events;
 use crate::events::{Event, ToDevice};
-use crate::view::content::App;
+use crate::view::launchpad_view::LaunchpadView;
 use crate::view::state::{AppState, LockedState};
-use askama::Template;
 use axum::extract::{Path, State};
 use axum::http::header;
 use axum::response::Sse;
@@ -23,6 +22,14 @@ use tokio_stream::wrappers::errors::BroadcastStreamRecvError;
 
 static SHUTDOWN: LazyLock<Mutex<Option<oneshot::Sender<()>>>> = LazyLock::new(Default::default);
 
+// Axum is limited in how much you can use generics for handlers, so rather than using traits,
+// we just have to explicitly name the various viewers.
+#[derive(Copy, Clone)]
+pub enum Viewer {
+    Empty,
+    Launchpad,
+}
+
 #[derive(RustEmbed)]
 #[folder = "static/"]
 struct Assets;
@@ -42,13 +49,12 @@ async fn static_asset(Path(path): Path<String>) -> impl IntoResponse {
     }
 }
 
-async fn view(State(lock): State<LockedState>) -> impl IntoResponse {
-    let s = lock.read().await;
-    Html(
-        App::new(s.get_cells(), s.get_state_view())
-            .render()
-            .unwrap(),
-    )
+async fn empty_view() -> impl IntoResponse {
+    StatusCode::OK
+}
+
+async fn launchpad_view(State(lock): State<LockedState>) -> impl IntoResponse {
+    Html(LaunchpadView::generate_view(lock).await)
 }
 
 async fn sse_handler(State(lock): State<LockedState>) -> impl IntoResponse {
@@ -69,13 +75,23 @@ async fn sse_handler(State(lock): State<LockedState>) -> impl IntoResponse {
     Sse::new(stream).into_response()
 }
 
-pub async fn http_view(events_tx: events::WeakSender, events_rx: events::Receiver, port: u16) {
+pub async fn http_view(
+    events_tx: events::WeakSender,
+    events_rx: events::Receiver,
+    port: u16,
+    view: Viewer,
+) {
     let state: LockedState = AppState::new_locked(events_tx);
-    let app = Router::new()
+    let app = Router::new();
+    let mut app = app
         .route("/sse", get(sse_handler))
-        .route("/assets/{*path}", get(static_asset))
-        .route("/", get(view))
-        .with_state(state.clone());
+        .route("/assets/{*path}", get(static_asset));
+    match view {
+        Viewer::Empty => app = app.route("/", get(empty_view)),
+        Viewer::Launchpad => app = app.route("/", get(launchpad_view)),
+    }
+
+    let app = app.with_state(state.clone());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
     log::info!("View HTTP server listening on {addr}");

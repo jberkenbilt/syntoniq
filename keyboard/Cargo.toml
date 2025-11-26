@@ -20,6 +20,7 @@ axum = { version = "0.8.4", features = ["macros", "json"] }
 tokio-stream = { version = "0.1.17", features = ["sync"] }
 rust-embed = "8.7.2"
 derive_more = { version = "2.0.1", features = ["debug"] }
+num_enum = "0.7.5"
 
 [build-dependencies]
 bindgen = "0.72.1"

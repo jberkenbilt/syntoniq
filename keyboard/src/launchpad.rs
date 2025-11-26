@@ -4,12 +4,13 @@ use crate::events;
 #[cfg(test)]
 use crate::events::TestEvent;
 use crate::events::{
-    Color, Event, FromDevice, KeyData, KeyEvent, LightData, LightEvent, Note, RawKeyEvent,
-    RawLightEvent, RawPressureEvent, ToDevice,
+    ButtonData, Color, Event, FromDevice, KeyData, KeyEvent, LightData, LightEvent, Note,
+    RawKeyEvent, RawLightEvent, RawPressureEvent, ToDevice,
 };
 use midir::MidiOutputConnection;
 use midly::MidiMessage;
 use midly::live::LiveEvent;
+use num_enum::{IntoPrimitive, TryFromPrimitive};
 use std::sync::{Arc, LazyLock, RwLock};
 use syntoniq_common::parsing::{Coordinate, Layout};
 use tokio::task;
@@ -26,6 +27,25 @@ macro_rules! make_message {
 
 const ENTER_LIVE: &[u8] = make_message!(0x0e, 0x00);
 const ENTER_PROGRAMMER: &[u8] = make_message!(0x0e, 0x01);
+
+#[derive(IntoPrimitive, TryFromPrimitive)]
+#[repr(u8)]
+enum CommandKeys {
+    // Top Row, left to right
+    Shift = 90,
+    Transpose = 94, // Note
+    Sustain = 95,   // Chord
+    // Left column, top to bottom
+    UpArrow = 80,
+    DownArrow = 70,
+    Clear = 60,
+    Record = 10,
+    // Right column, top to bottom
+    LayoutScroll = 19,
+    // Upper bottom controls
+    LayoutMin = 101,
+    LayoutMax = 108,
+}
 
 #[derive(Clone)]
 pub struct Launchpad {
@@ -58,9 +78,18 @@ impl Launchpad {
         // on/off events. See color.py for iterating on color choices.
         let code = 0x90; // note on, channel 0
         // See color.py for iterating on color choices.
-        let color = launchpad_color(&color);
+        let color = launchpad_color(color);
         output_connection.send(&[code, position, color])?;
         Ok(())
+    }
+
+    fn set_button_light(
+        output_connection: &mut MidiOutputConnection,
+        button: ButtonData,
+        color: Color,
+    ) -> anyhow::Result<()> {
+        let position = Self::button_to_raw_key(button);
+        Self::set_light(output_connection, position, color)
     }
 
     fn clear_lights(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
@@ -75,25 +104,30 @@ impl Launchpad {
             return Ok(());
         };
         let state = self.state.read().expect("lock").clone();
-        for i in 0..=8 {
-            let position = keys::LAYOUT_MIN + i;
+        for i in 0..8 {
             let idx = i as usize + state.layout_offset;
+            let button = ButtonData::Command {
+                idx: u8::from(CommandKeys::LayoutMin) + i as u8,
+            };
             let event = if idx < state.num_layouts {
                 let is_cur = state.cur_layout.map(|x| x == idx).unwrap_or(false);
+                let color = if is_cur {
+                    Color::ToggleOn
+                } else {
+                    Color::Active
+                };
                 RawLightEvent {
-                    position,
-                    color: if is_cur {
-                        Color::ToggleOn
-                    } else {
-                        Color::Active
-                    },
+                    button,
+                    color,
+                    rgb_color: rgb_color(color),
                     label1: (idx + 1).to_string(),
                     label2: String::new(),
                 }
             } else {
                 RawLightEvent {
-                    position,
+                    button,
                     color: Color::Off,
+                    rgb_color: rgb_color(Color::Off),
                     label1: String::new(),
                     label2: String::new(),
                 }
@@ -102,8 +136,11 @@ impl Launchpad {
         }
         if state.num_layouts > 8 {
             tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
-                position: keys::LAYOUT_SCROLL,
+                button: ButtonData::Command {
+                    idx: CommandKeys::LayoutScroll.into(),
+                },
                 color: Color::Active,
+                rgb_color: rgb_color(Color::Active),
                 label1: "Scroll".to_string(),
                 label2: "layouts".to_string(),
             })))?;
@@ -129,14 +166,15 @@ impl Launchpad {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        let position = match event.light {
-            LightData::Shift => keys::SHIFT,
-            LightData::Sustain => keys::SUSTAIN,
-            LightData::Transpose => keys::TRANSPOSE,
+        let cmd = match event.light {
+            LightData::Shift => CommandKeys::Shift,
+            LightData::Sustain => CommandKeys::Sustain,
+            LightData::Transpose => CommandKeys::Transpose,
         };
         tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
-            position,
+            button: ButtonData::Command { idx: cmd.into() },
             color: event.color,
+            rgb_color: rgb_color(event.color),
             label1: event.label1,
             label2: event.label2,
         })))?;
@@ -241,32 +279,36 @@ impl Launchpad {
             tx.send(Event::KeyEvent(KeyEvent { key, velocity }))?;
             Ok(())
         };
-        match key {
-            keys::SHIFT => send(KeyData::Shift)?,
-            keys::LAYOUT_MIN..=keys::LAYOUT_MAX => {
-                if off {
-                    let state = self.state.read().expect("lock");
-                    let idx = (key - keys::LAYOUT_MIN) as usize + state.layout_offset;
-                    if idx < state.num_layouts {
-                        send(KeyData::Layout { idx })?;
+        if Self::is_note_key(key) {
+            send(KeyData::Note {
+                position: Self::key_to_coordinate(key),
+            })?;
+        } else if (u8::from(CommandKeys::LayoutMin)..=u8::from(CommandKeys::LayoutMax))
+            .contains(&key)
+        {
+            if off {
+                let state = self.state.read().expect("lock");
+                let idx = (key - u8::from(CommandKeys::LayoutMin)) as usize + state.layout_offset;
+                if idx < state.num_layouts {
+                    send(KeyData::Layout { idx })?;
+                }
+            }
+        } else if let Ok(command_key) = CommandKeys::try_from(key) {
+            match command_key {
+                CommandKeys::Shift => send(KeyData::Shift)?,
+                CommandKeys::Transpose => send(KeyData::Transpose)?,
+                CommandKeys::Sustain => send(KeyData::Sustain)?,
+                CommandKeys::UpArrow => send(KeyData::OctaveShift { up: true })?,
+                CommandKeys::DownArrow => send(KeyData::OctaveShift { up: false })?,
+                CommandKeys::Clear => send(KeyData::Clear)?,
+                CommandKeys::Record => send(KeyData::Print)?,
+                CommandKeys::LayoutScroll => {
+                    if off {
+                        self.scroll_layouts()?
                     }
                 }
+                CommandKeys::LayoutMin | CommandKeys::LayoutMax => unreachable!(),
             }
-            keys::LAYOUT_SCROLL => {
-                if off {
-                    self.scroll_layouts()?
-                }
-            }
-            keys::CLEAR => send(KeyData::Clear)?,
-            keys::SUSTAIN => send(KeyData::Sustain)?,
-            keys::TRANSPOSE => send(KeyData::Transpose)?,
-            keys::UP_ARROW => send(KeyData::OctaveShift { up: true })?,
-            keys::DOWN_ARROW => send(KeyData::OctaveShift { up: false })?,
-            keys::RECORD => send(KeyData::Print)?,
-            key if Self::is_note_key(key) => send(KeyData::Note {
-                position: Self::key_to_coordinate(key),
-            })?,
-            _ => {}
         }
         Ok(())
     }
@@ -286,6 +328,25 @@ impl Launchpad {
         // See key_to_coordinate. This won't overflow because it is only called internally when
         // we know we have values in range.
         (position.row * 10 + position.col) as u8
+    }
+
+    pub fn raw_key_to_button(position: u8) -> Option<ButtonData> {
+        if Self::is_note_key(position) {
+            Some(ButtonData::Note {
+                position: Self::key_to_coordinate(position),
+            })
+        } else if CommandKeys::try_from(position).is_ok() {
+            Some(ButtonData::Command { idx: position })
+        } else {
+            None
+        }
+    }
+
+    pub fn button_to_raw_key(button: ButtonData) -> u8 {
+        match button {
+            ButtonData::Note { position } => Self::coordinate_to_key(position),
+            ButtonData::Command { idx } => idx,
+        }
     }
 }
 
@@ -337,7 +398,7 @@ impl Device for Launchpad {
         output_connection: &mut MidiOutputConnection,
     ) -> anyhow::Result<()> {
         match event {
-            ToDevice::Light(e) => Self::set_light(output_connection, e.position, e.color),
+            ToDevice::Light(e) => Self::set_button_light(output_connection, e.button, e.color),
             ToDevice::ClearLights => Self::clear_lights(output_connection),
         }
     }
@@ -370,23 +431,26 @@ impl Keyboard for Launchpad {
             (Color::TonicOff, vec![74, 75]),             // cyan
         ] {
             for position in positions {
+                let coord = Self::key_to_coordinate(position);
                 tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
-                    position,
+                    button: ButtonData::Note { position: coord },
                     color,
+                    rgb_color: rgb_color(color),
                     label1: String::new(),
                     label2: String::new(),
                 })))?;
             }
         }
-        for (position, label1, label2) in [
-            (keys::UP_ARROW, "▲", ""),
-            (keys::DOWN_ARROW, "▼", ""),
-            (keys::CLEAR, "Reset", ""),
-            (keys::RECORD, "Show", "Notes"),
+        for (cmd, label1, label2) in [
+            (CommandKeys::UpArrow, "▲", ""),
+            (CommandKeys::DownArrow, "▼", ""),
+            (CommandKeys::Clear, "Reset", ""),
+            (CommandKeys::Record, "Show", "Notes"),
         ] {
             tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
-                position,
+                button: ButtonData::Command { idx: cmd.into() },
                 color: Color::Active,
+                rgb_color: rgb_color(Color::Active),
                 label1: label1.to_string(),
                 label2: label2.to_string(),
             })))?;
@@ -413,11 +477,11 @@ impl Keyboard for Launchpad {
     }
 
     fn note_light_event(&self, note: Option<&Note>, position: Coordinate, velocity: u8) -> Event {
-        let position = Self::coordinate_to_key(position);
         match note {
             None => Event::ToDevice(ToDevice::Light(RawLightEvent {
-                position,
+                button: ButtonData::Note { position },
                 color: Color::Off,
+                rgb_color: rgb_color(Color::Off),
                 label1: String::new(),
                 label2: String::new(),
             })),
@@ -428,8 +492,9 @@ impl Keyboard for Launchpad {
                     note.on_color
                 };
                 Event::ToDevice(ToDevice::Light(RawLightEvent {
-                    position,
+                    button: ButtonData::Note { position },
                     color,
+                    rgb_color: rgb_color(color),
                     label1: note.placed.name.to_string(),
                     label2: note.placed.base_interval.to_string(),
                 }))
@@ -453,24 +518,7 @@ mod colors {
     pub const MAGENTA: u8 = 0x5e;
 }
 
-mod keys {
-    // Top Row, left to right
-    pub const SHIFT: u8 = 90;
-    pub const TRANSPOSE: u8 = 94; // Note
-    pub const SUSTAIN: u8 = 95; // Chord
-    // Left column, top to bottom
-    pub const UP_ARROW: u8 = 80;
-    pub const DOWN_ARROW: u8 = 70;
-    pub const CLEAR: u8 = 60;
-    pub const RECORD: u8 = 10;
-    // Right column, top to bottom
-    pub const LAYOUT_SCROLL: u8 = 19;
-    // Upper bottom controls
-    pub const LAYOUT_MIN: u8 = 101;
-    pub const LAYOUT_MAX: u8 = 109;
-}
-
-pub fn launchpad_color(color: &Color) -> u8 {
+pub fn launchpad_color(color: Color) -> u8 {
     match color {
         Color::Off => 0,
         Color::Active => colors::WHITE,
@@ -492,7 +540,7 @@ pub fn launchpad_color(color: &Color) -> u8 {
     }
 }
 
-pub fn rgb_color(color: &Color) -> &'static str {
+pub fn rgb_color(color: Color) -> &'static str {
     rgb_colors::RGB_COLORS[launchpad_color(color) as usize]
 }
 

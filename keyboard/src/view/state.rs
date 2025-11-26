@@ -1,9 +1,8 @@
 //! The state module is responsible for keeping track of the live values for the app. It also
 //! manages the broadcast channel used for SSE events so it can own the process of updating the
-//! clients when state changes.
-use crate::events::{Color, LayoutNamesEvent, RawLightEvent, SelectLayoutEvent, StateView};
-use crate::view::content::Cell;
-use crate::{events, launchpad};
+//! clients when state changes. This part is device-independent.
+use crate::events;
+use crate::events::{ButtonData, LayoutNamesEvent, RawLightEvent, SelectLayoutEvent, StateView};
 use askama::Template;
 use axum::response::sse::Event;
 use std::collections::HashMap;
@@ -13,13 +12,67 @@ use tokio::sync::RwLock;
 use tokio::sync::broadcast;
 use tokio::sync::broadcast::WeakSender;
 
+#[derive(Template, Default, Clone, PartialEq)]
+#[template(path = "cell-text.html")]
+pub struct CellText {
+    populated: bool,
+    label1: String,
+    label2: String,
+}
+#[derive(Template, Clone, PartialEq)]
+#[template(path = "cell.html")]
+pub struct Cell {
+    button: ButtonData,
+    color: String,
+    cell_text: CellText,
+}
+
 pub struct AppState {
-    cells: HashMap<u8, Cell>,
+    cells: HashMap<ButtonData, Cell>,
     state_view: StateView,
     sse_tx: Option<broadcast::Sender<Event>>,
     events_tx: events::WeakSender,
 }
 pub type LockedState = Arc<RwLock<AppState>>;
+
+impl Cell {
+    pub(crate) fn new(button: ButtonData, color: &str, label1: &str, label2: &str) -> Self {
+        let mut color = color.to_string();
+        if color.is_empty() {
+            if matches!(button, ButtonData::Note { .. }) {
+                color = "var(--off-background)".to_string();
+            } else {
+                color = "var(--control-background)".to_string();
+            }
+        }
+        let populated = !label1.is_empty() || !label2.is_empty();
+        Self {
+            button,
+            color,
+            cell_text: CellText {
+                populated,
+                label1: label1.to_string(),
+                label2: label2.to_string(),
+            },
+        }
+    }
+
+    pub fn empty(button: ButtonData) -> Self {
+        Cell {
+            button,
+            color: "var(--control-background)".to_string(),
+            cell_text: Default::default(),
+        }
+    }
+
+    pub fn element_id(&self) -> String {
+        format!("cell-{}", self.button)
+    }
+
+    pub fn event_name(&self) -> String {
+        format!("sse-cell-{}", self.button)
+    }
+}
 
 impl AppState {
     pub fn new_locked(events_tx: events::WeakSender) -> LockedState {
@@ -65,7 +118,7 @@ impl AppState {
         }
     }
 
-    pub fn get_cells(&self) -> &HashMap<u8, Cell> {
+    pub fn get_cells(&self) -> &HashMap<ButtonData, Cell> {
         &self.cells
     }
 
@@ -73,9 +126,9 @@ impl AppState {
         &self.state_view
     }
 
-    pub fn set_cell(&mut self, position: u8, color: &str, top: &str, bottom: &str) {
-        let cell = Cell::new(position, color, top, bottom);
-        let old = self.cells.insert(position, cell.clone());
+    pub fn set_cell(&mut self, button: ButtonData, color: &str, top: &str, bottom: &str) {
+        let cell = Cell::new(button, color, top, bottom);
+        let old = self.cells.insert(button, cell.clone());
         let Some(tx) = self.sse_tx.clone() else {
             return;
         };
@@ -88,18 +141,14 @@ impl AppState {
     }
 
     pub fn handle_light_event(&mut self, e: RawLightEvent) {
-        self.set_cell(
-            e.position,
-            launchpad::rgb_color(&e.color),
-            &e.label1,
-            &e.label2,
-        );
+        self.set_cell(e.button, e.rgb_color, &e.label1, &e.label2);
     }
 
     pub fn clear_lights(&mut self) {
         let positions: Vec<_> = self.cells.keys().cloned().collect();
         for p in positions {
-            self.set_cell(p, launchpad::rgb_color(&Color::Off), "", "");
+            // Neutral gray representing a turned-off key
+            self.set_cell(p, events::OFF_RGB, "", "");
         }
     }
 

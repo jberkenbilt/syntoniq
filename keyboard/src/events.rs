@@ -10,6 +10,8 @@ use tokio::sync::broadcast::error::RecvError;
 use tokio::sync::mpsc;
 use tokio::sync::{RwLock, broadcast};
 
+pub const OFF_RGB: &str = "#b3b3b3";
+
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
     Off,
@@ -73,10 +75,25 @@ pub fn interval_color(mut interval: f32) -> NoteColors {
     }
 }
 
+#[derive(Copy, Clone, Debug, PartialOrd, PartialEq, Eq, Hash)]
+pub enum ButtonData {
+    Note { position: Coordinate },
+    Command { idx: u8 },
+}
+impl Display for ButtonData {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ButtonData::Note { position: p } => write!(f, "n{}-{}", p.row, p.col),
+            ButtonData::Command { idx } => write!(f, "c{idx}"),
+        }
+    }
+}
+
 #[derive(Clone, Debug)]
 pub struct RawLightEvent {
-    pub position: u8,
+    pub button: ButtonData,
     pub color: Color,
+    pub rgb_color: &'static str,
     pub label1: String,
     pub label2: String,
 }

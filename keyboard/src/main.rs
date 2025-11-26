@@ -10,6 +10,7 @@ use syntoniq_kbd::engine::{Keyboard, SoundType};
 use syntoniq_kbd::events::Events;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
+use syntoniq_kbd::view::web::Viewer;
 use syntoniq_kbd::{engine, events};
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -22,10 +23,7 @@ use syntoniq_kbd::{engine, events};
 struct Cli {
     /// Substring to match for midi port; run amidi -l
     #[arg(long)]
-    port: Option<String>,
-
-    #[arg(long)]
-    no_dev: bool,
+    port: String,
 
     #[command(subcommand)]
     command: Commands,
@@ -59,10 +57,6 @@ async fn main() -> anyhow::Result<()> {
         syntoniq_common::cli_completions(shell, &mut cmd);
         return Ok(());
     }
-    if cli.port.is_none() && !cli.no_dev {
-        eprintln!("One of --port or --no-dev is required");
-        std::process::exit(2);
-    };
 
     let mut log_builder = env_logger::builder();
     if env::var("RUST_LOG").is_err() {
@@ -76,24 +70,18 @@ async fn main() -> anyhow::Result<()> {
 
     // Create midi controller.
     let tx2 = events_tx.clone();
-    let mut rx2 = events_rx.resubscribe();
-    let mut keyboard: Option<Arc<dyn Keyboard>> = None;
-    let main_handle = match cli.port {
-        Some(port) => {
-            let lp = Arc::new(Launchpad::new(tx2));
-            keyboard = Some(lp.clone());
-            lp.run(port.to_string(), rx2).await?
-        }
-        None => tokio::spawn(async move {
-            while events::receive_check_lag(&mut rx2, None).await.is_some() {}
-            Ok(())
-        }),
+    let rx2 = events_rx.resubscribe();
+    let keyboard: Arc<dyn Keyboard>;
+    let main_handle = {
+        let lp = Arc::new(Launchpad::new(tx2));
+        keyboard = lp.clone();
+        lp.run(cli.port.to_string(), rx2).await?
     };
 
     let tx2 = events_tx.clone();
     let rx2 = events_rx.resubscribe();
     tokio::spawn(async move {
-        web::http_view(tx2, rx2, 8440).await;
+        web::http_view(tx2, rx2, 8440, Viewer::Launchpad).await;
     });
 
     // Make sure everything is cleaned up on exit.
@@ -120,7 +108,7 @@ async fn main() -> anyhow::Result<()> {
             engine::run(
                 &score,
                 sound_type,
-                keyboard.unwrap(), // TODO: is no-device dead?
+                keyboard,
                 events_tx.clone(),
                 events_rx.resubscribe(),
             )

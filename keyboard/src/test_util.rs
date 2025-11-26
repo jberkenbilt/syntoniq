@@ -1,9 +1,10 @@
 use crate::engine::{Keyboard, SoundType};
 use crate::events::{
-    Color, EngineState, Event, Events, KeyData, KeyEvent, Note, RawLightEvent, StateView,
-    TestEvent, ToDevice,
+    ButtonData, Color, EngineState, Event, Events, KeyData, KeyEvent, Note, RawLightEvent,
+    StateView, TestEvent, ToDevice,
 };
 use crate::view::web;
+use crate::view::web::Viewer;
 use crate::{engine, events};
 use std::sync::{Arc, LazyLock};
 use syntoniq_common::parsing::{Coordinate, Layout};
@@ -53,8 +54,11 @@ impl Keyboard for TestKeyboard {
         _velocity: u8,
     ) -> Event {
         Event::ToDevice(ToDevice::Light(RawLightEvent {
-            position: 0,
+            button: ButtonData::Note {
+                position: Coordinate { row: 0, col: 0 },
+            },
             color: Color::Off,
+            rgb_color: events::OFF_RGB,
             label1: String::new(),
             label2: String::new(),
         }))
@@ -80,20 +84,14 @@ impl TestController {
         let rx2 = events_rx.resubscribe();
         let lp = TestKeyboard;
         let keyboard = Arc::new(lp);
+        let k2 = keyboard.clone();
         let engine_handle = tokio::spawn(async move {
-            engine::run(
-                "test-data/keyboard.stq",
-                SoundType::None,
-                keyboard,
-                tx2,
-                rx2,
-            )
-            .await
+            engine::run("test-data/keyboard.stq", SoundType::None, k2, tx2, rx2).await
         });
         let tx2 = events_tx_weak.clone();
         let rx2 = events_rx.resubscribe();
         let web_handle = tokio::spawn(async move {
-            web::http_view(tx2, rx2, 0).await;
+            web::http_view(tx2, rx2, 0, Viewer::Empty).await;
         });
         let mut rx2 = events_rx.resubscribe();
         tokio::spawn(async move {
