@@ -140,8 +140,10 @@ impl AppState {
         }
     }
 
-    pub fn handle_light_event(&mut self, e: RawLightEvent) {
-        self.set_cell(e.button, e.rgb_color, &e.label1, &e.label2);
+    pub fn handle_light_event(&mut self, events: &[RawLightEvent]) {
+        for e in events {
+            self.set_cell(e.button, &e.rgb_color, &e.label1, &e.label2);
+        }
     }
 
     pub fn clear_lights(&mut self) {

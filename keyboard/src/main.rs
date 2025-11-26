@@ -9,11 +9,11 @@ use std::env;
 use std::sync::Arc;
 use syntoniq_kbd::DeviceType;
 use syntoniq_kbd::controller::Controller;
+use syntoniq_kbd::engine;
 use syntoniq_kbd::engine::{Keyboard, SoundType};
 use syntoniq_kbd::events::Events;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
-use syntoniq_kbd::{engine, events};
 use tokio::sync::oneshot;
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -43,8 +43,6 @@ enum Commands {
         #[arg(long)]
         midi: bool,
     },
-    /// Log device events during interaction
-    Events,
     /// Generate shell completion
     Completion {
         /// shell
@@ -73,21 +71,16 @@ async fn main() -> anyhow::Result<()> {
 
     // Create midi controller.
     let tx2 = events_tx.clone();
-    let rx2 = events_rx.resubscribe();
     let (id_tx, id_rx) = oneshot::channel();
     let controller = Controller::new(&cli.port, id_tx)?;
-    let keyboard: Arc<dyn Keyboard>;
-    let main_handle = match id_rx.await? {
+    let keyboard = match id_rx.await? {
         DeviceType::Empty => {
             bail!("unable to identify device on port {}", cli.port);
         }
-        DeviceType::Launchpad => {
-            let lp = Arc::new(Launchpad::new(tx2));
-            keyboard = lp.clone();
-            lp.run(Some(controller), rx2).await?
-        }
+        DeviceType::Launchpad => Arc::new(Launchpad::new(tx2)) as Arc<dyn Keyboard>,
     };
-
+    let main_handle =
+        engine::start_keyboard(Some(controller), keyboard.clone(), events_rx.resubscribe()).await?;
     let tx2 = events_tx.clone();
     let rx2 = events_rx.resubscribe();
     tokio::spawn(async move {
@@ -100,39 +93,29 @@ async fn main() -> anyhow::Result<()> {
         let _ = tokio::signal::ctrl_c().await;
         events.shutdown().await;
     });
+    let Commands::Run { score, midi } = cli.command else {
+        unreachable!("already handled");
+    };
 
-    match cli.command {
-        Commands::Completion { .. } => unreachable!("already handled"),
-        Commands::Events => events_main(events_rx.resubscribe()).await,
-        Commands::Run { score, midi } => {
-            let sound_type = if midi {
-                SoundType::Midi
-            } else {
-                #[cfg(feature = "csound")]
-                {
-                    SoundType::Csound
-                }
-                #[cfg(not(feature = "csound"))]
-                bail!("MIDI not requested and csound not available");
-            };
-            engine::run(
-                &score,
-                sound_type,
-                keyboard,
-                events_tx.clone(),
-                events_rx.resubscribe(),
-            )
-            .await
+    let sound_type = if midi {
+        SoundType::Midi
+    } else {
+        #[cfg(feature = "csound")]
+        {
+            SoundType::Csound
         }
-    }?;
+        #[cfg(not(feature = "csound"))]
+        bail!("MIDI not requested and csound not available");
+    };
+    engine::run(
+        &score,
+        sound_type,
+        keyboard,
+        events_tx.clone(),
+        events_rx.resubscribe(),
+    )
+    .await?;
     drop(events_tx);
     drop(events_rx);
     main_handle.await?
-}
-
-async fn events_main(mut rx: events::Receiver) -> anyhow::Result<()> {
-    while let Ok(event) = rx.recv().await {
-        println!("{event:?}");
-    }
-    Ok(())
 }

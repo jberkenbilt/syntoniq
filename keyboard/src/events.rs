@@ -10,7 +10,7 @@ use tokio::sync::broadcast::error::RecvError;
 use tokio::sync::mpsc;
 use tokio::sync::{RwLock, broadcast};
 
-pub const OFF_RGB: &str = "#b3b3b3";
+pub const OFF_RGB: &str = "#616161";
 
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
@@ -93,7 +93,7 @@ impl Display for ButtonData {
 pub struct RawLightEvent {
     pub button: ButtonData,
     pub color: Color,
-    pub rgb_color: &'static str,
+    pub rgb_color: String,
     pub label1: String,
     pub label2: String,
 }
@@ -291,8 +291,7 @@ pub enum FromDevice {
 
 #[derive(Clone, Debug)]
 pub enum ToDevice {
-    // TODO: this is probably not right. Which device?
-    Light(RawLightEvent),
+    Light(Vec<RawLightEvent>),
     ClearLights,
 }
 

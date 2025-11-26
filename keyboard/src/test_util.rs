@@ -1,8 +1,9 @@
 use crate::DeviceType;
+use crate::controller::Device;
 use crate::engine::{Keyboard, SoundType};
 use crate::events::{
-    ButtonData, Color, EngineState, Event, Events, KeyData, KeyEvent, Note, RawLightEvent,
-    StateView, TestEvent, ToDevice,
+    ButtonData, Color, EngineState, Event, Events, FromDevice, KeyData, KeyEvent, Note,
+    RawLightEvent, StateView, TestEvent,
 };
 use crate::view::web;
 use crate::{engine, events};
@@ -52,16 +53,29 @@ impl Keyboard for TestKeyboard {
         _note: Option<&Note>,
         _position: Coordinate,
         _velocity: u8,
-    ) -> Event {
-        Event::ToDevice(ToDevice::Light(RawLightEvent {
+    ) -> RawLightEvent {
+        RawLightEvent {
             button: ButtonData::Note {
                 position: Coordinate { row: 0, col: 0 },
             },
             color: Color::Off,
-            rgb_color: events::OFF_RGB,
+            rgb_color: events::OFF_RGB.to_string(),
             label1: String::new(),
             label2: String::new(),
-        }))
+        }
+    }
+
+    fn make_device(&self) -> Arc<dyn Device> {
+        // We never pass a controller to the test keyboard.
+        unreachable!();
+    }
+
+    fn handle_raw_event(&self, _msg: FromDevice) -> anyhow::Result<()> {
+        Ok(())
+    }
+
+    fn main_event_loop(&self, _event: Event) -> anyhow::Result<()> {
+        Ok(())
     }
 }
 

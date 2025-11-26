@@ -113,7 +113,7 @@ async fn main_loop(state: LockedState, mut events_rx: events::Receiver) {
         match event {
             Event::Shutdown => drop(SHUTDOWN.lock().await.take()),
             Event::ToDevice(td) => match td {
-                ToDevice::Light(e) => state.write().await.handle_light_event(e),
+                ToDevice::Light(e) => state.write().await.handle_light_event(&e),
                 ToDevice::ClearLights => state.write().await.clear_lights(),
             },
             Event::SelectLayout(e) => state.write().await.handle_select_layout(e).await,

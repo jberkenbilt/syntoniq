@@ -1,4 +1,4 @@
-use crate::controller::{Controller, Device};
+use crate::controller::Device;
 use crate::engine::Keyboard;
 use crate::events;
 #[cfg(test)]
@@ -13,8 +13,6 @@ use midly::live::LiveEvent;
 use num_enum::{IntoPrimitive, TryFromPrimitive};
 use std::sync::{Arc, LazyLock, RwLock};
 use syntoniq_common::parsing::{Coordinate, Layout};
-use tokio::task;
-use tokio::task::JoinHandle;
 
 mod rgb_colors;
 
@@ -74,6 +72,7 @@ impl Launchpad {
             return Ok(());
         };
         let state = self.state.read().expect("lock").clone();
+        let mut events = Vec::new();
         for i in 0..8 {
             let idx = i as usize + state.layout_offset;
             let button = ButtonData::Command {
@@ -102,10 +101,10 @@ impl Launchpad {
                     label2: String::new(),
                 }
             };
-            tx.send(Event::ToDevice(ToDevice::Light(event)))?;
+            events.push(event);
         }
         if state.num_layouts > 8 {
-            tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
+            events.push(RawLightEvent {
                 button: ButtonData::Command {
                     idx: CommandKeys::LayoutScroll.into(),
                 },
@@ -113,8 +112,12 @@ impl Launchpad {
                 rgb_color: rgb_color(Color::Active),
                 label1: "Scroll".to_string(),
                 label2: "layouts".to_string(),
-            })))?;
+            });
         }
+        if !events.is_empty() {
+            tx.send(Event::ToDevice(ToDevice::Light(events)))?;
+        }
+
         #[cfg(test)]
         events::send_test_event(&self.events_tx, TestEvent::LayoutsHandled);
         Ok(())
@@ -141,148 +144,18 @@ impl Launchpad {
             LightData::Sustain => CommandKeys::Sustain,
             LightData::Transpose => CommandKeys::Transpose,
         };
-        tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
+        tx.send(Event::ToDevice(ToDevice::Light(vec![RawLightEvent {
             button: ButtonData::Command { idx: cmd.into() },
             color: event.color,
             rgb_color: rgb_color(event.color),
             label1: event.label1,
             label2: event.label2,
-        })))?;
-        Ok(())
-    }
-
-    pub async fn run(
-        &self,
-        controller: Option<Controller>,
-        mut events_rx: events::Receiver,
-    ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
-        let launchpad = self.clone();
-        let controller_h = match controller {
-            None => None,
-            Some(c) => {
-                // Start controller doesn't return until the device is initialized.
-                Some(
-                    launchpad
-                        .clone()
-                        .start_controller(c, events_rx.resubscribe())
-                        .await?,
-                )
-            }
-        };
-        // Start the background task after the device is initialized so we're fully up before this
-        // function returns.
-        Ok(task::spawn(async move {
-            while let Some(event) = events::receive_check_lag(&mut events_rx, Some("engine")).await
-            {
-                launchpad.main_event_loop(event)?;
-            }
-            if let Some(h) = controller_h {
-                h.await??;
-            }
-            Ok(())
-        }))
-    }
-
-    pub async fn start_controller(
-        self,
-        controller: Controller,
-        mut events_rx: events::Receiver,
-    ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
-        // Communicating with the MIDI device must be sync. The rest of the application must be
-        // async. To bridge the gap, we create flume channels to relay back and forth.
-        let (to_device_tx, to_device_rx) = flume::unbounded::<ToDevice>();
-        let (from_device_tx, from_device_rx) = flume::unbounded::<FromDevice>();
-        tokio::spawn(async move {
-            while let Some(event) =
-                events::receive_check_lag(&mut events_rx, Some("controller")).await
-            {
-                let Event::ToDevice(event) = event else {
-                    continue;
-                };
-                if let Err(e) = to_device_tx.send_async(event).await {
-                    log::error!("failed to relay message to device: {e}");
-                }
-            }
-        });
-        tokio::spawn(async move {
-            while let Ok(msg) = from_device_rx.recv_async().await {
-                if let Err(e) = self.handle_raw_event(msg) {
-                    log::error!("error handling raw Launchpad event: {e}");
-                }
-            }
-        });
-        let device = Arc::new(LaunchpadDevice);
-        controller.run(to_device_rx, from_device_tx, device)
-    }
-
-    pub fn main_event_loop(&self, event: Event) -> anyhow::Result<()> {
-        match event {
-            Event::Shutdown => return Ok(()),
-            Event::SelectLayout(e) => {
-                self.state.write().expect("lock").cur_layout = Some(e.idx);
-                self.fix_layout_lights()?;
-            }
-            Event::ToDevice(_) | Event::KeyEvent(_) => {}
-            Event::LightEvent(e) => self.handle_light_event(e)?,
-            Event::SetLayoutNames(e) => {
-                self.state.write().expect("lock").num_layouts = e.names.len();
-                self.fix_layout_lights()?;
-            }
-            Event::Reset | Event::UpdateNote(_) | Event::PlayNote(_) => {}
-            #[cfg(test)]
-            Event::TestEngine(_) | Event::TestWeb(_) | Event::TestEvent(_) | Event::TestSync => {}
-        }
+        }])))?;
         Ok(())
     }
 
     fn is_note_key(position: u8) -> bool {
         (1..=8).contains(&(position / 10)) && (1..=8).contains(&(position % 10))
-    }
-
-    fn handle_raw_event(&self, msg: FromDevice) -> anyhow::Result<()> {
-        let Some(tx) = self.events_tx.upgrade() else {
-            return Ok(());
-        };
-        let FromDevice::Key(RawKeyEvent { key, velocity }) = msg else {
-            return Ok(());
-        };
-        let off = velocity == 0;
-        let send = |key: KeyData| -> anyhow::Result<()> {
-            tx.send(Event::KeyEvent(KeyEvent { key, velocity }))?;
-            Ok(())
-        };
-        if Self::is_note_key(key) {
-            send(KeyData::Note {
-                position: Self::key_to_coordinate(key),
-            })?;
-        } else if (u8::from(CommandKeys::LayoutMin)..=u8::from(CommandKeys::LayoutMax))
-            .contains(&key)
-        {
-            if off {
-                let state = self.state.read().expect("lock");
-                let idx = (key - u8::from(CommandKeys::LayoutMin)) as usize + state.layout_offset;
-                if idx < state.num_layouts {
-                    send(KeyData::Layout { idx })?;
-                }
-            }
-        } else if let Ok(command_key) = CommandKeys::try_from(key) {
-            match command_key {
-                CommandKeys::Shift => send(KeyData::Shift)?,
-                CommandKeys::Transpose => send(KeyData::Transpose)?,
-                CommandKeys::Sustain => send(KeyData::Sustain)?,
-                CommandKeys::UpArrow => send(KeyData::OctaveShift { up: true })?,
-                CommandKeys::DownArrow => send(KeyData::OctaveShift { up: false })?,
-                CommandKeys::Clear => send(KeyData::Clear)?,
-                CommandKeys::Record => send(KeyData::Print)?,
-                CommandKeys::LayoutScroll => {
-                    if off {
-                        self.scroll_layouts()?
-                    }
-                }
-                CommandKeys::LayoutMin | CommandKeys::LayoutMax => unreachable!(),
-            }
-        }
-        Ok(())
     }
 
     fn key_to_coordinate(key: u8) -> Coordinate {
@@ -338,13 +211,15 @@ impl LaunchpadDevice {
         Ok(())
     }
 
-    fn set_button_light(
+    fn set_button_lights(
         output_connection: &mut MidiOutputConnection,
-        button: ButtonData,
-        color: Color,
+        events: &[RawLightEvent],
     ) -> anyhow::Result<()> {
-        let position = Launchpad::button_to_raw_key(button);
-        Self::set_light(output_connection, position, color)
+        for e in events {
+            let position = Launchpad::button_to_raw_key(e.button);
+            Self::set_light(output_connection, position, e.color)?;
+        }
+        Ok(())
     }
 
     fn clear_lights(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
@@ -400,9 +275,7 @@ impl Device for LaunchpadDevice {
         output_connection: &mut MidiOutputConnection,
     ) -> anyhow::Result<()> {
         match event {
-            ToDevice::Light(e) => {
-                LaunchpadDevice::set_button_light(output_connection, e.button, e.color)
-            }
+            ToDevice::Light(e) => LaunchpadDevice::set_button_lights(output_connection, &e),
             ToDevice::ClearLights => LaunchpadDevice::clear_lights(output_connection),
         }
     }
@@ -424,6 +297,7 @@ impl Keyboard for Launchpad {
         *self.state.write().expect("lock") = Default::default();
         // Draw the logo.
         tx.send(Event::ToDevice(ToDevice::ClearLights))?;
+        let mut logo = Vec::new();
         for (color, positions) in [
             (
                 Color::FifthOn, // green
@@ -436,13 +310,13 @@ impl Keyboard for Launchpad {
         ] {
             for position in positions {
                 let coord = Self::key_to_coordinate(position);
-                tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
+                logo.push(RawLightEvent {
                     button: ButtonData::Note { position: coord },
                     color,
                     rgb_color: rgb_color(color),
                     label1: String::new(),
                     label2: String::new(),
-                })))?;
+                });
             }
         }
         for (cmd, label1, label2) in [
@@ -451,14 +325,15 @@ impl Keyboard for Launchpad {
             (CommandKeys::Clear, "Reset", ""),
             (CommandKeys::Record, "Show", "Notes"),
         ] {
-            tx.send(Event::ToDevice(ToDevice::Light(RawLightEvent {
+            logo.push(RawLightEvent {
                 button: ButtonData::Command { idx: cmd.into() },
                 color: Color::Active,
                 rgb_color: rgb_color(Color::Active),
                 label1: label1.to_string(),
                 label2: label2.to_string(),
-            })))?;
+            });
         }
+        tx.send(Event::ToDevice(ToDevice::Light(logo)))?;
         self.fix_layout_lights()?;
         Ok(())
     }
@@ -480,30 +355,105 @@ impl Keyboard for Launchpad {
         &POSITIONS
     }
 
-    fn note_light_event(&self, note: Option<&Note>, position: Coordinate, velocity: u8) -> Event {
+    fn note_light_event(
+        &self,
+        note: Option<&Note>,
+        position: Coordinate,
+        velocity: u8,
+    ) -> RawLightEvent {
         match note {
-            None => Event::ToDevice(ToDevice::Light(RawLightEvent {
+            None => RawLightEvent {
                 button: ButtonData::Note { position },
                 color: Color::Off,
                 rgb_color: rgb_color(Color::Off),
                 label1: String::new(),
                 label2: String::new(),
-            })),
+            },
             Some(note) => {
                 let color = if velocity == 0 {
                     note.off_color
                 } else {
                     note.on_color
                 };
-                Event::ToDevice(ToDevice::Light(RawLightEvent {
+                RawLightEvent {
                     button: ButtonData::Note { position },
                     color,
                     rgb_color: rgb_color(color),
                     label1: note.placed.name.to_string(),
                     label2: note.placed.base_interval.to_string(),
-                }))
+                }
             }
         }
+    }
+
+    fn make_device(&self) -> Arc<dyn Device> {
+        Arc::new(LaunchpadDevice)
+    }
+
+    fn handle_raw_event(&self, msg: FromDevice) -> anyhow::Result<()> {
+        let Some(tx) = self.events_tx.upgrade() else {
+            return Ok(());
+        };
+        let FromDevice::Key(RawKeyEvent { key, velocity }) = msg else {
+            return Ok(());
+        };
+        let off = velocity == 0;
+        let send = |key: KeyData| -> anyhow::Result<()> {
+            tx.send(Event::KeyEvent(KeyEvent { key, velocity }))?;
+            Ok(())
+        };
+        if Self::is_note_key(key) {
+            send(KeyData::Note {
+                position: Self::key_to_coordinate(key),
+            })?;
+        } else if (u8::from(CommandKeys::LayoutMin)..=u8::from(CommandKeys::LayoutMax))
+            .contains(&key)
+        {
+            if off {
+                let state = self.state.read().expect("lock");
+                let idx = (key - u8::from(CommandKeys::LayoutMin)) as usize + state.layout_offset;
+                if idx < state.num_layouts {
+                    send(KeyData::Layout { idx })?;
+                }
+            }
+        } else if let Ok(command_key) = CommandKeys::try_from(key) {
+            match command_key {
+                CommandKeys::Shift => send(KeyData::Shift)?,
+                CommandKeys::Transpose => send(KeyData::Transpose)?,
+                CommandKeys::Sustain => send(KeyData::Sustain)?,
+                CommandKeys::UpArrow => send(KeyData::OctaveShift { up: true })?,
+                CommandKeys::DownArrow => send(KeyData::OctaveShift { up: false })?,
+                CommandKeys::Clear => send(KeyData::Clear)?,
+                CommandKeys::Record => send(KeyData::Print)?,
+                CommandKeys::LayoutScroll => {
+                    if off {
+                        self.scroll_layouts()?
+                    }
+                }
+                CommandKeys::LayoutMin | CommandKeys::LayoutMax => unreachable!(),
+            }
+        }
+        Ok(())
+    }
+
+    fn main_event_loop(&self, event: Event) -> anyhow::Result<()> {
+        match event {
+            Event::Shutdown => return Ok(()),
+            Event::SelectLayout(e) => {
+                self.state.write().expect("lock").cur_layout = Some(e.idx);
+                self.fix_layout_lights()?;
+            }
+            Event::ToDevice(_) | Event::KeyEvent(_) => {}
+            Event::LightEvent(e) => self.handle_light_event(e)?,
+            Event::SetLayoutNames(e) => {
+                self.state.write().expect("lock").num_layouts = e.names.len();
+                self.fix_layout_lights()?;
+            }
+            Event::Reset | Event::UpdateNote(_) | Event::PlayNote(_) => {}
+            #[cfg(test)]
+            Event::TestEngine(_) | Event::TestWeb(_) | Event::TestEvent(_) | Event::TestSync => {}
+        }
+        Ok(())
     }
 }
 
@@ -544,13 +494,14 @@ pub fn launchpad_color(color: Color) -> u8 {
     }
 }
 
-pub fn rgb_color(color: Color) -> &'static str {
-    rgb_colors::RGB_COLORS[launchpad_color(color) as usize]
+pub fn rgb_color(color: Color) -> String {
+    rgb_colors::RGB_COLORS[launchpad_color(color) as usize].to_string()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::engine;
     use crate::events::LayoutNamesEvent;
     use crate::test_util::TestController;
 
@@ -560,8 +511,8 @@ mod tests {
         let events_tx = tc.tx().downgrade();
         let events_rx = tc.rx();
         let tx = events_tx.upgrade().unwrap();
-        let launchpad = Launchpad::new(events_tx);
-        launchpad.run(None, events_rx).await?;
+        let launchpad = Arc::new(Launchpad::new(events_tx));
+        engine::start_keyboard(None, launchpad.clone(), events_rx).await?;
         let layout_names: Vec<_> = (0..12).map(|x| x.to_string()).collect();
         tx.send(Event::SetLayoutNames(LayoutNamesEvent {
             names: layout_names.clone(),

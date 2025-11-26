@@ -1,10 +1,12 @@
+use crate::controller::{Controller, Device};
 #[cfg(feature = "csound")]
 use crate::csound;
 #[cfg(test)]
 use crate::events::TestEvent;
 use crate::events::{
-    Color, EngineState, Event, KeyData, KeyEvent, LayoutNamesEvent, LightData, LightEvent, Note,
-    NoteColors, PlayNoteEvent, SelectLayoutEvent, SpecificNote, UpdateNoteEvent,
+    Color, EngineState, Event, FromDevice, KeyData, KeyEvent, LayoutNamesEvent, LightData,
+    LightEvent, Note, NoteColors, PlayNoteEvent, RawLightEvent, SelectLayoutEvent, SpecificNote,
+    ToDevice, UpdateNoteEvent,
 };
 use crate::{events, midi_player};
 use anyhow::bail;
@@ -15,6 +17,8 @@ use std::ops::Deref;
 use std::sync::Arc;
 use syntoniq_common::parsing;
 use syntoniq_common::parsing::{Coordinate, Layout, Layouts};
+use tokio::task;
+use tokio::task::JoinHandle;
 
 #[cfg(test)]
 mod tests;
@@ -44,7 +48,15 @@ pub trait Keyboard: Sync + Send {
     fn reset(&self) -> anyhow::Result<()>;
     fn layout_supported(&self, layout: &Layout) -> bool;
     fn note_positions(&self, keyboard: &str) -> &'static [Coordinate];
-    fn note_light_event(&self, note: Option<&Note>, position: Coordinate, velocity: u8) -> Event;
+    fn note_light_event(
+        &self,
+        note: Option<&Note>,
+        position: Coordinate,
+        velocity: u8,
+    ) -> RawLightEvent;
+    fn make_device(&self) -> Arc<dyn Device>;
+    fn handle_raw_event(&self, msg: FromDevice) -> anyhow::Result<()>;
+    fn main_event_loop(&self, event: Event) -> anyhow::Result<()>;
 }
 
 impl Engine {
@@ -389,12 +401,14 @@ impl Engine {
         let is_on = pitch_count > 0;
         if is_on != was_on {
             let velocity = if is_on { 127 } else { 0 };
-            for position in others.iter().copied() {
-                tx.send(
+            let light_events: Vec<_> = others
+                .iter()
+                .map(|&position| {
                     self.keyboard
-                        .note_light_event(Some(note.deref()), position, velocity),
-                )?;
-            }
+                        .note_light_event(Some(note.deref()), position, velocity)
+                })
+                .collect();
+            tx.send(Event::ToDevice(ToDevice::Light(light_events)))?;
             tx.send(Event::PlayNote(PlayNoteEvent {
                 pitch: pitch.clone(),
                 velocity,
@@ -454,7 +468,7 @@ impl Engine {
         tx: &events::UpgradedSender,
         position: Coordinate,
         note: Option<Arc<Note>>,
-    ) -> anyhow::Result<()> {
+    ) -> anyhow::Result<RawLightEvent> {
         let velocity = note
             .as_ref()
             .map(|note| {
@@ -472,38 +486,36 @@ impl Engine {
                 }
             })
             .unwrap_or_default();
-        tx.send(
-            self.keyboard
-                .note_light_event(note.as_deref(), position, velocity),
-        )?;
+        let light_event = self
+            .keyboard
+            .note_light_event(note.as_deref(), position, velocity);
         tx.send(Event::UpdateNote(UpdateNoteEvent { position, note }))?;
-        Ok(())
+        Ok(light_event)
     }
     fn draw_layout(&self, layout: &Arc<Layout<'static>>) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        for row in 1..=8 {
-            for col in 1..=8 {
-                let location = Coordinate { row, col };
-                let note = layout.note_at_location(location).map(|placed| {
-                    let colors = if placed.isomorphic && placed.degree == 1 {
-                        NoteColors {
-                            off: Color::SingleStepOff,
-                            on: Color::SingleStepOn,
-                        }
-                    } else {
-                        events::interval_color(placed.base_interval.as_float())
-                    };
-                    Arc::new(Note {
-                        placed,
-                        off_color: colors.off,
-                        on_color: colors.on,
-                    })
-                });
-                self.send_note(&tx, location, note)?;
-            }
+        let mut light_events = Vec::new();
+        for &location in self.keyboard.note_positions(&layout.keyboard) {
+            let note = layout.note_at_location(location).map(|placed| {
+                let colors = if placed.isomorphic && placed.degree == 1 {
+                    NoteColors {
+                        off: Color::SingleStepOff,
+                        on: Color::SingleStepOn,
+                    }
+                } else {
+                    events::interval_color(placed.base_interval.as_float())
+                };
+                Arc::new(Note {
+                    placed,
+                    off_color: colors.off,
+                    on_color: colors.on,
+                })
+            });
+            light_events.push(self.send_note(&tx, location, note)?);
         }
+        tx.send(Event::ToDevice(ToDevice::Light(light_events)))?;
         Ok(())
     }
 
@@ -558,6 +570,62 @@ impl Engine {
         };
         Ok(false)
     }
+}
+
+pub async fn start_controller(
+    keyboard: Arc<dyn Keyboard>,
+    controller: Controller,
+    mut events_rx: events::Receiver,
+) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
+    // Communicating with the MIDI device must be sync. The rest of the application must be
+    // async. To bridge the gap, we create flume channels to relay back and forth.
+    let (to_device_tx, to_device_rx) = flume::unbounded::<ToDevice>();
+    let (from_device_tx, from_device_rx) = flume::unbounded::<FromDevice>();
+    tokio::spawn(async move {
+        while let Some(event) = events::receive_check_lag(&mut events_rx, Some("controller")).await
+        {
+            let Event::ToDevice(event) = event else {
+                continue;
+            };
+            if let Err(e) = to_device_tx.send_async(event).await {
+                log::error!("failed to relay message to device: {e}");
+            }
+        }
+    });
+    let device = keyboard.make_device();
+    tokio::spawn(async move {
+        while let Ok(msg) = from_device_rx.recv_async().await {
+            if let Err(e) = keyboard.handle_raw_event(msg) {
+                log::error!("error handling raw Launchpad event: {e}");
+            }
+        }
+    });
+    controller.run(to_device_rx, from_device_tx, device)
+}
+
+pub async fn start_keyboard(
+    controller: Option<Controller>,
+    keyboard: Arc<dyn Keyboard>,
+    mut events_rx: events::Receiver,
+) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
+    let controller_h = match controller {
+        None => None,
+        Some(c) => {
+            // Start controller doesn't return until the device is initialized.
+            Some(start_controller(keyboard.clone(), c, events_rx.resubscribe()).await?)
+        }
+    };
+    // Start the background task after the device is initialized so we're fully up before this
+    // function returns.
+    Ok(task::spawn(async move {
+        while let Some(event) = events::receive_check_lag(&mut events_rx, Some("engine")).await {
+            keyboard.main_event_loop(event)?;
+        }
+        if let Some(h) = controller_h {
+            h.await??;
+        }
+        Ok(())
+    }))
 }
 
 pub async fn run(
