@@ -1,12 +1,22 @@
 use crate::events::{FromDevice, ToDevice};
 use anyhow::bail;
+use arc_swap::ArcSwap;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
-use std::sync::Arc;
+use midly::live::LiveEvent;
+use std::sync::{Arc, LazyLock};
 use syntoniq_common::to_anyhow;
 use tokio::task::JoinHandle;
 
+struct DeviceData {
+    from_device_tx: flume::Sender<FromDevice>,
+    device: Arc<dyn Device>,
+}
+
+static DEVICE: LazyLock<ArcSwap<Option<DeviceData>>> =
+    LazyLock::new(|| ArcSwap::from_pointee(None));
+
 pub trait Device: Sync + Send + 'static {
-    fn on_midi(&self, stamp_ms: u64, event: &[u8]) -> Option<FromDevice>;
+    fn on_midi(&self, event: LiveEvent) -> Option<FromDevice>;
     fn handle_event(
         &self,
         event: ToDevice,
@@ -19,7 +29,6 @@ pub trait Device: Sync + Send + 'static {
 pub struct Controller {
     input_connection: Option<MidiInputConnection<()>>,
     output_connection: MidiOutputConnection,
-    to_device: flume::Receiver<ToDevice>,
 }
 
 pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::Port> {
@@ -49,28 +58,24 @@ pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::P
     }
 }
 
-impl Controller {
-    pub fn run(
-        port_name: String,
-        to_device_rx: flume::Receiver<ToDevice>,
-        from_device_tx: flume::Sender<FromDevice>,
-        device: Arc<dyn Device>,
-    ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
-        let mut controller = Self::new(&port_name, to_device_rx, from_device_tx, device.clone())
-            .map_err(to_anyhow)?;
-        // Ensure init is called synchronously before we return.
-        device.init(&mut controller.output_connection)?;
-        let handle: JoinHandle<anyhow::Result<()>> =
-            tokio::task::spawn_blocking(move || controller.relay_to_device(device));
-        Ok(handle)
+fn on_midi(_stamp_ms: u64, event: &[u8], _data: &mut ()) {
+    let Ok(event) = LiveEvent::parse(event) else {
+        log::error!("invalid midi event received and ignored");
+        return;
+    };
+    if let Some(d) = DEVICE.load().as_ref() {
+        if let Some(event) = d.device.on_midi(event)
+            && let Err(e) = d.from_device_tx.send(event)
+        {
+            log::error!("error notifying of device event: {e}")
+        }
+    } else {
+        // TODO
     }
+}
 
-    pub fn new(
-        port_name: &str,
-        to_device_rx: flume::Receiver<ToDevice>,
-        from_device_tx: flume::Sender<FromDevice>,
-        device: Arc<dyn Device>,
-    ) -> anyhow::Result<Self> {
+impl Controller {
+    pub fn new(port_name: &str) -> anyhow::Result<Self> {
         let midi_in = MidiInput::new("Syntoniq Keyboard")?;
         let in_port = find_port(&midi_in, port_name)?;
         let full_port_name = midi_in.port_name(&in_port)?;
@@ -80,13 +85,7 @@ impl Controller {
             .connect(
                 &in_port,
                 &format!("{} to Syntoniq Keyboard", in_port.id()),
-                move |stamp_ms, message, _| {
-                    if let Some(event) = device.on_midi(stamp_ms, message)
-                        && let Err(e) = from_device_tx.send(event)
-                    {
-                        log::error!("error notifying of device event: {e}")
-                    }
-                },
+                on_midi,
                 (),
             )
             .map_err(to_anyhow)?;
@@ -104,12 +103,32 @@ impl Controller {
         Ok(Self {
             input_connection: Some(input_connection),
             output_connection,
-            to_device: to_device_rx,
         })
     }
 
-    fn relay_to_device(mut self, device: Arc<dyn Device>) -> anyhow::Result<()> {
-        while let Ok(e) = self.to_device.recv() {
+    pub fn run(
+        mut self,
+        to_device_rx: flume::Receiver<ToDevice>,
+        from_device_tx: flume::Sender<FromDevice>,
+        device: Arc<dyn Device>,
+    ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
+        // Ensure init is called synchronously before we return.
+        device.init(&mut self.output_connection)?;
+        DEVICE.store(Arc::new(Some(DeviceData {
+            from_device_tx,
+            device: device.clone(),
+        })));
+        let handle: JoinHandle<anyhow::Result<()>> =
+            tokio::task::spawn_blocking(move || self.relay_to_device(to_device_rx, device));
+        Ok(handle)
+    }
+
+    fn relay_to_device(
+        mut self,
+        to_device_rx: flume::Receiver<ToDevice>,
+        device: Arc<dyn Device>,
+    ) -> anyhow::Result<()> {
+        while let Ok(e) = to_device_rx.recv() {
             device.handle_event(e, &mut self.output_connection)?;
         }
         log::debug!("device received shutdown request");

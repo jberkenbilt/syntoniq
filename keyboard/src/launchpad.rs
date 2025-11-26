@@ -211,7 +211,7 @@ impl Launchpad {
             }
         });
         let device = Arc::new(LaunchpadDevice);
-        Controller::run(port_name, to_device_rx, from_device_tx, device)
+        Controller::new(&port_name)?.run(to_device_rx, from_device_tx, device)
     }
 
     pub fn main_event_loop(&self, event: Event) -> anyhow::Result<()> {
@@ -355,11 +355,7 @@ impl LaunchpadDevice {
 }
 
 impl Device for LaunchpadDevice {
-    fn on_midi(&self, _stamp_ms: u64, event: &[u8]) -> Option<FromDevice> {
-        let Ok(event) = LiveEvent::parse(event) else {
-            log::error!("invalid midi event received and ignored");
-            return None;
-        };
+    fn on_midi(&self, event: LiveEvent) -> Option<FromDevice> {
         match event {
             LiveEvent::Midi { message, .. } => match message {
                 MidiMessage::NoteOn { key, vel } => {
