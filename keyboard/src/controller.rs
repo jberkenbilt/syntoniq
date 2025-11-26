@@ -1,7 +1,6 @@
 use crate::events::{FromDevice, ToDevice};
 use anyhow::bail;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
-use std::marker::PhantomData;
 use syntoniq_common::to_anyhow;
 use tokio::task::JoinHandle;
 
@@ -15,11 +14,10 @@ pub trait Device: Sync + Send + 'static {
     fn shutdown(output_connection: &mut MidiOutputConnection);
 }
 
-pub struct Controller<D: Device> {
+pub struct Controller {
     input_connection: Option<MidiInputConnection<()>>,
     output_connection: MidiOutputConnection,
     to_device: flume::Receiver<ToDevice>,
-    _device: PhantomData<D>,
 }
 
 pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::Port> {
@@ -49,22 +47,22 @@ pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::P
     }
 }
 
-impl<D: Device> Controller<D> {
-    pub fn run(
+impl Controller {
+    pub fn run<D: Device>(
         port_name: String,
         to_device_rx: flume::Receiver<ToDevice>,
         from_device_tx: flume::Sender<FromDevice>,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         let mut controller =
-            Self::new(&port_name, to_device_rx, from_device_tx).map_err(to_anyhow)?;
+            Self::new::<D>(&port_name, to_device_rx, from_device_tx).map_err(to_anyhow)?;
         // Ensure init is called synchronously before we return.
         D::init(&mut controller.output_connection)?;
         let handle: JoinHandle<anyhow::Result<()>> =
-            tokio::task::spawn_blocking(move || controller.relay_to_device());
+            tokio::task::spawn_blocking(move || controller.relay_to_device::<D>());
         Ok(handle)
     }
 
-    pub fn new(
+    pub fn new<D: Device>(
         port_name: &str,
         to_device_rx: flume::Receiver<ToDevice>,
         from_device_tx: flume::Sender<FromDevice>,
@@ -103,11 +101,10 @@ impl<D: Device> Controller<D> {
             input_connection: Some(input_connection),
             output_connection,
             to_device: to_device_rx,
-            _device: Default::default(),
         })
     }
 
-    fn relay_to_device(mut self) -> anyhow::Result<()> {
+    fn relay_to_device<D: Device>(mut self) -> anyhow::Result<()> {
         while let Ok(e) = self.to_device.recv() {
             D::handle_event(e, &mut self.output_connection)?;
         }

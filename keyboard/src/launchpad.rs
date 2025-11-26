@@ -240,7 +240,7 @@ impl Launchpad {
                 }
             }
         });
-        Controller::<Self>::run(port_name, to_device_rx, from_device_tx)
+        Controller::run::<Self>(port_name, to_device_rx, from_device_tx)
     }
 
     pub fn main_event_loop(&self, event: Event) -> anyhow::Result<()> {
