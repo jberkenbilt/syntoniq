@@ -1,0 +1,267 @@
+%!PS-Adobe-2.0 EPSF-2.0
+%%Title: Syntoniq Logo
+%%CreationDate: 2025-11-25
+%%BoundingBox: 0 0 300 300
+%%EndComments
+
+% Originally I was going to convert this to SVG, but eventually I
+% ended up deciding to just play with the transformation matrix, so I
+% probably won't recode this and will just live with the inverted
+% coordinates. This was all hand-coded except the tangent-pitch
+% function, which was provided by Gemini pro 3 to smooth out the
+% curve.
+
+/debug false def
+
+/box-h 300 def
+/box-w 300 def
+
+% Set the coordinate system to match SVG: origin at upper-left corner.
+% Keep this in mind when evaluating the file. It means angles go
+% around counter-clockwise in addition to inversion of other vertical
+% dimensions.
+0 box-h 2 div translate
+1 -1 scale
+0 box-h 2 div neg translate
+
+% Set a clip path as a visual check that we're fitting completely
+% inside the intended bounding box.
+newpath
+  0 0 moveto
+  box-w 0 rlineto
+  0 box-h rlineto
+  box-w neg 0 rlineto
+  closepath
+clip
+
+% Rather than using scale/rotate liberally, just calculate coordinates
+% to make this easier for SVG generation. In PostScript, angles are in
+% degrees.
+
+% angle tan -> tangent
+/tan {
+  dup sin exch cos div
+} def
+
+% r delta-angle handle-length -> length
+/handle-length {
+  % stack: r angle
+  % 4/3 tan(alpha/4) -- good for Archimedian spirals
+  4 div tan
+  4 3 div mul
+  mul
+} def
+
+% cx cy r theta polar-to-rect -> x y
+/polar-to-rect {
+  4 dict begin
+    /angle exch def
+    /r exch def
+    /cy exch def
+    /cx exch def
+    r angle cos mul cx add r angle sin mul cy add
+  end
+} def
+
+% Usage: cx cy width height draw-elipse
+/draw-elipse {
+  4 dict begin
+    /h exch def
+    /w exch def
+    /cy exch def
+    /cx exch def
+
+    gsave cx cy translate
+      newpath
+        % Scale for "arc" but not for "stroke" so that the
+	% drawn elipse will have a uniform thickness.
+	matrix currentmatrix
+	  w h le {
+	    1 h w div scale
+	  } {
+	    w h div 1 scale
+	  } ifelse
+	  0 0 h w min 0 360 arc
+	setmatrix
+      stroke
+    grestore
+  end
+} def
+
+/comma-cx 150 def
+/comma-cy 120 def
+/comma-scale 5 def
+
+/PI 3.14159 def
+/radius-coefficient 180 PI div comma-scale div def
+
+% r tangent-pitch -> pitch-offset
+% This is the slant of the approximate tangent line considering the
+% expanding spiral. It is an offset from perpendicular.
+/tangent-pitch {
+  radius-coefficient exch atan
+} def
+
+
+% angle radius -> r
+/radius {
+  % We spiral counter-clockwise, but that's happening by inverting
+  % coordinates to match SVG. Subtracting from the angle when
+  % computing the radius allows us to add more distance between
+  % successive rings.
+  90 sub comma-scale div
+} def
+
+% theta comma-outer -> x y
+/comma-outer {
+  % stack: theta in degrees
+  dup radius exch
+  % stack: r theta
+  comma-cx comma-cy 4 2 roll
+  % stack: cx cy r theta
+  polar-to-rect
+} def
+
+% theta alpha -> xc yc
+% theta is the current angle
+% alpha is the delta between the current and neighboring angle
+% Use negative alpha to compute the first control point and positive
+% alpha for the second control point.
+/control-point {
+  5 dict begin
+    /alpha exch def
+    /theta exch def
+    alpha 0 lt {
+      % The control point is offset from from the starting point and
+      % is based on the old angle.
+      /r theta alpha add radius def
+      /h-len r alpha neg handle-length def
+      /delta r tangent-pitch def
+      currentpoint h-len theta alpha add 90 add delta sub polar-to-rect
+      debug {
+        gsave currentpoint moveto 2 copy 1 0 0 setrgbcolor lineto stroke grestore
+      } if
+    } {
+      % The control point is offset from from the ending point and is
+      % based on the new angle.
+      /r theta radius def
+      /h-len r alpha handle-length def
+      /delta r tangent-pitch def
+      theta comma-outer h-len theta 90 sub delta sub polar-to-rect
+      debug {
+        gsave theta comma-outer moveto 2 copy 0 0 1 setrgbcolor lineto stroke grestore
+      } if
+    } ifelse
+  end
+} def
+
+/line-width 10 def
+/start-angle 450 def
+/end-angle 840 def
+/increment 45 def
+
+newpath
+  line-width setlinewidth
+  start-angle comma-outer moveto
+  start-angle increment add increment end-angle {
+    7 dict begin
+      /theta exch def
+      % first control point based on previous angle.
+      theta comma-outer
+      /dest-y exch def
+      /dest-x exch def
+      theta increment neg control-point
+      /y1 exch def
+      /x1 exch def
+      theta increment control-point
+      /y2 exch def
+      /x2 exch def
+      x1 y1 x2 y2 dest-x dest-y curveto
+    end
+  } for
+  2 dict begin
+    /last-alpha end-angle increment mod def
+    end-angle last-alpha neg control-point
+    end-angle last-alpha control-point
+    end-angle comma-outer
+    curveto
+  end
+  % Draw a curve back to the starting point. Angle for curve was
+  % picked visually.
+  7 dict begin
+    start-angle comma-outer
+    /y0 exch def
+    /x0 exch def
+    currentpoint
+    /y exch def
+    /x exch def
+    /slope y y0 sub x x0 sub atan def
+    % angle and h-len were just eyeballed.
+    /angle 30 def
+    /h-len comma-scale 5 mul def
+    % first control point
+    x y h-len neg slope angle add polar-to-rect
+    % second control point
+    x0 y0 h-len slope angle sub polar-to-rect
+    x0 y0 curveto
+    closepath
+  end
+  debug not {
+    gsave .92 .7 .87 setrgbcolor fill grestore
+  } if
+  .2 .6 .2 setrgbcolor
+  % save currentpoint on the stack for the next path
+  currentpoint
+stroke
+
+newpath
+  % Move back to where we were
+  moveto
+  8 dict begin
+    % Draw the Q. Size and placement are eyeballed but relative to
+    % existing points.
+    currentpoint pop comma-cy comma-scale 3.5 mul sub
+    /q-cy exch def
+    /q-cx exch comma-scale .75 mul add def
+    /q-radius q-cy currentpoint exch pop sub .75 mul def
+    q-cx q-radius add q-cy moveto
+
+    matrix currentmatrix
+      q-cx q-cx translate
+      135 rotate
+      q-radius .55 mul q-radius .55 mul neg translate
+      0 0 .7 setrgbcolor
+      0 0 q-radius q-radius .9 mul draw-elipse
+    setmatrix
+
+    q-cx q-cy q-radius .35 mul 220 polar-to-rect moveto
+    currentpoint
+    /qy0 exch def
+    /qx0 exch def
+    q-cx q-cy q-radius 1.4 mul 220 polar-to-rect lineto
+    currentpoint
+    /qy1 exch def
+    /qx1 exch def
+    /hex-r q-radius 3.5 div def
+    0 0 .7 setrgbcolor stroke
+    gsave
+      newpath
+        qx0 qy0 hex-r 70 polar-to-rect moveto
+        % angles are relative to the 60-degree offset of the Q stem
+        % angle above, which makes the stem come from the center of
+        % the hexagons.
+        130 60 490 {
+          qx0 qy0 hex-r 4 -1 roll polar-to-rect lineto
+        } for
+        qx1 qy1 hex-r 70 polar-to-rect moveto
+        130 60 490 {
+          qx1 qy1 hex-r 4 -1 roll polar-to-rect lineto
+        } for
+        .7 0 0 setrgbcolor
+      fill
+    grestore
+  end
+stroke
+
+showpage
+%%EOF
