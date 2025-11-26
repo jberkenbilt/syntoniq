@@ -1,17 +1,19 @@
 use crate::events::{FromDevice, ToDevice};
 use anyhow::bail;
 use midir::{MidiIO, MidiInput, MidiInputConnection, MidiOutput, MidiOutputConnection};
+use std::sync::Arc;
 use syntoniq_common::to_anyhow;
 use tokio::task::JoinHandle;
 
 pub trait Device: Sync + Send + 'static {
-    fn on_midi(_stamp_ms: u64, event: &[u8]) -> Option<FromDevice>;
+    fn on_midi(&self, stamp_ms: u64, event: &[u8]) -> Option<FromDevice>;
     fn handle_event(
+        &self,
         event: ToDevice,
         output_connection: &mut MidiOutputConnection,
     ) -> anyhow::Result<()>;
-    fn init(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()>;
-    fn shutdown(output_connection: &mut MidiOutputConnection);
+    fn init(&self, output_connection: &mut MidiOutputConnection) -> anyhow::Result<()>;
+    fn shutdown(&self, output_connection: &mut MidiOutputConnection);
 }
 
 pub struct Controller {
@@ -48,24 +50,26 @@ pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::P
 }
 
 impl Controller {
-    pub fn run<D: Device>(
+    pub fn run(
         port_name: String,
         to_device_rx: flume::Receiver<ToDevice>,
         from_device_tx: flume::Sender<FromDevice>,
+        device: Arc<dyn Device>,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
-        let mut controller =
-            Self::new::<D>(&port_name, to_device_rx, from_device_tx).map_err(to_anyhow)?;
+        let mut controller = Self::new(&port_name, to_device_rx, from_device_tx, device.clone())
+            .map_err(to_anyhow)?;
         // Ensure init is called synchronously before we return.
-        D::init(&mut controller.output_connection)?;
+        device.init(&mut controller.output_connection)?;
         let handle: JoinHandle<anyhow::Result<()>> =
-            tokio::task::spawn_blocking(move || controller.relay_to_device::<D>());
+            tokio::task::spawn_blocking(move || controller.relay_to_device(device));
         Ok(handle)
     }
 
-    pub fn new<D: Device>(
+    pub fn new(
         port_name: &str,
         to_device_rx: flume::Receiver<ToDevice>,
         from_device_tx: flume::Sender<FromDevice>,
+        device: Arc<dyn Device>,
     ) -> anyhow::Result<Self> {
         let midi_in = MidiInput::new("Syntoniq Keyboard")?;
         let in_port = find_port(&midi_in, port_name)?;
@@ -77,7 +81,7 @@ impl Controller {
                 &in_port,
                 &format!("{} to Syntoniq Keyboard", in_port.id()),
                 move |stamp_ms, message, _| {
-                    if let Some(event) = D::on_midi(stamp_ms, message)
+                    if let Some(event) = device.on_midi(stamp_ms, message)
                         && let Err(e) = from_device_tx.send(event)
                     {
                         log::error!("error notifying of device event: {e}")
@@ -104,16 +108,16 @@ impl Controller {
         })
     }
 
-    fn relay_to_device<D: Device>(mut self) -> anyhow::Result<()> {
+    fn relay_to_device(mut self, device: Arc<dyn Device>) -> anyhow::Result<()> {
         while let Ok(e) = self.to_device.recv() {
-            D::handle_event(e, &mut self.output_connection)?;
+            device.handle_event(e, &mut self.output_connection)?;
         }
         log::debug!("device received shutdown request");
         // Dropping the input connection triggers the series events that leads
         // to clean shutdown: the on_midi loop closes, which closes the transmit
         // side of from_device, which causes all subscribers to exit.
         self.input_connection.take();
-        D::shutdown(&mut self.output_connection);
+        device.shutdown(&mut self.output_connection);
         Ok(())
     }
 }

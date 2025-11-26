@@ -1,7 +1,7 @@
-use crate::events;
 use crate::events::{Event, ToDevice};
 use crate::view::launchpad_view::LaunchpadView;
 use crate::view::state::{AppState, LockedState};
+use crate::{DeviceType, events};
 use axum::extract::{Path, State};
 use axum::http::header;
 use axum::response::Sse;
@@ -21,14 +21,6 @@ use tokio_stream::wrappers::BroadcastStream;
 use tokio_stream::wrappers::errors::BroadcastStreamRecvError;
 
 static SHUTDOWN: LazyLock<Mutex<Option<oneshot::Sender<()>>>> = LazyLock::new(Default::default);
-
-// Axum is limited in how much you can use generics for handlers, so rather than using traits,
-// we just have to explicitly name the various viewers.
-#[derive(Copy, Clone)]
-pub enum Viewer {
-    Empty,
-    Launchpad,
-}
 
 #[derive(RustEmbed)]
 #[folder = "static/"]
@@ -79,16 +71,18 @@ pub async fn http_view(
     events_tx: events::WeakSender,
     events_rx: events::Receiver,
     port: u16,
-    view: Viewer,
+    view: DeviceType,
 ) {
     let state: LockedState = AppState::new_locked(events_tx);
     let app = Router::new();
     let mut app = app
         .route("/sse", get(sse_handler))
         .route("/assets/{*path}", get(static_asset));
+    // Axum is limited in how much you can use generics for handlers, so rather than using traits,
+    // we just have to explicitly name the various viewers.
     match view {
-        Viewer::Empty => app = app.route("/", get(empty_view)),
-        Viewer::Launchpad => app = app.route("/", get(launchpad_view)),
+        DeviceType::Empty => app = app.route("/", get(empty_view)),
+        DeviceType::Launchpad => app = app.route("/", get(launchpad_view)),
     }
 
     let app = app.with_state(state.clone());

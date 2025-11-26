@@ -8,3 +8,9 @@ pub mod midi_player;
 #[cfg(test)]
 pub mod test_util;
 pub mod view;
+
+#[derive(Copy, Clone)]
+pub enum DeviceType {
+    Empty,
+    Launchpad,
+}

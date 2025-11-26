@@ -58,6 +58,7 @@ struct State {
     cur_layout: Option<usize>,
     layout_offset: usize,
 }
+pub struct LaunchpadDevice;
 
 impl Launchpad {
     pub fn new(events_tx: events::WeakSender) -> Self {
@@ -66,37 +67,6 @@ impl Launchpad {
             events_tx: events_tx.clone(),
             state: state.clone(),
         }
-    }
-
-    fn set_light(
-        output_connection: &mut MidiOutputConnection,
-        position: u8,
-        color: Color,
-    ) -> anyhow::Result<()> {
-        // The launchpad MK3 in programmer mode uses note events on channel 0 to turn lights
-        // on, channel 1 for flashing, and channel 2 for pulsing. We only use channel 0 for
-        // on/off events. See color.py for iterating on color choices.
-        let code = 0x90; // note on, channel 0
-        // See color.py for iterating on color choices.
-        let color = launchpad_color(color);
-        output_connection.send(&[code, position, color])?;
-        Ok(())
-    }
-
-    fn set_button_light(
-        output_connection: &mut MidiOutputConnection,
-        button: ButtonData,
-        color: Color,
-    ) -> anyhow::Result<()> {
-        let position = Self::button_to_raw_key(button);
-        Self::set_light(output_connection, position, color)
-    }
-
-    fn clear_lights(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
-        for position in 1..=108 {
-            Self::set_light(output_connection, position, Color::Off)?;
-        }
-        Ok(())
     }
 
     fn fix_layout_lights(&self) -> anyhow::Result<()> {
@@ -240,7 +210,8 @@ impl Launchpad {
                 }
             }
         });
-        Controller::run::<Self>(port_name, to_device_rx, from_device_tx)
+        let device = Arc::new(LaunchpadDevice);
+        Controller::run(port_name, to_device_rx, from_device_tx, device)
     }
 
     pub fn main_event_loop(&self, event: Event) -> anyhow::Result<()> {
@@ -350,8 +321,41 @@ impl Launchpad {
     }
 }
 
-impl Device for Launchpad {
-    fn on_midi(_stamp_ms: u64, event: &[u8]) -> Option<FromDevice> {
+impl LaunchpadDevice {
+    fn set_light(
+        output_connection: &mut MidiOutputConnection,
+        position: u8,
+        color: Color,
+    ) -> anyhow::Result<()> {
+        // The launchpad MK3 in programmer mode uses note events on channel 0 to turn lights
+        // on, channel 1 for flashing, and channel 2 for pulsing. We only use channel 0 for
+        // on/off events. See color.py for iterating on color choices.
+        let code = 0x90; // note on, channel 0
+        // See color.py for iterating on color choices.
+        let color = launchpad_color(color);
+        output_connection.send(&[code, position, color])?;
+        Ok(())
+    }
+
+    fn set_button_light(
+        output_connection: &mut MidiOutputConnection,
+        button: ButtonData,
+        color: Color,
+    ) -> anyhow::Result<()> {
+        let position = Launchpad::button_to_raw_key(button);
+        Self::set_light(output_connection, position, color)
+    }
+
+    fn clear_lights(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
+        for position in 1..=108 {
+            Self::set_light(output_connection, position, Color::Off)?;
+        }
+        Ok(())
+    }
+}
+
+impl Device for LaunchpadDevice {
+    fn on_midi(&self, _stamp_ms: u64, event: &[u8]) -> Option<FromDevice> {
         let Ok(event) = LiveEvent::parse(event) else {
             log::error!("invalid midi event received and ignored");
             return None;
@@ -394,20 +398,23 @@ impl Device for Launchpad {
     }
 
     fn handle_event(
+        &self,
         event: ToDevice,
         output_connection: &mut MidiOutputConnection,
     ) -> anyhow::Result<()> {
         match event {
-            ToDevice::Light(e) => Self::set_button_light(output_connection, e.button, e.color),
-            ToDevice::ClearLights => Self::clear_lights(output_connection),
+            ToDevice::Light(e) => {
+                LaunchpadDevice::set_button_light(output_connection, e.button, e.color)
+            }
+            ToDevice::ClearLights => LaunchpadDevice::clear_lights(output_connection),
         }
     }
 
-    fn init(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
+    fn init(&self, output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
         Ok(output_connection.send(ENTER_PROGRAMMER)?)
     }
 
-    fn shutdown(output_connection: &mut MidiOutputConnection) {
+    fn shutdown(&self, output_connection: &mut MidiOutputConnection) {
         let _ = output_connection.send(ENTER_LIVE);
     }
 }

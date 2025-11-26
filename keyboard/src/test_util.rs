@@ -1,10 +1,10 @@
+use crate::DeviceType;
 use crate::engine::{Keyboard, SoundType};
 use crate::events::{
     ButtonData, Color, EngineState, Event, Events, KeyData, KeyEvent, Note, RawLightEvent,
     StateView, TestEvent, ToDevice,
 };
 use crate::view::web;
-use crate::view::web::Viewer;
 use crate::{engine, events};
 use std::sync::{Arc, LazyLock};
 use syntoniq_common::parsing::{Coordinate, Layout};
@@ -91,7 +91,7 @@ impl TestController {
         let tx2 = events_tx_weak.clone();
         let rx2 = events_rx.resubscribe();
         let web_handle = tokio::spawn(async move {
-            web::http_view(tx2, rx2, 0, Viewer::Empty).await;
+            web::http_view(tx2, rx2, 0, DeviceType::Empty).await;
         });
         let mut rx2 = events_rx.resubscribe();
         tokio::spawn(async move {

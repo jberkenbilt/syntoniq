@@ -6,11 +6,11 @@ use clap_complete::Shell;
 use log::LevelFilter;
 use std::env;
 use std::sync::Arc;
+use syntoniq_kbd::DeviceType;
 use syntoniq_kbd::engine::{Keyboard, SoundType};
 use syntoniq_kbd::events::Events;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
-use syntoniq_kbd::view::web::Viewer;
 use syntoniq_kbd::{engine, events};
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -81,7 +81,7 @@ async fn main() -> anyhow::Result<()> {
     let tx2 = events_tx.clone();
     let rx2 = events_rx.resubscribe();
     tokio::spawn(async move {
-        web::http_view(tx2, rx2, 8440, Viewer::Launchpad).await;
+        web::http_view(tx2, rx2, 8440, DeviceType::Launchpad).await;
     });
 
     // Make sure everything is cleaned up on exit.
