@@ -21,7 +21,7 @@ async fn test_test_controller() -> anyhow::Result<()> {
         }
         break;
     }
-    assert_eq!(ws.layout_names[0], "12-EDO-2x1");
+    assert_eq!(ws.layout_names[0], "12-EDO-2x1 (launchpad)");
     tc.shutdown().await
 }
 

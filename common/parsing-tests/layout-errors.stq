@@ -1,6 +1,4 @@
 syntoniq(version=1)
-create_layout(layout="potato" keyboard="launchpad")
-create_layout(layout="potato" keyboard="salad") ; duplicate
 define_scale(scale="z") <<
  ^0|5 n1
  ^1|5 n2
@@ -59,6 +57,7 @@ place_mapping(
     layout="unknown"
     mapping="m2"
     base_pitch=300
+    keyboard="k"
     anchor_row=10
     anchor_col=7
 )
@@ -66,6 +65,7 @@ place_mapping(
     layout="potato"
     mapping="unknown"
     base_pitch=300
+    keyboard="k"
     anchor_row=10
     anchor_col=7
 )

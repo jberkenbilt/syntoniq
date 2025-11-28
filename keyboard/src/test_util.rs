@@ -29,6 +29,10 @@ impl Keyboard for TestKeyboard {
         Ok(())
     }
 
+    fn multiple_keyboards(&self) -> bool {
+        true
+    }
+
     fn layout_supported(&self, _layout: &Layout) -> bool {
         true
     }

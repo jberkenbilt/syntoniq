@@ -46,6 +46,7 @@ fn load_layouts(score_file: &str) -> anyhow::Result<Layouts<'static>> {
 
 pub trait Keyboard: Sync + Send {
     fn reset(&self) -> anyhow::Result<()>;
+    fn multiple_keyboards(&self) -> bool;
     fn layout_supported(&self, layout: &Layout) -> bool;
     fn note_positions(&self, keyboard: &str) -> &'static [Coordinate];
     fn note_light_event(
@@ -75,10 +76,17 @@ impl Engine {
         layouts
             .layouts
             .retain(|layout| self.keyboard.layout_supported(layout));
+        let multiple_keyboards = self.keyboard.multiple_keyboards();
         let names = layouts
             .layouts
             .iter()
-            .map(|layout| layout.name.to_string())
+            .map(|layout| {
+                let mut name = layout.name.to_string();
+                if multiple_keyboards {
+                    name.push_str(&format!(" ({})", layout.keyboard));
+                }
+                name
+            })
             .collect();
         tx.send(Event::SetLayoutNames(LayoutNamesEvent { names }))?;
 

@@ -1,11 +1,9 @@
-; TODO: multiple keyboard args...
-
 syntoniq(version=1)
 
 ; layout 1
-create_layout(layout="12-EDO-h2v5" keyboard="hexboard")
 define_isomorphic_mapping(mapping="12-EDO-h2v5" steps_h=2 steps_v=5)
-place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" anchor_row=8 anchor_col=8)
+place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="launchpad" anchor_row=4 anchor_col=3)
+place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="hexboard" anchor_row=8 anchor_col=8)
 
 define_scale(scale="17-EDO") <<
  ^0|17 c | ^1|17 c# | ^2|17 d%
@@ -17,9 +15,9 @@ define_scale(scale="17-EDO") <<
 ^16|17 b
 >>
 ; layout 2
-create_layout(layout="17-EDO-h3v7" keyboard="hexboard-60")
 define_isomorphic_mapping(mapping="17-EDO-h3v7" scale="17-EDO" steps_h=3 steps_v=7)
-place_mapping(layout="17-EDO-h3v7" mapping="17-EDO-h3v7" anchor_row=9 anchor_col=7)
+place_mapping(layout="17-EDO-h3v7" mapping="17-EDO-h3v7" keyboard="launchpad" anchor_row=4 anchor_col=3)
+place_mapping(layout="17-EDO-h3v7" mapping="17-EDO-h3v7" keyboard="hexboard-60" anchor_row=9 anchor_col=7)
 
 define_scale(scale="19-EDO") <<
  ^0|19 c | ^1|19 c# | ^2|19 d%
@@ -31,9 +29,8 @@ define_scale(scale="19-EDO") <<
 ^17|19 b | ^18|19 b#
 >>
 ; layout 3
-create_layout(layout="19-EDO-h3v8" keyboard="hexboard")
 define_isomorphic_mapping(mapping="19-EDO-h3v8" scale="19-EDO" steps_h=3 steps_v=8)
-place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" anchor_row=4 anchor_col=3)
+place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" keyboard="launchpad" anchor_row=4 anchor_col=3)
 
 define_scale(scale="31-EDO") <<
  ^0|31 c | ^1|31 c+ d%% | ^2|31 c# | ^3|31 d% | ^4|31 d- c##
@@ -45,9 +42,8 @@ define_scale(scale="31-EDO") <<
 ^28|31 b | ^29|31 c% b+ | ^30|31 b# c-
 >>
 ; layout 4
-create_layout(layout="31-EDO-h5v3" keyboard="hexboard")
 define_isomorphic_mapping(mapping="31-EDO-h5v3" scale="31-EDO" steps_h=5 steps_v=3)
-place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" anchor_row=4 anchor_col=3)
+place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="launchpad" anchor_row=4 anchor_col=3)
 
 define_scale(scale="JI-11") <<
 1     c
@@ -67,7 +63,6 @@ define_scale(scale="JI-11") <<
 16/9  b%
 >>
 ; layout 5
-create_layout(layout="JI-11" keyboard="hexboard")
 define_manual_mapping(mapping="JI-11" scale="JI-11") <<
  c# d% e% h11 f# a% h7 b%
 @c  d  e  f   g  a  b  c'
@@ -75,6 +70,7 @@ define_manual_mapping(mapping="JI-11" scale="JI-11") <<
 place_mapping(
     layout="JI-11"
     base_pitch=264
+    keyboard="launchpad"
     mapping="JI-11"
     anchor_row=5
     anchor_col=1
@@ -92,7 +88,6 @@ define_scale(scale="harmonics") <<
 >>
 
 ; layout 6
-create_layout(layout="harmonics" keyboard="hexboard")
 define_manual_mapping(mapping="harmonics" scale="harmonics") <<
 h57 h58 h59 h60 h61 h62 h63 h64
 h49 h50 h51 h52 h53 h54 h55 h56
@@ -105,8 +100,9 @@ h9 h10 h11 h12 h13 h14 h15 h16
 >>
 place_mapping(
     layout="harmonics"
-    base_pitch=50
     mapping="harmonics"
+    base_pitch=50
+    keyboard="launchpad"
     anchor_row=1
     anchor_col=1
 )

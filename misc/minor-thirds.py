@@ -74,12 +74,11 @@ for notes in all_notes:
 for (i, (mapping, height)) in enumerate(mappings):
     page = 1 + int(i / 8)
     anchor_col = 1 + (i % 8)
-    if anchor_col == 1:
-        print(f'create_layout(layout="page{page}" keyboard="launchpad")')
     rows_below = height - 2
     print('place_mapping(')
     print(f'    layout="page{page}"')
     print(f'    mapping="{mapping}"')
+    print('    keyboard="launchpad"')
     print('    anchor_row=7')
     print(f'    anchor_col={anchor_col}')
     print('    cols_left=0')

@@ -24,6 +24,12 @@ use crate::pitch::Pitch;
 pub use directives::*;
 use to_static_derive::ToStatic;
 
+#[derive(Clone, PartialOrd, PartialEq, Eq, Hash)]
+pub struct LayoutKey<'s> {
+    pub layout: Cow<'s, str>,
+    pub keyboard: Cow<'s, str>,
+}
+
 pub struct Score<'s> {
     src: &'s str,
     _version: u32,
@@ -41,7 +47,7 @@ pub struct Score<'s> {
     csound_instruments: HashMap<Cow<'s, str>, Span>,
     known_parts: HashSet<Cow<'s, str>>,
     marks: HashMap<Cow<'s, str>, MarkData<'s>>,
-    layouts: HashMap<Cow<'s, str>, LayoutData<'s>>,
+    layouts: HashMap<LayoutKey<'s>, LayoutData<'s>>,
     mappings: HashMap<Cow<'s, str>, MappingData<'s>>,
     timeline: Timeline<'s>,
 }
@@ -962,7 +968,6 @@ impl<'s> Score<'s> {
             Directive::Tempo(x) => self.tempo(diags, x),
             Directive::Mark(x) => self.mark(diags, x),
             Directive::Repeat(x) => self.repeat(diags, x),
-            Directive::CreateLayout(x) => self.create_layout(diags, x),
             Directive::DefineIsomorphicMapping(x) => self.define_isomorphic_mapping(diags, x),
             Directive::DefineManualMapping(x) => self.define_manual_mapping(diags, x),
             Directive::PlaceMapping(x) => self.place_mapping(diags, x),
@@ -1457,29 +1462,6 @@ impl<'s> Score<'s> {
         self.line_start_time += duration;
     }
 
-    pub fn create_layout(&mut self, diags: &Diagnostics, directive: CreateLayout<'s>) {
-        let layout = Layout {
-            name: directive.layout.value.clone(),
-            keyboard: directive.keyboard.value,
-            mappings: Vec::new(),
-        };
-        let span = directive.layout.span;
-        let layout_data = LayoutData {
-            span,
-            layout: Arc::new(RwLock::new(layout)),
-        };
-        if let Some(old) = self.layouts.insert(directive.layout.value, layout_data) {
-            diags.push(
-                Diagnostic::new(
-                    code::LAYOUT,
-                    span,
-                    "a layout by this name has already been created",
-                )
-                .with_context(old.span, "here is the previous definition"),
-            );
-        }
-    }
-
     pub fn insert_mapping(
         &mut self,
         diags: &Diagnostics,
@@ -1651,14 +1633,6 @@ impl<'s> Score<'s> {
     }
 
     pub fn place_mapping(&mut self, diags: &Diagnostics, directive: PlaceMapping<'s>) {
-        let Some(layout) = self.layouts.get(&directive.layout.value) else {
-            diags.err(
-                code::LAYOUT,
-                directive.layout.span,
-                format!("unknown layout '{}'", directive.layout.value),
-            );
-            return;
-        };
         let Some(mapping) = self.mappings.get(&directive.mapping.value) else {
             diags.err(
                 code::LAYOUT,
@@ -1671,6 +1645,20 @@ impl<'s> Score<'s> {
             .base_pitch
             .map(|x| x.value)
             .unwrap_or(self.tuning_for_part(&Cow::Borrowed("")).base_pitch.clone());
+        let key = LayoutKey {
+            layout: directive.layout.value.clone(),
+            keyboard: directive.keyboard.value.clone(),
+        };
+        let layout = self.layouts.entry(key).or_insert_with(|| {
+            LayoutData {
+                span: directive.layout.span, // span of first reference to this layout
+                layout: Arc::new(RwLock::new(Layout {
+                    name: directive.layout.value,
+                    keyboard: directive.keyboard.value,
+                    mappings: vec![],
+                })),
+            }
+        });
         let mut l = layout.layout.write().unwrap();
         l.mappings.push(LayoutMapping {
             name: mapping.mapping.name().clone(),

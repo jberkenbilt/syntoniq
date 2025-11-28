@@ -338,6 +338,10 @@ impl Keyboard for Launchpad {
         Ok(())
     }
 
+    fn multiple_keyboards(&self) -> bool {
+        false
+    }
+
     fn layout_supported(&self, layout: &Layout) -> bool {
         layout.keyboard == "launchpad"
     }

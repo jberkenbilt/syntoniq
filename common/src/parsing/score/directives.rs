@@ -275,21 +275,6 @@ impl<'s> Repeat<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Define a manual mapping of notes to keyboard positions. The mapping is
-/// placed into a layout with the 'place_mapping' directive.
-pub struct CreateLayout<'s> {
-    pub span: Span,
-    /// Name of layout
-    pub layout: Spanned<Cow<'s, str>>,
-    /// Keyboard type; not validated here, but the keyboard application ignores layouts whose
-    /// keyboard value is unknown to it.
-    pub keyboard: Spanned<Cow<'s, str>>,
-}
-impl<'s> CreateLayout<'s> {
-    pub fn validate(&mut self, _diags: &Diagnostics) {}
-}
-
-#[derive(FromRawDirective)]
 /// Define an isomorphic mapping for a tuning. The mapping is placed into a
 /// layout with the 'place_mapping' directive.
 pub struct DefineIsomorphicMapping<'s> {
@@ -329,8 +314,7 @@ impl<'s> DefineManualMapping<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Define a manual mapping of notes to keyboard positions. The mapping is
-/// placed into a layout with the 'place_mapping' directive.
+/// Place a mapping onto a layout for a keyboard.
 pub struct PlaceMapping<'s> {
     pub span: Span,
     /// Name of layout
@@ -339,6 +323,8 @@ pub struct PlaceMapping<'s> {
     pub mapping: Spanned<Cow<'s, str>>,
     /// Base pitch; defaults to the base pitch of the default tuning
     pub base_pitch: Option<Spanned<Pitch>>,
+    /// Name of keyboard
+    pub keyboard: Spanned<Cow<'s, str>>,
     /// Row of the base note for isomorphic layouts or the anchor note for
     /// manual layouts
     pub anchor_row: Spanned<u32>,
@@ -379,7 +365,6 @@ pub enum Directive<'s> {
     Tempo(Tempo<'s>),
     Mark(Mark<'s>),
     Repeat(Repeat<'s>),
-    CreateLayout(CreateLayout<'s>),
     DefineIsomorphicMapping(DefineIsomorphicMapping<'s>),
     DefineManualMapping(DefineManualMapping<'s>),
     PlaceMapping(PlaceMapping<'s>),

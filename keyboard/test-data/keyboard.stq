@@ -95,24 +95,20 @@ define_scale(scale="JI-11") <<
 >>
 
 ; layout 0
-create_layout(layout="12-EDO-2x1" keyboard="launchpad")
 define_isomorphic_mapping(mapping="12-EDO-2x1" steps_h=2 steps_v=1)
-place_mapping(layout="12-EDO-2x1" mapping="12-EDO-2x1" anchor_row=3 anchor_col=2)
+place_mapping(layout="12-EDO-2x1" mapping="12-EDO-2x1" keyboard="launchpad" anchor_row=3 anchor_col=2)
 
 ; layout 1
-create_layout(layout="19-EDO-2x1" keyboard="launchpad")
 define_isomorphic_mapping(mapping="19-EDO-2x1" scale="19-EDO" steps_h=2 steps_v=1)
-place_mapping(layout="19-EDO-2x1" mapping="19-EDO-2x1" anchor_row=3 anchor_col=2)
+place_mapping(layout="19-EDO-2x1" mapping="19-EDO-2x1" keyboard="launchpad" anchor_row=3 anchor_col=2)
 
 ; layout 2
-create_layout(layout="31-EDO-5x3" keyboard="launchpad")
 define_isomorphic_mapping(mapping="31-EDO-5x3" scale="31-EDO" steps_h=5 steps_v=3)
-place_mapping(layout="31-EDO-5x3" mapping="31-EDO-5x3" anchor_row=2 anchor_col=2)
+place_mapping(layout="31-EDO-5x3" mapping="31-EDO-5x3" keyboard="launchpad" anchor_row=2 anchor_col=2)
 
 ; layout 3
-create_layout(layout="17-EDO-2x1" keyboard="launchpad")
 define_isomorphic_mapping(mapping="17-EDO-2x1" scale="17-EDO" steps_v=2 steps_h=3)
-place_mapping(layout="17-EDO-2x1" mapping="17-EDO-2x1" anchor_row=3 anchor_col=2)
+place_mapping(layout="17-EDO-2x1" mapping="17-EDO-2x1" keyboard="launchpad" anchor_row=3 anchor_col=2)
 
 ; Tests rely on position (1, 8) being empty.
 define_manual_mapping(mapping="JI-11" scale="JI-11") <<
@@ -121,15 +117,14 @@ define_manual_mapping(mapping="JI-11" scale="JI-11") <<
 >>
 
 ; layout 4
-create_layout(layout="JI-11" keyboard="launchpad")
-place_mapping(layout="JI-11" mapping="JI-11" anchor_row=5 anchor_col=1)
+place_mapping(layout="JI-11" mapping="JI-11" keyboard="launchpad" anchor_row=5 anchor_col=1)
 
 ; layout 5
-create_layout(layout="JI-11+31-EDO" keyboard="launchpad")
 place_mapping(
     layout="JI-11+31-EDO"
     base_pitch=264
     mapping="31-EDO-5x3"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     rows_below=1
@@ -137,16 +132,13 @@ place_mapping(
     cols_left=0
     cols_right=2
 )
-place_mapping(layout="JI-11+31-EDO" mapping="JI-11" anchor_row=5 anchor_col=1)
+place_mapping(layout="JI-11+31-EDO" mapping="JI-11" keyboard="launchpad" anchor_row=5 anchor_col=1)
 
 ; layout 6
-create_layout(layout="JI-11-7" keyboard="launchpad")
-place_mapping(layout="JI-11-7" mapping="JI-11" anchor_row=5 anchor_col=1)
+place_mapping(layout="JI-11-7" mapping="JI-11" keyboard="launchpad" anchor_row=5 anchor_col=1)
 
 ; layout 7
-create_layout(layout="JI-11-8" keyboard="launchpad")
-place_mapping(layout="JI-11-8" mapping="JI-11" anchor_row=5 anchor_col=1)
+place_mapping(layout="JI-11-8" mapping="JI-11" keyboard="launchpad" anchor_row=5 anchor_col=1)
 
 ; layout 8
-create_layout(layout="JI-11-9" keyboard="launchpad")
-place_mapping(layout="JI-11-9" mapping="JI-11" anchor_row=5 anchor_col=1)
+place_mapping(layout="JI-11-9" mapping="JI-11" keyboard="launchpad" anchor_row=5 anchor_col=1)

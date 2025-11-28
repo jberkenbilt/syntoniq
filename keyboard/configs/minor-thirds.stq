@@ -842,10 +842,10 @@ h7
 h4
 h1
 >>
-create_layout(layout="page1" keyboard="launchpad")
 place_mapping(
     layout="page1"
     mapping="15/13"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=1
     cols_left=0
@@ -856,6 +856,7 @@ place_mapping(
 place_mapping(
     layout="page1"
     mapping="67/58"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=2
     cols_left=0
@@ -866,6 +867,7 @@ place_mapping(
 place_mapping(
     layout="page1"
     mapping="52/45"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=3
     cols_left=0
@@ -876,6 +878,7 @@ place_mapping(
 place_mapping(
     layout="page1"
     mapping="37/32"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=4
     cols_left=0
@@ -886,6 +889,7 @@ place_mapping(
 place_mapping(
     layout="page1"
     mapping="59/51"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=5
     cols_left=0
@@ -896,6 +900,7 @@ place_mapping(
 place_mapping(
     layout="page1"
     mapping="22/19"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     cols_left=0
@@ -906,6 +911,7 @@ place_mapping(
 place_mapping(
     layout="page1"
     mapping="51/44"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=7
     cols_left=0
@@ -916,6 +922,7 @@ place_mapping(
 place_mapping(
     layout="page1"
     mapping="29/25"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=8
     cols_left=0
@@ -923,10 +930,10 @@ place_mapping(
     rows_above=1
     rows_below=6
 )
-create_layout(layout="page2" keyboard="launchpad")
 place_mapping(
     layout="page2"
     mapping="65/56"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=1
     cols_left=0
@@ -937,6 +944,7 @@ place_mapping(
 place_mapping(
     layout="page2"
     mapping="36/31"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=2
     cols_left=0
@@ -947,6 +955,7 @@ place_mapping(
 place_mapping(
     layout="page2"
     mapping="43/37"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=3
     cols_left=0
@@ -957,6 +966,7 @@ place_mapping(
 place_mapping(
     layout="page2"
     mapping="50/43"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=4
     cols_left=0
@@ -967,6 +977,7 @@ place_mapping(
 place_mapping(
     layout="page2"
     mapping="57/49"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=5
     cols_left=0
@@ -977,6 +988,7 @@ place_mapping(
 place_mapping(
     layout="page2"
     mapping="64/55"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     cols_left=0
@@ -987,6 +999,7 @@ place_mapping(
 place_mapping(
     layout="page2"
     mapping="7/6"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=7
     cols_left=0
@@ -997,6 +1010,7 @@ place_mapping(
 place_mapping(
     layout="page2"
     mapping="62/53"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=8
     cols_left=0
@@ -1004,10 +1018,10 @@ place_mapping(
     rows_above=1
     rows_below=6
 )
-create_layout(layout="page3" keyboard="launchpad")
 place_mapping(
     layout="page3"
     mapping="55/47"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=1
     cols_left=0
@@ -1018,6 +1032,7 @@ place_mapping(
 place_mapping(
     layout="page3"
     mapping="48/41"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=2
     cols_left=0
@@ -1028,6 +1043,7 @@ place_mapping(
 place_mapping(
     layout="page3"
     mapping="41/35"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=3
     cols_left=0
@@ -1038,6 +1054,7 @@ place_mapping(
 place_mapping(
     layout="page3"
     mapping="34/29"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=4
     cols_left=0
@@ -1048,6 +1065,7 @@ place_mapping(
 place_mapping(
     layout="page3"
     mapping="61/52"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=5
     cols_left=0
@@ -1058,6 +1076,7 @@ place_mapping(
 place_mapping(
     layout="page3"
     mapping="27/23"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     cols_left=0
@@ -1068,6 +1087,7 @@ place_mapping(
 place_mapping(
     layout="page3"
     mapping="47/40"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=7
     cols_left=0
@@ -1078,6 +1098,7 @@ place_mapping(
 place_mapping(
     layout="page3"
     mapping="20/17"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=8
     cols_left=0
@@ -1085,10 +1106,10 @@ place_mapping(
     rows_above=1
     rows_below=6
 )
-create_layout(layout="page4" keyboard="launchpad")
 place_mapping(
     layout="page4"
     mapping="53/45"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=1
     cols_left=0
@@ -1099,6 +1120,7 @@ place_mapping(
 place_mapping(
     layout="page4"
     mapping="33/28"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=2
     cols_left=0
@@ -1109,6 +1131,7 @@ place_mapping(
 place_mapping(
     layout="page4"
     mapping="46/39"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=3
     cols_left=0
@@ -1119,6 +1142,7 @@ place_mapping(
 place_mapping(
     layout="page4"
     mapping="59/50"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=4
     cols_left=0
@@ -1129,6 +1153,7 @@ place_mapping(
 place_mapping(
     layout="page4"
     mapping="13/11"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=5
     cols_left=0
@@ -1139,6 +1164,7 @@ place_mapping(
 place_mapping(
     layout="page4"
     mapping="58/49"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     cols_left=0
@@ -1149,6 +1175,7 @@ place_mapping(
 place_mapping(
     layout="page4"
     mapping="45/38"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=7
     cols_left=0
@@ -1159,6 +1186,7 @@ place_mapping(
 place_mapping(
     layout="page4"
     mapping="32/27"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=8
     cols_left=0
@@ -1166,10 +1194,10 @@ place_mapping(
     rows_above=1
     rows_below=6
 )
-create_layout(layout="page5" keyboard="launchpad")
 place_mapping(
     layout="page5"
     mapping="51/43"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=1
     cols_left=0
@@ -1180,6 +1208,7 @@ place_mapping(
 place_mapping(
     layout="page5"
     mapping="19/16"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=2
     cols_left=0
@@ -1190,6 +1219,7 @@ place_mapping(
 place_mapping(
     layout="page5"
     mapping="44/37"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=3
     cols_left=0
@@ -1200,6 +1230,7 @@ place_mapping(
 place_mapping(
     layout="page5"
     mapping="25/21"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=4
     cols_left=0
@@ -1210,6 +1241,7 @@ place_mapping(
 place_mapping(
     layout="page5"
     mapping="56/47"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=5
     cols_left=0
@@ -1220,6 +1252,7 @@ place_mapping(
 place_mapping(
     layout="page5"
     mapping="31/26"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     cols_left=0
@@ -1230,6 +1263,7 @@ place_mapping(
 place_mapping(
     layout="page5"
     mapping="37/31"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=7
     cols_left=0
@@ -1240,6 +1274,7 @@ place_mapping(
 place_mapping(
     layout="page5"
     mapping="43/36"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=8
     cols_left=0
@@ -1247,10 +1282,10 @@ place_mapping(
     rows_above=1
     rows_below=5
 )
-create_layout(layout="page6" keyboard="launchpad")
 place_mapping(
     layout="page6"
     mapping="49/41"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=1
     cols_left=0
@@ -1261,6 +1296,7 @@ place_mapping(
 place_mapping(
     layout="page6"
     mapping="55/46"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=2
     cols_left=0
@@ -1271,6 +1307,7 @@ place_mapping(
 place_mapping(
     layout="page6"
     mapping="6/5"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=3
     cols_left=0
@@ -1281,6 +1318,7 @@ place_mapping(
 place_mapping(
     layout="page6"
     mapping="53/44"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=4
     cols_left=0
@@ -1291,6 +1329,7 @@ place_mapping(
 place_mapping(
     layout="page6"
     mapping="47/39"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=5
     cols_left=0
@@ -1301,6 +1340,7 @@ place_mapping(
 place_mapping(
     layout="page6"
     mapping="41/34"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     cols_left=0
@@ -1311,6 +1351,7 @@ place_mapping(
 place_mapping(
     layout="page6"
     mapping="35/29"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=7
     cols_left=0
@@ -1321,6 +1362,7 @@ place_mapping(
 place_mapping(
     layout="page6"
     mapping="29/24"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=8
     cols_left=0
@@ -1328,10 +1370,10 @@ place_mapping(
     rows_above=1
     rows_below=5
 )
-create_layout(layout="page7" keyboard="launchpad")
 place_mapping(
     layout="page7"
     mapping="52/43"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=1
     cols_left=0
@@ -1342,6 +1384,7 @@ place_mapping(
 place_mapping(
     layout="page7"
     mapping="23/19"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=2
     cols_left=0
@@ -1352,6 +1395,7 @@ place_mapping(
 place_mapping(
     layout="page7"
     mapping="40/33"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=3
     cols_left=0
@@ -1362,6 +1406,7 @@ place_mapping(
 place_mapping(
     layout="page7"
     mapping="17/14"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=4
     cols_left=0
@@ -1372,6 +1417,7 @@ place_mapping(
 place_mapping(
     layout="page7"
     mapping="45/37"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=5
     cols_left=0
@@ -1382,6 +1428,7 @@ place_mapping(
 place_mapping(
     layout="page7"
     mapping="28/23"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     cols_left=0
@@ -1392,6 +1439,7 @@ place_mapping(
 place_mapping(
     layout="page7"
     mapping="39/32"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=7
     cols_left=0
@@ -1402,6 +1450,7 @@ place_mapping(
 place_mapping(
     layout="page7"
     mapping="50/41"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=8
     cols_left=0
@@ -1409,10 +1458,10 @@ place_mapping(
     rows_above=1
     rows_below=5
 )
-create_layout(layout="page8" keyboard="launchpad")
 place_mapping(
     layout="page8"
     mapping="11/9"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=1
     cols_left=0
@@ -1423,6 +1472,7 @@ place_mapping(
 place_mapping(
     layout="page8"
     mapping="49/40"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=2
     cols_left=0
@@ -1433,6 +1483,7 @@ place_mapping(
 place_mapping(
     layout="page8"
     mapping="38/31"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=3
     cols_left=0
@@ -1443,6 +1494,7 @@ place_mapping(
 place_mapping(
     layout="page8"
     mapping="27/22"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=4
     cols_left=0
@@ -1453,6 +1505,7 @@ place_mapping(
 place_mapping(
     layout="page8"
     mapping="43/35"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=5
     cols_left=0
@@ -1463,6 +1516,7 @@ place_mapping(
 place_mapping(
     layout="page8"
     mapping="16/13"
+    keyboard="launchpad"
     anchor_row=7
     anchor_col=6
     cols_left=0

@@ -20,10 +20,9 @@ define_scale(scale="17-EDO") <<
 ^16|17 b
 >>
 
-create_layout(layout="Elegy" keyboard="launchpad")
 define_isomorphic_mapping(mapping="17-EDO" scale="17-EDO" steps_h=3 steps_v=7)
 define_manual_mapping(mapping="m1" scale="17-EDO") <<
 @~ a,3 b%,3 c,2 d%,2 d,2 d#,2 e%,2
 >>
-place_mapping(layout="Elegy" mapping="m1" anchor_row=1 anchor_col=1 rows_above=0)
-place_mapping(layout="Elegy" mapping="17-EDO" anchor_row=4 anchor_col=3)
+place_mapping(layout="Elegy" mapping="m1" keyboard="launchpad" anchor_row=1 anchor_col=1 rows_above=0)
+place_mapping(layout="Elegy" mapping="17-EDO" keyboard="launchpad" anchor_row=4 anchor_col=3)

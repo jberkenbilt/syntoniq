@@ -35,11 +35,11 @@ c c# d% c2 q
 >>
 define_isomorphic_mapping(mapping="m2" steps_h=2 steps_v=5)
 ; l1 only has a manual layout that covers part of the keyboard
-create_layout(layout="l1" keyboard="potato")
 place_mapping(
     layout="l1"
     mapping="m1"
     base_pitch=400
+    keyboard="potato"
     anchor_row=5
     anchor_col=4
     ; The mapping's anchor is on row 1 (numbered from 0) and is three rows high.
@@ -52,11 +52,11 @@ place_mapping(
     cols_right=7
 )
 ; l2 only has the same manual layout as l1 and also an isomorphic layout
-create_layout(layout="l2" keyboard="potato")
 place_mapping(
     layout="l2"
     mapping="m1"
     base_pitch=400
+    keyboard="potato"
     anchor_row=5
     anchor_col=4
     ; The mapping's anchor is on row 1 (numbered from 0) and is three rows high.
@@ -72,6 +72,7 @@ place_mapping(
     layout="l2"
     mapping="m2"
     base_pitch=300
+    keyboard="potato"
     anchor_row=10
     anchor_col=7
 )

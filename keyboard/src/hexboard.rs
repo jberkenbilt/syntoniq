@@ -421,6 +421,10 @@ impl Keyboard for HexBoard {
         Ok(())
     }
 
+    fn multiple_keyboards(&self) -> bool {
+        true
+    }
+
     fn layout_supported(&self, layout: &Layout) -> bool {
         layout.keyboard.starts_with("hexboard")
     }

@@ -3,7 +3,6 @@
 Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep.
 
 * Probably want some kind of tile shift parameter for tiling manual mappings, e.g., right_shift_rows=2, meaning to offset horizontally by 1 position every 2 rows. This keeps repeated tiles from shifting to the left on hex keyboards.
-* Consider allowing a layout to have multiple keyboards allowing requiring place_mapping to take a repeatable keyboard option.
 
 Bugs
 * Polyphony for csound doesn't work correctly when splitting parts to use simultaneous tunings. We need something else...perhaps polyphony groups that default to instrument or maybe that default to global but you can assign parts to polyphony groups along with instruments. Maybe csound_instrument takes an optional polyphony group parameter?
@@ -189,18 +188,14 @@ define_manual_mapping(
 >>
 ```
 
-To place these on a keyboard, you create a layout and specify one of the baked-in keyboard types, e.g.
-```
-create_layout(keyboard="launchpad" layout="l1")
-```
-
-Once the layout is defined, you overlay mappings onto the keyboard. A layout consists of one or more mappings. When mapping a row/column to a note, the first matching mapping is used. If you want to overlay a small group of keys onto a mapping that fills the keyboard, start with the overlay. This makes it possible to fill the whole keyboard with one mapping and then overlay a different mapping over a portion of the keyboard. This could be very useful for having a segment of the keyboard that is reserved for pitches used in setting transpositions or just to play in more than one tuning at a time. To place a mapping onto a layout, use the `place_mapping` directive.
+To use a mapping, you overlay it onto a layout for a specific keyboard. A layout consists of one or more mappings. When mapping a row/column to a note, the first matching mapping is used. If you want to overlay a small group of keys onto a mapping that fills the keyboard, start with the overlay. This makes it possible to fill the whole keyboard with one mapping and then overlay a different mapping over a portion of the keyboard. This could be very useful for having a segment of the keyboard that is reserved for pitches used in setting transpositions or just to play in more than one tuning at a time. To place a mapping onto a layout, use the `place_mapping` directive.
 
 ```
 place_mapping(
    layout="l1"
    mapping="m1"
    base_pitch=p  ; defaults to base pitch of default tuning
+   keyboard="k"  ; name of keyboard -- the same layout/mapping can be placed on multiple keyboards
    anchor_row=n  ; anchor sets position of the base pitch for isomorphic layouts
    anchor_col=n  ; and anchor note for manual layouts
    rows_above=n  ; number of rows to extend above the anchor (default: until edge)
@@ -217,12 +212,14 @@ create_layout(keyboard="hexboard" layout="l2")
 place_mapping(
    layout="l2"
    mapping="m2"  ; JI
+   keyboard="k"
    anchor_row=1 anchor_col=2
    rows_above=3 rows_below=0  ; omit cols_left and cols_right to span horizontally to both edges
 )
 place_mapping(
    layout="l2"
    mapping="m1"  ; 17-EDO
+   keyboard="k"
    anchor_row=10 anchor_col=8
 )
 ```
