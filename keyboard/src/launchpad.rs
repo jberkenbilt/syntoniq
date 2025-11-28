@@ -470,6 +470,7 @@ mod colors {
     pub const DULL_GRAY: u8 = 0x47;
     pub const HIGHLIGHT_GRAY: u8 = 0x01;
     pub const MAGENTA: u8 = 0x5e;
+    pub const LIGHT_PINK: u8 = 0x34;
 }
 
 pub fn launchpad_color(color: Color) -> u8 {
@@ -491,6 +492,7 @@ pub fn launchpad_color(color: Color) -> u8 {
         Color::SingleStepOff => colors::HIGHLIGHT_GRAY,
         Color::SingleStepOn => colors::WHITE,
         Color::NoteSelected => colors::MAGENTA,
+        Color::LogoBackground => colors::LIGHT_PINK,
     }
 }
 

@@ -31,6 +31,7 @@ pub enum Color {
     OtherOff,
     OtherOn,
     NoteSelected,
+    LogoBackground,
 }
 
 #[derive(Copy, Clone)]
