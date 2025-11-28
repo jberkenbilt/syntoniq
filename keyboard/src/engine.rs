@@ -435,7 +435,11 @@ impl Engine {
         if let Some(note) = e.note
             && e.velocity > 0
         {
-            println!("{note}");
+            if self.transient_state.sustain {
+                self.print_notes();
+            } else {
+                println!("{note}");
+            }
         }
         Ok(())
     }
