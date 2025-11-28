@@ -79,6 +79,10 @@ fn identify_device(sys_ex: Vec<u8>) -> Option<DeviceType> {
         0, 0x20, 0x29, // novation
         0x23, 0x01, // returned by my MK3 pro
     ];
+    static HEXBOARD: &[u8] = &[
+        0x7D, // dev
+        0x01, 0x00, 0x01, 0x00, // subject to change
+    ];
 
     if sys_ex.len() < 5 {
         return None;
@@ -90,6 +94,8 @@ fn identify_device(sys_ex: Vec<u8>) -> Option<DeviceType> {
     let id = &sys_ex[4..];
     if id.starts_with(LAUNCHPAD) {
         Some(DeviceType::Launchpad)
+    } else if id.starts_with(HEXBOARD) {
+        Some(DeviceType::HexBoard)
     } else {
         Some(DeviceType::Empty)
     }

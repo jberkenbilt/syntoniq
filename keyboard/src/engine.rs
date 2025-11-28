@@ -182,7 +182,7 @@ impl Engine {
                     tx.send(Event::SelectLayout(SelectLayoutEvent { idx, layout }))?;
                 }
             }
-            KeyData::Clear => {
+            KeyData::Reset => {
                 if off {
                     tx.send(Event::Reset)?;
                 }

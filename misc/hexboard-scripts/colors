@@ -1,0 +1,20 @@
+#!/bin/bash
+cd $(dirname $0)
+./external-on
+./light-color 1 0 0 127 # white
+./light-color 2 0 127 127 # red
+./light-color 3 50 127 127 # green
+./light-color 4 85 127 127 # blue
+./light-color 5 50 127 127 # green
+./light-color 6 98 127 127 # purple
+./light-color 7 116 72 127 # pink
+./light-color 8 0 127 127 # red
+./light-color 9 14 127 127 # orange
+./light-color 10 64 127 127 # cyan
+./light-color 11 28 127 127 # yellow
+./light-color 12 0 0 64 # dull gray
+./light-color 13 0 0 127 # white
+./light-color 14 64 32 92 # highlight gray
+./light-color 15 0 0 127 # white
+./light-color 16 108 127 127 # magenta
+./light-color 17 116 32 64 # light pink

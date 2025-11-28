@@ -423,7 +423,7 @@ impl Keyboard for Launchpad {
                 CommandKeys::Sustain => send(KeyData::Sustain)?,
                 CommandKeys::UpArrow => send(KeyData::OctaveShift { up: true })?,
                 CommandKeys::DownArrow => send(KeyData::OctaveShift { up: false })?,
-                CommandKeys::Clear => send(KeyData::Clear)?,
+                CommandKeys::Clear => send(KeyData::Reset)?,
                 CommandKeys::Record => send(KeyData::Print)?,
                 CommandKeys::LayoutScroll => {
                     if off {

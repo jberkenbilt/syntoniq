@@ -115,7 +115,7 @@ pub struct RawPressureEvent {
 pub enum KeyData {
     Shift,
     Layout { idx: usize },
-    Clear,
+    Reset,
     Sustain,
     Transpose,
     OctaveShift { up: bool },

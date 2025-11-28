@@ -154,8 +154,8 @@ Another sensible layout would be to designate the direction that's 60-degrees fr
 JA  JB  JC  JD  JE  JF  JG  JH  JI  JJ  JK  JL  JM  JN
   IA  IB  IC  ID  IE  IF  IG  IH  II  IJ  IK  IL  IM  IN
     HA  HB  HC  HD  HE  HF  HG  HH  HI  HJ  HK  HL  HM  HN
-      GA  GB  GC  GD  GE  GF  GG  GH  GI  GJ  GK  GL
-        FA  FB  FC  FD  FE  FF  FG  FH  FI  FJ
+      GA  GB  GC  GD  GE  GF  GG  GH  GI  GJ  GK  GL  GM
+        FA  FB  FC  FD  FE  FF  FG  FH  FI  FJ  FK
           EA  EB  EC  ED  EE  EF  EG  EH  EI
             DA  DB  DC  DD  DE  DF  DG
               CA  CB  CC  CD  CE

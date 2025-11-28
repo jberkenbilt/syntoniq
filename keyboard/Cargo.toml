@@ -22,6 +22,7 @@ rust-embed = "8.7.2"
 derive_more = { version = "2.0.1", features = ["debug"] }
 num_enum = "0.7.5"
 arc-swap = "1.7.1"
+bimap = "0.6.3"
 
 [build-dependencies]
 bindgen = "0.72.1"

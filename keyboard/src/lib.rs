@@ -3,6 +3,7 @@ pub mod controller;
 pub mod csound;
 pub mod engine;
 pub mod events;
+pub mod hexboard;
 pub mod launchpad;
 pub mod midi_player;
 #[cfg(test)]
@@ -13,4 +14,5 @@ pub mod view;
 pub enum DeviceType {
     Empty,
     Launchpad,
+    HexBoard,
 }

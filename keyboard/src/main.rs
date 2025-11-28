@@ -12,6 +12,7 @@ use syntoniq_kbd::controller::Controller;
 use syntoniq_kbd::engine;
 use syntoniq_kbd::engine::{Keyboard, SoundType};
 use syntoniq_kbd::events::Events;
+use syntoniq_kbd::hexboard::HexBoard;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
 use tokio::sync::oneshot;
@@ -78,6 +79,7 @@ async fn main() -> anyhow::Result<()> {
             bail!("unable to identify device on port {}", cli.port);
         }
         DeviceType::Launchpad => Arc::new(Launchpad::new(tx2)) as Arc<dyn Keyboard>,
+        DeviceType::HexBoard => Arc::new(HexBoard::new(tx2)) as Arc<dyn Keyboard>,
     };
     let main_handle =
         engine::start_keyboard(Some(controller), keyboard.clone(), events_rx.resubscribe()).await?;

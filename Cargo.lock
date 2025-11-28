@@ -274,6 +274,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "bimap"
+version = "0.6.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "230c5f1ca6a325a32553f8640d31ac9b49f2411e901e427570154868b46da4f7"
+
+[[package]]
 name = "bindgen"
 version = "0.72.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1626,6 +1632,7 @@ dependencies = [
  "arc-swap",
  "askama",
  "axum",
+ "bimap",
  "bindgen",
  "chrono",
  "clap",

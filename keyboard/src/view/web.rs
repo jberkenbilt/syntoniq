@@ -83,6 +83,7 @@ pub async fn http_view(
     match view {
         DeviceType::Empty => app = app.route("/", get(empty_view)),
         DeviceType::Launchpad => app = app.route("/", get(launchpad_view)),
+        DeviceType::HexBoard => app = app.route("/", get(empty_view)), // TODO: HEXBOARD
     }
 
     let app = app.with_state(state.clone());

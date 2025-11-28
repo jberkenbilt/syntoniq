@@ -1,0 +1,18 @@
+#!/bin/bash
+
+# Usage: $0 key hue sat val
+# key is 1..140
+# h, s, v are 0..127
+
+
+port=$(amidi -l | grep 'RP2040 MIDI' | awk '{print $2}')
+key=$1
+((msb = $key / 128))
+((lsb = $key % 128))
+msb=$(printf "%02x" $msb)
+lsb=$(printf "%02x" $lsb)
+hue=$(printf "%02x" $2)
+sat=$(printf "%02x" $3)
+val=$(printf "%02x" $4)
+
+amidi --port $port -S F0 7D 03 $msb $lsb $hue $sat $val F7

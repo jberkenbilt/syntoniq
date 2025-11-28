@@ -1,0 +1,3 @@
+#!/bin/bash
+port=$(amidi -l | grep 'RP2040 MIDI' | awk '{print $2}')
+amidi --port $port -S F0 7D 02 F7

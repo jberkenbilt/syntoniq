@@ -20,36 +20,7 @@ New shift/transpose:
 * For shift, note 1 moves to note 2's position. For transpose, note 2 takes note 1's pitch
 * Shift and layout selection cancel transpose, and transpose cancels shift
 
-New transpose workflow:
-* Transpose -> key 1 -> key 2 assigns key 1's pitch to key 2 by transposing key 2's tuning. This makes it similar to shift in its UI. We can also make the transpose key behave like the shift key.
-
 Note that octave transpose shifts by octaves, not cycles. It does this uniformly for everything in the current layout, which may consist of scales with different cycles. You can always transpose by a cycle by finding the note a cycle up or down, shifting if needed to get to it. On octave may not be available in the current scale.
-
-Keyboard functions
-* reset
-* sustain
-* shift
-* transpose
-* octave up
-* octave down
-* print
-* layout selection
-
-HexBoard UI
-* Menu
-  * Reset
-  * Layout
-* Command buttons
-  * shift
-  * transpose
-  * octave up
-  * octave down
-  * 
-  * 
-  * toggle sustain
-
-Maybe we can dump print and make that a continuous function?
-Do we want a layout quick select that would temporarily change note keys to layout selection?
 
 ## Refactor engine and controller
 
