@@ -59,6 +59,12 @@ pub trait Keyboard: Sync + Send {
     fn main_event_loop(&self, event: Event) -> anyhow::Result<()>;
 }
 
+/// See toggle_move for interpretation of fields
+struct ToggleMoveResult {
+    changed: bool,
+    val: Option<Option<SpecificNote>>,
+}
+
 impl Engine {
     async fn reset(&mut self) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
@@ -128,14 +134,40 @@ impl Engine {
         Ok(())
     }
 
-    fn toggle_move(&self, old: Option<Option<SpecificNote>>) -> Option<Option<SpecificNote>> {
-        // Move operations store state in Option<Option<SpecificNote>>. If None, no operation is in
-        // flight. If Some(None), the operation has been triggered, but the first note has not been
-        // selected. If Some(Some(_)), the value is the first key. This toggles a potentially
-        // in-flight event.
-        match old {
-            None => Some(None),
-            Some(_) => None,
+    fn toggle_move(&self, off: bool, old: Option<Option<SpecificNote>>) -> ToggleMoveResult {
+        // A key down event turns on the behavior when off. A key up event turns off the behavior
+        // when active. This allows move trigger buttons to act as modifier keys.
+
+        let handle = match old {
+            None => {
+                // We are not in move mode. Enter on a down event
+                !off
+            }
+            Some(None) => {
+                // We are in move mode but haven't selected the first note. We have to ignore
+                // key up events so we don't cancel just by releasing the button.
+                !off
+            }
+            Some(Some(_)) => {
+                // We have selected the first note and are canceling. Do this on a key up event.
+                off
+            }
+        };
+        if handle {
+            // Move operations store state in Option<Option<SpecificNote>>. If None, no operation is in
+            // flight. If Some(None), the operation has been triggered, but the first note has not been
+            // selected. If Some(Some(_)), the value is the first key. This toggles a potentially
+            // in-flight event.
+            let val = match old {
+                None => Some(None),
+                Some(_) => None,
+            };
+            ToggleMoveResult { changed: true, val }
+        } else {
+            ToggleMoveResult {
+                changed: false,
+                val: old,
+            }
         }
     }
 
@@ -162,11 +194,27 @@ impl Engine {
         let have_layout = self.transient_state.layout.is_some();
         match key {
             KeyData::Shift => {
+                // Shift and Transpose have identical logic.
                 self.cancel_transpose(&tx)?;
-                if off && have_layout {
+                if have_layout {
                     let old = self.transient_state.shift.take();
-                    self.transient_state.shift = self.toggle_move(old);
-                    self.send_shift_light_event(&tx)?;
+                    let r = self.toggle_move(off, old);
+                    self.transient_state.shift = r.val;
+                    if r.changed {
+                        self.send_shift_light_event(&tx)?;
+                    }
+                }
+            }
+            KeyData::Transpose => {
+                // Shift and Transpose have identical logic.
+                self.cancel_shift(&tx)?;
+                if have_layout {
+                    let old = self.transient_state.transpose.take();
+                    let r = self.toggle_move(off, old);
+                    self.transient_state.transpose = r.val;
+                    if r.changed {
+                        self.send_transpose_light_event(&tx)?;
+                    }
                 }
             }
             KeyData::Layout { idx } => {
@@ -191,14 +239,6 @@ impl Engine {
                 if off {
                     self.transient_state.sustain = !self.transient_state.sustain;
                     tx.send(self.sustain_light_event())?;
-                }
-            }
-            KeyData::Transpose => {
-                self.cancel_shift(&tx)?;
-                if off && have_layout {
-                    let old = self.transient_state.transpose.take();
-                    self.transient_state.transpose = self.toggle_move(old);
-                    self.send_transpose_light_event(&tx)?;
                 }
             }
             KeyData::OctaveShift { up } => {

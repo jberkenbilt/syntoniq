@@ -1,8 +1,5 @@
 # TODO
 
-* Handle down for shift and transpose so they "just work" as modifiers.
-* Make the web part generic (it almost is)
-
 Remember: Windows:
 * Install https://www.tobias-erichsen.de/software/loopmidi.html
 * Create a loop port called `syntoniq-loop`
@@ -15,10 +12,12 @@ cargo build --config .cargo/windows-cross.toml --no-default-features
 Primary goal: separate Launchpad-specific parts from the rest.
 
 New shift/transpose:
-* Hit shift or transpose (no more modifier key behavior)
+* Hit shift or transpose
 * Hit note 1, then note 2
 * For shift, note 1 moves to note 2's position. For transpose, note 2 takes note 1's pitch
 * Shift and layout selection cancel transpose, and transpose cancels shift
+
+Shift and transpose keys can also work like modifiers.
 
 Note that octave transpose shifts by octaves, not cycles. It does this uniformly for everything in the current layout, which may consist of scales with different cycles. You can always transpose by a cycle by finding the note a cycle up or down, shifting if needed to get to it. On octave may not be available in the current scale.
 

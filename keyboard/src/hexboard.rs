@@ -500,7 +500,6 @@ impl Keyboard for HexBoard {
             })?;
         } else if key.is_multiple_of(20)
             && let Ok(cmd) = CommandKey::try_from(key / 20)
-            && off
         {
             match cmd {
                 CommandKey::Reset => send(KeyData::Reset)?,
@@ -509,7 +508,11 @@ impl Keyboard for HexBoard {
                 CommandKey::Shift => send(KeyData::Shift)?,
                 CommandKey::Transpose => send(KeyData::Transpose)?,
                 CommandKey::Sustain => send(KeyData::Sustain)?,
-                CommandKey::Layout => self.enter_layout_mode()?,
+                CommandKey::Layout => {
+                    if off {
+                        self.enter_layout_mode()?
+                    }
+                }
             }
         }
         Ok(())

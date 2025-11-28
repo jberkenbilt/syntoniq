@@ -152,6 +152,68 @@ async fn test_shift_and_transpose_keys() -> anyhow::Result<()> {
     let ts = tc.transpose().await?;
     assert!(ts.transpose.is_none());
 
+    // You can also enter with a key press alone.
+    let ts = tc.get_engine_state().await;
+    assert!(ts.shift.is_none());
+    tc.press_key(KeyData::Shift).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift, Some(None)));
+
+    tc.press_and_release_key(KeyData::Note {
+        position: pos(3, 4),
+    })
+    .await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.shift, Some(Some(_))));
+
+    tc.press_and_release_key(KeyData::Note {
+        position: pos(4, 4),
+    })
+    .await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.shift.is_none());
+
+    let ts = tc.get_engine_state().await;
+    assert!(ts.shift.is_none());
+    tc.release_key(KeyData::Shift).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.shift.is_none());
+
+    // Also works with transpose.
+    let ts = tc.get_engine_state().await;
+    assert!(ts.transpose.is_none());
+    tc.press_key(KeyData::Transpose).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.transpose, Some(None)));
+
+    tc.press_and_release_key(KeyData::Note {
+        position: pos(3, 4),
+    })
+    .await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(matches!(ts.transpose, Some(Some(_))));
+
+    tc.press_and_release_key(KeyData::Note {
+        position: pos(4, 4),
+    })
+    .await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.transpose.is_none());
+
+    let ts = tc.get_engine_state().await;
+    assert!(ts.transpose.is_none());
+    tc.release_key(KeyData::Transpose).await?;
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    let ts = tc.get_engine_state().await;
+    assert!(ts.transpose.is_none());
+
     tc.shutdown().await
 }
 
