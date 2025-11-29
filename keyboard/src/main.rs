@@ -27,7 +27,7 @@ use tokio::sync::oneshot;
 struct Cli {
     /// Substring to match for midi port; run amidi -l
     #[arg(long)]
-    port: String,
+    port: Option<String>,
 
     #[command(subcommand)]
     command: Commands,
@@ -59,6 +59,9 @@ async fn main() -> anyhow::Result<()> {
         syntoniq_common::cli_completions(shell, &mut cmd);
         return Ok(());
     }
+    let Some(port) = cli.port else {
+        bail!("the port option is required");
+    };
 
     let mut log_builder = env_logger::builder();
     if env::var("RUST_LOG").is_err() {
@@ -73,11 +76,11 @@ async fn main() -> anyhow::Result<()> {
     // Create midi controller.
     let tx2 = events_tx.clone();
     let (id_tx, id_rx) = oneshot::channel();
-    let controller = Controller::new(&cli.port, id_tx)?;
+    let controller = Controller::new(&port, id_tx)?;
     let device_type = id_rx.await?;
     let keyboard = match device_type {
         DeviceType::Empty => {
-            bail!("unable to identify device on port {}", cli.port);
+            bail!("unable to identify device on port {}", port);
         }
         DeviceType::Launchpad => Arc::new(Launchpad::new(tx2)) as Arc<dyn Keyboard>,
         DeviceType::HexBoard => Arc::new(HexBoard::new(tx2)) as Arc<dyn Keyboard>,
