@@ -2,8 +2,6 @@
 
 Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep.
 
-* Probably want some kind of tile shift parameter for tiling manual mappings, e.g., right_shift_rows=2, meaning to offset horizontally by 1 position every 2 rows. This keeps repeated tiles from shifting to the left on hex keyboards.
-
 Bugs
 * Polyphony for csound doesn't work correctly when splitting parts to use simultaneous tunings. We need something else...perhaps polyphony groups that default to instrument or maybe that default to global but you can assign parts to polyphony groups along with instruments. Maybe csound_instrument takes an optional polyphony group parameter?
 
@@ -165,6 +163,8 @@ JA  JB  JC  JD  JE  JF  JG  JH  JI  JJ  JK  JL  JM  JN
 To define a keyboard layout in the software, we have to establish the range of columns for each row. Since this is baked into the software (at least for now), I am not presenting a notation for that. The above scheme works for the ![Lumatone](lumatone.png) keyboard as well, though I am not providing a diagram.
 
 ## Layouts
+
+Work in: stagger. For hex keyboards, set to 2. This causes region selection and manual mapping to shift a column columns to the right every `stagger` rows, which causes manual tiling and regions to be rectangularly tiled while keeping isomorphic mappings fixed.
 
 A layout consists of a number of mappings placed onto the keyboard. A mapping maps positions to notes from a given scale. A mapping can be manual or isomorphic and is tied to a particular scale. The remaining information differs between manual and isomorphic mappings.
 

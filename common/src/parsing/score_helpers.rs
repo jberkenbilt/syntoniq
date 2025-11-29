@@ -8,6 +8,7 @@ use std::collections::hash_map::Entry;
 use std::collections::{BTreeMap, HashMap};
 use std::fmt::Debug;
 use std::hash::Hash;
+use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, RwLock};
 use std::{mem, ptr};
 
@@ -65,6 +66,13 @@ impl<'s, T: Copy> ToStatic<'s> for Ratio<T> {
 
     fn to_static(&self, _: &mut ArcContext) -> Self::Static {
         *self
+    }
+}
+
+impl<'s> ToStatic<'s> for AtomicI32 {
+    type Static = AtomicI32;
+    fn to_static(&self, _: &mut ArcContext) -> Self::Static {
+        AtomicI32::new(self.load(Ordering::Relaxed))
     }
 }
 

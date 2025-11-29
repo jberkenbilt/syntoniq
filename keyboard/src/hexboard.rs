@@ -523,6 +523,7 @@ impl Keyboard for HexBoard {
                 let mut state = self.state.write().unwrap();
                 state.cur_layout = Some(e.idx);
                 state.cur_orientation = Some(Self::keyboard_orientation(&e.layout.keyboard));
+                e.layout.stagger(2);
             }
             Event::ToDevice(_) | Event::KeyEvent(_) => {}
             Event::LightEvent(e) => self.handle_light_event(e)?,

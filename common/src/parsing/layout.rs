@@ -6,6 +6,7 @@ use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::fmt::Debug;
+use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, RwLock};
 use to_static_derive::ToStatic;
 
@@ -20,12 +21,19 @@ pub struct Layout<'s> {
     pub name: Cow<'s, str>,
     pub keyboard: Cow<'s, str>,
     pub mappings: Vec<LayoutMapping<'s>>,
+    /// Amount of stagger. This is set by the keyboard. Every `stagger` rows, columns are shifted
+    /// to the right for manual mappings and region boundaries. This does not affect isomorphic
+    /// layout, which must be uniform. Rectangular keyboards should keep this at 0. Hexagonal
+    /// keyboards would typically set it to 2.
+    #[serde(skip)]
+    pub stagger: AtomicI32,
 }
 impl<'s> Layout<'s> {
     pub fn note_at_location(self: &Arc<Self>, location: Coordinate) -> Option<PlacedNote<'s>> {
         // Return information from the first mapping that has the note, if any.
+        let stagger = self.stagger.load(Ordering::Relaxed);
         for m in &self.mappings {
-            if let Some(r) = m.note_at_location(location) {
+            if let Some(r) = m.note_at_location(location, stagger) {
                 return r;
             }
         }
@@ -36,9 +44,10 @@ impl<'s> Layout<'s> {
     /// the same mapping, but the keys don't have to be mapped within the mapping. The return value
     /// indicates whether the shift was successful.
     pub fn shift(&self, from: Coordinate, to: Coordinate) -> bool {
+        let stagger = self.stagger.load(Ordering::Relaxed);
         for mapping in &self.mappings {
-            if mapping.contains(from) {
-                if !mapping.contains(to) {
+            if mapping.contains(from, stagger) {
+                if !mapping.contains(to, stagger) {
                     return false;
                 }
                 // This mapping contains both locations, so we can shift.
@@ -56,8 +65,9 @@ impl<'s> Layout<'s> {
     /// Transpose the mapping so that the specified location's pitch is the specified pitch.
     /// The key must be mapped.
     pub fn transpose(self: &Arc<Self>, pitch: &Pitch, location: Coordinate) -> bool {
+        let stagger = self.stagger.load(Ordering::Relaxed);
         for mapping in &self.mappings {
-            if let Some(Some(np)) = mapping.note_at_location(location) {
+            if let Some(Some(np)) = mapping.note_at_location(location, stagger) {
                 let factor = pitch / &np.pitch;
                 mapping.offsets.write().unwrap().transpose *= &factor;
                 return true;
@@ -77,6 +87,12 @@ impl<'s> Layout<'s> {
         for m in &self.mappings {
             m.offsets.write().unwrap().transpose *= &transposition;
         }
+    }
+
+    /// Set the stagger. See field-level documentation. This is intended to be called by a keyboard
+    /// when it accepts a layout.
+    pub fn stagger(&self, stagger: i32) {
+        self.stagger.store(stagger, Ordering::Relaxed);
     }
 }
 
@@ -144,11 +160,19 @@ pub struct LayoutMapping<'s> {
 }
 
 impl<'s> LayoutMapping<'s> {
-    pub fn contains(&self, location: Coordinate) -> bool {
+    pub fn contains(&self, location: Coordinate, stagger: i32) -> bool {
         let min_row = self.rows_below.map(|x| self.anchor_row - x);
         let max_row = self.rows_above.map(|x| self.anchor_row + x);
-        let min_col = self.cols_left.map(|x| self.anchor_col - x);
-        let max_col = self.cols_right.map(|x| self.anchor_col + x);
+        let stagger_offset = if stagger == 0 {
+            0
+        } else {
+            (location.row - self.anchor_row).div_euclid(stagger)
+        };
+        // Min/max column in the row, adjusted for stagger.
+        let min_col = self.cols_left.map(|x| self.anchor_col - x + stagger_offset);
+        let max_col = self
+            .cols_right
+            .map(|x| self.anchor_col + x + stagger_offset);
         // If there is no bound specified, a value is considered in bounds.
         let ge_min_row = min_row.map(|x| location.row >= x).unwrap_or(true);
         let le_max_row = max_row.map(|x| location.row <= x).unwrap_or(true);
@@ -161,8 +185,12 @@ impl<'s> LayoutMapping<'s> {
     /// it includes the row and column, but the spot is unmapped. If Some(Some(_)), it is the note
     /// at that position with its untransposed pitch, covering base pitch, scale degree, and cycle
     /// count.
-    pub fn note_at_location(&self, location: Coordinate) -> Option<Option<PlacedNote<'s>>> {
-        if self.contains(location) {
+    pub fn note_at_location(
+        &self,
+        location: Coordinate,
+        stagger: i32,
+    ) -> Option<Option<PlacedNote<'s>>> {
+        if self.contains(location, stagger) {
             // Shift amounts apply to the layout, effectively moving the anchor by that amount.
             // loc - (anchor + shift) = loc - anchor - shift.
             let offsets = self.offsets.read().unwrap();
@@ -170,7 +198,7 @@ impl<'s> LayoutMapping<'s> {
             let col_delta: i32 = location.col - self.anchor_col - offsets.shift_h;
             Some(
                 self.details
-                    .note_at_anchor_delta(&self.scale, row_delta, col_delta)
+                    .note_at_anchor_delta(&self.scale, row_delta, col_delta, stagger)
                     .map(|x| {
                         let mut pitch = x.base_factor;
                         pitch *= &self.base_pitch;
@@ -205,10 +233,11 @@ impl<'s> MappingDetails<'s> {
         scale: &Scale<'s>,
         row_delta: i32,
         col_delta: i32,
+        stagger: i32,
     ) -> Option<NamedPitch<'s>> {
         match self {
             MappingDetails::Isomorphic(x) => x.note_at_anchor_delta(scale, row_delta, col_delta),
-            MappingDetails::Manual(x) => x.note_at_anchor_delta(row_delta, col_delta),
+            MappingDetails::Manual(x) => x.note_at_anchor_delta(row_delta, col_delta, stagger),
         }
     }
     pub fn name(&self) -> &Cow<'s, str> {
@@ -279,13 +308,23 @@ pub struct ManualMapping<'s> {
 impl<'s> ManualMapping<'s> {
     /// It is required that all elements of `notes` are the same length and that
     /// `anchor_row` and `anchor_column` are valid indices into notes.
-    fn note_at_anchor_delta(&self, row_delta: i32, col_delta: i32) -> Option<NamedPitch<'s>> {
+    fn note_at_anchor_delta(
+        &self,
+        row_delta: i32,
+        col_delta: i32,
+        stagger: i32,
+    ) -> Option<NamedPitch<'s>> {
         let row = self.anchor_row + row_delta;
-        let col = self.anchor_col + col_delta;
         let num_rows = self.notes.len() as i32;
         let num_cols = self.notes.first().expect("notes is empty").len() as i32;
         let row_idx = row.rem_euclid(num_rows);
         let v_repetitions = row.div_euclid(num_rows);
+        let stagger_offset = if stagger == 0 {
+            0
+        } else {
+            row_delta.div_euclid(stagger)
+        };
+        let col = self.anchor_col + col_delta - stagger_offset;
         let col_idx = col.rem_euclid(num_cols);
         let h_repetitions = col.div_euclid(num_cols);
         let note_row = self
@@ -443,7 +482,7 @@ mod tests {
         assert!(mapping.details.as_isomorphic().is_none());
         let mm = mapping.details.as_manual().unwrap();
         assert_eq!(
-            mm.note_at_anchor_delta(0, 0).unwrap(),
+            mm.note_at_anchor_delta(0, 0, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("e#"),
                 base_factor: Pitch::must_parse("^7|19"),
@@ -452,12 +491,29 @@ mod tests {
                 isomorphic: false,
             }
         );
-        assert!(mm.note_at_anchor_delta(0, -2).is_none());
-        assert!(mm.note_at_anchor_delta(1, 2).is_none());
-        assert!(mm.note_at_anchor_delta(4, 7).is_none());
-        assert!(mm.note_at_anchor_delta(-2, -3).is_none());
+        assert!(mm.note_at_anchor_delta(0, -2, 0).is_none());
+        assert!(mm.note_at_anchor_delta(1, 2, 0).is_none());
+        assert!(mm.note_at_anchor_delta(4, 7, 0).is_none());
+        assert!(mm.note_at_anchor_delta(-2, -3, 0).is_none());
+        // With staggered, every n rows up effectively shifts the column to the left because
+        // things on the keyboard are shifted right. The only sensible values for stagger are 0
+        // for rectangular keyboards and 2 for hexagonal keyboards, though one could conceive of
+        // a hexagonal keyboard situated at 30 degrees and arranged so that every third row is
+        // vertically aligned one column off. The arithmetic may feel inverted in this test.
+        // Remember that the arguments here are anchor deltas. If the anchor is at 5, 6 and you
+        // ask for 9, 6, the unstaggered column delta would be 0 (6 - 6). If there is a stagger of
+        // 2, then row 7, which is 4 rows up, would have its columns 2 spaces to the right (4 / 2).
+        // That means we need to *add* 2 to the requested delta so that we go two columns further
+        // to the *left* when we ask the mapping what character would be that delta. In other words,
+        // if we are working in a layout with a stagger value of 2, we have to go 2 steps farther
+        // to the left, which *increases* our delta, to find the note in a lookup table that is
+        // not staggered.
+        assert!(mm.note_at_anchor_delta(0, -2, 2).is_none());
+        assert!(mm.note_at_anchor_delta(1, 2, 2).is_none());
+        assert!(mm.note_at_anchor_delta(4, 9, 2).is_none());
+        assert!(mm.note_at_anchor_delta(-2, -4, 2).is_none());
         assert_eq!(
-            mm.note_at_anchor_delta(0, 1).unwrap(),
+            mm.note_at_anchor_delta(0, 1, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("f"),
                 base_factor: Pitch::must_parse("^8|19"),
@@ -467,7 +523,7 @@ mod tests {
             }
         );
         assert_eq!(
-            mm.note_at_anchor_delta(1, 0).unwrap(),
+            mm.note_at_anchor_delta(1, 0, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("g#"),
                 base_factor: Pitch::must_parse("^12|19"),
@@ -477,7 +533,7 @@ mod tests {
             }
         );
         assert_eq!(
-            mm.note_at_anchor_delta(1, 1).unwrap(),
+            mm.note_at_anchor_delta(1, 1, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("c'"),
                 base_factor: Pitch::must_parse("2"),
@@ -488,7 +544,17 @@ mod tests {
         );
         // Go up one vertical repetition
         assert_eq!(
-            mm.note_at_anchor_delta(4, 1).unwrap(),
+            mm.note_at_anchor_delta(4, 1, 0).unwrap(),
+            NamedPitch {
+                name: Cow::Borrowed("c'"),
+                base_factor: Pitch::must_parse("2*^1|2"),
+                base_interval: Pitch::must_parse("1"),
+                degree: 0,
+                isomorphic: false,
+            }
+        );
+        assert_eq!(
+            mm.note_at_anchor_delta(4, 3, 2).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("c'"),
                 base_factor: Pitch::must_parse("2*^1|2"),
@@ -499,7 +565,7 @@ mod tests {
         );
         // Go right one horizontal repetition
         assert_eq!(
-            mm.note_at_anchor_delta(4, 6).unwrap(),
+            mm.note_at_anchor_delta(4, 6, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("c'"),
                 base_factor: Pitch::must_parse("2*^1|2*1.5"),
@@ -509,7 +575,7 @@ mod tests {
             }
         );
         assert_eq!(
-            mm.note_at_anchor_delta(-1, 0).unwrap(),
+            mm.note_at_anchor_delta(-1, 0, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("d%"),
                 base_factor: Pitch::must_parse("^2|19"),
@@ -519,7 +585,17 @@ mod tests {
             }
         );
         assert_eq!(
-            mm.note_at_anchor_delta(-1, 1).unwrap(),
+            mm.note_at_anchor_delta(-1, -1, 2).unwrap(),
+            NamedPitch {
+                name: Cow::Borrowed("d%"),
+                base_factor: Pitch::must_parse("^2|19"),
+                base_interval: Pitch::must_parse("^2|19"),
+                degree: 3,
+                isomorphic: false,
+            }
+        );
+        assert_eq!(
+            mm.note_at_anchor_delta(-1, 1, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("c2"),
                 base_factor: Pitch::must_parse("2"),
@@ -529,7 +605,17 @@ mod tests {
             }
         );
         assert_eq!(
-            mm.note_at_anchor_delta(-1, 2).unwrap(),
+            mm.note_at_anchor_delta(-1, 0, 2).unwrap(),
+            NamedPitch {
+                name: Cow::Borrowed("c2"),
+                base_factor: Pitch::must_parse("2"),
+                base_interval: Pitch::must_parse("1"),
+                degree: 0,
+                isomorphic: false,
+            }
+        );
+        assert_eq!(
+            mm.note_at_anchor_delta(-1, 2, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("q"),
                 base_factor: Pitch::must_parse("^21|20"),
@@ -539,7 +625,7 @@ mod tests {
             }
         );
         assert_eq!(
-            mm.note_at_anchor_delta(-2, 0).unwrap(),
+            mm.note_at_anchor_delta(-2, 0, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("g#"),
                 base_factor: Pitch::must_parse("0.5*^12|19*^1|2"),
@@ -549,7 +635,17 @@ mod tests {
             }
         );
         assert_eq!(
-            mm.note_at_anchor_delta(-5, 0).unwrap(),
+            mm.note_at_anchor_delta(-2, -1, 2).unwrap(),
+            NamedPitch {
+                name: Cow::Borrowed("g#"),
+                base_factor: Pitch::must_parse("0.5*^12|19*^1|2"),
+                base_interval: Pitch::must_parse("^12|19"),
+                degree: 13,
+                isomorphic: false,
+            }
+        );
+        assert_eq!(
+            mm.note_at_anchor_delta(-5, 0, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("g#"),
                 base_factor: Pitch::must_parse("0.5*^12|19"),
@@ -559,7 +655,7 @@ mod tests {
             }
         );
         assert_eq!(
-            mm.note_at_anchor_delta(-2, -6).unwrap(),
+            mm.note_at_anchor_delta(-2, -6, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("g,"),
                 base_factor: Pitch::must_parse("1/6*^11|19*^1|2"),
@@ -592,7 +688,7 @@ mod tests {
             .unwrap();
         assert_eq!(r.name, "d%");
         assert_eq!(r.pitch, Pitch::must_parse("400*^2|19"));
-        // // Shift one row left. This means we should see the note to the right of that.
+        // Shift one row left. This means we should see the note to the right of that.
         assert!(layout.shift(Coordinate { row: 5, col: 5 }, Coordinate { row: 5, col: 4 }));
         let r = layout
             .note_at_location(Coordinate { row: 5, col: 4 })
@@ -605,6 +701,14 @@ mod tests {
             .unwrap();
         assert_eq!(r.name, "c2");
         assert_eq!(r.pitch, Pitch::must_parse("800*^1|2"));
+        // With a stagger of 2, we need to three rows and column to the right.
+        layout.stagger(2);
+        let r = layout
+            .note_at_location(Coordinate { row: 8, col: 5 })
+            .unwrap();
+        assert_eq!(r.name, "c2");
+        assert_eq!(r.pitch, Pitch::must_parse("800*^1|2"));
+        layout.stagger(0);
         // Five rows to the right should be the same note, but the pitch is up by h_factor.
         let r = layout
             .note_at_location(Coordinate { row: 8, col: 9 })
@@ -637,7 +741,105 @@ mod tests {
         let offsets = layout.mappings[0].offsets.write().unwrap().clone();
         let layout = &LAYOUTS.layouts[1];
         assert_eq!(layout.name, "l2");
-        // Re-establish the shift for the first mapping to match above.
+
+        // Before we re-establish the old offsets for replication, exercise region boundaries with
+        // and without stagger. Column 11 is the right-most column in rows 4 to 9 inclusive. Check
+        // the anchor first.
+        let r = layout
+            .note_at_location(Coordinate { row: 5, col: 4 })
+            .unwrap();
+        assert_eq!(r.name, "e#");
+        assert_eq!(r.pitch, Pitch::must_parse("400*^7|19"));
+        // The anchor is at 5, 4 so 4, 11 should be one row down and two columns plus one horizontal
+        // repetition over.
+        let r = layout
+            .note_at_location(Coordinate { row: 4, col: 11 })
+            .unwrap();
+        assert_eq!(r.name, "q");
+        assert_eq!(r.pitch, Pitch::must_parse("600*^21|20"));
+        // Three rows above should be the same note one vertical repetition later.
+        let r = layout
+            .note_at_location(Coordinate { row: 7, col: 11 })
+            .unwrap();
+        assert_eq!(r.name, "q");
+        assert_eq!(r.pitch, Pitch::must_parse("600*^21|20*^1|2"));
+        // Four rows above is one row higher.
+        let r = layout
+            .note_at_location(Coordinate { row: 8, col: 11 })
+            .unwrap();
+        assert_eq!(r.name, "f#");
+        assert_eq!(r.pitch, Pitch::must_parse("600*^9|19*^1|2"));
+        // One column to the right should put us in the new mapping.
+        let r = layout
+            .note_at_location(Coordinate { row: 4, col: 12 })
+            .unwrap();
+        assert_eq!(r.name, "e,2");
+        assert_eq!(r.pitch, Pitch::must_parse("75*^1|3"));
+        // Three rows above should be 15 steps above in the new mapping.
+        let r = layout
+            .note_at_location(Coordinate { row: 7, col: 12 })
+            .unwrap();
+        assert_eq!(r.name, "g,");
+        assert_eq!(r.pitch, Pitch::must_parse("150*^7|12"));
+        // Four rows above is 5 more steps.
+        let r = layout
+            .note_at_location(Coordinate { row: 8, col: 12 })
+            .unwrap();
+        assert_eq!(r.name, "c");
+        assert_eq!(r.pitch, Pitch::must_parse("300"));
+
+        // Now exercise with stagger. We intentionally use even and odd numbers of rows to make sure
+        // the boundary condition is correctly tested with even and odd offsets. For every two rows
+        // we go above the anchor row (5), we need to shift the column to the right to get to the
+        // same note. The anchor should not move.
+        layout.stagger(2);
+        let r = layout
+            .note_at_location(Coordinate { row: 5, col: 4 })
+            .unwrap();
+        assert_eq!(r.name, "e#");
+        assert_eq!(r.pitch, Pitch::must_parse("400*^7|19"));
+        // What was at 4, 11 should now be at 4, 10.
+        let r = layout
+            .note_at_location(Coordinate { row: 4, col: 10 })
+            .unwrap();
+        assert_eq!(r.name, "q");
+        assert_eq!(r.pitch, Pitch::must_parse("600*^21|20"));
+        // What was at 7, 11 should now be at 7, 12.
+        let r = layout
+            .note_at_location(Coordinate { row: 7, col: 12 })
+            .unwrap();
+        assert_eq!(r.name, "q");
+        assert_eq!(r.pitch, Pitch::must_parse("600*^21|20*^1|2"));
+        // Going up one more row doesn't further shift the column since we are in the 2-row group
+        // above the anchor row.
+        let r = layout
+            .note_at_location(Coordinate { row: 8, col: 12 })
+            .unwrap();
+        assert_eq!(r.name, "f#");
+        assert_eq!(r.pitch, Pitch::must_parse("600*^9|19*^1|2"));
+        // 4, 11 is now outside the region.
+        let r = layout
+            .note_at_location(Coordinate { row: 4, col: 11 })
+            .unwrap();
+        assert_eq!(r.name, "d,2");
+        assert_eq!(r.pitch, Pitch::must_parse("75*^1|6"));
+        // We need to go to 7, 13 to get to the new mapping now.
+        let r = layout
+            .note_at_location(Coordinate { row: 7, col: 13 })
+            .unwrap();
+        assert_eq!(r.name, "a,");
+        assert_eq!(r.pitch, Pitch::must_parse("150*^3|4"));
+        // This is in the new region now.
+        let r = layout
+            .note_at_location(Coordinate { row: 8, col: 13 })
+            .unwrap();
+        assert_eq!(r.name, "d");
+        assert_eq!(r.pitch, Pitch::must_parse("300*^1|6"));
+        // Reset the stagger for remaining tests.
+        layout.stagger(0);
+
+        // Re-establish the shift for the first mapping to match above. This intentionally repeats
+        // some tests from before the stagger tests to ensure consistency.
         *layout.mappings[0].offsets.write().unwrap() = offsets;
         // Apply a transposition the second mapping. Effective base pitch is 450.
         assert!(layout.transpose(&Pitch::must_parse("450"), Coordinate { row: 10, col: 7 }));

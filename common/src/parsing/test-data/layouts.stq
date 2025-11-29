@@ -33,6 +33,7 @@ g% g, g# c' ~
 ~ e @e# f f#
 c c# d% c2 q
 >>
+; Mapping "m2" uses the default scale since no scale is specified.
 define_isomorphic_mapping(mapping="m2" steps_h=2 steps_v=5)
 ; l1 only has a manual layout that covers part of the keyboard
 place_mapping(

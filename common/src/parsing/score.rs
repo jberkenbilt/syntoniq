@@ -9,6 +9,7 @@ use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::Bound::Excluded;
 use std::collections::{HashMap, HashSet};
+use std::sync::atomic::AtomicI32;
 use std::sync::{Arc, LazyLock, RwLock};
 use std::{cmp, mem};
 
@@ -1656,6 +1657,7 @@ impl<'s> Score<'s> {
                     name: directive.layout.value,
                     keyboard: directive.keyboard.value,
                     mappings: vec![],
+                    stagger: AtomicI32::new(0),
                 })),
             }
         });
