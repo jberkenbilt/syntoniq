@@ -1,4 +1,5 @@
 use crate::events::{Event, ToDevice};
+use crate::view::hexboard_view::HexBoardView;
 use crate::view::launchpad_view::LaunchpadView;
 use crate::view::state::{AppState, LockedState};
 use crate::{DeviceType, events};
@@ -49,6 +50,10 @@ async fn launchpad_view(State(lock): State<LockedState>) -> impl IntoResponse {
     Html(LaunchpadView::generate_view(lock).await)
 }
 
+async fn hexboard_view(State(lock): State<LockedState>) -> impl IntoResponse {
+    Html(HexBoardView::generate_view(lock).await)
+}
+
 async fn sse_handler(State(lock): State<LockedState>) -> impl IntoResponse {
     let rx = {
         let Some(tx) = lock.read().await.get_sse_tx() else {
@@ -83,7 +88,7 @@ pub async fn http_view(
     match view {
         DeviceType::Empty => app = app.route("/", get(empty_view)),
         DeviceType::Launchpad => app = app.route("/", get(launchpad_view)),
-        DeviceType::HexBoard => app = app.route("/", get(empty_view)), // TODO: HEXBOARD
+        DeviceType::HexBoard => app = app.route("/", get(hexboard_view)),
     }
 
     let app = app.with_state(state.clone());
@@ -115,7 +120,6 @@ async fn main_loop(state: LockedState, mut events_rx: events::Receiver) {
             Event::Shutdown => drop(SHUTDOWN.lock().await.take()),
             Event::ToDevice(td) => match td {
                 ToDevice::Light(e) => state.write().await.handle_light_event(&e),
-                ToDevice::ClearLights => state.write().await.clear_lights(),
             },
             Event::SelectLayout(e) => state.write().await.handle_select_layout(e).await,
             Event::SetLayoutNames(e) => state.write().await.handle_layout_names(e).await,

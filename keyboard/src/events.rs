@@ -10,11 +10,13 @@ use tokio::sync::broadcast::error::RecvError;
 use tokio::sync::mpsc;
 use tokio::sync::{RwLock, broadcast};
 
+// Neutral gray representing a turned-off key
 pub const OFF_RGB: &str = "#616161";
 
 #[derive(Copy, Clone, Debug, PartialEq, Hash, Eq)]
 pub enum Color {
     Off,
+    ControlOff,
     Active,
     ToggleOff,
     ToggleOn,
@@ -76,23 +78,27 @@ pub fn interval_color(mut interval: f32) -> NoteColors {
     }
 }
 
+#[derive(Default, Copy, Clone, Debug, PartialOrd, PartialEq, Eq, Hash)]
+pub enum Orientation {
+    #[default]
+    Horiz,
+    R60,
+}
+
 #[derive(Copy, Clone, Debug, PartialOrd, PartialEq, Eq, Hash)]
 pub enum ButtonData {
-    Note { position: Coordinate },
-    Command { idx: u8 },
-}
-impl Display for ButtonData {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ButtonData::Note { position: p } => write!(f, "n{}-{}", p.row, p.col),
-            ButtonData::Command { idx } => write!(f, "c{idx}"),
-        }
-    }
+    Note {
+        position: Coordinate,
+        orientation: Option<Orientation>,
+    },
+    Command {
+        idx: u8,
+    },
 }
 
 #[derive(Clone, Debug)]
 pub struct RawLightEvent {
-    pub button: ButtonData,
+    pub key: u8,
     pub color: Color,
     pub rgb_color: String,
     pub label1: String,
@@ -293,7 +299,6 @@ pub enum FromDevice {
 #[derive(Clone, Debug)]
 pub enum ToDevice {
     Light(Vec<RawLightEvent>),
-    ClearLights,
 }
 
 #[derive(Clone, Debug)]

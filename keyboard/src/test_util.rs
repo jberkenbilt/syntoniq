@@ -2,8 +2,8 @@ use crate::DeviceType;
 use crate::controller::Device;
 use crate::engine::{Keyboard, SoundType};
 use crate::events::{
-    ButtonData, Color, EngineState, Event, Events, FromDevice, KeyData, KeyEvent, Note,
-    RawLightEvent, StateView, TestEvent,
+    Color, EngineState, Event, Events, FromDevice, KeyData, KeyEvent, Note, RawLightEvent,
+    StateView, TestEvent,
 };
 use crate::view::web;
 use crate::{engine, events};
@@ -59,9 +59,7 @@ impl Keyboard for TestKeyboard {
         _velocity: u8,
     ) -> RawLightEvent {
         RawLightEvent {
-            button: ButtonData::Note {
-                position: Coordinate { row: 0, col: 0 },
-            },
+            key: 0,
             color: Color::Off,
             rgb_color: events::OFF_RGB.to_string(),
             label1: String::new(),

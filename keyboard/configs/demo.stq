@@ -31,6 +31,7 @@ define_scale(scale="19-EDO") <<
 ; layout 3
 define_isomorphic_mapping(mapping="19-EDO-h3v8" scale="19-EDO" steps_h=3 steps_v=8)
 place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" keyboard="launchpad" anchor_row=4 anchor_col=3)
+place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" keyboard="hexboard" anchor_row=7 anchor_col=8)
 
 define_scale(scale="31-EDO") <<
  ^0|31 c | ^1|31 c+ d%% | ^2|31 c# | ^3|31 d% | ^4|31 d- c##
@@ -44,6 +45,8 @@ define_scale(scale="31-EDO") <<
 ; layout 4
 define_isomorphic_mapping(mapping="31-EDO-h5v3" scale="31-EDO" steps_h=5 steps_v=3)
 place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="launchpad" anchor_row=4 anchor_col=3)
+place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="hexboard" anchor_row=7 anchor_col=8)
+place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
 
 define_scale(scale="JI-11") <<
 1     c
@@ -74,6 +77,14 @@ place_mapping(
     mapping="JI-11"
     anchor_row=5
     anchor_col=1
+)
+place_mapping(
+    layout="JI-11"
+    base_pitch=264
+    keyboard="hexboard"
+    mapping="JI-11"
+    anchor_row=5
+    anchor_col=6
 )
 
 define_scale(scale="harmonics") <<

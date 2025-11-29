@@ -1,6 +1,5 @@
 //! This module contains the Launchpad-specific parts of the web view.
-use crate::events::{ButtonData, StateView};
-use crate::launchpad::Launchpad;
+use crate::events::StateView;
 use crate::view::state::{Cell, LockedState};
 use askama::Template;
 use std::collections::HashMap;
@@ -13,7 +12,7 @@ pub const COLS: u8 = 10;
 pub struct LaunchpadView<'a> {
     rows: u8,
     cols: u8,
-    cells: &'a HashMap<ButtonData, Cell>,
+    cells: &'a HashMap<u8, Cell>,
     state_view: &'a StateView,
 }
 impl<'a> LaunchpadView<'a> {
@@ -24,7 +23,7 @@ impl<'a> LaunchpadView<'a> {
             .unwrap()
     }
 
-    pub fn new(cells: &'a HashMap<ButtonData, Cell>, state_view: &'a StateView) -> Self {
+    pub fn new(cells: &'a HashMap<u8, Cell>, state_view: &'a StateView) -> Self {
         Self {
             rows: ROWS,
             cols: COLS,
@@ -43,10 +42,8 @@ impl<'a> LaunchpadView<'a> {
         };
         let pad_col = *grid_col;
         let position = 10 * pad_row + pad_col;
-        let button =
-            Launchpad::raw_key_to_button(position).unwrap_or(ButtonData::Command { idx: position });
-        let empty = Cell::empty(button);
-        let t = self.cells.get(&button).unwrap_or(&empty);
+        let empty = Cell::empty(position);
+        let t = self.cells.get(&position).unwrap_or(&empty);
         t.render().unwrap()
     }
 }

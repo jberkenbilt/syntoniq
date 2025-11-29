@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<!-- Basic hex logic was AI-generated. -->
+<html lang="en">
+  <head>
+    {# https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js #}
+    <script src="/assets/htmx.min.js"></script>
+    {# https://cdn.jsdelivr.net/npm/htmx-ext-sse@2.2.2 #}
+    <script src="/assets/htmx-ext-sse@2.2.2"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Syntoniq Keyboard: HexBoard</title>
+    <style>
+      :root {
+          --hex-width: 65px;
+          --hex-margin: 5px;
+          --hex-height: calc(var(--hex-width) * 1.1547); /* 2/sqrt(3) */
+          --off-background: #616161;
+          --control-background: #333;
+      }
+      .container {
+          display: flex;
+          align-items: flex-start; /* top alignment */
+          gap: 2rem;  /* space between columns */
+      }
+      body {
+          font-family: Arial, sans-serif;
+          background: #eee;
+          color: #222;
+      }
+      @media (prefers-color-scheme: dark) {
+          body {
+              background: #222;
+              color: #eee;
+          }
+      }
+      @media (max-width: 600px) {
+          /* change container flow direction on smaller screens; probably not
+             useful, but kept for information. */
+          .container {
+              flex-direction: column;
+          }
+      }
+      .hex-grid-container {
+          padding: 10px;
+          overflow-x: auto;
+          max-width: 100%;
+      }
+      .hex-row {
+          display: flex;
+          flex-wrap: nowrap;
+
+          /*
+            We pull the next row up by 25% of the hex height (for the
+            point) but then *add back* the margin to create the gap.
+          */
+          margin-bottom: calc( (var(--hex-height) * -0.25) + var(--hex-margin) );
+      }
+      .hex-row:last-child {
+          margin-bottom: 0;
+      }
+      .hex-row:nth-child(odd) {
+          /* horzontal offset */
+          margin-left: calc(var(--hex-width) / 2 + var(--hex-margin) / 2);
+      }
+
+      .cell-content {
+          width: var(--hex-width);
+          height: var(--hex-height);
+          flex-shrink: 0;
+
+          /* Horizontal spacing */
+          margin-left: calc(var(--hex-margin) / 2);
+          margin-right: calc(var(--hex-margin) / 2);
+
+          /* Hexagon shape */
+          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          font-size: 1rem;
+          box-sizing: border-box;
+      }
+      .cell-text {
+          color: #fff;
+          background: var(--off-background);
+          background-color: var(--off-background);
+          padding: 3px;
+      }
+    </style>
+  </head>
+  <body hx-ext="sse" sse-connect="/sse">
+    <div class="container">
+      <div class="hex-grid-container">
+        {% for row in (0..14).into_iter() %}
+        <div class="hex-row">
+          {% for col in (0..9 + row%2).into_iter() %}
+          {{ self.get_cell(row, col) | safe }}
+          {% endfor %}
+        </div>
+        {% endfor %}
+      </div>
+      <div class="side-info">
+        <p>
+          Command Keys:
+          <ol>
+            {% for i in 0..7 %}
+            <li>{{ Self::command_key(i as u8) }}</li>
+            {% endfor %}
+          </ol>
+        </p>
+        {{ state_view | safe }}
+      </div>
+    </div>
+  </body>
+</html>

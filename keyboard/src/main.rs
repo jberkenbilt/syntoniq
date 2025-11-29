@@ -74,7 +74,8 @@ async fn main() -> anyhow::Result<()> {
     let tx2 = events_tx.clone();
     let (id_tx, id_rx) = oneshot::channel();
     let controller = Controller::new(&cli.port, id_tx)?;
-    let keyboard = match id_rx.await? {
+    let device_type = id_rx.await?;
+    let keyboard = match device_type {
         DeviceType::Empty => {
             bail!("unable to identify device on port {}", cli.port);
         }
@@ -86,7 +87,7 @@ async fn main() -> anyhow::Result<()> {
     let tx2 = events_tx.clone();
     let rx2 = events_rx.resubscribe();
     tokio::spawn(async move {
-        web::http_view(tx2, rx2, 8440, DeviceType::Launchpad).await;
+        web::http_view(tx2, rx2, 8440, device_type).await;
     });
 
     // Make sure everything is cleaned up on exit.

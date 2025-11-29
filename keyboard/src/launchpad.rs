@@ -75,9 +75,7 @@ impl Launchpad {
         let mut events = Vec::new();
         for i in 0..8 {
             let idx = i as usize + state.layout_offset;
-            let button = ButtonData::Command {
-                idx: u8::from(CommandKeys::LayoutMin) + i as u8,
-            };
+            let key = u8::from(CommandKeys::LayoutMin) + i as u8;
             let event = if idx < state.num_layouts {
                 let is_cur = state.cur_layout.map(|x| x == idx).unwrap_or(false);
                 let color = if is_cur {
@@ -86,7 +84,7 @@ impl Launchpad {
                     Color::Active
                 };
                 RawLightEvent {
-                    button,
+                    key,
                     color,
                     rgb_color: rgb_color(color),
                     label1: (idx + 1).to_string(),
@@ -94,9 +92,9 @@ impl Launchpad {
                 }
             } else {
                 RawLightEvent {
-                    button,
-                    color: Color::Off,
-                    rgb_color: rgb_color(Color::Off),
+                    key,
+                    color: Color::ControlOff,
+                    rgb_color: rgb_color(Color::ControlOff),
                     label1: String::new(),
                     label2: String::new(),
                 }
@@ -105,9 +103,7 @@ impl Launchpad {
         }
         if state.num_layouts > 8 {
             events.push(RawLightEvent {
-                button: ButtonData::Command {
-                    idx: CommandKeys::LayoutScroll.into(),
-                },
+                key: CommandKeys::LayoutScroll.into(),
                 color: Color::Active,
                 rgb_color: rgb_color(Color::Active),
                 label1: "Scroll".to_string(),
@@ -145,7 +141,7 @@ impl Launchpad {
             LightData::Transpose => CommandKeys::Transpose,
         };
         tx.send(Event::ToDevice(ToDevice::Light(vec![RawLightEvent {
-            button: ButtonData::Command { idx: cmd.into() },
+            key: cmd.into(),
             color: event.color,
             rgb_color: rgb_color(event.color),
             label1: event.label1,
@@ -179,6 +175,7 @@ impl Launchpad {
         if Self::is_note_key(position) {
             Some(ButtonData::Note {
                 position: Self::key_to_coordinate(position),
+                orientation: None,
             })
         } else if CommandKeys::try_from(position).is_ok() {
             Some(ButtonData::Command { idx: position })
@@ -189,7 +186,7 @@ impl Launchpad {
 
     pub fn button_to_raw_key(button: ButtonData) -> u8 {
         match button {
-            ButtonData::Note { position } => Self::coordinate_to_key(position),
+            ButtonData::Note { position, .. } => Self::coordinate_to_key(position),
             ButtonData::Command { idx } => idx,
         }
     }
@@ -216,15 +213,7 @@ impl LaunchpadDevice {
         events: &[RawLightEvent],
     ) -> anyhow::Result<()> {
         for e in events {
-            let position = Launchpad::button_to_raw_key(e.button);
-            Self::set_light(output_connection, position, e.color)?;
-        }
-        Ok(())
-    }
-
-    fn clear_lights(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
-        for position in 1..=108 {
-            Self::set_light(output_connection, position, Color::Off)?;
+            Self::set_light(output_connection, e.key, e.color)?;
         }
         Ok(())
     }
@@ -276,7 +265,6 @@ impl Device for LaunchpadDevice {
     ) -> anyhow::Result<()> {
         match event {
             ToDevice::Light(e) => LaunchpadDevice::set_button_lights(output_connection, &e),
-            ToDevice::ClearLights => LaunchpadDevice::clear_lights(output_connection),
         }
     }
 
@@ -295,9 +283,23 @@ impl Keyboard for Launchpad {
             return Ok(());
         };
         *self.state.write().expect("lock") = Default::default();
+        let mut light_events = Vec::new();
+        // Clear lights
+        for key in 1..=108 {
+            let color = if Self::is_note_key(key) {
+                Color::Off
+            } else {
+                Color::ControlOff
+            };
+            light_events.push(RawLightEvent {
+                key,
+                color,
+                rgb_color: rgb_color(color),
+                label1: "".to_string(),
+                label2: "".to_string(),
+            })
+        }
         // Draw the logo.
-        tx.send(Event::ToDevice(ToDevice::ClearLights))?;
-        let mut logo = Vec::new();
         for (color, positions) in [
             (
                 Color::FifthOn, // green
@@ -309,9 +311,8 @@ impl Keyboard for Launchpad {
             (Color::TonicOff, vec![74, 75]),             // cyan
         ] {
             for position in positions {
-                let coord = Self::key_to_coordinate(position);
-                logo.push(RawLightEvent {
-                    button: ButtonData::Note { position: coord },
+                light_events.push(RawLightEvent {
+                    key: position,
                     color,
                     rgb_color: rgb_color(color),
                     label1: String::new(),
@@ -325,15 +326,15 @@ impl Keyboard for Launchpad {
             (CommandKeys::Clear, "Reset", ""),
             (CommandKeys::Record, "Show", "Notes"),
         ] {
-            logo.push(RawLightEvent {
-                button: ButtonData::Command { idx: cmd.into() },
+            light_events.push(RawLightEvent {
+                key: cmd.into(),
                 color: Color::Active,
                 rgb_color: rgb_color(Color::Active),
                 label1: label1.to_string(),
                 label2: label2.to_string(),
             });
         }
-        tx.send(Event::ToDevice(ToDevice::Light(logo)))?;
+        tx.send(Event::ToDevice(ToDevice::Light(light_events)))?;
         self.fix_layout_lights()?;
         Ok(())
     }
@@ -365,9 +366,10 @@ impl Keyboard for Launchpad {
         position: Coordinate,
         velocity: u8,
     ) -> RawLightEvent {
+        let key = Self::coordinate_to_key(position);
         match note {
             None => RawLightEvent {
-                button: ButtonData::Note { position },
+                key,
                 color: Color::Off,
                 rgb_color: rgb_color(Color::Off),
                 label1: String::new(),
@@ -380,7 +382,7 @@ impl Keyboard for Launchpad {
                     note.on_color
                 };
                 RawLightEvent {
-                    button: ButtonData::Note { position },
+                    key,
                     color,
                     rgb_color: rgb_color(color),
                     label1: note.placed.name.to_string(),
@@ -480,6 +482,7 @@ mod colors {
 pub fn launchpad_color(color: Color) -> u8 {
     match color {
         Color::Off => 0,
+        Color::ControlOff => 0,
         Color::Active => colors::WHITE,
         Color::ToggleOff => colors::RED,
         Color::ToggleOn => colors::GREEN,
@@ -501,7 +504,11 @@ pub fn launchpad_color(color: Color) -> u8 {
 }
 
 pub fn rgb_color(color: Color) -> String {
-    rgb_colors::RGB_COLORS[launchpad_color(color) as usize].to_string()
+    match color {
+        Color::Off => events::OFF_RGB.to_string(),
+        Color::ControlOff => "var(--control-background)".to_string(),
+        _ => rgb_colors::RGB_COLORS[launchpad_color(color) as usize].to_string(),
+    }
 }
 
 #[cfg(test)]

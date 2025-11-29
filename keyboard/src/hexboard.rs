@@ -5,9 +5,8 @@ use crate::events;
 use crate::events::TestEvent;
 use crate::events::{
     ButtonData, Color, Event, FromDevice, KeyData, KeyEvent, LightData, LightEvent, Note,
-    RawKeyEvent, RawLightEvent, ToDevice,
+    Orientation, RawKeyEvent, RawLightEvent, ToDevice,
 };
-use crate::launchpad::launchpad_color;
 use bimap::BiMap;
 use midir::MidiOutputConnection;
 use midly::MidiMessage;
@@ -85,24 +84,17 @@ impl HSV {
 #[derive(Clone)]
 pub struct HexBoard {
     events_tx: events::WeakSender,
-    orientation: Arc<RwLock<Orientation>>,
     state: Arc<RwLock<State>>,
 }
 #[derive(Default, Clone)]
 struct State {
     layout_names: Vec<String>,
     cur_layout: Option<usize>,
+    cur_orientation: Option<Orientation>,
     layout_mode: bool,
 }
-#[derive(Default, Copy, Clone, PartialOrd, PartialEq, Eq, Hash)]
-pub enum Orientation {
-    #[default]
-    Horiz,
-    R60,
-}
-pub struct HexBoardDevice {
-    orientation: Arc<RwLock<Orientation>>,
-}
+
+pub struct HexBoardDevice;
 
 pub struct LedMessage {
     key: u8,
@@ -127,8 +119,15 @@ impl HexBoard {
         let state: Arc<RwLock<State>> = Default::default();
         HexBoard {
             events_tx: events_tx.clone(),
-            orientation: Default::default(),
             state: state.clone(),
+        }
+    }
+
+    fn keyboard_orientation(keyboard: &str) -> Orientation {
+        if keyboard == "hexboard" {
+            Orientation::Horiz
+        } else {
+            Orientation::R60
         }
     }
 
@@ -157,20 +156,17 @@ impl HexBoard {
         };
         // Set orientation to Horizontal for layout selection. Layout selection always ends with
         // a layout key, even if canceled, so the layout will be properly restored.
-        *self.orientation.write().unwrap() = Orientation::Horiz;
         let raw_events: Vec<_> = (0u8..=139)
             .map(|key| {
-                let color = if Self::key_to_layout_idx(num_layouts, key).is_some() {
-                    Color::Active
-                } else {
-                    Color::Off
+                let (color, label1) = match Self::key_to_layout_idx(num_layouts, key) {
+                    None => (Color::Off, String::new()),
+                    Some(idx) => (Color::Active, (idx + 1).to_string()),
                 };
-                let position = Self::key_to_coordinate(key, Orientation::Horiz);
                 RawLightEvent {
-                    button: ButtonData::Note { position },
+                    key,
                     color,
-                    rgb_color: "".to_string(),
-                    label1: "".to_string(),
+                    rgb_color: hexboard_color(color).to_rgb(),
+                    label1,
                     label2: "".to_string(),
                 }
             })
@@ -211,9 +207,9 @@ impl HexBoard {
             LightData::Transpose => CommandKey::Transpose,
         };
         tx.send(Event::ToDevice(ToDevice::Light(vec![RawLightEvent {
-            button: ButtonData::Command { idx: cmd.into() },
+            key: u8::from(cmd) * 20,
             color: event.color,
-            rgb_color: launchpad_color(event.color).to_string(),
+            rgb_color: hexboard_color(event.color).to_rgb(),
             label1: event.label1,
             label2: event.label2,
         }])))?;
@@ -242,9 +238,12 @@ impl HexBoard {
             .unwrap_or_default()
     }
 
-    pub fn button_to_raw_key(button: ButtonData, orientation: Orientation) -> u8 {
+    pub fn button_to_raw_key(button: ButtonData) -> u8 {
         match button {
-            ButtonData::Note { position } => Self::coordinate_to_key(position, orientation),
+            ButtonData::Note {
+                position,
+                orientation,
+            } => Self::coordinate_to_key(position, orientation.unwrap()),
             ButtonData::Command { idx } => {
                 // HexBoard command keys are 0, 20, ... 120
                 idx * 20
@@ -286,29 +285,16 @@ impl HexBoardDevice {
     fn set_button_lights(
         output_connection: &mut MidiOutputConnection,
         events: &[RawLightEvent],
-        orientation: Orientation,
     ) -> anyhow::Result<()> {
         let mut led_messages: Vec<_> = events
             .iter()
             .map(|e| LedMessage {
-                key: HexBoard::button_to_raw_key(e.button, orientation),
+                key: e.key,
                 color: e.color,
             })
             .collect();
         led_messages.sort_by_key(|x| x.key);
         Self::set_lights(output_connection, &led_messages)
-    }
-
-    fn clear_lights(output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
-        static ALL_OFF: LazyLock<Vec<LedMessage>> = LazyLock::new(|| {
-            (0u8..=139)
-                .map(|key| LedMessage {
-                    key,
-                    color: Color::Off,
-                })
-                .collect()
-        });
-        Self::set_lights(output_connection, &ALL_OFF)
     }
 }
 
@@ -338,12 +324,7 @@ impl Device for HexBoardDevice {
         output_connection: &mut MidiOutputConnection,
     ) -> anyhow::Result<()> {
         match event {
-            ToDevice::Light(e) => HexBoardDevice::set_button_lights(
-                output_connection,
-                &e,
-                *self.orientation.read().expect("lock"),
-            ),
-            ToDevice::ClearLights => HexBoardDevice::clear_lights(output_connection),
+            ToDevice::Light(e) => HexBoardDevice::set_button_lights(output_connection, &e),
         }
     }
 
@@ -362,10 +343,21 @@ impl Keyboard for HexBoard {
             return Ok(());
         };
         *self.state.write().expect("lock") = Default::default();
-        *self.orientation.write().expect("lock") = Orientation::Horiz;
-        // Draw the logo.
-        tx.send(Event::ToDevice(ToDevice::ClearLights))?;
         let mut light_events = Vec::new();
+        // Clear lights.
+        static ALL_OFF: LazyLock<Vec<RawLightEvent>> = LazyLock::new(|| {
+            (0u8..=139)
+                .map(|key| RawLightEvent {
+                    key,
+                    color: Color::Off,
+                    rgb_color: events::OFF_RGB.to_string(),
+                    label1: "".to_string(),
+                    label2: "".to_string(),
+                })
+                .collect()
+        });
+        light_events.extend_from_slice(&ALL_OFF);
+        // Draw the logo.
         for (color, keys) in [
             (
                 Color::FifthOn, // green
@@ -378,7 +370,6 @@ impl Keyboard for HexBoard {
                 Color::FifthOff, //blue
                 vec![24, 25, 26, 36, 47, 56, 66, 65, 64, 53, 43, 33],
             ),
-            //(Color::MajorThirdOn, vec![1, 2, 8, 9, 10, 11, 18, 19, 21b, 29, 30, 39]),     // pink
             (
                 Color::LogoBackground, // light pink
                 vec![
@@ -389,9 +380,8 @@ impl Keyboard for HexBoard {
             (Color::MinorThirdOff, vec![55, 76]), // red
         ] {
             for key in keys {
-                let position = Self::key_to_coordinate(key, Orientation::Horiz);
                 light_events.push(RawLightEvent {
-                    button: ButtonData::Note { position },
+                    key,
                     color,
                     rgb_color: hexboard_color(color).to_rgb(),
                     label1: String::new(),
@@ -406,7 +396,7 @@ impl Keyboard for HexBoard {
             (CommandKey::Reset, "Reset", ""),
         ] {
             light_events.push(RawLightEvent {
-                button: ButtonData::Command { idx: cmd.into() },
+                key: u8::from(cmd) * 20,
                 color: Color::Active,
                 rgb_color: hexboard_color(Color::Active).to_rgb(),
                 label1: label1.to_string(),
@@ -430,19 +420,16 @@ impl Keyboard for HexBoard {
     }
 
     fn note_positions(&self, keyboard: &str) -> &'static [Coordinate] {
-        let orientation = if keyboard == "hexboard" {
-            Orientation::Horiz
-        } else {
-            Orientation::R60
-        };
-        *self.orientation.write().unwrap() = orientation;
         static POSITIONS: LazyLock<HashMap<Orientation, Vec<Coordinate>>> = LazyLock::new(|| {
             KEY_MAP
                 .iter()
                 .map(|(orientation, keys)| (*orientation, keys.right_values().copied().collect()))
                 .collect()
         });
-        POSITIONS.get(&orientation).unwrap().as_slice()
+        POSITIONS
+            .get(&Self::keyboard_orientation(keyboard))
+            .unwrap()
+            .as_slice()
     }
 
     fn note_light_event(
@@ -451,9 +438,11 @@ impl Keyboard for HexBoard {
         position: Coordinate,
         velocity: u8,
     ) -> RawLightEvent {
+        let orientation = self.state.read().unwrap().cur_orientation;
+        let key = Self::coordinate_to_key(position, orientation.unwrap_or_default());
         match note {
             None => RawLightEvent {
-                button: ButtonData::Note { position },
+                key,
                 color: Color::Off,
                 rgb_color: events::OFF_RGB.to_string(),
                 label1: String::new(),
@@ -466,7 +455,7 @@ impl Keyboard for HexBoard {
                     note.on_color
                 };
                 RawLightEvent {
-                    button: ButtonData::Note { position },
+                    key,
                     color,
                     rgb_color: hexboard_color(color).to_rgb(),
                     label1: note.placed.name.to_string(),
@@ -477,9 +466,7 @@ impl Keyboard for HexBoard {
     }
 
     fn make_device(&self) -> Arc<dyn Device> {
-        Arc::new(HexBoardDevice {
-            orientation: self.orientation.clone(),
-        })
+        Arc::new(HexBoardDevice)
     }
 
     fn handle_raw_event(&self, msg: FromDevice) -> anyhow::Result<()> {
@@ -500,7 +487,14 @@ impl Keyboard for HexBoard {
             }
         } else if Self::is_note_key(key) {
             send(KeyData::Note {
-                position: Self::key_to_coordinate(key, *self.orientation.read().unwrap()),
+                position: Self::key_to_coordinate(
+                    key,
+                    self.state
+                        .read()
+                        .unwrap()
+                        .cur_orientation
+                        .unwrap_or_default(),
+                ),
             })?;
         } else if key.is_multiple_of(20)
             && let Ok(cmd) = CommandKey::try_from(key / 20)
@@ -526,7 +520,9 @@ impl Keyboard for HexBoard {
         match event {
             Event::Shutdown => return Ok(()),
             Event::SelectLayout(e) => {
-                self.state.write().expect("lock").cur_layout = Some(e.idx);
+                let mut state = self.state.write().unwrap();
+                state.cur_layout = Some(e.idx);
+                state.cur_orientation = Some(Self::keyboard_orientation(&e.layout.keyboard));
             }
             Event::ToDevice(_) | Event::KeyEvent(_) => {}
             Event::LightEvent(e) => self.handle_light_event(e)?,
@@ -708,7 +704,8 @@ pub fn hexboard_color(color: Color) -> HSV {
     };
     match color {
         // See misc/hexboard-scripts/colors
-        Color::Off => hsv(0, 0, 0),
+        Color::Off => hsv(0, 0, 40),
+        Color::ControlOff => hsv(0, 0, 40),
         Color::Active => hsv(0, 0, 127),           // white
         Color::ToggleOff => hsv(0, 127, 127),      // red
         Color::ToggleOn => hsv(50, 127, 127),      // green

@@ -10,7 +10,7 @@ pub mod midi_player;
 pub mod test_util;
 pub mod view;
 
-#[derive(Copy, Clone)]
+#[derive(Debug, Copy, Clone)]
 pub enum DeviceType {
     Empty,
     Launchpad,
