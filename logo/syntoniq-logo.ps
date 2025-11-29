@@ -1,38 +1,33 @@
 %!PS-Adobe-2.0 EPSF-2.0
 %%Title: Syntoniq Logo
 %%CreationDate: 2025-11-25
-%%BoundingBox: 0 0 300 300
+%%BoundingBox: 0 0 228 264
+%%Pages: 0
 %%EndComments
 
-% Originally I was going to convert this to SVG, but eventually I
-% ended up deciding to just play with the transformation matrix, so I
-% probably won't recode this and will just live with the inverted
-% coordinates. This was all hand-coded except the tangent-pitch
-% function, which was provided by Gemini pro 3 to smooth out the
-% curve.
+% This was all hand-coded except the tangent-pitch function, which was
+% provided by Gemini pro 3 to smooth out the curve.
+
+% excluding line width, the bounding box around the center is this:
+% top: -108
+% bottom: 144
+% left: -90
+% right: 126
+
+% With comma-scale = 5, line-width is 10. Add an extra six pixels
+% around the bounding box to accommodate the line with an extra pixel
+% of headroom and to make even dimensions.
+
+96 150 translate
+
+% Flip vertically. This makes it easier to work with counter-clockwise
+% scaling. It means +y goes up instead of down. I did this because I
+% was originally going to hand-translate this to SVG, but it works
+% better to let ghostscript and pdf2svg do it so the logo can be coded
+% in PostScript,.
+1 -1 scale
 
 /debug false def
-
-/box-h 300 def
-/box-w 300 def
-
-% Set the coordinate system to match SVG: origin at upper-left corner.
-% Keep this in mind when evaluating the file. It means angles go
-% around counter-clockwise in addition to inversion of other vertical
-% dimensions.
-0 box-h 2 div translate
-1 -1 scale
-0 box-h 2 div neg translate
-
-% Set a clip path as a visual check that we're fitting completely
-% inside the intended bounding box.
-newpath
-  0 0 moveto
-  box-w 0 rlineto
-  0 box-h rlineto
-  box-w neg 0 rlineto
-  closepath
-clip
 
 % Rather than using scale/rotate liberally, just calculate coordinates
 % to make this easier for SVG generation. In PostScript, angles are in
@@ -88,18 +83,17 @@ clip
   end
 } def
 
-/comma-cx 150 def
-/comma-cy 120 def
 /comma-scale 5 def
 
 /PI 3.14159 def
-/radius-coefficient 180 PI div comma-scale div def
+/radius-coefficient comma-scale 25 div def
+/pitch-coefficient 180 PI div radius-coefficient mul def
 
 % r tangent-pitch -> pitch-offset
 % This is the slant of the approximate tangent line considering the
 % expanding spiral. It is an offset from perpendicular.
 /tangent-pitch {
-  radius-coefficient exch atan
+  pitch-coefficient exch atan
 } def
 
 
@@ -109,7 +103,7 @@ clip
   % coordinates to match SVG. Subtracting from the angle when
   % computing the radius allows us to add more distance between
   % successive rings.
-  90 sub comma-scale div
+  90 sub radius-coefficient mul
 } def
 
 % theta comma-outer -> x y
@@ -117,7 +111,7 @@ clip
   % stack: theta in degrees
   dup radius exch
   % stack: r theta
-  comma-cx comma-cy 4 2 roll
+  0 0 4 2 roll
   % stack: cx cy r theta
   polar-to-rect
 } def
@@ -155,7 +149,7 @@ clip
   end
 } def
 
-/line-width 10 def
+/line-width comma-scale 2 mul def
 /start-angle 450 def
 /end-angle 840 def
 /increment 45 def
@@ -220,25 +214,23 @@ newpath
   8 dict begin
     % Draw the Q. Size and placement are eyeballed but relative to
     % existing points.
-    currentpoint pop comma-cy comma-scale 3.5 mul sub
-    /q-cy exch def
-    /q-cx exch comma-scale .75 mul add def
-    /q-radius q-cy currentpoint exch pop sub .75 mul def
+    /q-cy comma-scale 3.8 mul neg def
+    /q-cx comma-scale .75 mul def
+    /q-radius 13.425 comma-scale mul def
     q-cx q-radius add q-cy moveto
 
     matrix currentmatrix
-      q-cx q-cx translate
+      q-cx q-cy translate
       135 rotate
-      q-radius .55 mul q-radius .55 mul neg translate
       0 0 .7 setrgbcolor
       0 0 q-radius q-radius .9 mul draw-elipse
     setmatrix
 
-    q-cx q-cy q-radius .35 mul 220 polar-to-rect moveto
+    q-cx q-cy q-radius .35 mul 40 polar-to-rect moveto
     currentpoint
     /qy0 exch def
     /qx0 exch def
-    q-cx q-cy q-radius 1.4 mul 220 polar-to-rect lineto
+    q-cx q-cy q-radius 1.4 mul 40 polar-to-rect lineto
     currentpoint
     /qy1 exch def
     /qx1 exch def
@@ -262,6 +254,15 @@ newpath
     grestore
   end
 stroke
+
+% This shows the bounding box
+[
+  /left 540 comma-outer pop
+  /right 720 comma-outer pop
+  /top 630 comma-outer exch pop
+  /bottom 810 comma-outer exch pop
+]
+pstack clear
 
 showpage
 %%EOF

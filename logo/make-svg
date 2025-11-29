@@ -1,0 +1,7 @@
+#!/bin/bash
+set -xeo pipefail
+cd $(dirname $0)
+t=$(mktemp -d /tmp/syntoniq.XXXXXX)
+trap "rm -rf -- '$t'" EXIT
+gs -q -dSAFER -dNOPAUSE -dEPSCrop -sOutputFile=$t/a.pdf -sDEVICE=pdfwrite syntoniq-logo.ps < /dev/null
+pdf2svg $t/a.pdf syntoniq-logo.svg
