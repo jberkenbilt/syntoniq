@@ -40,20 +40,6 @@ It has to be understood that repeats are temporal repeats, not lexical repeats. 
 
 ----------
 
-Note somewhere that coverage should be 100% for the following:
-* common/parsing/pass1
-* common/parsing/pass2
-* in common/parsing/
-  * layout.rs
-  * model.rs
-  * pass*.rs
-  * score.rs
-  * timeline.rs
-
-as this ensures all error conditions are tested and that there are no unreachable code paths. Unreachable code paths would indicate that the parser isn't coded as tightly as it should be. These would arise if later code relies on earlier validations, which is fragile.
-
-----------
-
 Muse about printed notation hints. We could potentially generate MusicXML, LillyPond, or add enough metadata to the timeline JSON dump that someone could do their own notation from it.
 
 ----------
