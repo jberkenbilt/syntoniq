@@ -1,10 +1,13 @@
 //! The state module is responsible for keeping track of the live values for the app. It also
 //! manages the broadcast channel used for SSE events so it can own the process of updating the
 //! clients when state changes. This part is device-independent.
+
 use crate::events;
 use crate::events::{LayoutNamesEvent, RawLightEvent, SelectLayoutEvent, StateView};
-use askama::Template;
+use askama;
+use askama::{Template, Values};
 use axum::response::sse::Event;
+use std::any::Any;
 use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
@@ -34,6 +37,27 @@ pub struct AppState {
     events_tx: events::WeakSender,
 }
 pub type LockedState = Arc<RwLock<AppState>>;
+
+pub struct SkipSse;
+impl Values for SkipSse {
+    fn get_value<'a>(&'a self, key: &str) -> Option<&'a dyn Any> {
+        if key == "skip_sse" { Some(&true) } else { None }
+    }
+}
+pub fn maybe_strip_sse(val: String, strip_sse: bool) -> String {
+    if !strip_sse {
+        return val;
+    }
+    fn inner(val: &str) -> Option<String> {
+        let attr_start = val.find(" sse-swap=")?;
+        let before = &val[..attr_start];
+        let rest = &val[attr_start + 1..];
+        let attr_end = rest.find(" ")?;
+        let after = &rest[attr_end..];
+        Some(format!("{before}{after}"))
+    }
+    inner(&val).unwrap_or(val)
+}
 
 impl Cell {
     pub(crate) fn new(key: u8, color: String, label1: &str, label2: &str) -> Self {
@@ -164,5 +188,23 @@ impl AppState {
     pub async fn handle_reset(&mut self) {
         self.state_view = Default::default();
         self.send_state_view().await;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_maybe_strip_sse() {
+        assert_eq!(maybe_strip_sse("asdf".to_string(), true), "asdf");
+        assert_eq!(
+            maybe_strip_sse("asdf sse-swap=\"potato\"".to_string(), true),
+            "asdf sse-swap=\"potato\""
+        );
+        assert_eq!(
+            maybe_strip_sse("asdf sse-swap=\"potato\" salad".to_string(), true),
+            "asdf salad"
+        );
     }
 }

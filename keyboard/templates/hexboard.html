@@ -92,15 +92,7 @@
   </head>
   <body hx-ext="sse" sse-connect="/sse">
     <div class="container">
-      <div class="hex-grid-container">
-        {% for row in (0..14).into_iter() %}
-        <div class="hex-row">
-          {% for col in (0..9 + row%2).into_iter() %}
-          {{ self.get_cell(row, col) | safe }}
-          {% endfor %}
-        </div>
-        {% endfor %}
-      </div>
+      {{ kbd | safe }}
       <div class="side-info">
         <p>
           Command Keys:

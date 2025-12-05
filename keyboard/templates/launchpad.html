@@ -81,17 +81,7 @@
   </head>
   <body hx-ext="sse" sse-connect="/sse">
     <div class="container">
-      <table class="grid">
-        {% for row in (0..rows).into_iter() %}
-        <tr {% if row >= rows - 2 %}class="short"{% endif %}>
-          {% for col in (0..cols).into_iter() %}
-          <td>
-            {{ self.get_cell(row, col) | safe }}
-          </td>
-          {% endfor %}
-        </tr>
-        {% endfor %}
-      </table>
+      {{ kbd | safe }}
       {{ state_view | safe }}
     </div>
   </body>

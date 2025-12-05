@@ -42,7 +42,7 @@ async fn static_asset(Path(path): Path<String>) -> impl IntoResponse {
     }
 }
 
-async fn empty_view() -> impl IntoResponse {
+async fn empty() -> impl IntoResponse {
     StatusCode::OK
 }
 
@@ -50,8 +50,16 @@ async fn launchpad_view(State(lock): State<LockedState>) -> impl IntoResponse {
     Html(LaunchpadView::generate_view(lock).await)
 }
 
+async fn launchpad_board(State(lock): State<LockedState>) -> impl IntoResponse {
+    Html(LaunchpadView::generate_board(lock).await)
+}
+
 async fn hexboard_view(State(lock): State<LockedState>) -> impl IntoResponse {
     Html(HexBoardView::generate_view(lock).await)
+}
+
+async fn hexboard_board(State(lock): State<LockedState>) -> impl IntoResponse {
+    Html(HexBoardView::generate_board(lock).await)
 }
 
 async fn sse_handler(State(lock): State<LockedState>) -> impl IntoResponse {
@@ -86,9 +94,14 @@ pub async fn http_view(
     // Axum is limited in how much you can use generics for handlers, so rather than using traits,
     // we just have to explicitly name the various viewers.
     match view {
-        DeviceType::Empty => app = app.route("/", get(empty_view)),
+        DeviceType::Empty => app = app.route("/", get(empty)),
         DeviceType::Launchpad => app = app.route("/", get(launchpad_view)),
         DeviceType::HexBoard => app = app.route("/", get(hexboard_view)),
+    }
+    match view {
+        DeviceType::Empty => app = app.route("/board", get(empty)),
+        DeviceType::Launchpad => app = app.route("/board", get(launchpad_board)),
+        DeviceType::HexBoard => app = app.route("/board", get(hexboard_board)),
     }
 
     let app = app.with_state(state.clone());
