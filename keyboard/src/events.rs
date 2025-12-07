@@ -180,10 +180,11 @@ impl Display for Note {
         let name = self.placed.name.as_ref();
         let scale_description = self.format_mapping();
         let base_factor = &self.placed.base_interval;
-        write!(
-            f,
-            "Note: {name} pitch=base*{base_factor}, scale={scale_description}"
-        )
+        write!(f, "Note: {name} pitch=base × {base_factor}")?;
+        if self.placed.tile_factor != Pitch::unit() {
+            write!(f, " × {}", self.placed.tile_factor)?;
+        }
+        write!(f, ", scale={scale_description}")
     }
 }
 impl Note {
@@ -267,9 +268,12 @@ impl EngineState {
                 let name = note.placed.name.as_ref();
                 let pitch = &note.placed.pitch;
                 let base_factor = &note.placed.base_interval;
-                result.push(format!(
-                    "  Note: {name} (pitch={pitch}, interval={base_factor})"
-                ));
+                let mut s = format!("  Note: {name} (pitch={pitch}, interval={base_factor}");
+                if note.placed.tile_factor != Pitch::unit() {
+                    s.push_str(&format!(", tile factor={}", note.placed.tile_factor));
+                }
+                s.push(')');
+                result.push(s);
             }
         }
         result

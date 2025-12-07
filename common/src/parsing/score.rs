@@ -166,10 +166,13 @@ pub struct NamedPitch<'s> {
     pub name: Cow<'s, str>,
     /// Normalized interval over base pitch; always < 1 cycle
     pub base_interval: Pitch,
-    /// Factor of base pitch; may fall outside the cycle
+    /// Factor of base pitch; may fall outside the cycle; excludes tile offsets and transposition
     pub base_factor: Pitch,
+    /// Contribution of base factor from tiling of manual mapping
+    pub tile_factor: Pitch,
     /// Normalized degree; always between 0 and number-of-notes - 1
     pub degree: u32,
+    /// Contribution of
     pub isomorphic: bool,
 }
 
@@ -1582,6 +1585,7 @@ impl<'s> Score<'s> {
                                     base_interval,
                                     base_factor,
                                     degree,
+                                    tile_factor: Default::default(),
                                     isomorphic: false,
                                 }));
                             }

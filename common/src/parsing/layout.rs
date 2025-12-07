@@ -111,6 +111,8 @@ pub struct PlacedNote<'s> {
     pub scale_base: Pitch,
     /// Current transposition
     pub transposition: Pitch,
+    /// Contribution of base factor from tiling of manual mapping
+    pub tile_factor: Pitch,
     /// Final pitch
     pub pitch: Pitch,
     /// Normalized interval over the base pitch
@@ -203,11 +205,13 @@ impl<'s> LayoutMapping<'s> {
                         let mut pitch = x.base_factor;
                         pitch *= &self.base_pitch;
                         pitch *= &offsets.transpose;
+                        pitch *= &x.tile_factor;
                         PlacedNote {
                             name: x.name,
                             scale: self.scale.clone(),
                             scale_base: self.base_pitch.clone(),
                             transposition: offsets.transpose.clone(),
+                            tile_factor: x.tile_factor,
                             pitch,
                             base_interval: x.base_interval,
                             degree: x.degree,
@@ -288,6 +292,7 @@ impl<'s> IsomorphicMapping<'s> {
             base_factor,
             base_interval,
             degree: pitch_idx as u32,
+            tile_factor: Default::default(),
             isomorphic: true,
         })
     }
@@ -356,7 +361,7 @@ impl<'s> ManualMapping<'s> {
         let mut factor = Pitch::from(Ratio::from_integer(1));
         adjust(&mut factor, v_repetitions, &self.v_factor);
         adjust(&mut factor, h_repetitions, &self.h_factor);
-        named_pitch.base_factor *= &factor;
+        named_pitch.tile_factor = factor;
         Some(named_pitch)
     }
 }
@@ -388,6 +393,7 @@ mod tests {
                 base_factor: Pitch::unit(),
                 base_interval: Pitch::unit(),
                 degree: 0,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -398,6 +404,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^1|6"),
                 base_interval: Pitch::must_parse("^1|6"),
                 degree: 2,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -408,6 +415,7 @@ mod tests {
                 base_factor: Pitch::must_parse("1/2*^5|6"),
                 base_interval: Pitch::must_parse("^5|6"),
                 degree: 10,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -418,6 +426,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^1|4"),
                 base_interval: Pitch::must_parse("^1|4"),
                 degree: 3,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -428,6 +437,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^-1|4"),
                 base_interval: Pitch::must_parse("^3|4"),
                 degree: 9,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -438,6 +448,7 @@ mod tests {
                 base_factor: Pitch::must_parse("2*^5|12"),
                 base_interval: Pitch::must_parse("^5|12"),
                 degree: 5,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -448,6 +459,7 @@ mod tests {
                 base_factor: Pitch::must_parse("4*^1|4"),
                 base_interval: Pitch::must_parse("^1|4"),
                 degree: 3,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -458,6 +470,7 @@ mod tests {
                 base_factor: Pitch::must_parse("1/2"),
                 base_interval: Pitch::must_parse("1"),
                 degree: 0,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -468,6 +481,7 @@ mod tests {
                 base_factor: Pitch::must_parse("1/2*^-1|12"),
                 base_interval: Pitch::must_parse("^11|12"),
                 degree: 11,
+                tile_factor: Pitch::unit(),
                 isomorphic: true,
             }
         );
@@ -488,6 +502,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^7|19"),
                 base_interval: Pitch::must_parse("^7|19"),
                 degree: 8,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -519,6 +534,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^8|19"),
                 base_interval: Pitch::must_parse("^8|19"),
                 degree: 9,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -529,6 +545,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^12|19"),
                 base_interval: Pitch::must_parse("^12|19"),
                 degree: 13,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -539,6 +556,7 @@ mod tests {
                 base_factor: Pitch::must_parse("2"),
                 base_interval: Pitch::must_parse("1"),
                 degree: 0,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -547,9 +565,10 @@ mod tests {
             mm.note_at_anchor_delta(4, 1, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("c'"),
-                base_factor: Pitch::must_parse("2*^1|2"),
+                base_factor: Pitch::must_parse("2"),
                 base_interval: Pitch::must_parse("1"),
                 degree: 0,
+                tile_factor: Pitch::must_parse("^1|2"),
                 isomorphic: false,
             }
         );
@@ -557,9 +576,10 @@ mod tests {
             mm.note_at_anchor_delta(4, 3, 2).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("c'"),
-                base_factor: Pitch::must_parse("2*^1|2"),
+                base_factor: Pitch::must_parse("2"),
                 base_interval: Pitch::must_parse("1"),
                 degree: 0,
+                tile_factor: Pitch::must_parse("^1|2"),
                 isomorphic: false,
             }
         );
@@ -568,9 +588,10 @@ mod tests {
             mm.note_at_anchor_delta(4, 6, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("c'"),
-                base_factor: Pitch::must_parse("2*^1|2*1.5"),
+                base_factor: Pitch::must_parse("2"),
                 base_interval: Pitch::must_parse("1"),
                 degree: 0,
+                tile_factor: Pitch::must_parse("1.5*^1|2"),
                 isomorphic: false,
             }
         );
@@ -581,6 +602,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^2|19"),
                 base_interval: Pitch::must_parse("^2|19"),
                 degree: 3,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -591,6 +613,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^2|19"),
                 base_interval: Pitch::must_parse("^2|19"),
                 degree: 3,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -601,6 +624,7 @@ mod tests {
                 base_factor: Pitch::must_parse("2"),
                 base_interval: Pitch::must_parse("1"),
                 degree: 0,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -611,6 +635,7 @@ mod tests {
                 base_factor: Pitch::must_parse("2"),
                 base_interval: Pitch::must_parse("1"),
                 degree: 0,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -621,6 +646,7 @@ mod tests {
                 base_factor: Pitch::must_parse("^21|20"),
                 base_interval: Pitch::must_parse("^1|20"),
                 degree: 1,
+                tile_factor: Pitch::unit(),
                 isomorphic: false,
             }
         );
@@ -628,9 +654,10 @@ mod tests {
             mm.note_at_anchor_delta(-2, 0, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("g#"),
-                base_factor: Pitch::must_parse("0.5*^12|19*^1|2"),
+                base_factor: Pitch::must_parse("^12|19"),
                 base_interval: Pitch::must_parse("^12|19"),
                 degree: 13,
+                tile_factor: Pitch::must_parse("0.5*^1|2"),
                 isomorphic: false,
             }
         );
@@ -638,9 +665,10 @@ mod tests {
             mm.note_at_anchor_delta(-2, -1, 2).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("g#"),
-                base_factor: Pitch::must_parse("0.5*^12|19*^1|2"),
+                base_factor: Pitch::must_parse("^12|19"),
                 base_interval: Pitch::must_parse("^12|19"),
                 degree: 13,
+                tile_factor: Pitch::must_parse("0.5*^1|2"),
                 isomorphic: false,
             }
         );
@@ -648,9 +676,10 @@ mod tests {
             mm.note_at_anchor_delta(-5, 0, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("g#"),
-                base_factor: Pitch::must_parse("0.5*^12|19"),
+                base_factor: Pitch::must_parse("^12|19"),
                 base_interval: Pitch::must_parse("^12|19"),
                 degree: 13,
+                tile_factor: Pitch::must_parse("0.5"),
                 isomorphic: false,
             }
         );
@@ -658,9 +687,10 @@ mod tests {
             mm.note_at_anchor_delta(-2, -6, 0).unwrap(),
             NamedPitch {
                 name: Cow::Borrowed("g,"),
-                base_factor: Pitch::must_parse("1/6*^11|19*^1|2"),
+                base_factor: Pitch::must_parse("1/2*^11|19"),
                 base_interval: Pitch::must_parse("^11|19"),
                 degree: 12,
+                tile_factor: Pitch::must_parse("1/3*^1|2"),
                 isomorphic: false,
             }
         );

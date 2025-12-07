@@ -709,7 +709,7 @@ async fn print_notes() -> anyhow::Result<()> {
         "Scale: 31-EDO, base=264",
         "  Note: d (pitch=264*^5|31, interval=^5|31)",
         "Scale: JI-11, base=220*^1|4",
-        "  Note: c# (pitch=935/16*^1|4, interval=17/16)",
+        "  Note: c# (pitch=935/16*^1|4, interval=17/16, tile factor=1/4)",
         "  Note: c (pitch=220*^1|4, interval=1)",
         "  Note: e (pitch=275*^1|4, interval=5/4)",
         "  Note: g (pitch=330*^1|4, interval=3/2)",

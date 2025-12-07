@@ -13681,35 +13681,40 @@
                           "base_interval": "1",
                           "degree": 0,
                           "isomorphic": false,
-                          "name": "p"
+                          "name": "p",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "^1|5",
                           "base_interval": "^1|5",
                           "degree": 2,
                           "isomorphic": false,
-                          "name": "q"
+                          "name": "q",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "^2|5",
                           "base_interval": "^2|5",
                           "degree": 3,
                           "isomorphic": false,
-                          "name": "r"
+                          "name": "r",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "^3|5",
                           "base_interval": "^3|5",
                           "degree": 4,
                           "isomorphic": false,
-                          "name": "s"
+                          "name": "s",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "1/2",
                           "base_interval": "1",
                           "degree": 0,
                           "isomorphic": false,
-                          "name": "p,"
+                          "name": "p,",
+                          "tile_factor": "1"
                         }
                       ],
                       [
@@ -13718,7 +13723,8 @@
                           "base_interval": "^4|5",
                           "degree": 5,
                           "isomorphic": false,
-                          "name": "t"
+                          "name": "t",
+                          "tile_factor": "1"
                         },
                         null,
                         {
@@ -13726,21 +13732,24 @@
                           "base_interval": "1",
                           "degree": 0,
                           "isomorphic": false,
-                          "name": "w"
+                          "name": "w",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "2*^1|6",
                           "base_interval": "^1|6",
                           "degree": 1,
                           "isomorphic": false,
-                          "name": "x"
+                          "name": "x",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "2",
                           "base_interval": "1",
                           "degree": 0,
                           "isomorphic": false,
-                          "name": "p'"
+                          "name": "p'",
+                          "tile_factor": "1"
                         }
                       ]
                     ],
@@ -13771,35 +13780,40 @@
                           "base_interval": "1",
                           "degree": 0,
                           "isomorphic": false,
-                          "name": "p"
+                          "name": "p",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "^1|5",
                           "base_interval": "^1|5",
                           "degree": 2,
                           "isomorphic": false,
-                          "name": "q"
+                          "name": "q",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "^2|5",
                           "base_interval": "^2|5",
                           "degree": 3,
                           "isomorphic": false,
-                          "name": "r"
+                          "name": "r",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "^3|5",
                           "base_interval": "^3|5",
                           "degree": 4,
                           "isomorphic": false,
-                          "name": "s"
+                          "name": "s",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "1/2",
                           "base_interval": "1",
                           "degree": 0,
                           "isomorphic": false,
-                          "name": "p,"
+                          "name": "p,",
+                          "tile_factor": "1"
                         }
                       ],
                       [
@@ -13808,7 +13822,8 @@
                           "base_interval": "^4|5",
                           "degree": 5,
                           "isomorphic": false,
-                          "name": "t"
+                          "name": "t",
+                          "tile_factor": "1"
                         },
                         null,
                         {
@@ -13816,21 +13831,24 @@
                           "base_interval": "1",
                           "degree": 0,
                           "isomorphic": false,
-                          "name": "w"
+                          "name": "w",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "2*^1|6",
                           "base_interval": "^1|6",
                           "degree": 1,
                           "isomorphic": false,
-                          "name": "x"
+                          "name": "x",
+                          "tile_factor": "1"
                         },
                         {
                           "base_factor": "2",
                           "base_interval": "1",
                           "degree": 0,
                           "isomorphic": false,
-                          "name": "p'"
+                          "name": "p'",
+                          "tile_factor": "1"
                         }
                       ]
                     ],
