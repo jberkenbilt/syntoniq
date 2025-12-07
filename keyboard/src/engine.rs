@@ -13,8 +13,8 @@ use anyhow::bail;
 use chrono::SubsecRound;
 use std::collections::HashSet;
 use std::fs;
-use std::ops::Deref;
 use std::sync::Arc;
+use std::time::{Duration, Instant};
 use syntoniq_common::parsing;
 use syntoniq_common::parsing::{Coordinate, Layout, Layouts};
 use tokio::task;
@@ -89,23 +89,30 @@ impl Engine {
             })
             .collect();
         tx.send(Event::SetLayoutNames(LayoutNamesEvent { names }))?;
-
-        // TODO: have an event to turn off all notes; midi player send 120, 0.
-        for (pitch, count) in &self.transient_state.pitch_on_count {
-            if *count > 0 {
-                tx.send(Event::PlayNote(PlayNoteEvent {
-                    pitch: pitch.clone(),
-                    velocity: 0,
-                    note: None,
-                }))?;
-            }
-        }
+        self.turn_off_notes(&tx)?;
         self.transient_state = Default::default();
         self.transient_state.layouts = Arc::new(layouts);
 
         #[cfg(test)]
         events::send_test_event(&self.events_tx, TestEvent::ResetComplete);
         log::info!("Syntoniq Keyboard is initialized");
+        Ok(())
+    }
+
+    fn turn_off_notes(&mut self, tx: &events::UpgradedSender) -> anyhow::Result<()> {
+        // TODO: have an event to turn off all notes; midi player send 120, 0.
+        for (pitch, count) in &self.transient_state.pitch_on_count {
+            if *count > 0 {
+                let note = self.transient_state.last_note_for_pitch.get(pitch).cloned();
+                tx.send(Event::PlayNote(PlayNoteEvent {
+                    pitch: pitch.clone(),
+                    velocity: 0,
+                    note,
+                }))?;
+            }
+        }
+        self.transient_state.last_note_for_pitch.clear();
+        self.transient_state.pitch_on_count.clear();
         Ok(())
     }
 
@@ -244,8 +251,17 @@ impl Engine {
                 }
             }
             KeyData::Sustain => {
-                if off {
+                if off && have_layout {
                     self.transient_state.sustain = !self.transient_state.sustain;
+                    if self.transient_state.sustain {
+                        if let Some(t) = self.transient_state.last_sustain_off_time.take()
+                            && t.elapsed() < Duration::from_secs(2)
+                        {
+                            self.turn_off_notes(&tx)?;
+                        }
+                    } else {
+                        self.transient_state.last_sustain_off_time = Some(Instant::now());
+                    }
                     tx.send(self.sustain_light_event())?;
                 }
             }
@@ -264,6 +280,7 @@ impl Engine {
                 }
             }
             KeyData::Note { position } => {
+                self.transient_state.last_sustain_off_time = None;
                 if have_layout
                     && self.transient_state.notes.contains_key(&position)
                     && let Some(note) = self.transient_state.notes.get(&position).unwrap()
@@ -389,12 +406,6 @@ impl Engine {
         off: bool,
     ) -> anyhow::Result<()> {
         let pitch = &note.placed.pitch;
-        let Some(others) = self.transient_state.pitch_positions.get(pitch) else {
-            // This would indicate a bug in which we assigned something to notes
-            // without also assigning its position to note positions or otherwise
-            // allowed notes and note_positions to get out of sync.
-            bail!("note positions is missing for {pitch}");
-        };
         if off {
             let old = self.transient_state.positions_down.remove(&position);
             if old.is_none() {
@@ -449,14 +460,6 @@ impl Engine {
         let is_on = pitch_count > 0;
         if is_on != was_on {
             let velocity = if is_on { 127 } else { 0 };
-            let light_events: Vec<_> = others
-                .iter()
-                .map(|&position| {
-                    self.keyboard
-                        .note_light_event(Some(note.deref()), position, velocity)
-                })
-                .collect();
-            tx.send(Event::ToDevice(ToDevice::Light(light_events)))?;
             tx.send(Event::PlayNote(PlayNoteEvent {
                 pitch: pitch.clone(),
                 velocity,
@@ -480,8 +483,26 @@ impl Engine {
     }
 
     async fn handle_play_note(&mut self, e: PlayNoteEvent) -> anyhow::Result<()> {
+        let Some(tx) = self.events_tx.upgrade() else {
+            return Ok(());
+        };
+        let Some(others) = self.transient_state.pitch_positions.get(&e.pitch) else {
+            // This would indicate a bug in which we assigned something to notes
+            // without also assigning its position to note positions or otherwise
+            // allowed notes and note_positions to get out of sync.
+            bail!("note positions is missing for {}", e.pitch);
+        };
+        let velocity = e.velocity;
+        let light_events: Vec<_> = others
+            .iter()
+            .map(|&position| {
+                self.keyboard
+                    .note_light_event(e.note.as_deref(), position, velocity)
+            })
+            .collect();
+        tx.send(Event::ToDevice(ToDevice::Light(light_events)))?;
         if let Some(note) = e.note
-            && e.velocity > 0
+            && velocity > 0
         {
             if self.transient_state.sustain {
                 self.print_notes();

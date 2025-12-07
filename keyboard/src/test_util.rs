@@ -219,4 +219,12 @@ impl TestController {
         self.wait_for_test_event(TestEvent::Sync).await;
         Ok(())
     }
+
+    pub async fn toggle_sustain(&mut self) -> anyhow::Result<bool> {
+        // Enter sustain mode
+        self.press_and_release_key(KeyData::Sustain).await?;
+        self.wait_for_test_event(TestEvent::HandledKey).await;
+        let ts = self.get_engine_state().await;
+        Ok(ts.sustain)
+    }
 }

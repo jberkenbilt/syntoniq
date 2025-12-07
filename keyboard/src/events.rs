@@ -3,6 +3,7 @@ use derive_more::Debug as DebugMore;
 use std::collections::{HashMap, HashSet};
 use std::fmt::{Display, Formatter};
 use std::sync::Arc;
+use std::time::Instant;
 use syntoniq_common::parsing::{Coordinate, Layout, Layouts, PlacedNote};
 use syntoniq_common::pitch::Pitch;
 use tokio::sync::broadcast::error::RecvError;
@@ -233,6 +234,10 @@ pub struct EngineState {
     /// Positions that are actually being touched
     pub positions_down: HashMap<Coordinate, Arc<Note>>,
     pub sustain: bool,
+    /// When sustain is turned off, this is set. It is cleared on any note event. If sustain is
+    /// turned back on without intervening note events within a certain period of time, all notes
+    /// are turned off.
+    pub last_sustain_off_time: Option<Instant>,
     pub shift: Option<Option<SpecificNote>>,
     pub transpose: Option<Option<SpecificNote>>,
 }

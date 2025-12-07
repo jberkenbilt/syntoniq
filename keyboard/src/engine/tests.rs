@@ -47,6 +47,9 @@ async fn test_sustain() -> anyhow::Result<()> {
     let middle_c_12_edo = KeyData::Note {
         position: pos(3, 2),
     };
+    let middle_d_12_edo = KeyData::Note {
+        position: pos(3, 3),
+    };
 
     // Press and release middle C. Note is on after press and off after release.
     tc.press_key(middle_c_12_edo).await?; // middle C
@@ -64,10 +67,7 @@ async fn test_sustain() -> anyhow::Result<()> {
     assert!(!ts.pitch_on_count.contains_key(&middle_c));
 
     // Enter sustain mode
-    tc.press_and_release_key(KeyData::Sustain).await?;
-    tc.wait_for_test_event(TestEvent::HandledKey).await;
-    let ts = tc.get_engine_state().await;
-    assert!(ts.sustain);
+    assert!(tc.toggle_sustain().await?);
 
     // Press and release middle C. Note stays on.
     tc.press_and_release_key(middle_c_12_edo).await?; // middle C
@@ -76,6 +76,25 @@ async fn test_sustain() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     assert!(*ts.pitch_on_count.get(&middle_c).unwrap() > 0);
 
+    // Leave sustain and press another note. It behaves normally.
+    assert!(!tc.toggle_sustain().await?);
+    tc.press_key(middle_d_12_edo).await?; // middle C
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
+    let ts = tc.get_engine_state().await;
+    let middle_d = Pitch::must_parse("220*^5|12");
+    assert!(*ts.pitch_on_count.get(&middle_d).unwrap() > 0);
+    assert_eq!(
+        ts.last_note_for_pitch.get(&middle_d).unwrap().placed.name,
+        "d"
+    );
+    tc.release_key(middle_d_12_edo).await?; // middle C
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
+    let ts = tc.get_engine_state().await;
+    assert!(!ts.pitch_on_count.contains_key(&middle_d));
+
+    // Re-enter sustain
+    assert!(tc.toggle_sustain().await?);
+
     // Press and release middle C. Note turns off.
     tc.press_and_release_key(middle_c_12_edo).await?; // middle C
     tc.wait_for_test_event(TestEvent::HandledNote).await;
@@ -83,11 +102,20 @@ async fn test_sustain() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     assert!(!ts.pitch_on_count.contains_key(&middle_c));
 
-    // Leave sustain mode
-    tc.press_and_release_key(KeyData::Sustain).await?;
-    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    // Press and release middle C. Note turns back on.
+    tc.press_and_release_key(middle_c_12_edo).await?; // middle C
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
+    tc.wait_for_test_event(TestEvent::HandledNote).await;
     let ts = tc.get_engine_state().await;
-    assert!(!ts.sustain);
+    assert!(ts.pitch_on_count.contains_key(&middle_c));
+
+    // Leave and immediately re-enter sustain mode
+    assert!(!tc.toggle_sustain().await?);
+    assert!(tc.toggle_sustain().await?);
+    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    // Note is off.
+    let ts = tc.get_engine_state().await;
+    assert!(!ts.pitch_on_count.contains_key(&middle_c));
 
     tc.shutdown().await
 }
@@ -567,8 +595,7 @@ async fn octave_shift_with_sustain() -> anyhow::Result<()> {
     tc.press_and_release_key(KeyData::Layout { idx: 0 }).await?;
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     // Enter sustain
-    tc.press_and_release_key(KeyData::Sustain).await?;
-    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    tc.toggle_sustain().await?;
     // Press a note key
     let position = pos(1, 8);
     tc.press_key(KeyData::Note { position }).await?;
@@ -623,8 +650,7 @@ async fn print_notes() -> anyhow::Result<()> {
     tc.press_and_release_key(KeyData::Layout { idx: 4 }).await?;
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     // Enter sustain
-    tc.press_and_release_key(KeyData::Sustain).await?;
-    tc.wait_for_test_event(TestEvent::HandledKey).await;
+    tc.toggle_sustain().await?;
     // Play some notes
     tc.press_and_release_key(KeyData::Note {
         position: pos(5, 1),
