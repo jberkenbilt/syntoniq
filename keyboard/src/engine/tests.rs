@@ -331,8 +331,9 @@ async fn test_transpose() -> anyhow::Result<()> {
     // Touch the target note. Up 1 and right 1 raises us 3 steps, so moving the current pitch
     // inverts that for the transposition.
     let layout1 = ts.current_layout().unwrap();
+    let scales = ts.layouts.scales.clone();
     assert_eq!(
-        layout1.note_at_location(pos(4, 4)).unwrap().pitch,
+        layout1.note_at_location(&scales, pos(4, 4)).unwrap().pitch,
         Pitch::must_parse("220*^1|4*^5|19")
     );
     tc.press_and_release_key(KeyData::Note {
@@ -345,7 +346,7 @@ async fn test_transpose() -> anyhow::Result<()> {
     // Now the second note has the pitch previously belonging to the first note. Don't refetch
     // the layout. It's an Arc, so it should be updated in place.
     assert_eq!(
-        layout1.note_at_location(pos(5, 5)).unwrap().pitch,
+        layout1.note_at_location(&scales, pos(5, 5)).unwrap().pitch,
         Pitch::must_parse("220*^1|4*^5|19")
     );
     assert_eq!(
@@ -378,8 +379,9 @@ async fn test_transpose() -> anyhow::Result<()> {
     );
 
     // Touch the target note.
+    let scales = ts.layouts.scales.clone();
     assert_eq!(
-        layout2.note_at_location(pos(2, 3)).unwrap().pitch,
+        layout2.note_at_location(&scales, pos(2, 3)).unwrap().pitch,
         Pitch::must_parse("220*^1|4*^5|31")
     );
     tc.press_and_release_key(KeyData::Note {
@@ -395,8 +397,9 @@ async fn test_transpose() -> anyhow::Result<()> {
         Pitch::must_parse("^-3|19"),
     );
     // The second note has the pitch previously belonging to the first note.
+    let scales = ts.layouts.scales.clone();
     assert_eq!(
-        layout2.note_at_location(pos(2, 3)).unwrap().pitch,
+        layout2.note_at_location(&scales, pos(2, 3)).unwrap().pitch,
         Pitch::must_parse("220*^1|4*^5|19")
     );
     // The second mapping has been transposed by the difference.

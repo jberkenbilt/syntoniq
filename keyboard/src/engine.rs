@@ -379,7 +379,11 @@ impl Engine {
     fn handle_transpose(&mut self, note1: SpecificNote, note2: SpecificNote) -> anyhow::Result<()> {
         // Give pitch of note1 to note2
         let layout = &self.transient_state.layouts.layouts[note2.layout_idx];
-        let update_layout = layout.transpose(&note1.note.placed.pitch, note2.position);
+        let update_layout = layout.transpose(
+            &self.transient_state.layouts.scales,
+            &note1.note.placed.pitch,
+            note2.position,
+        );
         if update_layout {
             log::info!(
                 "reset pitch of {} to {}",
@@ -571,21 +575,23 @@ impl Engine {
         };
         let mut light_events = Vec::new();
         for &location in self.keyboard.note_positions(&layout.keyboard) {
-            let note = layout.note_at_location(location).map(|placed| {
-                let colors = if placed.isomorphic && placed.degree == 1 {
-                    NoteColors {
-                        off: Color::SingleStepOff,
-                        on: Color::SingleStepOn,
-                    }
-                } else {
-                    events::interval_color(placed.base_interval.as_float())
-                };
-                Arc::new(Note {
-                    placed,
-                    off_color: colors.off,
-                    on_color: colors.on,
-                })
-            });
+            let note = layout
+                .note_at_location(&self.transient_state.layouts.scales, location)
+                .map(|placed| {
+                    let colors = if placed.isomorphic && placed.degree == 1 {
+                        NoteColors {
+                            off: Color::SingleStepOff,
+                            on: Color::SingleStepOn,
+                        }
+                    } else {
+                        events::interval_color(placed.base_interval.as_float())
+                    };
+                    Arc::new(Note {
+                        placed,
+                        off_color: colors.off,
+                        on_color: colors.on,
+                    })
+                });
             light_events.push(self.send_note(&tx, location, note)?);
         }
         tx.send(Event::ToDevice(ToDevice::Light(light_events)))?;

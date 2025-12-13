@@ -13904,370 +13904,355 @@
         ],
         "scales": [
           {
-            "name": "5-EDO",
-            "scale": {
-              "cycle": [
-                2,
-                1
-              ],
-              "name": "5-EDO",
-              "notes": [
-                {
-                  "base_relative": "1",
-                  "degree": 0,
-                  "name": "p"
-                },
-                {
-                  "base_relative": "^1|5",
-                  "degree": 2,
-                  "name": "q"
-                },
-                {
-                  "base_relative": "^2|5",
-                  "degree": 3,
-                  "name": "r"
-                },
-                {
-                  "base_relative": "^3|5",
-                  "degree": 4,
-                  "name": "s"
-                },
-                {
-                  "base_relative": "^4|5",
-                  "degree": 5,
-                  "name": "t"
-                },
-                {
-                  "base_relative": "2",
-                  "degree": 6,
-                  "name": "w"
-                },
-                {
-                  "base_relative": "2*^1|6",
-                  "degree": 7,
-                  "name": "x"
-                }
-              ],
-              "pitches": [
-                "1",
-                "^1|6",
-                "^1|5",
-                "^2|5",
-                "^3|5",
-                "^4|5"
-              ],
-              "primary_names": [
-                "p",
-                "x",
-                "q",
-                "r",
-                "s",
-                "t"
-              ]
-            }
-          },
-          {
-            "name": "5-JI",
-            "scale": {
-              "cycle": [
-                2,
-                1
-              ],
-              "name": "5-JI",
-              "notes": [
-                {
-                  "base_relative": "1",
-                  "degree": 0,
-                  "name": "p"
-                },
-                {
-                  "base_relative": "5/4",
-                  "degree": 1,
-                  "name": "q"
-                },
-                {
-                  "base_relative": "4/3",
-                  "degree": 2,
-                  "name": "r"
-                },
-                {
-                  "base_relative": "3/2",
-                  "degree": 3,
-                  "name": "u"
-                },
-                {
-                  "base_relative": "7/4",
-                  "degree": 4,
-                  "name": "v"
-                }
-              ],
-              "pitches": [
-                "1",
-                "5/4",
-                "4/3",
-                "3/2",
-                "7/4"
-              ],
-              "primary_names": [
-                "p",
-                "q",
-                "r",
-                "u",
-                "v"
-              ]
-            }
-          },
-          {
+            "cycle": [
+              2,
+              1
+            ],
             "name": "default",
-            "scale": {
-              "cycle": [
-                2,
-                1
-              ],
-              "name": "default",
-              "notes": [
-                {
-                  "base_relative": "1",
-                  "degree": 0,
-                  "name": "c"
-                },
-                {
-                  "base_relative": "^1|12",
-                  "degree": 1,
-                  "name": "c#"
-                },
-                {
-                  "base_relative": "^1|12",
-                  "degree": 1,
-                  "name": "d%"
-                },
-                {
-                  "base_relative": "^1|6",
-                  "degree": 2,
-                  "name": "d"
-                },
-                {
-                  "base_relative": "^1|4",
-                  "degree": 3,
-                  "name": "d#"
-                },
-                {
-                  "base_relative": "^1|4",
-                  "degree": 3,
-                  "name": "e%"
-                },
-                {
-                  "base_relative": "^1|3",
-                  "degree": 4,
-                  "name": "e"
-                },
-                {
-                  "base_relative": "^1|3",
-                  "degree": 4,
-                  "name": "f%"
-                },
-                {
-                  "base_relative": "^5|12",
-                  "degree": 5,
-                  "name": "e#"
-                },
-                {
-                  "base_relative": "^5|12",
-                  "degree": 5,
-                  "name": "f"
-                },
-                {
-                  "base_relative": "^1|2",
-                  "degree": 6,
-                  "name": "f#"
-                },
-                {
-                  "base_relative": "^1|2",
-                  "degree": 6,
-                  "name": "g%"
-                },
-                {
-                  "base_relative": "^7|12",
-                  "degree": 7,
-                  "name": "g"
-                },
-                {
-                  "base_relative": "^2|3",
-                  "degree": 8,
-                  "name": "a%"
-                },
-                {
-                  "base_relative": "^2|3",
-                  "degree": 8,
-                  "name": "g#"
-                },
-                {
-                  "base_relative": "^3|4",
-                  "degree": 9,
-                  "name": "a"
-                },
-                {
-                  "base_relative": "^5|6",
-                  "degree": 10,
-                  "name": "a#"
-                },
-                {
-                  "base_relative": "^5|6",
-                  "degree": 10,
-                  "name": "b%"
-                },
-                {
-                  "base_relative": "^11|12",
-                  "degree": 11,
-                  "name": "b"
-                },
-                {
-                  "base_relative": "2",
-                  "degree": 12,
-                  "name": "b#"
-                }
-              ],
-              "pitches": [
-                "1",
-                "^1|12",
-                "^1|6",
-                "^1|4",
-                "^1|3",
-                "^5|12",
-                "^1|2",
-                "^7|12",
-                "^2|3",
-                "^3|4",
-                "^5|6",
-                "^11|12"
-              ],
-              "primary_names": [
-                "c",
-                "c#",
-                "d",
-                "e%",
-                "e",
-                "f",
-                "f#",
-                "g",
-                "a%",
-                "a",
-                "b%",
-                "b"
-              ]
-            }
+            "notes": [
+              {
+                "base_relative": "1",
+                "degree": 0,
+                "name": "c"
+              },
+              {
+                "base_relative": "^1|12",
+                "degree": 1,
+                "name": "c#"
+              },
+              {
+                "base_relative": "^1|12",
+                "degree": 1,
+                "name": "d%"
+              },
+              {
+                "base_relative": "^1|6",
+                "degree": 2,
+                "name": "d"
+              },
+              {
+                "base_relative": "^1|4",
+                "degree": 3,
+                "name": "d#"
+              },
+              {
+                "base_relative": "^1|4",
+                "degree": 3,
+                "name": "e%"
+              },
+              {
+                "base_relative": "^1|3",
+                "degree": 4,
+                "name": "e"
+              },
+              {
+                "base_relative": "^1|3",
+                "degree": 4,
+                "name": "f%"
+              },
+              {
+                "base_relative": "^5|12",
+                "degree": 5,
+                "name": "e#"
+              },
+              {
+                "base_relative": "^5|12",
+                "degree": 5,
+                "name": "f"
+              },
+              {
+                "base_relative": "^1|2",
+                "degree": 6,
+                "name": "f#"
+              },
+              {
+                "base_relative": "^1|2",
+                "degree": 6,
+                "name": "g%"
+              },
+              {
+                "base_relative": "^7|12",
+                "degree": 7,
+                "name": "g"
+              },
+              {
+                "base_relative": "^2|3",
+                "degree": 8,
+                "name": "a%"
+              },
+              {
+                "base_relative": "^2|3",
+                "degree": 8,
+                "name": "g#"
+              },
+              {
+                "base_relative": "^3|4",
+                "degree": 9,
+                "name": "a"
+              },
+              {
+                "base_relative": "^5|6",
+                "degree": 10,
+                "name": "a#"
+              },
+              {
+                "base_relative": "^5|6",
+                "degree": 10,
+                "name": "b%"
+              },
+              {
+                "base_relative": "^11|12",
+                "degree": 11,
+                "name": "b"
+              },
+              {
+                "base_relative": "2",
+                "degree": 12,
+                "name": "b#"
+              }
+            ],
+            "pitches": [
+              "1",
+              "^1|12",
+              "^1|6",
+              "^1|4",
+              "^1|3",
+              "^5|12",
+              "^1|2",
+              "^7|12",
+              "^2|3",
+              "^3|4",
+              "^5|6",
+              "^11|12"
+            ],
+            "primary_names": [
+              "c",
+              "c#",
+              "d",
+              "e%",
+              "e",
+              "f",
+              "f#",
+              "g",
+              "a%",
+              "a",
+              "b%",
+              "b"
+            ]
           },
           {
+            "cycle": [
+              2,
+              1
+            ],
+            "name": "5-EDO",
+            "notes": [
+              {
+                "base_relative": "1",
+                "degree": 0,
+                "name": "p"
+              },
+              {
+                "base_relative": "^1|5",
+                "degree": 2,
+                "name": "q"
+              },
+              {
+                "base_relative": "^2|5",
+                "degree": 3,
+                "name": "r"
+              },
+              {
+                "base_relative": "^3|5",
+                "degree": 4,
+                "name": "s"
+              },
+              {
+                "base_relative": "^4|5",
+                "degree": 5,
+                "name": "t"
+              },
+              {
+                "base_relative": "2",
+                "degree": 6,
+                "name": "w"
+              },
+              {
+                "base_relative": "2*^1|6",
+                "degree": 7,
+                "name": "x"
+              }
+            ],
+            "pitches": [
+              "1",
+              "^1|6",
+              "^1|5",
+              "^2|5",
+              "^3|5",
+              "^4|5"
+            ],
+            "primary_names": [
+              "p",
+              "x",
+              "q",
+              "r",
+              "s",
+              "t"
+            ]
+          },
+          {
+            "cycle": [
+              2,
+              1
+            ],
+            "name": "5-JI",
+            "notes": [
+              {
+                "base_relative": "1",
+                "degree": 0,
+                "name": "p"
+              },
+              {
+                "base_relative": "5/4",
+                "degree": 1,
+                "name": "q"
+              },
+              {
+                "base_relative": "4/3",
+                "degree": 2,
+                "name": "r"
+              },
+              {
+                "base_relative": "3/2",
+                "degree": 3,
+                "name": "u"
+              },
+              {
+                "base_relative": "7/4",
+                "degree": 4,
+                "name": "v"
+              }
+            ],
+            "pitches": [
+              "1",
+              "5/4",
+              "4/3",
+              "3/2",
+              "7/4"
+            ],
+            "primary_names": [
+              "p",
+              "q",
+              "r",
+              "u",
+              "v"
+            ]
+          },
+          {
+            "cycle": [
+              2,
+              1
+            ],
             "name": "fifths",
-            "scale": {
-              "cycle": [
-                2,
-                1
-              ],
-              "name": "fifths",
-              "notes": [
-                {
-                  "base_relative": "1",
-                  "degree": 0,
-                  "name": "c"
-                },
-                {
-                  "base_relative": "1",
-                  "degree": 0,
-                  "name": "cc"
-                },
-                {
-                  "base_relative": "3/2",
-                  "degree": 3,
-                  "name": "g"
-                },
-                {
-                  "base_relative": "9/4",
-                  "degree": 6,
-                  "name": "d"
-                },
-                {
-                  "base_relative": "27/8",
-                  "degree": 9,
-                  "name": "a"
-                },
-                {
-                  "base_relative": "81/16",
-                  "degree": 12,
-                  "name": "e"
-                }
-              ],
-              "pitches": [
-                "1",
-                "9/8",
-                "81/64",
-                "3/2",
-                "27/16"
-              ],
-              "primary_names": [
-                "c",
-                "d",
-                "e",
-                "g",
-                "a"
-              ]
-            }
+            "notes": [
+              {
+                "base_relative": "1",
+                "degree": 0,
+                "name": "c"
+              },
+              {
+                "base_relative": "1",
+                "degree": 0,
+                "name": "cc"
+              },
+              {
+                "base_relative": "3/2",
+                "degree": 3,
+                "name": "g"
+              },
+              {
+                "base_relative": "9/4",
+                "degree": 6,
+                "name": "d"
+              },
+              {
+                "base_relative": "27/8",
+                "degree": 9,
+                "name": "a"
+              },
+              {
+                "base_relative": "81/16",
+                "degree": 12,
+                "name": "e"
+              }
+            ],
+            "pitches": [
+              "1",
+              "9/8",
+              "81/64",
+              "3/2",
+              "27/16"
+            ],
+            "primary_names": [
+              "c",
+              "d",
+              "e",
+              "g",
+              "a"
+            ]
           },
           {
+            "cycle": [
+              3,
+              1
+            ],
             "name": "fifths-3",
-            "scale": {
-              "cycle": [
-                3,
-                1
-              ],
-              "name": "fifths-3",
-              "notes": [
-                {
-                  "base_relative": "1/2",
-                  "degree": -3,
-                  "name": "g!"
-                },
-                {
-                  "base_relative": "1",
-                  "degree": 0,
-                  "name": "c!"
-                },
-                {
-                  "base_relative": "1",
-                  "degree": 0,
-                  "name": "c!!"
-                },
-                {
-                  "base_relative": "9/4",
-                  "degree": 4,
-                  "name": "d!"
-                },
-                {
-                  "base_relative": "27/8",
-                  "degree": 6,
-                  "name": "a!"
-                },
-                {
-                  "base_relative": "81/16",
-                  "degree": 8,
-                  "name": "e!"
-                }
-              ],
-              "pitches": [
-                "1",
-                "9/8",
-                "3/2",
-                "27/16",
-                "9/4"
-              ],
-              "primary_names": [
-                "c!",
-                "a!",
-                "g!",
-                "e!",
-                "d!"
-              ]
-            }
+            "notes": [
+              {
+                "base_relative": "1/2",
+                "degree": -3,
+                "name": "g!"
+              },
+              {
+                "base_relative": "1",
+                "degree": 0,
+                "name": "c!"
+              },
+              {
+                "base_relative": "1",
+                "degree": 0,
+                "name": "c!!"
+              },
+              {
+                "base_relative": "9/4",
+                "degree": 4,
+                "name": "d!"
+              },
+              {
+                "base_relative": "27/8",
+                "degree": 6,
+                "name": "a!"
+              },
+              {
+                "base_relative": "81/16",
+                "degree": 8,
+                "name": "e!"
+              }
+            ],
+            "pitches": [
+              "1",
+              "9/8",
+              "3/2",
+              "27/16",
+              "9/4"
+            ],
+            "primary_names": [
+              "c!",
+              "a!",
+              "g!",
+              "e!",
+              "d!"
+            ]
           }
         ]
       },

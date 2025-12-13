@@ -8,7 +8,7 @@ use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::Bound::Excluded;
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::sync::atomic::AtomicI32;
 use std::sync::{Arc, LazyLock, RwLock};
 use std::{cmp, mem};
@@ -53,43 +53,28 @@ pub struct Score<'s> {
     timeline: Timeline<'s>,
 }
 
-pub(crate) mod layouts {
-    use super::{Layouts, Scale};
-    use crate::parsing::layout::Layout;
+pub type ScalesByName<'s> = BTreeMap<Cow<'s, str>, Arc<Scale<'s>>>;
+pub(crate) mod serialize_scales {
+    use crate::parsing::score::Scale;
     use serde::Serialize;
     use serde::Serializer;
     use std::borrow::Cow;
+    use std::collections::BTreeMap;
     use std::sync::Arc;
 
-    #[derive(Serialize)]
-    struct NamedScale<'a> {
-        name: &'a Cow<'a, str>,
-        scale: &'a Arc<Scale<'a>>,
-    }
-    #[derive(Serialize)]
-    struct SerializeLayouts<'a> {
-        layouts: Vec<&'a Layout<'a>>,
-        scales: Vec<NamedScale<'a>>,
-    }
-
-    pub fn serialize<S: Serializer>(v: &Layouts, s: S) -> Result<S::Ok, S::Error> {
-        // Convert maps to sorted arrays for consistent output.
-        let layouts = v.layouts.iter().map(Arc::as_ref).collect();
-        let mut scales: Vec<NamedScale> = v
-            .scales
-            .iter()
-            .map(|(name, scale)| NamedScale { name, scale })
-            .collect();
-        scales.sort_by_key(|x| x.name);
-        let sl = SerializeLayouts { layouts, scales };
-        sl.serialize(s)
+    pub fn serialize<S: Serializer>(
+        v: &Arc<BTreeMap<Cow<str>, Arc<Scale>>>,
+        s: S,
+    ) -> Result<S::Ok, S::Error> {
+        let mut scales: Vec<&Scale> = v.values().map(Arc::as_ref).collect();
+        scales.sort_by_key(|x| x.definition.span);
+        scales.serialize(s)
     }
 }
 
 #[derive(Serialize)]
 pub struct ScoreOutput<'s> {
     pub timeline: Timeline<'s>,
-    #[serde(with = "layouts")]
     pub layouts: Layouts<'s>,
 }
 
@@ -101,7 +86,7 @@ pub struct LayoutData<'s> {
 pub struct MappingData<'s> {
     span: Span,
     mapping: Arc<MappingDetails<'s>>,
-    scale: Arc<Scale<'s>>,
+    scale_name: Cow<'s, str>,
 }
 
 pub struct MarkData<'s> {
@@ -123,10 +108,10 @@ pub(crate) mod scale_notes {
     use serde::Serialize;
     use serde::Serializer;
     use std::borrow::Cow;
-    use std::collections::HashMap;
+    use std::collections::BTreeMap;
 
     pub fn serialize<S: Serializer>(
-        v: &HashMap<Cow<str>, ScaleDegree>,
+        v: &BTreeMap<Cow<str>, ScaleDegree>,
         s: S,
     ) -> Result<S::Ok, S::Error> {
         let mut notes: Vec<NamedScaleDegree> = v
@@ -143,7 +128,7 @@ pub struct Scale<'s> {
     #[serde(flatten)]
     pub definition: ScaleDefinition<'s>,
     #[serde(with = "scale_notes")]
-    pub notes: HashMap<Cow<'s, str>, ScaleDegree>,
+    pub notes: BTreeMap<Cow<'s, str>, ScaleDegree>,
     pub primary_names: Vec<Cow<'s, str>>,
     pub pitches: Vec<Pitch>,
 }
@@ -864,7 +849,7 @@ impl<'s> Score<'s> {
             .into_iter()
             .collect();
         let timeline = Timeline {
-            scales: vec![default_scale],
+            scales: Default::default(),
             events: Default::default(),
             midi_instruments: Default::default(),
             csound_instruments: Default::default(),
@@ -913,14 +898,11 @@ impl<'s> Score<'s> {
             .into_iter()
             .map(|(_, layout)| Arc::new(mem::take(&mut *layout.write().unwrap())))
             .collect();
-        let layouts = Layouts {
-            scales: self.scales,
-            layouts,
-        };
-        ScoreOutput {
-            timeline: self.timeline,
-            layouts,
-        }
+        let scales: Arc<ScalesByName> = Arc::new(self.scales.into_iter().collect());
+        let mut timeline = self.timeline;
+        timeline.scales = scales.clone();
+        let layouts = Layouts { scales, layouts };
+        ScoreOutput { timeline, layouts }
     }
 
     fn insert_event(&mut self, time: Ratio<u32>, span: Span, data: TimelineData<'s>) {
@@ -1037,8 +1019,6 @@ impl<'s> Score<'s> {
                 )
                 .with_context(old.definition.span, "here is the previous definition"),
             );
-        } else {
-            self.timeline.scales.push(scale);
         }
     }
 
@@ -1529,7 +1509,7 @@ impl<'s> Score<'s> {
         let mapping_data = MappingData {
             span: directive.mapping.span,
             mapping: Arc::new(mapping),
-            scale,
+            scale_name: scale.definition.name.clone(),
         };
         self.insert_mapping(diags, directive.mapping.value, mapping_data);
     }
@@ -1641,7 +1621,7 @@ impl<'s> Score<'s> {
         let mapping_data = MappingData {
             span: directive.mapping.span,
             mapping: Arc::new(mapping),
-            scale,
+            scale_name: scale.definition.name.clone(),
         };
         self.insert_mapping(diags, directive.mapping.value, mapping_data);
     }
@@ -1677,7 +1657,7 @@ impl<'s> Score<'s> {
         let mut l = layout.layout.write().unwrap();
         l.mappings.push(LayoutMapping {
             name: mapping.mapping.name().clone(),
-            scale: mapping.scale.clone(),
+            scale: mapping.scale_name.clone(),
             base_pitch,
             anchor_row: directive.anchor_row.value as i32,
             anchor_col: directive.anchor_col.value as i32,

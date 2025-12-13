@@ -1,10 +1,9 @@
-use crate::parsing::score::{NamedPitch, Scale};
+use crate::parsing::score::{NamedPitch, Scale, ScalesByName, serialize_scales};
 use crate::parsing::score_helpers;
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
-use std::collections::HashMap;
 use std::fmt::Debug;
 use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, RwLock};
@@ -12,7 +11,8 @@ use to_static_derive::ToStatic;
 
 #[derive(Serialize, Default, ToStatic)]
 pub struct Layouts<'s> {
-    pub scales: HashMap<Cow<'s, str>, Arc<Scale<'s>>>,
+    #[serde(with = "serialize_scales")]
+    pub scales: Arc<ScalesByName<'s>>,
     pub layouts: Vec<Arc<Layout<'s>>>,
 }
 
@@ -29,11 +29,16 @@ pub struct Layout<'s> {
     pub stagger: AtomicI32,
 }
 impl<'s> Layout<'s> {
-    pub fn note_at_location(self: &Arc<Self>, location: Coordinate) -> Option<PlacedNote<'s>> {
+    pub fn note_at_location(
+        self: &Arc<Self>,
+        scales: &ScalesByName<'s>,
+        location: Coordinate,
+    ) -> Option<PlacedNote<'s>> {
         // Return information from the first mapping that has the note, if any.
         let stagger = self.stagger.load(Ordering::Relaxed);
         for m in &self.mappings {
-            if let Some(r) = m.note_at_location(location, stagger) {
+            let scale = scales.get(&m.scale).unwrap();
+            if let Some(r) = m.note_at_location(scale, location, stagger) {
                 return r;
             }
         }
@@ -64,10 +69,16 @@ impl<'s> Layout<'s> {
 
     /// Transpose the mapping so that the specified location's pitch is the specified pitch.
     /// The key must be mapped.
-    pub fn transpose(self: &Arc<Self>, pitch: &Pitch, location: Coordinate) -> bool {
+    pub fn transpose(
+        self: &Arc<Self>,
+        scales: &ScalesByName<'s>,
+        pitch: &Pitch,
+        location: Coordinate,
+    ) -> bool {
         let stagger = self.stagger.load(Ordering::Relaxed);
         for mapping in &self.mappings {
-            if let Some(Some(np)) = mapping.note_at_location(location, stagger) {
+            let scale = scales.get(&mapping.scale).unwrap();
+            if let Some(Some(np)) = mapping.note_at_location(scale, location, stagger) {
                 let factor = pitch / &np.pitch;
                 mapping.offsets.write().unwrap().transpose *= &factor;
                 return true;
@@ -105,8 +116,8 @@ pub struct Coordinate {
 pub struct PlacedNote<'s> {
     /// Note name, including octave/cycle markers
     pub name: Cow<'s, str>,
-    /// Scale the note came from
-    pub scale: Arc<Scale<'s>>,
+    /// Name of scale the note came from
+    pub scale_name: Cow<'s, str>,
     /// Configured base pitch of the mapping
     pub scale_base: Pitch,
     /// Current transposition
@@ -133,22 +144,10 @@ pub struct Offsets {
     pub transpose: Pitch,
 }
 
-pub(crate) mod scale_name {
-    use crate::parsing::score::Scale;
-    use serde::Serialize;
-    use serde::Serializer;
-    use std::sync::Arc;
-
-    pub fn serialize<S: Serializer>(v: &Arc<Scale>, s: S) -> Result<S::Ok, S::Error> {
-        v.definition.name.serialize(s)
-    }
-}
-
 #[derive(Serialize, ToStatic)]
 pub struct LayoutMapping<'s> {
     pub name: Cow<'s, str>,
-    #[serde(with = "scale_name")]
-    pub scale: Arc<Scale<'s>>,
+    pub scale: Cow<'s, str>,
     pub base_pitch: Pitch,
     pub anchor_row: i32,
     pub anchor_col: i32,
@@ -189,6 +188,7 @@ impl<'s> LayoutMapping<'s> {
     /// count.
     pub fn note_at_location(
         &self,
+        scale: &Scale<'s>,
         location: Coordinate,
         stagger: i32,
     ) -> Option<Option<PlacedNote<'s>>> {
@@ -200,7 +200,7 @@ impl<'s> LayoutMapping<'s> {
             let col_delta: i32 = location.col - self.anchor_col - offsets.shift_h;
             Some(
                 self.details
-                    .note_at_anchor_delta(&self.scale, row_delta, col_delta, stagger)
+                    .note_at_anchor_delta(scale, row_delta, col_delta, stagger)
                     .map(|x| {
                         let mut pitch = x.base_factor;
                         pitch *= &self.base_pitch;
@@ -208,7 +208,7 @@ impl<'s> LayoutMapping<'s> {
                         pitch *= &x.tile_factor;
                         PlacedNote {
                             name: x.name,
-                            scale: self.scale.clone(),
+                            scale_name: self.scale.clone(),
                             scale_base: self.base_pitch.clone(),
                             transposition: offsets.transpose.clone(),
                             tile_factor: x.tile_factor,
@@ -386,8 +386,9 @@ mod tests {
         assert_eq!(mapping.name, "m2");
         assert!(mapping.details.as_manual().is_none());
         let im = mapping.details.as_isomorphic().unwrap();
+        let scale = LAYOUTS.scales.get(&mapping.scale).unwrap();
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, 0, 0).unwrap(),
+            im.note_at_anchor_delta(scale, 0, 0).unwrap(),
             NamedPitch {
                 name: "c".into(),
                 base_factor: Pitch::unit(),
@@ -398,7 +399,7 @@ mod tests {
             }
         );
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, 0, 1).unwrap(),
+            im.note_at_anchor_delta(scale, 0, 1).unwrap(),
             NamedPitch {
                 name: "d".into(),
                 base_factor: Pitch::must_parse("^1|6"),
@@ -409,7 +410,7 @@ mod tests {
             }
         );
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, 0, -1).unwrap(),
+            im.note_at_anchor_delta(scale, 0, -1).unwrap(),
             NamedPitch {
                 name: "b%,".into(),
                 base_factor: Pitch::must_parse("1/2*^5|6"),
@@ -420,7 +421,7 @@ mod tests {
             }
         );
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, 1, -1).unwrap(),
+            im.note_at_anchor_delta(scale, 1, -1).unwrap(),
             NamedPitch {
                 name: "e%".into(),
                 base_factor: Pitch::must_parse("^1|4"),
@@ -431,7 +432,7 @@ mod tests {
             }
         );
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, -1, 1).unwrap(),
+            im.note_at_anchor_delta(scale, -1, 1).unwrap(),
             NamedPitch {
                 name: "a,".into(),
                 base_factor: Pitch::must_parse("^-1|4"),
@@ -442,7 +443,7 @@ mod tests {
             }
         );
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, 3, 1).unwrap(),
+            im.note_at_anchor_delta(scale, 3, 1).unwrap(),
             NamedPitch {
                 name: "f'".into(),
                 base_factor: Pitch::must_parse("2*^5|12"),
@@ -453,7 +454,7 @@ mod tests {
             }
         );
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, 5, 1).unwrap(),
+            im.note_at_anchor_delta(scale, 5, 1).unwrap(),
             NamedPitch {
                 name: "e%'2".into(),
                 base_factor: Pitch::must_parse("4*^1|4"),
@@ -464,7 +465,7 @@ mod tests {
             }
         );
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, -2, -1).unwrap(),
+            im.note_at_anchor_delta(scale, -2, -1).unwrap(),
             NamedPitch {
                 name: "c,".into(),
                 base_factor: Pitch::must_parse("1/2"),
@@ -475,7 +476,7 @@ mod tests {
             }
         );
         assert_eq!(
-            im.note_at_anchor_delta(&mapping.scale, -3, 1).unwrap(),
+            im.note_at_anchor_delta(scale, -3, 1).unwrap(),
             NamedPitch {
                 name: "b,2".into(),
                 base_factor: Pitch::must_parse("1/2*^-1|12"),
@@ -706,55 +707,55 @@ mod tests {
         // Start with the anchor. The answer takes shifting into consideration. The anchor in the
         // mapping is "7".
         let r = layout
-            .note_at_location(Coordinate { row: 5, col: 4 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 5, col: 4 })
             .unwrap();
         assert_eq!(r.name, "e#");
         assert_eq!(r.pitch, Pitch::must_parse("400*^7|19"));
         // Shift one row up. This means we should see the note below this.
         assert!(layout.shift(Coordinate { row: 4, col: 4 }, Coordinate { row: 5, col: 4 }));
         let r = layout
-            .note_at_location(Coordinate { row: 5, col: 4 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 5, col: 4 })
             .unwrap();
         assert_eq!(r.name, "d%");
         assert_eq!(r.pitch, Pitch::must_parse("400*^2|19"));
         // Shift one row left. This means we should see the note to the right of that.
         assert!(layout.shift(Coordinate { row: 5, col: 5 }, Coordinate { row: 5, col: 4 }));
         let r = layout
-            .note_at_location(Coordinate { row: 5, col: 4 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 5, col: 4 })
             .unwrap();
         assert_eq!(r.name, "c2");
         assert_eq!(r.pitch, Pitch::must_parse("800"));
         // Three rows above this should be the same note, but the pitch is up by v_factor.
         let r = layout
-            .note_at_location(Coordinate { row: 8, col: 4 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 4 })
             .unwrap();
         assert_eq!(r.name, "c2");
         assert_eq!(r.pitch, Pitch::must_parse("800*^1|2"));
         // With a stagger of 2, we need to three rows and column to the right.
         layout.stagger(2);
         let r = layout
-            .note_at_location(Coordinate { row: 8, col: 5 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 5 })
             .unwrap();
         assert_eq!(r.name, "c2");
         assert_eq!(r.pitch, Pitch::must_parse("800*^1|2"));
         layout.stagger(0);
         // Five rows to the right should be the same note, but the pitch is up by h_factor.
         let r = layout
-            .note_at_location(Coordinate { row: 8, col: 9 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 9 })
             .unwrap();
         assert_eq!(r.name, "c2");
         assert_eq!(r.pitch, Pitch::must_parse("1200*^1|2"));
         // Up one row brings us to the top row in the region.
         let r = layout
-            .note_at_location(Coordinate { row: 9, col: 9 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 9 })
             .unwrap();
         assert_eq!(r.name, "f");
         assert_eq!(r.pitch, Pitch::must_parse("600*^8|19*^1|2"));
         // Three rows to the left is unmapped explicitly.
-        let r = layout.note_at_location(Coordinate { row: 9, col: 6 });
+        let r = layout.note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 6 });
         assert!(r.is_none());
         // One row from the previous mapped note puts us outside the region.
-        let r = layout.note_at_location(Coordinate { row: 10, col: 9 });
+        let r = layout.note_at_location(&LAYOUTS.scales, Coordinate { row: 10, col: 9 });
         assert!(r.is_none());
         // Can't shift from location not in a mapping
         assert!(!layout.shift(
@@ -762,8 +763,16 @@ mod tests {
             Coordinate { row: 4, col: 4 }
         ));
         // Can't transpose an unmapped key.
-        assert!(!layout.transpose(&Pitch::must_parse("500"), Coordinate { row: 9, col: 6 }));
-        assert!(!layout.transpose(&Pitch::must_parse("500"), Coordinate { row: 10, col: 9 }));
+        assert!(!layout.transpose(
+            &LAYOUTS.scales,
+            &Pitch::must_parse("500"),
+            Coordinate { row: 9, col: 6 }
+        ));
+        assert!(!layout.transpose(
+            &LAYOUTS.scales,
+            &Pitch::must_parse("500"),
+            Coordinate { row: 10, col: 9 }
+        ));
 
         // Now switch to layout l2, which adds another mapping that fills the whole area.
         // Save the offsets we applied to the mapping so we can replicate.
@@ -775,44 +784,44 @@ mod tests {
         // and without stagger. Column 11 is the right-most column in rows 4 to 9 inclusive. Check
         // the anchor first.
         let r = layout
-            .note_at_location(Coordinate { row: 5, col: 4 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 5, col: 4 })
             .unwrap();
         assert_eq!(r.name, "e#");
         assert_eq!(r.pitch, Pitch::must_parse("400*^7|19"));
         // The anchor is at 5, 4 so 4, 11 should be one row down and two columns plus one horizontal
         // repetition over.
         let r = layout
-            .note_at_location(Coordinate { row: 4, col: 11 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 4, col: 11 })
             .unwrap();
         assert_eq!(r.name, "q");
         assert_eq!(r.pitch, Pitch::must_parse("600*^21|20"));
         // Three rows above should be the same note one vertical repetition later.
         let r = layout
-            .note_at_location(Coordinate { row: 7, col: 11 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 7, col: 11 })
             .unwrap();
         assert_eq!(r.name, "q");
         assert_eq!(r.pitch, Pitch::must_parse("600*^21|20*^1|2"));
         // Four rows above is one row higher.
         let r = layout
-            .note_at_location(Coordinate { row: 8, col: 11 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 11 })
             .unwrap();
         assert_eq!(r.name, "f#");
         assert_eq!(r.pitch, Pitch::must_parse("600*^9|19*^1|2"));
         // One column to the right should put us in the new mapping.
         let r = layout
-            .note_at_location(Coordinate { row: 4, col: 12 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 4, col: 12 })
             .unwrap();
         assert_eq!(r.name, "e,2");
         assert_eq!(r.pitch, Pitch::must_parse("75*^1|3"));
         // Three rows above should be 15 steps above in the new mapping.
         let r = layout
-            .note_at_location(Coordinate { row: 7, col: 12 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 7, col: 12 })
             .unwrap();
         assert_eq!(r.name, "g,");
         assert_eq!(r.pitch, Pitch::must_parse("150*^7|12"));
         // Four rows above is 5 more steps.
         let r = layout
-            .note_at_location(Coordinate { row: 8, col: 12 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 12 })
             .unwrap();
         assert_eq!(r.name, "c");
         assert_eq!(r.pitch, Pitch::must_parse("300"));
@@ -823,44 +832,44 @@ mod tests {
         // same note. The anchor should not move.
         layout.stagger(2);
         let r = layout
-            .note_at_location(Coordinate { row: 5, col: 4 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 5, col: 4 })
             .unwrap();
         assert_eq!(r.name, "e#");
         assert_eq!(r.pitch, Pitch::must_parse("400*^7|19"));
         // What was at 4, 11 should now be at 4, 10.
         let r = layout
-            .note_at_location(Coordinate { row: 4, col: 10 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 4, col: 10 })
             .unwrap();
         assert_eq!(r.name, "q");
         assert_eq!(r.pitch, Pitch::must_parse("600*^21|20"));
         // What was at 7, 11 should now be at 7, 12.
         let r = layout
-            .note_at_location(Coordinate { row: 7, col: 12 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 7, col: 12 })
             .unwrap();
         assert_eq!(r.name, "q");
         assert_eq!(r.pitch, Pitch::must_parse("600*^21|20*^1|2"));
         // Going up one more row doesn't further shift the column since we are in the 2-row group
         // above the anchor row.
         let r = layout
-            .note_at_location(Coordinate { row: 8, col: 12 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 12 })
             .unwrap();
         assert_eq!(r.name, "f#");
         assert_eq!(r.pitch, Pitch::must_parse("600*^9|19*^1|2"));
         // 4, 11 is now outside the region.
         let r = layout
-            .note_at_location(Coordinate { row: 4, col: 11 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 4, col: 11 })
             .unwrap();
         assert_eq!(r.name, "d,2");
         assert_eq!(r.pitch, Pitch::must_parse("75*^1|6"));
         // We need to go to 7, 13 to get to the new mapping now.
         let r = layout
-            .note_at_location(Coordinate { row: 7, col: 13 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 7, col: 13 })
             .unwrap();
         assert_eq!(r.name, "a,");
         assert_eq!(r.pitch, Pitch::must_parse("150*^3|4"));
         // This is in the new region now.
         let r = layout
-            .note_at_location(Coordinate { row: 8, col: 13 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 13 })
             .unwrap();
         assert_eq!(r.name, "d");
         assert_eq!(r.pitch, Pitch::must_parse("300*^1|6"));
@@ -871,20 +880,24 @@ mod tests {
         // some tests from before the stagger tests to ensure consistency.
         *layout.mappings[0].offsets.write().unwrap() = offsets;
         // Apply a transposition the second mapping. Effective base pitch is 450.
-        assert!(layout.transpose(&Pitch::must_parse("450"), Coordinate { row: 10, col: 7 }));
+        assert!(layout.transpose(
+            &LAYOUTS.scales,
+            &Pitch::must_parse("450"),
+            Coordinate { row: 10, col: 7 }
+        ));
         // Same as before: this is at the top of the first region.
         let r = layout
-            .note_at_location(Coordinate { row: 9, col: 9 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 9 })
             .unwrap();
         assert_eq!(r.name, "f");
         assert_eq!(r.pitch, Pitch::must_parse("600*^8|19*^1|2"));
         // Same as before: this is explicitly unmapped.
-        let r = layout.note_at_location(Coordinate { row: 9, col: 6 });
+        let r = layout.note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 6 });
         assert!(r.is_none());
         // This time, we fall into the second mapping. This is two characters to the right of
         // the anchor, which is four scale degrees. We are also transposing by 1.5.
         let r = layout
-            .note_at_location(Coordinate { row: 10, col: 9 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 10, col: 9 })
             .unwrap();
         assert_eq!(r.name, "e");
         assert_eq!(r.pitch, Pitch::must_parse("450*^1|3"));
@@ -896,23 +909,23 @@ mod tests {
         // Exercise octave transpositions. Check notes from both mappings.
         layout.octave_shift(true);
         let r = layout
-            .note_at_location(Coordinate { row: 9, col: 9 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 9 })
             .unwrap();
         assert_eq!(r.name, "f");
         assert_eq!(r.pitch, Pitch::must_parse("1200*^8|19*^1|2"));
         let r = layout
-            .note_at_location(Coordinate { row: 10, col: 9 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 10, col: 9 })
             .unwrap();
         assert_eq!(r.name, "e");
         assert_eq!(r.pitch, Pitch::must_parse("900*^1|3"));
         layout.octave_shift(false);
         let r = layout
-            .note_at_location(Coordinate { row: 9, col: 9 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 9 })
             .unwrap();
         assert_eq!(r.name, "f");
         assert_eq!(r.pitch, Pitch::must_parse("600*^8|19*^1|2"));
         let r = layout
-            .note_at_location(Coordinate { row: 10, col: 9 })
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 10, col: 9 })
             .unwrap();
         assert_eq!(r.name, "e");
         assert_eq!(r.pitch, Pitch::must_parse("450*^1|3"));

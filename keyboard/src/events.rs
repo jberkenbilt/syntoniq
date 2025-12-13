@@ -170,7 +170,7 @@ pub struct UpdateNoteEvent {
 
 #[derive(DebugMore)]
 pub struct Note {
-    #[debug("placed:name={},scale={}", placed.name, placed.scale.definition.name)]
+    #[debug("placed:name={},scale={}", placed.name, placed.scale_name)]
     pub placed: PlacedNote<'static>,
     pub off_color: Color,
     pub on_color: Color,
@@ -189,7 +189,7 @@ impl Display for Note {
 }
 impl Note {
     fn format_mapping(&self) -> String {
-        let scale_name = self.placed.scale.definition.name.as_ref();
+        let scale_name = self.placed.scale_name.as_ref();
         let orig_base_pitch = &self.placed.scale_base;
         let transposition = &self.placed.transposition;
         let base_pitch = orig_base_pitch * transposition;

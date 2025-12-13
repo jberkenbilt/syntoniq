@@ -152,13 +152,13 @@ impl<'s> ToStatic<'s> for Cow<'s, str> {
     }
 }
 
-impl<'s, K, V> ToStatic<'s> for HashMap<K, V>
+impl<'s, K, V> ToStatic<'s> for BTreeMap<K, V>
 where
     K: Eq + Hash + ToStatic<'s>,
-    K::Static: Eq + Hash,
+    K::Static: Ord + Eq + Hash,
     V: ToStatic<'s>,
 {
-    type Static = HashMap<K::Static, V::Static>;
+    type Static = BTreeMap<K::Static, V::Static>;
 
     fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static {
         self.iter()

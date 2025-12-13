@@ -1,5 +1,5 @@
 use crate::parsing::model::Span;
-use crate::parsing::score::{Scale, Tuning};
+use crate::parsing::score::{ScalesByName, Tuning, serialize_scales};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
@@ -10,7 +10,8 @@ use std::sync::Arc;
 #[derive(Serialize)]
 pub struct Timeline<'s> {
     pub events: BTreeSet<Arc<TimelineEvent<'s>>>,
-    pub scales: Vec<Arc<Scale<'s>>>,
+    #[serde(with = "serialize_scales")]
+    pub scales: Arc<ScalesByName<'s>>,
     pub midi_instruments: BTreeMap<Cow<'s, str>, MidiInstrumentNumber>,
     pub csound_instruments: BTreeMap<Cow<'s, str>, CsoundInstrumentId<'s>>,
     /// Least common multiple of time denominators, useful for computing ticks per beat. Callers

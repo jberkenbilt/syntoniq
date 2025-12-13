@@ -16,7 +16,7 @@ use std::fmt::{Display, Formatter};
 use std::ops::Range;
 use std::path::Path;
 use std::sync::Arc;
-use syntoniq_common::parsing::score::{Scale, Tuning};
+use syntoniq_common::parsing::score::{ScalesByName, Tuning};
 use syntoniq_common::parsing::{
     DynamicEvent, MidiInstrumentNumber, NoteEvent, TempoEvent, Timeline, TimelineData,
     TimelineEvent,
@@ -141,7 +141,6 @@ struct MidiGenerator<'s> {
     arena: &'s Arena,
     timeline: &'s Timeline<'s>,
     last_event_time: Ratio<u32>,
-    scales_by_name: BTreeMap<Cow<'s, str>, &'s Scale<'s>>,
     track_last_time: RefCell<BTreeMap<usize, u28>>,
     ticks_per_beat: u15,
     micros_per_beat: u24,
@@ -395,7 +394,7 @@ impl<'s> MtsData<'s> {
 
     fn dump_tuning(
         arena: &'s Arena,
-        scales_by_name: &BTreeMap<Cow<'s, str>, &'s Scale<'s>>,
+        scales_by_name: &ScalesByName,
         track: &mut Vec<TrackEvent<'s>>,
         tuning: &Tuning,
         data: &TuningData,
@@ -428,7 +427,7 @@ impl<'s> MtsData<'s> {
         dump.append(&mut string_exact_bytes(&tuning.scale_name, 16));
 
         // This is the actual pitch calculation logic.
-        let &scale = scales_by_name
+        let scale = scales_by_name
             .get(&tuning.scale_name)
             .ok_or_else(|| anyhow!("unknown scale in dump_tuning"))?;
         // Get basic information about the scale.
@@ -491,7 +490,7 @@ impl<'s> MtsData<'s> {
     fn dump_tunings(
         &mut self,
         arena: &'s Arena,
-        scales_by_name: &BTreeMap<Cow<'s, str>, &'s Scale<'s>>,
+        scales_by_name: &ScalesByName,
         track: &mut Vec<TrackEvent<'s>>,
     ) -> anyhow::Result<()> {
         let use_banks = self.use_banks();
@@ -940,11 +939,6 @@ impl<'s> MidiGenerator<'s> {
             .and_then(u15::try_from)
             .ok_or_else(|| anyhow!("overflow calculating ticks per beat"))?;
         let micros_per_beat: u24 = 833333.into(); // 72 BPM -- changed by tempo events
-        let scales_by_name = timeline
-            .scales
-            .iter()
-            .map(|s| (s.definition.name.clone(), s.as_ref()))
-            .collect();
         let pitch_data = match style {
             MidiStyle::Mts => PitchData::Mts(MtsData {
                 tuning_data: Default::default(),
@@ -960,7 +954,6 @@ impl<'s> MidiGenerator<'s> {
             arena,
             timeline,
             last_event_time: Ratio::from_integer(0),
-            scales_by_name,
             track_last_time: Default::default(),
             ticks_per_beat,
             micros_per_beat,
@@ -1214,7 +1207,7 @@ impl<'s> MidiGenerator<'s> {
         self.init_output()?;
         match &mut self.pitch_data {
             PitchData::Mts(mts) => {
-                mts.dump_tunings(self.arena, &self.scales_by_name, &mut self.tracks[0])?
+                mts.dump_tunings(self.arena, &self.timeline.scales, &mut self.tracks[0])?
             }
             PitchData::Mpe(_) => {}
         }
