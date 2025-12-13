@@ -873,7 +873,7 @@ fn ramp_rational(
     result
 }
 
-/// Given a group labelled groups `(A, [B])`, pack these into bins of `[A, B]` of no more than a
+/// Given a group labeled groups `(A, [B])`, pack these into bins of `[A, B]` of no more than a
 /// given size. This is used to pack part/note pairs into groups of channels. See the test case for
 /// details.
 fn bin_pack<A: Copy, B>(max_size: usize, items: Vec<(A, VecDeque<B>)>) -> Vec<Vec<(A, B)>> {
