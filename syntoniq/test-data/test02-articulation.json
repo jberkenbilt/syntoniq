@@ -28,14 +28,14 @@
       "repeat_depth": 0,
       "span": [
         279,
-        284
+        285
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "1:c'~",
+            "text": "1:c':~",
             "note_name": "c",
             "tuning": {
               "scale_name": "default",
@@ -63,8 +63,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        332,
-        335
+        328,
+        331
       ],
       "data": {
         "Note": {
@@ -99,8 +99,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        338,
-        339
+        335,
+        336
       ],
       "data": {
         "Note": {
@@ -136,14 +136,14 @@
       "repeat_depth": 0,
       "span": [
         291,
-        297
+        296
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "c'(..)",
+            "text": "c':..",
             "note_name": "c",
             "tuning": {
               "scale_name": "default",
@@ -171,8 +171,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        344,
-        345
+        340,
+        341
       ],
       "data": {
         "Note": {
@@ -207,15 +207,15 @@
       ],
       "repeat_depth": 0,
       "span": [
-        298,
-        305
+        297,
+        303
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "c'(...)",
+            "text": "c':...",
             "note_name": "c",
             "tuning": {
               "scale_name": "default",
@@ -243,8 +243,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        351,
-        352
+        346,
+        347
       ],
       "data": {
         "Note": {
@@ -279,15 +279,15 @@
       ],
       "repeat_depth": 0,
       "span": [
-        306,
-        314
+        304,
+        311
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "c'(....)",
+            "text": "c':....",
             "note_name": "c",
             "tuning": {
               "scale_name": "default",
@@ -315,8 +315,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        359,
-        360
+        353,
+        354
       ],
       "data": {
         "Note": {
@@ -351,15 +351,15 @@
       ],
       "repeat_depth": 0,
       "span": [
-        315,
-        324
+        312,
+        320
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "c'(.....)",
+            "text": "c':.....",
             "note_name": "c",
             "tuning": {
               "scale_name": "default",
@@ -387,8 +387,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        368,
-        369
+        361,
+        362
       ],
       "data": {
         "Note": {

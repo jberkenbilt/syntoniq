@@ -625,7 +625,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           28,
@@ -636,6 +635,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           30,
@@ -643,8 +643,7 @@
                         ],
                         "value": "c"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -752,7 +751,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           56,
@@ -763,6 +761,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           58,
@@ -770,8 +769,7 @@
                         ],
                         "value": "d"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -879,7 +877,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           84,
@@ -890,6 +887,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           86,
@@ -897,8 +895,7 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }

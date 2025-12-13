@@ -9,14 +9,14 @@ tempo(bpm=90 start_time=1) ; overlaps by a beat
 
 mark(label="a")
 tempo(bpm=60 start_time=3 end_bpm=80 duration=2.5) ; extends a beat past "b"
-[p1.0]  4:c~
+[p1.0]  4:c:~
 [p1.1]  4:e
 [p1] 32@2<
 
 mark(label="b")
 
 [p1.0]  2:c 2:c
-[p1.1]  2:e 2:e~
+[p1.1]  2:e 2:e:~
 [p1] 96@2 32@3<
 
 repeat(start="b" end="a") ; end precedes start

@@ -158,24 +158,27 @@
       {
         "span": [
           17,
-          20
+          18
         ],
         "value": {
-          "raw": "(>)",
-          "t": {
-            "Articulation": {
-              "inner_span": [
-                18,
-                19
-              ]
-            }
-          }
+          "raw": ":",
+          "t": "Punctuation"
         }
       },
       {
         "span": [
-          20,
-          21
+          18,
+          19
+        ],
+        "value": {
+          "raw": ">",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          19,
+          20
         ],
         "value": {
           "raw": "~",
@@ -184,8 +187,8 @@
       },
       {
         "span": [
-          21,
-          24
+          20,
+          23
         ],
         "value": {
           "raw": "   ",
@@ -194,8 +197,8 @@
       },
       {
         "span": [
-          24,
-          25
+          23,
+          24
         ],
         "value": {
           "raw": "|",
@@ -204,12 +207,32 @@
       },
       {
         "span": [
-          25,
-          26
+          24,
+          25
         ],
         "value": {
           "raw": " ",
           "t": "Space"
+        }
+      },
+      {
+        "span": [
+          25,
+          26
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  25,
+                  26
+                ],
+                "value": 2
+              }
+            }
+          }
         }
       },
       {
@@ -218,18 +241,8 @@
           27
         ],
         "value": {
-          "raw": "2",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  26,
-                  27
-                ],
-                "value": 2
-              }
-            }
-          }
+          "raw": ":",
+          "t": "Punctuation"
         }
       },
       {
@@ -238,24 +251,14 @@
           28
         ],
         "value": {
-          "raw": ":",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          28,
-          29
-        ],
-        "value": {
           "raw": "~",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          29,
-          31
+          28,
+          30
         ],
         "value": {
           "raw": "  ",
@@ -264,8 +267,8 @@
       },
       {
         "span": [
-          31,
-          32
+          30,
+          31
         ],
         "value": {
           "raw": "2",
@@ -273,8 +276,8 @@
             "Number": {
               "n": {
                 "span": [
-                  31,
-                  32
+                  30,
+                  31
                 ],
                 "value": 2
               }
@@ -284,8 +287,8 @@
       },
       {
         "span": [
-          32,
-          33
+          31,
+          32
         ],
         "value": {
           "raw": ":",
@@ -294,8 +297,8 @@
       },
       {
         "span": [
-          33,
-          36
+          32,
+          35
         ],
         "value": {
           "raw": "c#+",
@@ -304,8 +307,8 @@
       },
       {
         "span": [
-          36,
-          37
+          35,
+          36
         ],
         "value": {
           "raw": " ",
@@ -314,8 +317,8 @@
       },
       {
         "span": [
-          37,
-          38
+          36,
+          37
         ],
         "value": {
           "raw": "f",
@@ -324,8 +327,8 @@
       },
       {
         "span": [
-          38,
-          40
+          37,
+          39
         ],
         "value": {
           "raw": "  ",
@@ -334,8 +337,8 @@
       },
       {
         "span": [
-          40,
-          41
+          39,
+          40
         ],
         "value": {
           "raw": "g",
@@ -344,8 +347,8 @@
       },
       {
         "span": [
-          41,
-          42
+          40,
+          41
         ],
         "value": {
           "raw": " ",
@@ -354,8 +357,8 @@
       },
       {
         "span": [
-          42,
-          62
+          41,
+          61
         ],
         "value": {
           "raw": "; comment no newline",
@@ -369,10 +372,10 @@
       {
         "span": [
           0,
-          62
+          61
         ],
         "value": {
-          "raw": "[p1.0]  1/2:e g,3(>)~   | 2:~  2:c#+ f  g ; comment no newline",
+          "raw": "[p1.0]  1/2:e g,3:>~   | 2:~  2:c#+ f  g ; comment no newline",
           "t": {
             "NoteLine": {
               "leader": {
@@ -405,7 +408,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           8,
@@ -416,6 +418,7 @@
                           2
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           12,
@@ -423,28 +426,34 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
                     14,
-                    21
+                    20
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [
+                      "duration": null,
+                      "modifiers": [
                         {
                           "span": [
                             18,
                             19
                           ],
                           "value": "Accent"
+                        },
+                        {
+                          "span": [
+                            19,
+                            20
+                          ],
+                          "value": "Sustain"
                         }
                       ],
-                      "duration": null,
                       "name": {
                         "span": [
                           14,
@@ -458,44 +467,40 @@
                           17
                         ],
                         "value": -3
-                      },
-                      "sustained": [
-                        20,
-                        21
-                      ]
+                      }
                     }
                   }
                 },
                 {
                   "span": [
-                    24,
-                    25
+                    23,
+                    24
                   ],
                   "value": {
                     "BarCheck": [
-                      24,
-                      25
+                      23,
+                      24
                     ]
                   }
                 },
                 {
                   "span": [
-                    26,
-                    29
+                    25,
+                    28
                   ],
                   "value": {
                     "Hold": {
                       "ch": {
                         "span": [
-                          28,
-                          29
+                          27,
+                          28
                         ],
                         "value": "~"
                       },
                       "duration": {
                         "span": [
-                          26,
-                          27
+                          25,
+                          26
                         ],
                         "value": [
                           2,
@@ -507,73 +512,70 @@
                 },
                 {
                   "span": [
-                    31,
-                    36
+                    30,
+                    35
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
-                          31,
-                          32
+                          30,
+                          31
                         ],
                         "value": [
                           2,
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          33,
-                          36
+                          32,
+                          35
                         ],
                         "value": "c#+"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    37,
-                    38
+                    36,
+                    37
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          37,
-                          38
+                          36,
+                          37
                         ],
                         "value": "f"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    40,
-                    41
+                    39,
+                    40
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          40,
-                          41
+                          39,
+                          40
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }

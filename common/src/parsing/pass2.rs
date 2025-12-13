@@ -3,9 +3,9 @@
 
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
-    Articulation, DataBlock, Dynamic, DynamicLine, GetSpan, Hold, LayoutBlock, LayoutItem,
-    LayoutItemType, Note, NoteLeader, NoteLine, NoteOctave, Param, ParamValue, PitchOrNumber,
-    RawDirective, RegularNote, ScaleBlock, ScaleNote, Span, Spanned, Token,
+    DataBlock, Dynamic, DynamicLine, GetSpan, Hold, LayoutBlock, LayoutItem, LayoutItemType, Note,
+    NoteLeader, NoteLine, NoteModifier, NoteOctave, Param, ParamValue, PitchOrNumber, RawDirective,
+    RegularNote, ScaleBlock, ScaleNote, Span, Spanned, Token,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
@@ -114,6 +114,12 @@ fn character(ch: char) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<char
             .parse_next(input)
             .map(|x| Spanned::new(x.span, ch))
     }
+}
+
+fn punctuation(input: &mut Input2) -> winnow::Result<Spanned<char>> {
+    one_of(|x: Token1| matches!(x.value.t, Pass1::Punctuation))
+        .parse_next(input)
+        .map(|x| Spanned::new(x.span, x.value.raw.chars().next().unwrap()))
 }
 
 fn note_name<'s>() -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<&'s str>> {
@@ -475,39 +481,30 @@ fn octave(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Span
     }
 }
 
-fn articulation(
+fn note_modifiers(
+    modifiers: Vec<Spanned<char>>,
     diags: &Diagnostics,
-) -> impl FnMut(&mut Input2) -> winnow::Result<Vec<Spanned<Articulation>>> {
-    move |input| {
-        one_of(Pass1::is_articulation).parse_next(input).map(|tok| {
-            let inner_span = Pass1::get_articulation(&tok).unwrap();
-            let data = &tok.value.raw[inner_span.relative_to(tok.span)];
-            if data.is_empty() {
-                diags.err(code::NOTE_SYNTAX, tok.span, "articulation may not be empty");
+) -> Vec<Spanned<NoteModifier>> {
+    let mut result = Vec::new();
+    for ch in modifiers {
+        let span: Span = ch.span;
+        let modifier = match ch.value {
+            '>' => NoteModifier::Accent,
+            '^' => NoteModifier::Marcato,
+            '.' => NoteModifier::Shorten,
+            '~' => NoteModifier::Sustain,
+            _ => {
+                diags.err(
+                    code::NOTE_SYNTAX,
+                    span,
+                    format!("invalid note modifier '{}'", ch.value),
+                );
+                continue;
             }
-            let mut result = Vec::new();
-            let mut offset = inner_span.start;
-            for ch in data.chars() {
-                let span: Span = (offset..offset + ch.len_utf8()).into();
-                match ch {
-                    '>' => result.push(Spanned::new(span, Articulation::Accent)),
-                    '^' => result.push(Spanned::new(span, Articulation::Marcato)),
-                    '.' => result.push(Spanned::new(span, Articulation::Shorten)),
-                    _ => diags.err(
-                        code::NOTE_SYNTAX,
-                        span,
-                        format!("invalid articulation '{ch}'"),
-                    ),
-                }
-                offset = span.end;
-            }
-            result
-        })
+        };
+        result.push(Spanned::new(span, modifier));
     }
-}
-
-fn note_behavior() -> impl FnMut(&mut Input2) -> winnow::Result<Span> {
-    move |input| alt((character('~').map(|c| c.span), fail)).parse_next(input)
+    result
 }
 
 fn hold<'s>(
@@ -542,6 +539,7 @@ fn note_octave<'s>(
             })
     }
 }
+
 fn regular_note<'s>(
     diags: &Diagnostics,
 ) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<Note<'s>>> {
@@ -549,33 +547,32 @@ fn regular_note<'s>(
         (
             opt(terminated(ratio(diags), character(':'))),
             note_octave(diags),
-            opt(articulation(diags)),
-            opt(note_behavior()),
+            opt(preceded(
+                character(':'),
+                combinator::repeat(1.., punctuation),
+            )),
         )
             .parse_next(input)
             .map(|items| {
-                let (duration, note_octave, articulation, sustained) = items;
+                let (duration, note_octave, modifiers) = items;
                 // This merges these spans. Since `name` is definite set, we can safely unwrap
                 // the result.
-                let articulation_span = articulation.get_span().map(|x| {
-                    // Extend the span to include the parentheses. This improves the merged span
-                    // if the note ends with articulation, which it often does.
-                    Span::from(x.start - 1..x.end + 1)
-                });
+                let modifier_span = modifiers.get_span();
                 let span = model::merge_spans(&[
                     duration.get_span(),
                     note_octave.get_span(),
-                    articulation_span,
-                    sustained,
+                    modifier_span,
                 ])
                 .unwrap();
+                let modifiers = modifiers
+                    .map(|x| note_modifiers(x, diags))
+                    .unwrap_or_default();
                 Spanned::new(
                     span,
                     Note::Regular(RegularNote {
                         duration,
                         note: note_octave.value,
-                        articulation: articulation.unwrap_or_default(),
-                        sustained,
+                        modifiers,
                     }),
                 )
             })

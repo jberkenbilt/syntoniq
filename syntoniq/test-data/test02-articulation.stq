@@ -6,5 +6,5 @@ midi_instrument(instrument=23)
 ; stays 3/4 because 1/4 is the minimum. The lower octave just repeats
 ; for context.
 
-[p1.0] 1:c'~ c'(.) c'(..) c'(...) c'(....) c'(.....)
-[p1.1] 1:c   c     c      c       c        c
+[p1.0] 1:c':~ c':. c':.. c':... c':.... c':.....
+[p1.1] 1:c    c    c     c      c       c

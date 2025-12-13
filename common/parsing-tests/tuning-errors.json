@@ -7174,7 +7174,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           269,
@@ -7185,6 +7184,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           271,
@@ -7192,8 +7192,7 @@
                         ],
                         "value": "c"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7204,8 +7203,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           273,
@@ -7213,8 +7212,7 @@
                         ],
                         "value": "d"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7225,8 +7223,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           275,
@@ -7234,8 +7232,7 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7246,8 +7243,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           277,
@@ -7255,8 +7252,7 @@
                         ],
                         "value": "f"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -7392,7 +7388,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           324,
@@ -7403,6 +7398,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           326,
@@ -7410,8 +7406,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7422,8 +7417,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           328,
@@ -7431,8 +7426,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7443,8 +7437,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           330,
@@ -7452,8 +7446,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7464,8 +7457,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           332,
@@ -7473,8 +7466,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -7522,7 +7514,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           342,
@@ -7533,6 +7524,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           344,
@@ -7540,8 +7532,7 @@
                         ],
                         "value": "c"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7552,8 +7543,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           346,
@@ -7561,8 +7552,7 @@
                         ],
                         "value": "d"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7573,8 +7563,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           348,
@@ -7582,8 +7572,7 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7594,8 +7583,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           350,
@@ -7603,8 +7592,7 @@
                         ],
                         "value": "f"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -7866,7 +7854,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           547,
@@ -7877,6 +7864,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           549,
@@ -7884,8 +7872,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7896,8 +7883,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           551,
@@ -7905,8 +7892,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7917,8 +7903,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           553,
@@ -7926,8 +7912,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7938,8 +7923,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           555,
@@ -7947,8 +7932,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -7996,7 +7980,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           565,
@@ -8007,6 +7990,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           567,
@@ -8014,8 +7998,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -8026,8 +8009,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           569,
@@ -8035,8 +8018,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -8047,8 +8029,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           571,
@@ -8056,8 +8038,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -8068,8 +8049,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           573,
@@ -8077,8 +8058,7 @@
                         ],
                         "value": "u"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -9224,7 +9204,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           1248,
@@ -9235,6 +9214,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1250,
@@ -9242,8 +9222,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9254,8 +9233,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1252,
@@ -9263,8 +9242,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9275,8 +9253,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1254,
@@ -9284,8 +9262,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9296,8 +9273,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1256,
@@ -9305,8 +9282,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -9354,7 +9330,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           1266,
@@ -9365,6 +9340,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1268,
@@ -9372,8 +9348,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9384,8 +9359,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1270,
@@ -9393,8 +9368,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9405,8 +9379,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1272,
@@ -9414,8 +9388,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9426,8 +9399,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1274,
@@ -9435,8 +9408,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -9544,7 +9516,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           1325,
@@ -9555,6 +9526,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1327,
@@ -9562,8 +9534,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9574,8 +9545,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1329,
@@ -9583,8 +9554,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9595,8 +9565,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1331,
@@ -9604,8 +9574,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9616,8 +9585,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1333,
@@ -9625,8 +9594,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -9674,7 +9642,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           1343,
@@ -9685,6 +9652,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1345,
@@ -9692,8 +9660,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9704,8 +9671,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1347,
@@ -9713,8 +9680,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9725,8 +9691,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1349,
@@ -9734,8 +9700,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -9746,8 +9711,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1351,
@@ -9755,8 +9720,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -10225,7 +10189,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           1592,
@@ -10236,6 +10199,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1594,
@@ -10243,8 +10207,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10255,8 +10218,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1596,
@@ -10264,8 +10227,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10276,8 +10238,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1598,
@@ -10285,8 +10247,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10297,8 +10258,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1600,
@@ -10306,8 +10267,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -10355,7 +10315,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           1610,
@@ -10366,6 +10325,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1612,
@@ -10373,8 +10333,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10385,8 +10344,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1614,
@@ -10394,8 +10353,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10406,8 +10364,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1616,
@@ -10415,8 +10373,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10427,8 +10384,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1618,
@@ -10436,8 +10393,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -10485,7 +10441,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           1628,
@@ -10496,6 +10451,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1630,
@@ -10503,8 +10459,7 @@
                         ],
                         "value": "p"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10515,8 +10470,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1632,
@@ -10524,8 +10479,7 @@
                         ],
                         "value": "q"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10536,8 +10490,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1634,
@@ -10545,8 +10499,7 @@
                         ],
                         "value": "r"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10557,8 +10510,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1636,
@@ -10566,8 +10519,7 @@
                         ],
                         "value": "s"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -10615,7 +10567,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           1667,
@@ -10626,6 +10577,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1669,
@@ -10633,8 +10585,7 @@
                         ],
                         "value": "c#"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10645,8 +10596,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1672,
@@ -10654,8 +10605,7 @@
                         ],
                         "value": "e%"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10666,8 +10616,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1675,
@@ -10675,8 +10625,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -10687,8 +10636,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           1677,
@@ -10696,8 +10645,7 @@
                         ],
                         "value": "b"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }

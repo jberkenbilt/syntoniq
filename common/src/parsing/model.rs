@@ -310,17 +310,19 @@ impl<'s> Display for NoteLeader<'s> {
 }
 
 #[derive(Serialize, Debug, Clone, Copy, PartialOrd, PartialEq, Ord, Eq, Hash)]
-pub enum Articulation {
+pub enum NoteModifier {
     Accent,
     Marcato,
     Shorten,
+    Sustain,
 }
-impl Display for Articulation {
+impl Display for NoteModifier {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
-            Articulation::Accent => write!(f, ">"),
-            Articulation::Marcato => write!(f, "^"),
-            Articulation::Shorten => write!(f, "."),
+            NoteModifier::Accent => write!(f, ">"),
+            NoteModifier::Marcato => write!(f, "^"),
+            NoteModifier::Shorten => write!(f, "."),
+            NoteModifier::Sustain => write!(f, "~"),
         }
     }
 }
@@ -330,8 +332,7 @@ pub struct RegularNote<'s> {
     pub duration: Option<Spanned<Ratio<u32>>>,
     #[serde(flatten)]
     pub note: NoteOctave<'s>,
-    pub articulation: Vec<Spanned<Articulation>>,
-    pub sustained: Option<Span>,
+    pub modifiers: Vec<Spanned<NoteModifier>>,
 }
 impl<'s> Display for RegularNote<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -340,17 +341,20 @@ impl<'s> Display for RegularNote<'s> {
             color!(f, 55, ":")?;
         }
         write!(f, "{}", self.note)?;
-        if !self.articulation.is_empty() {
-            color!(f, 55, "(")?;
-            for i in &self.articulation {
+        if !self.modifiers.is_empty() {
+            color!(f, 55, ":")?;
+            for i in &self.modifiers {
                 color!(f, 4, "{}", i.value)?;
             }
-            color!(f, 55, ")")?;
-        }
-        if self.sustained.is_some() {
-            color!(f, 4, "~")?;
         }
         Ok(())
+    }
+}
+impl<'s> RegularNote<'s> {
+    pub fn sustained(&self) -> bool {
+        self.modifiers
+            .iter()
+            .any(|x| matches!(x.value, NoteModifier::Sustain))
     }
 }
 
@@ -614,6 +618,12 @@ mod tests {
         assert_eq!(Range::from(Span::from(r.clone())), r);
         let s: Span = r.into();
         assert_eq!(Span::from(Range::from(s)), s);
+    }
+
+    #[test]
+    fn test_empty_get_span() {
+        let v: Vec<Spanned<u32>> = Vec::new();
+        assert!(v.as_slice().get_span().is_none());
     }
 
     #[test]

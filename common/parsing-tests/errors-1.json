@@ -51,8 +51,8 @@
           "context": [],
           "message": {
             "span": [
-              406,
-              407
+              331,
+              332
             ],
             "value": "this character is not allowed here"
           }
@@ -62,8 +62,19 @@
           "context": [],
           "message": {
             "span": [
-              646,
-              647
+              404,
+              405
+            ],
+            "value": "this character is not allowed here"
+          }
+        },
+        {
+          "code": "E1001 syntax error",
+          "context": [],
+          "message": {
+            "span": [
+              644,
+              645
             ],
             "value": "this character is not allowed here"
           }

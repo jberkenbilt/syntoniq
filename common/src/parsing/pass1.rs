@@ -19,7 +19,7 @@ use winnow::combinator::{alt, delimited, fail, preceded};
 use winnow::error::{ContextError, StrContext};
 use winnow::stream::{AsChar, Offset};
 use winnow::token::take;
-use winnow::token::{any, take_until, take_while};
+use winnow::token::{any, take_while};
 use winnow::{LocatingSlice, Parser};
 
 // Pass1 Step 4: define a bunch of helper types and traits. This gets into the guts of how winnow
@@ -59,18 +59,17 @@ pub type Token1<'s> = Spanned<Token<'s, Pass1>>;
 trait Parser1<'s>: Parser1Intermediate<'s, Token1<'s>> {}
 impl<'s, P: Parser1Intermediate<'s, Token1<'s>>> Parser1<'s> for P {}
 
-/// Characters that have special meaning in note syntax and are not part of note names
-static NOTE_PUNCTUATION: &str = "|/.:>~,'";
+/// Characters that have special meaning in note syntax and may appear separately from note names
+static NOTE_PUNCTUATION: &str = "|/.:>~^,'";
 /// Characters allowed note names in addition to alphanumeric. This includes many punctuation
 /// characters so pitches can be used in note names as well as making several characters available
 /// for accidentals. We explicitly avoid characters that are syntactically ambiguous, like brackets
 /// and parentheses, anything in NOTE_PUNCTUATION (which appear before or after note names), or
 /// characters used in dynamics. This helps with parsing and also makes scores less visually
 /// ambiguous. Avoid $ in case we introduce macros. Removing characters from this list breaks
-/// backward compatibility, so we want to be cautious about over-doing it. It would be nice to
-/// include `\`, but since this is a quoting character in strings and is hard to type cleanly
-/// in TOML files, which is probably where we define note names, we're omitting it for now.
-static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!#%&";
+/// backward compatibility, so we want to be cautious about over-doing it. Avoid @ because of its
+/// use in layouts and dynamics.
+static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!\\#%&";
 /// Characters allowed in dynamics
 static DYNAMIC_PUNCTUATION: &str = "|<>@/.";
 /// Characters allowed in definitions outside note names and numbers, including pitch characters,
@@ -92,7 +91,6 @@ pub enum Pass1 {
     String { inner_span: Span },
     NoteLeader { name_span: Span, note: Spanned<u32> },
     DynamicLeader { name_span: Span },
-    Articulation { inner_span: Span },
     NoteName,
     DefinitionStart,
     DefinitionEnd,
@@ -104,7 +102,6 @@ impl Display for Pass1 {
             Pass1::String { inner_span } => write!(f, "String:{inner_span}"),
             Pass1::NoteLeader { name_span, note } => write!(f, "NoteLeader:{name_span}/{note}"),
             Pass1::DynamicLeader { name_span } => write!(f, "DynamicLeader:{name_span}"),
-            Pass1::Articulation { inner_span } => write!(f, "Articulation:{inner_span}"),
             _ => write!(f, "{self:?}"),
         }
     }
@@ -166,17 +163,6 @@ impl Pass1 {
     pub fn get_dynamic_leader(t: &Token1) -> Option<Span> {
         match t.value.t {
             Pass1::DynamicLeader { name_span } => Some(name_span),
-            _ => None,
-        }
-    }
-
-    pub fn is_articulation(t: Token1) -> bool {
-        matches!(t.value.t, Pass1::Articulation { .. })
-    }
-
-    pub fn get_articulation(t: &Token1) -> Option<Span> {
-        match t.value.t {
-            Pass1::Articulation { inner_span } => Some(inner_span),
             _ => None,
         }
     }
@@ -270,7 +256,7 @@ fn identifier<'s>() -> impl Parser1<'s> {
 }
 
 fn number_intermediate<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, Spanned<u32>> {
-    // Pass1 Step 3: This is a function that recognizes a number that can be parsed into a u32.
+    // Pass1 Step 3: This is a function that recognizes a number that can be parsed into a `u32`.
     // First, look at step 4, which defines a bunch of helper types. You will be routed back here.
     // Pass1 Step 6: This is our first use of a native winnow parser: `take_while`. This combinator
     // consumes inputs as long as the predicate matches. This is an example of a parser matching
@@ -279,11 +265,11 @@ fn number_intermediate<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, 
     // digits, the parser will match and consume those digits. Then...
     parse1_intermediate(take_while(1.., AsChar::is_dec_digit), |_raw, span, out| {
         // ...once we have captured the digits, we use our own Diagnostics system to report an error
-        // if this doesn't parse to an i32. While we return a u32, we ensure it can parse to an i32
-        // so we can safely negate it without running into overflow issues. This implementation is
-        // very deliberate. winnow offers things like `verify` and `try_map` that allow us to reject
-        // matched tokens. We could have implemented this to reject the tokens if they didn't parse
-        // into a u32, but if we did, we'd end up with undesirable results. For example, we
+        // if this doesn't parse to an i32. While we return a `u32`, we ensure it can parse to an
+        // i32 so we can safely negate it without running into overflow issues. This implementation
+        // is very deliberate. winnow offers things like `verify` and `try_map` that allow us to
+        // reject matched tokens. We could have implemented this to reject the tokens if they didn't
+        // parse into a `u32`, but if we did, we'd end up with undesirable results. For example, we
         // parsed a 20-digit number, the rule would fail, which would cause later in the main loop
         // to consume just the first digit as an "unknown". Then we'd try on a 19-digit number,
         // which would do the same, consuming one digit at a time until we finally got something
@@ -416,15 +402,6 @@ fn dynamic_leader<'s>() -> impl Parser1<'s> {
             ']',
         ),
         |_raw, _span, name_span| Pass1::DynamicLeader { name_span },
-    )
-}
-
-fn articulation<'s>() -> impl Parser1<'s> {
-    parse1_token(
-        delimited('(', take_until(0.., ')').with_span(), ')'),
-        |_raw, _span, (_, inner_span)| Pass1::Articulation {
-            inner_span: inner_span.into(),
-        },
     )
 }
 
@@ -563,7 +540,6 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
                     _ => None,
                 },
                 LexState::NoteLine => match ch {
-                    '(' => parse_next!(articulation()),
                     x if NOTE_PUNCTUATION.contains(x) => parse_next!(punctuation()),
                     x if AsChar::is_alpha(x) => parse_next!(note_name()),
                     _ => None,

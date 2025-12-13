@@ -63,8 +63,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        353,
-        356
+        356,
+        359
       ],
       "data": {
         "Note": {
@@ -100,14 +100,14 @@
       "repeat_depth": 0,
       "span": [
         335,
-        339
+        340
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "2:e~",
+            "text": "2:e:~",
             "note_name": "e",
             "tuning": {
               "scale_name": "default",

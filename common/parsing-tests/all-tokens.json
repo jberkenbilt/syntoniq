@@ -3178,108 +3178,7 @@
       {
         "span": [
           651,
-          654
-        ],
-        "value": {
-          "raw": "(>)",
-          "t": {
-            "Articulation": {
-              "inner_span": [
-                652,
-                653
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          654,
-          655
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          655,
-          695
-        ],
-        "value": {
-          "raw": "; comment in the middle of a score block",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          695,
-          696
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          696,
-          702
-        ],
-        "value": {
-          "raw": "[p1.1]",
-          "t": {
-            "NoteLeader": {
-              "name_span": [
-                697,
-                699
-              ],
-              "note": {
-                "span": [
-                  700,
-                  701
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          702,
-          706
-        ],
-        "value": {
-          "raw": "    ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          706,
-          707
-        ],
-        "value": {
-          "raw": "1",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  706,
-                  707
-                ],
-                "value": 1
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          707,
-          708
+          652
         ],
         "value": {
           "raw": ":",
@@ -3288,137 +3187,61 @@
       },
       {
         "span": [
-          708,
-          709
+          652,
+          653
         ],
         "value": {
-          "raw": "d",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          709,
-          712
-        ],
-        "value": {
-          "raw": "   ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          712,
-          713
-        ],
-        "value": {
-          "raw": "c",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          713,
-          716
-        ],
-        "value": {
-          "raw": "   ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          716,
-          717
-        ],
-        "value": {
-          "raw": "d",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          717,
-          720
-        ],
-        "value": {
-          "raw": "   ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          720,
-          721
-        ],
-        "value": {
-          "raw": "c",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          721,
-          726
-        ],
-        "value": {
-          "raw": "     ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          726,
-          727
-        ],
-        "value": {
-          "raw": "|",
+          "raw": ">",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          727,
-          733
+          653,
+          654
         ],
         "value": {
-          "raw": "      ",
-          "t": "Space"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
         "span": [
-          733,
-          734
+          654,
+          694
         ],
         "value": {
-          "raw": "e",
-          "t": "NoteName"
+          "raw": "; comment in the middle of a score block",
+          "t": "Comment"
         }
       },
       {
         "span": [
-          734,
-          737
+          694,
+          695
         ],
         "value": {
-          "raw": "   ",
-          "t": "Space"
+          "raw": "\n",
+          "t": "Newline"
         }
       },
       {
         "span": [
-          737,
-          738
+          695,
+          701
         ],
         "value": {
-          "raw": "1",
+          "raw": "[p1.1]",
           "t": {
-            "Number": {
-              "n": {
+            "NoteLeader": {
+              "name_span": [
+                696,
+                698
+              ],
+              "note": {
                 "span": [
-                  737,
-                  738
+                  699,
+                  700
                 ],
                 "value": 1
               }
@@ -3428,8 +3251,188 @@
       },
       {
         "span": [
-          738,
-          739
+          701,
+          705
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          705,
+          706
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  705,
+                  706
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          706,
+          707
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          707,
+          708
+        ],
+        "value": {
+          "raw": "d",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          708,
+          711
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          711,
+          712
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          712,
+          715
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          715,
+          716
+        ],
+        "value": {
+          "raw": "d",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          716,
+          719
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          719,
+          720
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          720,
+          725
+        ],
+        "value": {
+          "raw": "     ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          725,
+          726
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          726,
+          732
+        ],
+        "value": {
+          "raw": "      ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          732,
+          733
+        ],
+        "value": {
+          "raw": "e",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          733,
+          736
+        ],
+        "value": {
+          "raw": "   ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          736,
+          737
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  736,
+                  737
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          737,
+          738
         ],
         "value": {
           "raw": "/",
@@ -3438,8 +3441,8 @@
       },
       {
         "span": [
-          739,
-          740
+          738,
+          739
         ],
         "value": {
           "raw": "2",
@@ -3447,8 +3450,8 @@
             "Number": {
               "n": {
                 "span": [
-                  739,
-                  740
+                  738,
+                  739
                 ],
                 "value": 2
               }
@@ -3458,8 +3461,8 @@
       },
       {
         "span": [
-          740,
-          741
+          739,
+          740
         ],
         "value": {
           "raw": ":",
@@ -3468,12 +3471,22 @@
       },
       {
         "span": [
-          741,
-          742
+          740,
+          741
         ],
         "value": {
           "raw": "d",
           "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          741,
+          742
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
@@ -3482,24 +3495,14 @@
           743
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          743,
-          744
-        ],
-        "value": {
           "raw": "e",
           "t": "NoteName"
         }
       },
       {
         "span": [
-          744,
-          747
+          743,
+          746
         ],
         "value": {
           "raw": "   ",
@@ -3508,8 +3511,8 @@
       },
       {
         "span": [
-          747,
-          748
+          746,
+          747
         ],
         "value": {
           "raw": "d",
@@ -3518,8 +3521,8 @@
       },
       {
         "span": [
-          748,
-          749
+          747,
+          748
         ],
         "value": {
           "raw": " ",
@@ -3528,8 +3531,8 @@
       },
       {
         "span": [
-          749,
-          750
+          748,
+          749
         ],
         "value": {
           "raw": "e",
@@ -3538,8 +3541,8 @@
       },
       {
         "span": [
-          750,
-          754
+          749,
+          753
         ],
         "value": {
           "raw": "    ",
@@ -3548,12 +3551,22 @@
       },
       {
         "span": [
-          754,
-          755
+          753,
+          754
         ],
         "value": {
           "raw": "d",
           "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          754,
+          755
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
         }
       },
       {
@@ -6655,10 +6668,10 @@
       {
         "span": [
           589,
-          655
+          654
         ],
         "value": {
-          "raw": "[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g(>)\n",
+          "raw": "[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g:>\n",
           "t": {
             "NoteLine": {
               "leader": {
@@ -6691,7 +6704,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           597,
@@ -6702,6 +6714,7 @@
                           2
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           601,
@@ -6709,8 +6722,7 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6721,8 +6733,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           603,
@@ -6730,8 +6742,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6742,8 +6753,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           605,
@@ -6751,8 +6762,7 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6763,8 +6773,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           607,
@@ -6772,8 +6782,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6784,8 +6793,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           609,
@@ -6793,8 +6802,7 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6805,8 +6813,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           611,
@@ -6814,8 +6822,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6826,8 +6833,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           613,
@@ -6835,8 +6842,7 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6847,8 +6853,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           617,
@@ -6856,8 +6862,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6880,8 +6885,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           626,
@@ -6889,8 +6894,7 @@
                         ],
                         "value": "f"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6901,8 +6905,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           628,
@@ -6910,8 +6914,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6922,8 +6925,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           634,
@@ -6931,8 +6934,7 @@
                         ],
                         "value": "f"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6943,8 +6945,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           636,
@@ -6952,8 +6954,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6964,8 +6965,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           640,
@@ -6973,8 +6974,7 @@
                         ],
                         "value": "f"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -6985,8 +6985,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           642,
@@ -6994,8 +6994,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
@@ -7006,8 +7005,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           647,
@@ -7015,19 +7014,19 @@
                         ],
                         "value": "f"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
                     650,
-                    654
+                    653
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [
+                      "duration": null,
+                      "modifiers": [
                         {
                           "span": [
                             652,
@@ -7036,7 +7035,6 @@
                           "value": "Accent"
                         }
                       ],
-                      "duration": null,
                       "name": {
                         "span": [
                           650,
@@ -7044,8 +7042,7 @@
                         ],
                         "value": "g"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -7056,8 +7053,8 @@
       },
       {
         "span": [
-          655,
-          695
+          654,
+          694
         ],
         "value": {
           "raw": "; comment in the middle of a score block",
@@ -7066,8 +7063,8 @@
       },
       {
         "span": [
-          695,
-          696
+          694,
+          695
         ],
         "value": {
           "raw": "\n",
@@ -7076,30 +7073,30 @@
       },
       {
         "span": [
-          696,
+          695,
           759
         ],
         "value": {
-          "raw": "[p1.1]    1:d   c   d   c     |      e   1/2:d e   d e    d~ e\n",
+          "raw": "[p1.1]    1:d   c   d   c     |      e   1/2:d e   d e    d:~ e\n",
           "t": {
             "NoteLine": {
               "leader": {
                 "span": [
-                  696,
-                  702
+                  695,
+                  701
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      697,
-                      699
+                      696,
+                      698
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      700,
-                      701
+                      699,
+                      700
                     ],
                     "value": 1
                   }
@@ -7108,244 +7105,239 @@
               "notes": [
                 {
                   "span": [
-                    706,
-                    709
+                    705,
+                    708
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
-                          706,
-                          707
+                          705,
+                          706
                         ],
                         "value": [
                           1,
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          708,
-                          709
+                          707,
+                          708
                         ],
                         "value": "d"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    712,
-                    713
+                    711,
+                    712
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          712,
-                          713
+                          711,
+                          712
                         ],
                         "value": "c"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    716,
-                    717
+                    715,
+                    716
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          716,
-                          717
+                          715,
+                          716
                         ],
                         "value": "d"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    720,
-                    721
+                    719,
+                    720
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          720,
-                          721
+                          719,
+                          720
                         ],
                         "value": "c"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    726,
-                    727
+                    725,
+                    726
                   ],
                   "value": {
                     "BarCheck": [
-                      726,
-                      727
+                      725,
+                      726
                     ]
                   }
                 },
                 {
                   "span": [
-                    733,
-                    734
+                    732,
+                    733
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          733,
-                          734
+                          732,
+                          733
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    737,
-                    742
+                    736,
+                    741
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
-                          737,
-                          740
+                          736,
+                          739
                         ],
                         "value": [
                           1,
                           2
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          741,
-                          742
+                          740,
+                          741
                         ],
                         "value": "d"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    743,
-                    744
+                    742,
+                    743
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          743,
-                          744
+                          742,
+                          743
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    747,
-                    748
+                    746,
+                    747
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          747,
-                          748
+                          746,
+                          747
                         ],
                         "value": "d"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    749,
-                    750
+                    748,
+                    749
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
-                          749,
-                          750
+                          748,
+                          749
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 },
                 {
                   "span": [
-                    754,
+                    753,
                     756
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [
+                        {
+                          "span": [
+                            755,
+                            756
+                          ],
+                          "value": "Sustain"
+                        }
+                      ],
                       "name": {
                         "span": [
-                          754,
-                          755
+                          753,
+                          754
                         ],
                         "value": "d"
                       },
-                      "octave": null,
-                      "sustained": [
-                        755,
-                        756
-                      ]
+                      "octave": null
                     }
                   }
                 },
@@ -7356,8 +7348,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           757,
@@ -7365,8 +7357,7 @@
                         ],
                         "value": "e"
                       },
-                      "octave": null,
-                      "sustained": null
+                      "octave": null
                     }
                   }
                 }
@@ -7441,7 +7432,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           777,
@@ -7452,6 +7442,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           779,
@@ -7465,8 +7456,7 @@
                           781
                         ],
                         "value": -1
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 },
@@ -7477,8 +7467,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           783,
@@ -7492,8 +7482,7 @@
                           786
                         ],
                         "value": -1
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 },
@@ -7516,7 +7505,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           794,
@@ -7527,6 +7515,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           796,
@@ -7540,8 +7529,7 @@
                           799
                         ],
                         "value": 2
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 },
@@ -7552,8 +7540,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           810,
@@ -7567,8 +7555,7 @@
                           813
                         ],
                         "value": -2
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 }
@@ -7682,8 +7669,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           865,
@@ -7697,8 +7684,7 @@
                           867
                         ],
                         "value": -1
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 }
@@ -7785,7 +7771,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           928,
@@ -7796,6 +7781,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           930,
@@ -7809,8 +7795,7 @@
                           932
                         ],
                         "value": -1
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 },
@@ -7821,7 +7806,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           942,
@@ -7832,6 +7816,7 @@
                           1
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           944,
@@ -7845,8 +7830,7 @@
                           946
                         ],
                         "value": -1
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 },
@@ -7857,7 +7841,6 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": {
                         "span": [
                           947,
@@ -7868,6 +7851,7 @@
                           2
                         ]
                       },
+                      "modifiers": [],
                       "name": {
                         "span": [
                           951,
@@ -7881,8 +7865,7 @@
                           953
                         ],
                         "value": -1
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 },
@@ -7893,8 +7876,8 @@
                   ],
                   "value": {
                     "Regular": {
-                      "articulation": [],
                       "duration": null,
+                      "modifiers": [],
                       "name": {
                         "span": [
                           954,
@@ -7908,8 +7891,7 @@
                           956
                         ],
                         "value": -1
-                      },
-                      "sustained": null
+                      }
                     }
                   }
                 }

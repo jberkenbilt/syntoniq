@@ -1,8 +1,8 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
-    Articulation, Dynamic, DynamicChange, DynamicLeader, DynamicLine, LayoutItemType, Note,
-    NoteLeader, NoteLine, RawDirective, RegularDynamic, RegularNote, ScaleBlock, Span, Spanned,
+    Dynamic, DynamicChange, DynamicLeader, DynamicLine, LayoutItemType, Note, NoteLeader, NoteLine,
+    NoteModifier, RawDirective, RegularDynamic, RegularNote, ScaleBlock, Span, Spanned,
 };
 use num_rational::Ratio;
 use serde::Serialize;
@@ -404,39 +404,46 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
     ) {
         let mut velocity: u8 = 72;
         let mut seen = HashSet::new();
-        let sustained = r_note.sustained.is_some();
+        let sustained = r_note.sustained();
         let mut shorten: Ratio<u32> = Ratio::from_integer(0);
-        for o in &r_note.articulation {
-            if !seen.insert(o.value) && !matches!(o.value, Articulation::Shorten) {
-                self.diags
-                    .err(code::SCORE, o.span, "accent marks may not be duplicated");
+        for m in &r_note.modifiers {
+            if !seen.insert(m.value) {
+                if matches!(m.value, NoteModifier::Marcato | NoteModifier::Accent) {
+                    self.diags
+                        .err(code::SCORE, m.span, "accent marks may not be duplicated");
+                }
+                if matches!(m.value, NoteModifier::Sustain) {
+                    self.diags
+                        .err(code::SCORE, m.span, "tie may not be duplicated");
+                }
             }
-            match o.value {
-                Articulation::Accent => {
-                    if seen.contains(&Articulation::Marcato) {
+            match m.value {
+                NoteModifier::Accent => {
+                    if seen.contains(&NoteModifier::Marcato) {
                         self.diags
-                            .err(code::SCORE, o.span, "accent may not appear with marcato");
+                            .err(code::SCORE, m.span, "accent may not appear with marcato");
                     }
                     velocity = cmp::max(velocity, 96);
                 }
-                Articulation::Marcato => {
-                    if seen.contains(&Articulation::Accent) {
+                NoteModifier::Marcato => {
+                    if seen.contains(&NoteModifier::Accent) {
                         self.diags
-                            .err(code::SCORE, o.span, "marcato may not appear with accent");
+                            .err(code::SCORE, m.span, "marcato may not appear with accent");
                     }
                     velocity = cmp::max(velocity, 108);
                 }
-                Articulation::Shorten => {
+                NoteModifier::Shorten => {
                     // TODO: Make this amount configurable
                     shorten += Ratio::new(1, 4);
                     if sustained {
                         self.diags.err(
                             code::SCORE,
-                            o.span,
+                            m.span,
                             "shorten may not appear with a sustained note",
                         );
                     }
                 }
+                NoteModifier::Sustain => {}
             }
         }
         value.velocity = velocity;
@@ -470,9 +477,9 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
         let prev = &mut pending.item.value.value;
         if &prev.absolute_pitch == absolute_pitch
             && !r_note
-                .articulation
+                .modifiers
                 .iter()
-                .any(|x| matches!(x.value, Articulation::Accent | Articulation::Marcato))
+                .any(|x| matches!(x.value, NoteModifier::Accent | NoteModifier::Marcato))
         {
             return Some(pending);
         }
@@ -577,7 +584,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                     self.adjust_velocity_and_time(r_note, time, &mut pending.item.value.value);
                     // If the current note is sustained, what we have is still pending. Otherwise,
                     // add it to the timeline.
-                    if r_note.sustained.is_some() {
+                    if r_note.sustained() {
                         self.score.pending_notes.insert(part_note, pending);
                     } else {
                         self.score.insert_note(pending);
