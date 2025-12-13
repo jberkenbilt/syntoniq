@@ -515,14 +515,13 @@ mod tests {
         // for rectangular keyboards and 2 for hexagonal keyboards, though one could conceive of
         // a hexagonal keyboard situated at 30 degrees and arranged so that every third row is
         // vertically aligned one column off. The arithmetic may feel inverted in this test.
-        // Remember that the arguments here are anchor deltas. If the anchor is at 5, 6 and you
-        // ask for 9, 6, the unstaggered column delta would be 0 (6 - 6). If there is a stagger of
-        // 2, then row 7, which is 4 rows up, would have its columns 2 spaces to the right (4 / 2).
+        // Remember that the arguments here are anchor deltas. If you ask for 9, 6 when the anchor
+        // is at 5, 6, the unstaggered column delta would be 0 (6 - 6). If there is a stagger of 2,
+        // then row 7, which is 4 rows up, would have its columns 2 spaces to the right (4 / 2).
         // That means we need to *add* 2 to the requested delta so that we go two columns further
         // to the *left* when we ask the mapping what character would be that delta. In other words,
-        // if we are working in a layout with a stagger value of 2, we have to go 2 steps farther
-        // to the left, which *increases* our delta, to find the note in a lookup table that is
-        // not staggered.
+        // to find the note in a lookup table that is not staggered in a layout with a stagger value
+        // of 2, we have to go 2 steps farther to the left, which *increases* our delta.
         assert!(mm.note_at_anchor_delta(0, -2, 2).is_none());
         assert!(mm.note_at_anchor_delta(1, 2, 2).is_none());
         assert!(mm.note_at_anchor_delta(4, 9, 2).is_none());

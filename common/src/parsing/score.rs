@@ -150,7 +150,9 @@ pub struct Scale<'s> {
 
 #[derive(Serialize, Clone, ToStatic)]
 pub struct ScaleDegree {
+    /// Interval between pitch and scale base; may fall outside of cycle
     pub base_relative: Pitch,
+    /// Scale degree of base_relative; may extend outside of cycle
     pub degree: i32,
 }
 
@@ -191,39 +193,39 @@ impl<'s> Scale<'s> {
         // Gather notes based on normalized base pitch and cycle offset.
         struct Intermediate<'s> {
             name: Cow<'s, str>,
-            orig_base: Pitch,
-            normalized_base: Pitch,
+            orig_relative: Pitch,
+            normalized_relative: Pitch,
             cycle_offset: i32,
         }
 
-        let one_as_pitch = Pitch::from(Ratio::from_integer(1));
+        let one_as_pitch = Pitch::unit();
         let cycle_as_pitch = Pitch::from(definition.cycle);
         let inverted_cycle_as_pitch = cycle_as_pitch.invert();
         let mut intermediate: Vec<Intermediate> = Vec::new();
         let mut distinct_base_relative = HashSet::new();
-        for (name, orig_base) in note_pitches {
+        for (name, orig_relative) in note_pitches {
             // This may not be the most efficient way to calculate this, but it's probably the
             // clearest. Calculate the cycle offset to normalize this to within a cycle.
-            let mut normalized_base = orig_base.clone();
+            let mut normalized_relative = orig_relative.clone();
             let mut cycle_offset = 0;
-            while normalized_base < one_as_pitch {
-                normalized_base *= &cycle_as_pitch;
+            while normalized_relative < one_as_pitch {
+                normalized_relative *= &cycle_as_pitch;
                 cycle_offset -= 1;
             }
-            while normalized_base >= cycle_as_pitch {
-                normalized_base *= &inverted_cycle_as_pitch;
+            while normalized_relative >= cycle_as_pitch {
+                normalized_relative *= &inverted_cycle_as_pitch;
                 cycle_offset += 1;
             }
-            distinct_base_relative.insert(normalized_base.clone());
+            distinct_base_relative.insert(normalized_relative.clone());
             // Update the primary name map in case the only appearance of a pitch is not within
             // the cycle.
             pitch_primary_names
-                .entry(normalized_base.clone())
+                .entry(normalized_relative.clone())
                 .or_insert(name.clone());
             intermediate.push(Intermediate {
                 name,
-                orig_base,
-                normalized_base,
+                orig_relative,
+                normalized_relative,
                 cycle_offset,
             });
         }
@@ -245,9 +247,9 @@ impl<'s> Scale<'s> {
         let notes = intermediate
             .into_iter()
             .map(|i| {
-                let degree = degrees[&i.normalized_base];
+                let degree = degrees[&i.normalized_relative];
                 let s = ScaleDegree {
-                    base_relative: i.orig_base,
+                    base_relative: i.orig_relative,
                     degree: degree + (degrees_per_cycle * i.cycle_offset),
                 };
                 (i.name, s)
@@ -544,7 +546,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                     let part_note = PartNote { part, note_number };
                     // At this moment, there may be a pending sustained note that this note may
                     // be tied to, and this note may itself be sustained. If there is a pending
-                    // note and we are tied to it, extend the pending note and work with it.
+                    // note that we are tied to, extend the pending note and work with it.
                     // Otherwise, complete any pending note and create a new one for the current
                     // note. Then, if this note is sustained, save it; otherwise, add it to the
                     // timeline.
