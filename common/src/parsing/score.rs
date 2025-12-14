@@ -7,6 +7,7 @@ use crate::parsing::model::{
 use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
+use std::cell::RefCell;
 use std::collections::Bound::Excluded;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::sync::atomic::AtomicI32;
@@ -34,7 +35,7 @@ pub struct LayoutKey<'s> {
 pub struct Score<'s> {
     src: &'s str,
     _version: u32,
-    scales: HashMap<Cow<'s, str>, Arc<Scale<'s>>>,
+    scales: HashMap<Cow<'s, str>, RefCell<Scale<'s>>>,
     pending_score_block: Option<ScoreBlock<'s>>,
     score_blocks: Vec<ScoreBlock<'s>>,
     /// empty string key is default tuning
@@ -109,9 +110,10 @@ pub(crate) mod scale_notes {
     use serde::Serializer;
     use std::borrow::Cow;
     use std::collections::BTreeMap;
+    use std::sync::Arc;
 
     pub fn serialize<S: Serializer>(
-        v: &BTreeMap<Cow<str>, ScaleDegree>,
+        v: &BTreeMap<Cow<str>, Arc<ScaleDegree>>,
         s: S,
     ) -> Result<S::Ok, S::Error> {
         let mut notes: Vec<NamedScaleDegree> = v
@@ -128,9 +130,14 @@ pub struct Scale<'s> {
     #[serde(flatten)]
     pub definition: ScaleDefinition<'s>,
     #[serde(with = "scale_notes")]
-    pub notes: BTreeMap<Cow<'s, str>, ScaleDegree>,
+    pub notes: BTreeMap<Cow<'s, str>, Arc<ScaleDegree>>,
     pub primary_names: Vec<Cow<'s, str>>,
     pub pitches: Vec<Pitch>,
+}
+impl<'s> Scale<'s> {
+    pub fn get_note(&mut self, name: &str) -> Option<Arc<ScaleDegree>> {
+        self.notes.get(name).cloned()
+    }
 }
 
 #[derive(Serialize, Clone, ToStatic)]
@@ -168,7 +175,7 @@ impl<'s> Scale<'s> {
         definition: ScaleDefinition<'s>,
         note_pitches: HashMap<Cow<'s, str>, Pitch>,
         mut pitch_primary_names: HashMap<Pitch, Cow<'s, str>>,
-    ) -> Arc<Self> {
+    ) -> Self {
         // For each note, calculate its pitch relative to the base and normalized to within the
         // cycle. The results in a revised base-relative pitch and cycle offset. Sort the resulting
         // normalized base-relative pitches to determine scale degrees. It is normal for scales to
@@ -237,15 +244,15 @@ impl<'s> Scale<'s> {
                     base_relative: i.orig_relative,
                     degree: degree + (degrees_per_cycle * i.cycle_offset),
                 };
-                (i.name, s)
+                (i.name, Arc::new(s))
             })
             .collect();
-        Arc::new(Self {
+        Self {
             definition,
             notes,
             primary_names,
             pitches,
-        })
+        }
     }
 }
 
@@ -261,7 +268,7 @@ pub struct ScoreBlock<'s> {
     pub dynamic_lines: Vec<DynamicLine<'s>>,
 }
 
-pub(crate) static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
+fn default_scale<'s>() -> RefCell<Scale<'s>> {
     let start_pitch = Pitch::unit();
     let mut pitches = Vec::new();
     let mut next_pitch = start_pitch.clone();
@@ -313,22 +320,22 @@ pub(crate) static DEFAULT_SCALE: LazyLock<Arc<Scale>> = LazyLock::new(|| {
     .into_iter()
     .map(|(k, v)| (k, Cow::Borrowed(v)))
     .collect();
-    Scale::new(
+    RefCell::new(Scale::new(
         ScaleDefinition {
             span: (0..1).into(),
-            name: Cow::Borrowed("default"),
+            name: Cow::Borrowed(DEFAULT_SCALE_NAME),
             cycle: Ratio::from_integer(2),
         },
         notes,
         pitch_primary_names,
-    )
-});
+    ))
+}
+
+static DEFAULT_SCALE_NAME: &str = "default";
 static DEFAULT_TUNING: LazyLock<Tuning<'static>> = LazyLock::new(|| {
-    let scale = DEFAULT_SCALE.clone();
-    let scale_name = scale.definition.name.clone();
     let base_pitch = Pitch::must_parse("220*^1|4");
     Tuning {
-        scale_name,
+        scale_name: Cow::Borrowed(DEFAULT_SCALE_NAME),
         base_pitch,
     }
 });
@@ -523,17 +530,18 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                 && let Some(scale) = self.score.scales.get(&tuning.scale_name)
             {
                 let note_name = r_note.note.name.value;
-                if let Some(scale_degree) = scale.notes.get(note_name).cloned() {
+                if let Some(scale_degree) = { scale.borrow_mut().get_note(note_name).clone() } {
                     let time = beats_so_far + self.score.line_start_time;
                     let part = line.leader.value.name.value;
                     let note_number = line.leader.value.note.value;
                     let cycle = r_note.note.octave.map(Spanned::value).unwrap_or(0);
                     let mut absolute_pitch = &tuning.base_pitch * &scale_degree.base_relative;
                     if cycle != 0 {
-                        absolute_pitch *= &Pitch::from(scale.definition.cycle.pow(cycle as i32));
+                        absolute_pitch *=
+                            &Pitch::from(scale.borrow().definition.cycle.pow(cycle as i32));
                     }
                     let absolute_scale_degree =
-                        scale_degree.degree + (cycle as i32 * scale.pitches.len() as i32);
+                        scale_degree.degree + (cycle as i32 * scale.borrow().pitches.len() as i32);
                     let end_time = time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats);
                     let part_note = PartNote { part, note_number };
                     // At this moment, there may be a pending sustained note that this note may
@@ -844,8 +852,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
 
 impl<'s> Score<'s> {
     pub fn new(src: &'s str, s: Syntoniq) -> Self {
-        let default_scale = DEFAULT_SCALE.clone();
-        let scales = [(Cow::Borrowed("default"), default_scale.clone())]
+        let scales = [(Cow::Borrowed(DEFAULT_SCALE_NAME), default_scale())]
             .into_iter()
             .collect();
         let timeline = Timeline {
@@ -898,7 +905,12 @@ impl<'s> Score<'s> {
             .into_iter()
             .map(|(_, layout)| Arc::new(mem::take(&mut *layout.write().unwrap())))
             .collect();
-        let scales: Arc<ScalesByName> = Arc::new(self.scales.into_iter().collect());
+        let scales: Arc<ScalesByName> = Arc::new(
+            self.scales
+                .into_iter()
+                .map(|(name, scale)| (name, Arc::new(scale.into_inner())))
+                .collect(),
+        );
         let mut timeline = self.timeline;
         timeline.scales = scales.clone();
         let layouts = Layouts { scales, layouts };
@@ -1010,14 +1022,18 @@ impl<'s> Score<'s> {
             pitch_to_name,
         );
         let span = scale.definition.span;
-        if let Some(old) = self.scales.insert(name.clone(), scale.clone()) {
+        let scale = RefCell::new(scale);
+        if let Some(old) = self.scales.insert(name.clone(), scale) {
             diags.push(
                 Diagnostic::new(
                     code::SCALE,
                     span,
                     format!("a scale called '{}' has already been defined", name),
                 )
-                .with_context(old.definition.span, "here is the previous definition"),
+                .with_context(
+                    old.borrow().definition.span,
+                    "here is the previous definition",
+                ),
             );
         }
     }
@@ -1102,7 +1118,7 @@ impl<'s> Score<'s> {
     }
 
     fn use_scale(&mut self, diags: &Diagnostics, directive: UseScale<'s>) {
-        let Some(scale) = self.scales.get(&directive.scale.value).cloned() else {
+        if !self.scales.contains_key(&directive.scale.value) {
             diags.err(
                 code::TUNE,
                 directive.scale.span,
@@ -1116,7 +1132,7 @@ impl<'s> Score<'s> {
             .iter()
             .map(|(part, existing)| (part.clone(), existing.base_pitch.clone()))
             .collect();
-        self.apply_tuning(Some(&scale.definition.name), cur_tunings, base_pitches);
+        self.apply_tuning(Some(&directive.scale.value), cur_tunings, base_pitches);
     }
 
     fn note_pitch_in_tuning(
@@ -1127,7 +1143,7 @@ impl<'s> Score<'s> {
         note: &Spanned<&str>,
     ) -> Pitch {
         if let Some(scale) = self.scales.get(&tuning.scale_name)
-            && let Some(sd) = scale.notes.get(&Cow::Borrowed(note.value))
+            && let Some(sd) = { scale.borrow_mut().get_note(note.value) }
         {
             &sd.base_relative * &tuning.base_pitch
         } else {
@@ -1478,11 +1494,14 @@ impl<'s> Score<'s> {
         &self,
         diags: &Diagnostics,
         scale_name: &Option<Spanned<Cow<'s, str>>>,
-    ) -> Option<Arc<Scale<'s>>> {
+    ) -> Option<Cow<'s, str>> {
         let Some(scale) = scale_name else {
-            return Some(DEFAULT_SCALE.clone());
+            return Some(Cow::Borrowed(DEFAULT_SCALE_NAME));
         };
-        let r = self.scales.get(&scale.value);
+        let r = self
+            .scales
+            .get(&scale.value)
+            .map(|x| x.borrow().definition.name.clone());
         if r.is_none() {
             diags.err(
                 code::DIRECTIVE_USAGE,
@@ -1490,7 +1509,7 @@ impl<'s> Score<'s> {
                 format!("scale '{}' is not known", scale.value),
             );
         }
-        r.cloned()
+        r
     }
 
     pub fn define_isomorphic_mapping(
@@ -1498,7 +1517,7 @@ impl<'s> Score<'s> {
         diags: &Diagnostics,
         directive: DefineIsomorphicMapping<'s>,
     ) {
-        let Some(scale) = self.check_known_scale(diags, &directive.scale) else {
+        let Some(scale_name) = self.check_known_scale(diags, &directive.scale) else {
             return;
         };
         let mapping = MappingDetails::Isomorphic(IsomorphicMapping {
@@ -1509,7 +1528,7 @@ impl<'s> Score<'s> {
         let mapping_data = MappingData {
             span: directive.mapping.span,
             mapping: Arc::new(mapping),
-            scale_name: scale.definition.name.clone(),
+            scale_name,
         };
         self.insert_mapping(diags, directive.mapping.value, mapping_data);
     }
@@ -1519,7 +1538,7 @@ impl<'s> Score<'s> {
         diags: &Diagnostics,
         directive: DefineManualMapping<'s>,
     ) {
-        let Some(scale) = self.check_known_scale(diags, &directive.scale) else {
+        let Some(scale_name) = self.check_known_scale(diags, &directive.scale) else {
             // Skip additional diagnostics if the scale is not known.
             return;
         };
@@ -1548,7 +1567,9 @@ impl<'s> Score<'s> {
                 }
                 match &item.value.item {
                     LayoutItemType::Note(note) => {
-                        match scale.notes.get(&Cow::Borrowed(note.value.name.value)) {
+                        let scale = self.scales.get(&scale_name).unwrap();
+                        let sd = scale.borrow_mut().get_note(note.value.name.value);
+                        match sd {
                             None => {
                                 diags.err(
                                     code::LAYOUT,
@@ -1559,12 +1580,13 @@ impl<'s> Score<'s> {
                                 note_row.push(None);
                             }
                             Some(sd) => {
+                                let scale_ref = scale.borrow();
                                 let cycle = note.value.octave.map(|x| x.value as i32).unwrap_or(0);
                                 let degree =
-                                    sd.degree.rem_euclid(scale.pitches.len() as i32) as u32;
-                                let base_interval = scale.pitches[degree as usize].clone();
+                                    sd.degree.rem_euclid(scale_ref.pitches.len() as i32) as u32;
+                                let base_interval = scale_ref.pitches[degree as usize].clone();
                                 let base_factor = &sd.base_relative
-                                    * &Pitch::from(scale.definition.cycle.pow(cycle));
+                                    * &Pitch::from(scale_ref.definition.cycle.pow(cycle));
                                 let name = score_helpers::format_note_cycle(
                                     Cow::Borrowed(note.value.name.value),
                                     cycle,
@@ -1621,7 +1643,7 @@ impl<'s> Score<'s> {
         let mapping_data = MappingData {
             span: directive.mapping.span,
             mapping: Arc::new(mapping),
-            scale_name: scale.definition.name.clone(),
+            scale_name,
         };
         self.insert_mapping(diags, directive.mapping.value, mapping_data);
     }
