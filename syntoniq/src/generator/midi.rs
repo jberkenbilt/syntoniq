@@ -202,11 +202,21 @@ fn set_channel_instrument(
 }
 
 struct MtsData<'s> {
+    scales: &'s ScalesByName<'s>,
     tuning_data: BTreeMap<&'s Tuning<'s>, Vec<TuningData>>,
     channel_data: BTreeMap<MtsChannelKey<'s>, PortChannel>,
     track_data: BTreeMap<MtsTrackKey<'s>, usize>,
 }
 impl<'s> MtsData<'s> {
+    fn note_offset(&self, note_event: &NoteEvent) -> i32 {
+        let scale_name = &note_event.value.tuning.scale_name;
+        let note_name = note_event.value.note_name;
+        let cycle = note_event.value.cycle;
+        let scale = self.scales.get(scale_name).unwrap();
+        let scale_degree = scale.notes.get(note_name).unwrap();
+        scale_degree.degree + (cycle as i32 * scale.pitches.len() as i32)
+    }
+
     fn tuning_for_note(&'s self, key: &'s Tuning<'s>, note: i32) -> anyhow::Result<&'s TuningData> {
         let data = self
             .tuning_data
@@ -222,10 +232,8 @@ impl<'s> MtsData<'s> {
         score_part: &str,
         note_event: &NoteEvent,
     ) -> anyhow::Result<MidiNoteData> {
-        let tuning_data = self.tuning_for_note(
-            &note_event.value.tuning,
-            note_event.value.absolute_scale_degree,
-        )?;
+        let absolute_scale_degree: i32 = self.note_offset(note_event);
+        let tuning_data = self.tuning_for_note(&note_event.value.tuning, absolute_scale_degree)?;
         let port_channel = self
             .channel_data
             .get(&MtsChannelKey {
@@ -234,7 +242,7 @@ impl<'s> MtsData<'s> {
             })
             .cloned()
             .ok_or_else(|| anyhow!("unknown channel for note"))?;
-        let key = u8::try_from(note_event.value.absolute_scale_degree + tuning_data.midi_offset)
+        let key = u8::try_from(absolute_scale_degree + tuning_data.midi_offset)
             .ok()
             .and_then(u7::try_from)
             .ok_or_else(|| anyhow!("internal error: note out of range"))?;
@@ -269,10 +277,8 @@ impl<'s> MtsData<'s> {
             let TimelineData::Note(note_event) = &event.data else {
                 continue;
             };
-            let tuning = self.tuning_for_note(
-                &note_event.value.tuning,
-                note_event.value.absolute_scale_degree,
-            )?;
+            let absolute_scale_degree = self.note_offset(note_event);
+            let tuning = self.tuning_for_note(&note_event.value.tuning, absolute_scale_degree)?;
             let score_part = note_event.part_note.part;
             channel_users.insert(MtsChannelKey {
                 score_part,
@@ -316,7 +322,7 @@ impl<'s> MtsData<'s> {
             let TimelineData::Note(note_event) = &event.data else {
                 continue;
             };
-            let scale_degree = note_event.value.absolute_scale_degree;
+            let scale_degree = self.note_offset(note_event);
             let entry = tunings
                 .entry(&note_event.value.tuning)
                 .or_insert(NoteRange {
@@ -941,6 +947,7 @@ impl<'s> MidiGenerator<'s> {
         let micros_per_beat: u24 = 833333.into(); // 72 BPM -- changed by tempo events
         let pitch_data = match style {
             MidiStyle::Mts => PitchData::Mts(MtsData {
+                scales: &timeline.scales,
                 tuning_data: Default::default(),
                 channel_data: Default::default(),
                 track_data: Default::default(),

@@ -42,7 +42,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "55/2*^1|4",
-            "absolute_scale_degree": -93,
+            "cycle": -3,
             "velocity": 72,
             "end_time": [
               1,
@@ -78,7 +78,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "55/2*^67|124",
-            "absolute_scale_degree": -84,
+            "cycle": -3,
             "velocity": 72,
             "end_time": [
               1,
@@ -114,7 +114,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "55/2*^103|124",
-            "absolute_scale_degree": -75,
+            "cycle": -3,
             "velocity": 72,
             "end_time": [
               3,
@@ -150,7 +150,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "55*^15|124",
-            "absolute_scale_degree": -66,
+            "cycle": -3,
             "velocity": 72,
             "end_time": [
               2,
@@ -186,7 +186,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "55*^1|4",
-            "absolute_scale_degree": -62,
+            "cycle": -2,
             "velocity": 72,
             "end_time": [
               5,
@@ -222,7 +222,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "55*^67|124",
-            "absolute_scale_degree": -53,
+            "cycle": -2,
             "velocity": 72,
             "end_time": [
               3,
@@ -258,7 +258,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "55*^103|124",
-            "absolute_scale_degree": -44,
+            "cycle": -2,
             "velocity": 72,
             "end_time": [
               7,
@@ -294,7 +294,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "110*^15|124",
-            "absolute_scale_degree": -35,
+            "cycle": -2,
             "velocity": 72,
             "end_time": [
               4,
@@ -330,7 +330,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "110*^1|4",
-            "absolute_scale_degree": -31,
+            "cycle": -1,
             "velocity": 72,
             "end_time": [
               9,
@@ -366,7 +366,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "110*^67|124",
-            "absolute_scale_degree": -22,
+            "cycle": -1,
             "velocity": 72,
             "end_time": [
               5,
@@ -402,7 +402,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "110*^103|124",
-            "absolute_scale_degree": -13,
+            "cycle": -1,
             "velocity": 72,
             "end_time": [
               11,
@@ -438,7 +438,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^15|124",
-            "absolute_scale_degree": -4,
+            "cycle": -1,
             "velocity": 72,
             "end_time": [
               6,
@@ -474,7 +474,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^1|4",
-            "absolute_scale_degree": 0,
+            "cycle": 0,
             "velocity": 72,
             "end_time": [
               13,
@@ -510,7 +510,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^67|124",
-            "absolute_scale_degree": 9,
+            "cycle": 0,
             "velocity": 72,
             "end_time": [
               7,
@@ -546,7 +546,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^103|124",
-            "absolute_scale_degree": 18,
+            "cycle": 0,
             "velocity": 72,
             "end_time": [
               15,
@@ -582,7 +582,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^15|124",
-            "absolute_scale_degree": 27,
+            "cycle": 0,
             "velocity": 72,
             "end_time": [
               8,
@@ -618,7 +618,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
-            "absolute_scale_degree": 31,
+            "cycle": 1,
             "velocity": 72,
             "end_time": [
               17,
@@ -654,7 +654,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^67|124",
-            "absolute_scale_degree": 40,
+            "cycle": 1,
             "velocity": 72,
             "end_time": [
               9,
@@ -690,7 +690,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^103|124",
-            "absolute_scale_degree": 49,
+            "cycle": 1,
             "velocity": 72,
             "end_time": [
               19,
@@ -726,7 +726,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "880*^15|124",
-            "absolute_scale_degree": 58,
+            "cycle": 1,
             "velocity": 72,
             "end_time": [
               10,
@@ -762,7 +762,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "880*^1|4",
-            "absolute_scale_degree": 62,
+            "cycle": 2,
             "velocity": 72,
             "end_time": [
               21,
@@ -798,7 +798,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "880*^67|124",
-            "absolute_scale_degree": 71,
+            "cycle": 2,
             "velocity": 72,
             "end_time": [
               11,
@@ -834,7 +834,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "880*^103|124",
-            "absolute_scale_degree": 80,
+            "cycle": 2,
             "velocity": 72,
             "end_time": [
               23,
@@ -870,7 +870,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "1760*^15|124",
-            "absolute_scale_degree": 89,
+            "cycle": 2,
             "velocity": 72,
             "end_time": [
               12,
@@ -906,7 +906,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "1760*^1|4",
-            "absolute_scale_degree": 93,
+            "cycle": 3,
             "velocity": 72,
             "end_time": [
               25,
@@ -942,7 +942,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "1760*^67|124",
-            "absolute_scale_degree": 102,
+            "cycle": 3,
             "velocity": 72,
             "end_time": [
               13,
@@ -978,7 +978,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "1760*^103|124",
-            "absolute_scale_degree": 111,
+            "cycle": 3,
             "velocity": 72,
             "end_time": [
               27,
@@ -1014,7 +1014,7 @@
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "3520*^15|124",
-            "absolute_scale_degree": 120,
+            "cycle": 3,
             "velocity": 72,
             "end_time": [
               14,
@@ -1040,101 +1040,121 @@
         {
           "name": "c",
           "base_relative": "1",
+          "normalized_relative": "1",
           "degree": 0
         },
         {
           "name": "c#",
           "base_relative": "^1|12",
+          "normalized_relative": "^1|12",
           "degree": 1
         },
         {
           "name": "d%",
           "base_relative": "^1|12",
+          "normalized_relative": "^1|12",
           "degree": 1
         },
         {
           "name": "d",
           "base_relative": "^1|6",
+          "normalized_relative": "^1|6",
           "degree": 2
         },
         {
           "name": "d#",
           "base_relative": "^1|4",
+          "normalized_relative": "^1|4",
           "degree": 3
         },
         {
           "name": "e%",
           "base_relative": "^1|4",
+          "normalized_relative": "^1|4",
           "degree": 3
         },
         {
           "name": "e",
           "base_relative": "^1|3",
+          "normalized_relative": "^1|3",
           "degree": 4
         },
         {
           "name": "f%",
           "base_relative": "^1|3",
+          "normalized_relative": "^1|3",
           "degree": 4
         },
         {
           "name": "e#",
           "base_relative": "^5|12",
+          "normalized_relative": "^5|12",
           "degree": 5
         },
         {
           "name": "f",
           "base_relative": "^5|12",
+          "normalized_relative": "^5|12",
           "degree": 5
         },
         {
           "name": "f#",
           "base_relative": "^1|2",
+          "normalized_relative": "^1|2",
           "degree": 6
         },
         {
           "name": "g%",
           "base_relative": "^1|2",
+          "normalized_relative": "^1|2",
           "degree": 6
         },
         {
           "name": "g",
           "base_relative": "^7|12",
+          "normalized_relative": "^7|12",
           "degree": 7
         },
         {
           "name": "a%",
           "base_relative": "^2|3",
+          "normalized_relative": "^2|3",
           "degree": 8
         },
         {
           "name": "g#",
           "base_relative": "^2|3",
+          "normalized_relative": "^2|3",
           "degree": 8
         },
         {
           "name": "a",
           "base_relative": "^3|4",
+          "normalized_relative": "^3|4",
           "degree": 9
         },
         {
           "name": "a#",
           "base_relative": "^5|6",
+          "normalized_relative": "^5|6",
           "degree": 10
         },
         {
           "name": "b%",
           "base_relative": "^5|6",
+          "normalized_relative": "^5|6",
           "degree": 10
         },
         {
           "name": "b",
           "base_relative": "^11|12",
+          "normalized_relative": "^11|12",
           "degree": 11
         },
         {
           "name": "b#",
           "base_relative": "2",
+          "normalized_relative": "1",
           "degree": 12
         }
       ],
@@ -1177,226 +1197,271 @@
         {
           "name": "c",
           "base_relative": "1",
+          "normalized_relative": "1",
           "degree": 0
         },
         {
           "name": "c+",
           "base_relative": "^1|31",
+          "normalized_relative": "^1|31",
           "degree": 1
         },
         {
           "name": "d%%",
           "base_relative": "^1|31",
+          "normalized_relative": "^1|31",
           "degree": 1
         },
         {
           "name": "c#",
           "base_relative": "^2|31",
+          "normalized_relative": "^2|31",
           "degree": 2
         },
         {
           "name": "d%",
           "base_relative": "^3|31",
+          "normalized_relative": "^3|31",
           "degree": 3
         },
         {
           "name": "c##",
           "base_relative": "^4|31",
+          "normalized_relative": "^4|31",
           "degree": 4
         },
         {
           "name": "d-",
           "base_relative": "^4|31",
+          "normalized_relative": "^4|31",
           "degree": 4
         },
         {
           "name": "d",
           "base_relative": "^5|31",
+          "normalized_relative": "^5|31",
           "degree": 5
         },
         {
           "name": "d+",
           "base_relative": "^6|31",
+          "normalized_relative": "^6|31",
           "degree": 6
         },
         {
           "name": "e%%",
           "base_relative": "^6|31",
+          "normalized_relative": "^6|31",
           "degree": 6
         },
         {
           "name": "d#",
           "base_relative": "^7|31",
+          "normalized_relative": "^7|31",
           "degree": 7
         },
         {
           "name": "e%",
           "base_relative": "^8|31",
+          "normalized_relative": "^8|31",
           "degree": 8
         },
         {
           "name": "d##",
           "base_relative": "^9|31",
+          "normalized_relative": "^9|31",
           "degree": 9
         },
         {
           "name": "e-",
           "base_relative": "^9|31",
+          "normalized_relative": "^9|31",
           "degree": 9
         },
         {
           "name": "e",
           "base_relative": "^10|31",
+          "normalized_relative": "^10|31",
           "degree": 10
         },
         {
           "name": "e+",
           "base_relative": "^11|31",
+          "normalized_relative": "^11|31",
           "degree": 11
         },
         {
           "name": "f%",
           "base_relative": "^11|31",
+          "normalized_relative": "^11|31",
           "degree": 11
         },
         {
           "name": "e#",
           "base_relative": "^12|31",
+          "normalized_relative": "^12|31",
           "degree": 12
         },
         {
           "name": "f-",
           "base_relative": "^12|31",
+          "normalized_relative": "^12|31",
           "degree": 12
         },
         {
           "name": "f",
           "base_relative": "^13|31",
+          "normalized_relative": "^13|31",
           "degree": 13
         },
         {
           "name": "f+",
           "base_relative": "^14|31",
+          "normalized_relative": "^14|31",
           "degree": 14
         },
         {
           "name": "g%%",
           "base_relative": "^14|31",
+          "normalized_relative": "^14|31",
           "degree": 14
         },
         {
           "name": "f#",
           "base_relative": "^15|31",
+          "normalized_relative": "^15|31",
           "degree": 15
         },
         {
           "name": "g%",
           "base_relative": "^16|31",
+          "normalized_relative": "^16|31",
           "degree": 16
         },
         {
           "name": "f##",
           "base_relative": "^17|31",
+          "normalized_relative": "^17|31",
           "degree": 17
         },
         {
           "name": "g-",
           "base_relative": "^17|31",
+          "normalized_relative": "^17|31",
           "degree": 17
         },
         {
           "name": "g",
           "base_relative": "^18|31",
+          "normalized_relative": "^18|31",
           "degree": 18
         },
         {
           "name": "a%%",
           "base_relative": "^19|31",
+          "normalized_relative": "^19|31",
           "degree": 19
         },
         {
           "name": "g+",
           "base_relative": "^19|31",
+          "normalized_relative": "^19|31",
           "degree": 19
         },
         {
           "name": "g#",
           "base_relative": "^20|31",
+          "normalized_relative": "^20|31",
           "degree": 20
         },
         {
           "name": "a%",
           "base_relative": "^21|31",
+          "normalized_relative": "^21|31",
           "degree": 21
         },
         {
           "name": "a-",
           "base_relative": "^22|31",
+          "normalized_relative": "^22|31",
           "degree": 22
         },
         {
           "name": "g##",
           "base_relative": "^22|31",
+          "normalized_relative": "^22|31",
           "degree": 22
         },
         {
           "name": "a",
           "base_relative": "^23|31",
+          "normalized_relative": "^23|31",
           "degree": 23
         },
         {
           "name": "a+",
           "base_relative": "^24|31",
+          "normalized_relative": "^24|31",
           "degree": 24
         },
         {
           "name": "b%%",
           "base_relative": "^24|31",
+          "normalized_relative": "^24|31",
           "degree": 24
         },
         {
           "name": "a#",
           "base_relative": "^25|31",
+          "normalized_relative": "^25|31",
           "degree": 25
         },
         {
           "name": "b%",
           "base_relative": "^26|31",
+          "normalized_relative": "^26|31",
           "degree": 26
         },
         {
           "name": "a##",
           "base_relative": "^27|31",
+          "normalized_relative": "^27|31",
           "degree": 27
         },
         {
           "name": "b-",
           "base_relative": "^27|31",
+          "normalized_relative": "^27|31",
           "degree": 27
         },
         {
           "name": "b",
           "base_relative": "^28|31",
+          "normalized_relative": "^28|31",
           "degree": 28
         },
         {
           "name": "b+",
           "base_relative": "^29|31",
+          "normalized_relative": "^29|31",
           "degree": 29
         },
         {
           "name": "c%",
           "base_relative": "^29|31",
+          "normalized_relative": "^29|31",
           "degree": 29
         },
         {
           "name": "b#",
           "base_relative": "^30|31",
+          "normalized_relative": "^30|31",
           "degree": 30
         },
         {
           "name": "c-",
           "base_relative": "^30|31",
+          "normalized_relative": "^30|31",
           "degree": 30
         }
       ],

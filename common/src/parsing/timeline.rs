@@ -115,8 +115,7 @@ pub struct NoteValue<'s> {
     pub note_name: &'s str,
     pub tuning: Tuning<'s>,
     pub absolute_pitch: Pitch,
-    /// Scale degrees from base pitch; add to 60 to get tuned MIDI note number
-    pub absolute_scale_degree: i32,
+    pub cycle: i8,
     pub velocity: u8,
     pub end_time: Ratio<u32>,
     pub adjusted_end_time: Ratio<u32>,

@@ -35,7 +35,7 @@ pub struct LayoutKey<'s> {
 pub struct Score<'s> {
     src: &'s str,
     _version: u32,
-    scales: HashMap<Cow<'s, str>, RefCell<Scale<'s>>>,
+    scales: HashMap<Cow<'s, str>, RefCell<ScaleBuilder<'s>>>,
     pending_score_block: Option<ScoreBlock<'s>>,
     score_blocks: Vec<ScoreBlock<'s>>,
     /// empty string key is default tuning
@@ -134,16 +134,19 @@ pub struct Scale<'s> {
     pub primary_names: Vec<Cow<'s, str>>,
     pub pitches: Vec<Pitch>,
 }
-impl<'s> Scale<'s> {
-    pub fn get_note(&mut self, name: &str) -> Option<Arc<ScaleDegree>> {
-        self.notes.get(name).cloned()
-    }
+
+pub struct ScaleBuilder<'s> {
+    pub definition: ScaleDefinition<'s>,
+    pub notes: HashMap<Cow<'s, str>, Pitch>,
+    pub primary_names: HashMap<Pitch, Cow<'s, str>>,
 }
 
 #[derive(Serialize, Clone, ToStatic)]
 pub struct ScaleDegree {
     /// Interval between pitch and scale base; may fall outside of cycle
     pub base_relative: Pitch,
+    /// Normalized interval between pitch and scale base; falls within cycle
+    pub normalized_relative: Pitch,
     /// Scale degree of base_relative; may extend outside of cycle
     pub degree: i32,
 }
@@ -157,25 +160,19 @@ pub struct NamedScaleDegree<'s> {
 
 #[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, ToStatic)]
 pub struct NamedPitch<'s> {
-    pub name: Cow<'s, str>,
-    /// Normalized interval over base pitch; always < 1 cycle
-    pub base_interval: Pitch,
-    /// Factor of base pitch; may fall outside the cycle; excludes tile offsets and transposition
+    pub note_name: Cow<'s, str>,
+    /// Full name includes octave markers
+    pub full_name: Cow<'s, str>,
+    /// Factor of base pitch; may fall outside the cycle
     pub base_factor: Pitch,
-    /// Contribution of base factor from tiling of manual mapping
-    pub tile_factor: Pitch,
-    /// Normalized degree; always between 0 and number-of-notes - 1
-    pub degree: u32,
-    /// Contribution of
-    pub isomorphic: bool,
 }
 
-impl<'s> Scale<'s> {
-    pub fn new(
-        definition: ScaleDefinition<'s>,
-        note_pitches: HashMap<Cow<'s, str>, Pitch>,
-        mut pitch_primary_names: HashMap<Pitch, Cow<'s, str>>,
-    ) -> Self {
+impl<'s> ScaleBuilder<'s> {
+    pub fn get_note(&mut self, name: &str) -> Option<Pitch> {
+        self.notes.get(name).cloned()
+    }
+
+    pub fn into_scale(mut self) -> Scale<'s> {
         // For each note, calculate its pitch relative to the base and normalized to within the
         // cycle. The results in a revised base-relative pitch and cycle offset. Sort the resulting
         // normalized base-relative pitches to determine scale degrees. It is normal for scales to
@@ -191,11 +188,11 @@ impl<'s> Scale<'s> {
         }
 
         let one_as_pitch = Pitch::unit();
-        let cycle_as_pitch = Pitch::from(definition.cycle);
+        let cycle_as_pitch = Pitch::from(self.definition.cycle);
         let inverted_cycle_as_pitch = cycle_as_pitch.invert();
         let mut intermediate: Vec<Intermediate> = Vec::new();
         let mut distinct_base_relative = HashSet::new();
-        for (name, orig_relative) in note_pitches {
+        for (name, orig_relative) in self.notes {
             // This may not be the most efficient way to calculate this, but it's probably the
             // clearest. Calculate the cycle offset to normalize this to within a cycle.
             let mut normalized_relative = orig_relative.clone();
@@ -211,7 +208,7 @@ impl<'s> Scale<'s> {
             distinct_base_relative.insert(normalized_relative.clone());
             // Update the primary name map in case the only appearance of a pitch is not within
             // the cycle.
-            pitch_primary_names
+            self.primary_names
                 .entry(normalized_relative.clone())
                 .or_insert(name.clone());
             intermediate.push(Intermediate {
@@ -232,7 +229,7 @@ impl<'s> Scale<'s> {
             .collect();
         let primary_names: Vec<_> = pitches
             .iter()
-            .map(|p| pitch_primary_names.get(p).cloned().unwrap())
+            .map(|p| self.primary_names.get(p).cloned().unwrap())
             .collect();
         // Now we can compute the scale degree of each note
         let degrees_per_cycle = pitches.len() as i32;
@@ -242,13 +239,14 @@ impl<'s> Scale<'s> {
                 let degree = degrees[&i.normalized_relative];
                 let s = ScaleDegree {
                     base_relative: i.orig_relative,
+                    normalized_relative: i.normalized_relative,
                     degree: degree + (degrees_per_cycle * i.cycle_offset),
                 };
                 (i.name, Arc::new(s))
             })
             .collect();
-        Self {
-            definition,
+        Scale {
+            definition: self.definition,
             notes,
             primary_names,
             pitches,
@@ -268,7 +266,7 @@ pub struct ScoreBlock<'s> {
     pub dynamic_lines: Vec<DynamicLine<'s>>,
 }
 
-fn default_scale<'s>() -> RefCell<Scale<'s>> {
+fn default_scale<'s>() -> RefCell<ScaleBuilder<'s>> {
     let start_pitch = Pitch::unit();
     let mut pitches = Vec::new();
     let mut next_pitch = start_pitch.clone();
@@ -303,7 +301,7 @@ fn default_scale<'s>() -> RefCell<Scale<'s>> {
     .map(|(k, v)| (Cow::Borrowed(k), v))
     .collect();
     // For primary names of accidentals, pick the one that appears first in key signatures.
-    let pitch_primary_names = [
+    let primary_names = [
         (pitches[0].clone(), "c"),
         (pitches[1].clone(), "c#"),
         (pitches[2].clone(), "d"),
@@ -320,15 +318,15 @@ fn default_scale<'s>() -> RefCell<Scale<'s>> {
     .into_iter()
     .map(|(k, v)| (k, Cow::Borrowed(v)))
     .collect();
-    RefCell::new(Scale::new(
-        ScaleDefinition {
+    RefCell::new(ScaleBuilder {
+        definition: ScaleDefinition {
             span: (0..1).into(),
             name: Cow::Borrowed(DEFAULT_SCALE_NAME),
             cycle: Ratio::from_integer(2),
         },
         notes,
-        pitch_primary_names,
-    ))
+        primary_names,
+    })
 }
 
 static DEFAULT_SCALE_NAME: &str = "default";
@@ -530,18 +528,16 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                 && let Some(scale) = self.score.scales.get(&tuning.scale_name)
             {
                 let note_name = r_note.note.name.value;
-                if let Some(scale_degree) = { scale.borrow_mut().get_note(note_name).clone() } {
+                if let Some(base_relative) = { scale.borrow_mut().get_note(note_name).clone() } {
                     let time = beats_so_far + self.score.line_start_time;
                     let part = line.leader.value.name.value;
                     let note_number = line.leader.value.note.value;
                     let cycle = r_note.note.octave.map(Spanned::value).unwrap_or(0);
-                    let mut absolute_pitch = &tuning.base_pitch * &scale_degree.base_relative;
+                    let mut absolute_pitch = &tuning.base_pitch * &base_relative;
                     if cycle != 0 {
                         absolute_pitch *=
                             &Pitch::from(scale.borrow().definition.cycle.pow(cycle as i32));
                     }
-                    let absolute_scale_degree =
-                        scale_degree.degree + (cycle as i32 * scale.borrow().pitches.len() as i32);
                     let end_time = time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats);
                     let part_note = PartNote { part, note_number };
                     // At this moment, there may be a pending sustained note that this note may
@@ -564,7 +560,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                                 note_name,
                                 tuning: tuning.clone(),
                                 absolute_pitch,
-                                absolute_scale_degree,
+                                cycle,
                                 velocity: 0,
                                 end_time,
                                 adjusted_end_time: Ratio::from_integer(0),
@@ -908,7 +904,7 @@ impl<'s> Score<'s> {
         let scales: Arc<ScalesByName> = Arc::new(
             self.scales
                 .into_iter()
-                .map(|(name, scale)| (name, Arc::new(scale.into_inner())))
+                .map(|(name, scale)| (name, Arc::new(scale.into_inner().into_scale())))
                 .collect(),
         );
         let mut timeline = self.timeline;
@@ -1013,14 +1009,14 @@ impl<'s> Score<'s> {
             }
         }
         let name = definition.name.clone();
-        let scale = Scale::new(
+        let scale = ScaleBuilder {
             definition,
-            name_to_pitch
+            notes: name_to_pitch
                 .into_iter()
                 .map(|(name, (pitch, _))| (name, pitch))
                 .collect(),
-            pitch_to_name,
-        );
+            primary_names: pitch_to_name,
+        };
         let span = scale.definition.span;
         let scale = RefCell::new(scale);
         if let Some(old) = self.scales.insert(name.clone(), scale) {
@@ -1143,9 +1139,9 @@ impl<'s> Score<'s> {
         note: &Spanned<&str>,
     ) -> Pitch {
         if let Some(scale) = self.scales.get(&tuning.scale_name)
-            && let Some(sd) = { scale.borrow_mut().get_note(note.value) }
+            && let Some(base_relative) = { scale.borrow_mut().get_note(note.value) }
         {
-            &sd.base_relative * &tuning.base_pitch
+            &base_relative * &tuning.base_pitch
         } else {
             diags.err(
                 code::TUNE,
@@ -1579,25 +1575,19 @@ impl<'s> Score<'s> {
                                 // Push something so counts are accurate.
                                 note_row.push(None);
                             }
-                            Some(sd) => {
+                            Some(base_relative) => {
                                 let scale_ref = scale.borrow();
                                 let cycle = note.value.octave.map(|x| x.value as i32).unwrap_or(0);
-                                let degree =
-                                    sd.degree.rem_euclid(scale_ref.pitches.len() as i32) as u32;
-                                let base_interval = scale_ref.pitches[degree as usize].clone();
-                                let base_factor = &sd.base_relative
+                                let base_factor = &base_relative
                                     * &Pitch::from(scale_ref.definition.cycle.pow(cycle));
-                                let name = score_helpers::format_note_cycle(
+                                let full_name = score_helpers::format_note_cycle(
                                     Cow::Borrowed(note.value.name.value),
                                     cycle,
                                 );
                                 note_row.push(Some(NamedPitch {
-                                    name,
-                                    base_interval,
+                                    note_name: Cow::Borrowed(note.value.name.value),
+                                    full_name,
                                     base_factor,
-                                    degree,
-                                    tile_factor: Default::default(),
-                                    isomorphic: false,
                                 }));
                             }
                         };
