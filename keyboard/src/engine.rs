@@ -9,7 +9,6 @@ use crate::events::{
     ToDevice, UpdateNoteEvent,
 };
 use crate::{events, midi_player};
-use anyhow::bail;
 use chrono::SubsecRound;
 use std::collections::HashSet;
 use std::fs;
@@ -491,10 +490,9 @@ impl Engine {
             return Ok(());
         };
         let Some(others) = self.transient_state.pitch_positions.get(&e.pitch) else {
-            // This would indicate a bug in which we assigned something to notes
-            // without also assigning its position to note positions or otherwise
-            // allowed notes and note_positions to get out of sync.
-            bail!("note positions is missing for {}", e.pitch);
+            // This can happen if we transpose in a way that causes a currently sounding note to
+            // not exist anywhere on the layout.
+            return Ok(());
         };
         let velocity = e.velocity;
         let light_events: Vec<_> = others
