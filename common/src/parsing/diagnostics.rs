@@ -33,6 +33,7 @@ pub mod code {
     pub const TUNE: &str = "E1022 incorrect tuning";
     pub const MIDI: &str = "E1023 MIDI-specific error";
     pub const LAYOUT: &str = "E1024 layout error";
+    pub const GENERATED_NOTE: &str = "E1025 incorrect generated note";
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash)]

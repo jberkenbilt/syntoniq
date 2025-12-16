@@ -2,7 +2,7 @@ use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
     Dynamic, DynamicChange, DynamicLeader, DynamicLine, LayoutItemType, Note, NoteLeader, NoteLine,
-    NoteModifier, RawDirective, RegularDynamic, RegularNote, ScaleBlock, Span, Spanned,
+    NoteModifier, RawDirective, RegularDynamic, RegularNote, Span, Spanned,
 };
 use num_rational::Ratio;
 use serde::Serialize;
@@ -13,16 +13,17 @@ use std::collections::{BTreeMap, HashMap, HashSet};
 use std::sync::atomic::AtomicI32;
 use std::sync::{Arc, LazyLock, RwLock};
 use std::{cmp, mem};
-
 mod directives;
+mod generator;
 use crate::parsing::layout::{
     Coordinate, IsomorphicMapping, Layout, LayoutMapping, Layouts, ManualMapping, MappingDetails,
 };
+use crate::parsing::score::generator::{NoteGenerator, Overlay};
 use crate::parsing::{
     CsoundInstrumentId, DynamicEvent, MarkEvent, MidiInstrumentNumber, NoteEvent, NoteValue,
     Options, PartNote, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, score_helpers,
 };
-use crate::pitch::Pitch;
+use crate::pitch::{Factor, Pitch};
 pub use directives::*;
 use to_static_derive::ToStatic;
 
@@ -135,10 +136,17 @@ pub struct Scale<'s> {
     pub pitches: Vec<Pitch>,
 }
 
+/// Generate notes dynamically
+pub trait Generator {
+    /// If the name represents a pitch, the pitch.
+    fn get_note(&self, diags: &Diagnostics, name: &Spanned<&str>) -> Option<Pitch>;
+}
+
 pub struct ScaleBuilder<'s> {
     pub definition: ScaleDefinition<'s>,
     pub notes: HashMap<Cow<'s, str>, Pitch>,
     pub primary_names: HashMap<Pitch, Cow<'s, str>>,
+    pub generator: Option<Box<dyn Generator>>,
 }
 
 #[derive(Serialize, Clone, ToStatic)]
@@ -168,8 +176,17 @@ pub struct NamedPitch<'s> {
 }
 
 impl<'s> ScaleBuilder<'s> {
-    pub fn get_note(&mut self, name: &str) -> Option<Pitch> {
-        self.notes.get(name).cloned()
+    pub fn get_note(&mut self, diags: &Diagnostics, name: &Spanned<Cow<'s, str>>) -> Option<Pitch> {
+        self.notes.get(&name.value).cloned().or_else(|| {
+            let pitch = self.generator.as_ref()?.get_note(diags, &name.as_ref());
+            if let Some(p) = &pitch {
+                self.notes.insert(name.value.clone(), p.clone());
+                self.primary_names
+                    .entry(p.clone())
+                    .or_insert(name.value.clone());
+            }
+            pitch
+        })
     }
 
     pub fn into_scale(mut self) -> Scale<'s> {
@@ -326,6 +343,7 @@ fn default_scale<'s>() -> RefCell<ScaleBuilder<'s>> {
         },
         notes,
         primary_names,
+        generator: None,
     })
 }
 
@@ -527,8 +545,10 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
             if let Note::Regular(r_note) = &note.value
                 && let Some(scale) = self.score.scales.get(&tuning.scale_name)
             {
-                let note_name = r_note.note.name.value;
-                if let Some(base_relative) = { scale.borrow_mut().get_note(note_name).clone() } {
+                let note_name = &r_note.note.name;
+                if let Some(base_relative) =
+                    { scale.borrow_mut().get_note(self.diags, note_name).clone() }
+                {
                     let time = beats_so_far + self.score.line_start_time;
                     let part = line.leader.value.name.value;
                     let note_number = line.leader.value.note.value;
@@ -557,7 +577,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                             // There is no pending note, so make a new one.
                             let value = NoteValue {
                                 text: &self.score.src[note.span],
-                                note_name,
+                                note_name: note_name.value.clone(),
                                 tuning: tuning.clone(),
                                 absolute_pitch,
                                 cycle,
@@ -583,8 +603,8 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                         code::SCORE,
                         note.span,
                         format!(
-                            "note '{note_name}' is not in the current scale ('{}')",
-                            tuning.scale_name
+                            "note '{}' is not in the current scale ('{}')",
+                            note_name.value, tuning.scale_name,
                         ),
                     )
                 }
@@ -951,17 +971,8 @@ impl<'s> Score<'s> {
                     "Syntoniq is already initialized",
                 );
             }
-            Directive::DefineScale(x) => {
-                let scale = ScaleDefinition {
-                    span: x.scale.span,
-                    name: x.scale.value,
-                    cycle: x
-                        .cycle_ratio
-                        .map(Spanned::value)
-                        .unwrap_or(Ratio::from_integer(2)),
-                };
-                self.handle_scale_definition(diags, scale, x.scale_block.value);
-            }
+            Directive::DefineScale(x) => self.define_scale(diags, x),
+            Directive::DefineGeneratedScale(x) => self.define_generated_scale(diags, x),
             Directive::UseScale(x) => self.use_scale(diags, x),
             Directive::Transpose(x) => self.transpose(diags, x),
             Directive::SetBasePitch(x) => self.set_base_pitch(x),
@@ -977,12 +988,16 @@ impl<'s> Score<'s> {
         }
     }
 
-    pub fn handle_scale_definition(
-        &mut self,
-        diags: &Diagnostics,
-        definition: ScaleDefinition<'s>,
-        scale_block: ScaleBlock<'s>,
-    ) {
+    pub fn define_scale(&mut self, diags: &Diagnostics, directive: DefineScale<'s>) {
+        let definition = ScaleDefinition {
+            span: directive.scale.span,
+            name: directive.scale.value,
+            cycle: directive
+                .cycle_ratio
+                .map(Spanned::value)
+                .unwrap_or(Ratio::from_integer(2)),
+        };
+        let scale_block = directive.scale_block.value;
         let mut pitches = HashMap::new();
         let mut name_to_pitch = HashMap::new();
         let mut pitch_to_name = HashMap::new();
@@ -1008,7 +1023,6 @@ impl<'s> Score<'s> {
                 }
             }
         }
-        let name = definition.name.clone();
         let scale = ScaleBuilder {
             definition,
             notes: name_to_pitch
@@ -1016,7 +1030,13 @@ impl<'s> Score<'s> {
                 .map(|(name, (pitch, _))| (name, pitch))
                 .collect(),
             primary_names: pitch_to_name,
+            generator: None,
         };
+        self.add_scale(diags, scale);
+    }
+
+    fn add_scale(&mut self, diags: &Diagnostics, scale: ScaleBuilder<'s>) {
+        let name = scale.definition.name.clone();
         let span = scale.definition.span;
         let scale = RefCell::new(scale);
         if let Some(old) = self.scales.insert(name.clone(), scale) {
@@ -1032,6 +1052,48 @@ impl<'s> Score<'s> {
                 ),
             );
         }
+    }
+
+    pub fn define_generated_scale(
+        &mut self,
+        diags: &Diagnostics,
+        directive: DefineGeneratedScale<'s>,
+    ) {
+        let definition = ScaleDefinition {
+            span: directive.scale.span,
+            name: directive.scale.value,
+            cycle: directive
+                .cycle_ratio
+                .map(Spanned::value)
+                .unwrap_or(Ratio::from_integer(2)),
+        };
+        let mut primary_names = HashMap::new();
+        let mut notes = HashMap::new();
+        let mut overlay = None;
+        if let Some(divisions) = directive.divisions {
+            let steps = divisions.value as i32;
+            let num = *definition.cycle.numer();
+            let den = *definition.cycle.denom();
+            for step in 0..steps {
+                let name: Cow<str> = Cow::Owned(format!("A{step}"));
+                let pitch = Pitch::new(vec![Factor::new(num, den, step, steps).unwrap()]);
+                primary_names.insert(pitch.clone(), name.clone());
+                notes.insert(name, pitch);
+            }
+            overlay = Some(Overlay {
+                divisions: divisions.value,
+                cycle: definition.cycle,
+                tolerance: directive.tolerance.map(Spanned::value).unwrap_or_default(),
+            })
+        }
+        let generator: Option<Box<dyn Generator>> = Some(Box::new(NoteGenerator { overlay }));
+        let scale = ScaleBuilder {
+            definition,
+            notes,
+            primary_names,
+            generator,
+        };
+        self.add_scale(diags, scale);
     }
 
     fn current_score_block(&mut self) -> &mut ScoreBlock<'s> {
@@ -1136,10 +1198,10 @@ impl<'s> Score<'s> {
         diags: &Diagnostics,
         part: &str,
         tuning: &Tuning<'s>,
-        note: &Spanned<&str>,
+        note: &Spanned<Cow<'s, str>>,
     ) -> Pitch {
         if let Some(scale) = self.scales.get(&tuning.scale_name)
-            && let Some(base_relative) = { scale.borrow_mut().get_note(note.value) }
+            && let Some(base_relative) = { scale.borrow_mut().get_note(diags, note) }
         {
             &base_relative * &tuning.base_pitch
         } else {
@@ -1165,18 +1227,10 @@ impl<'s> Score<'s> {
             cur_tunings
                 .iter()
                 .map(|(part, existing)| {
-                    let written = self.note_pitch_in_tuning(
-                        diags,
-                        part,
-                        existing,
-                        &directive.written.as_ref(),
-                    );
-                    let from_pitch = self.note_pitch_in_tuning(
-                        diags,
-                        part,
-                        existing,
-                        &directive.pitch_from.as_ref(),
-                    );
+                    let written =
+                        self.note_pitch_in_tuning(diags, part, existing, &directive.written);
+                    let from_pitch =
+                        self.note_pitch_in_tuning(diags, part, existing, &directive.pitch_from);
                     let factor = &from_pitch / &written;
                     (part.clone(), &existing.base_pitch * &factor)
                 })
@@ -1564,7 +1618,7 @@ impl<'s> Score<'s> {
                 match &item.value.item {
                     LayoutItemType::Note(note) => {
                         let scale = self.scales.get(&scale_name).unwrap();
-                        let sd = scale.borrow_mut().get_note(note.value.name.value);
+                        let sd = scale.borrow_mut().get_note(diags, &note.value.name);
                         match sd {
                             None => {
                                 diags.err(
@@ -1581,11 +1635,11 @@ impl<'s> Score<'s> {
                                 let base_factor = &base_relative
                                     * &Pitch::from(scale_ref.definition.cycle.pow(cycle));
                                 let full_name = score_helpers::format_note_cycle(
-                                    Cow::Borrowed(note.value.name.value),
+                                    note.value.name.value.clone(),
                                     cycle,
                                 );
                                 note_row.push(Some(NamedPitch {
-                                    note_name: Cow::Borrowed(note.value.name.value),
+                                    note_name: note.value.name.value.clone(),
                                     full_name,
                                     base_factor,
                                 }));

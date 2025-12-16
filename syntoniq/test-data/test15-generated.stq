@@ -1,0 +1,64 @@
+syntoniq(version=1)
+define_generated_scale(scale="JI")
+use_scale(scale="JI")
+[p1.0] 1:A' f' A' I' 4:E'
+[p1.1] 2:~     p     4:A
+[p1.2] 2:~     ~     4:DE,
+[p1.3] 2:DE,   C,    4:D,
+[p1.4] 2:D,2   E,2   4:Df,2
+
+define_generated_scale(scale="12" divisions=12)
+use_scale(scale="12")
+[p1.0] 1:A' f' A' I' 4:E'
+[p1.1] 2:~     p     4:A
+[p1.2] 2:~     ~     4:DE,
+[p1.3] 2:DE,   C,    4:D,
+[p1.4] 2:D,2   E,2   4:Df,2
+
+define_generated_scale(scale="19" divisions=19)
+use_scale(scale="19")
+[p1.0] 1:A' f' A' I' 4:E'
+[p1.1] 2:~     p     4:A
+[p1.2] 2:~     ~     4:DE,
+[p1.3] 2:DE,   C,    4:D,
+[p1.4] 2:D,2   E,2   4:Df,2
+
+define_generated_scale(scale="31" divisions=31)
+use_scale(scale="31")
+[p1.0] 1:A' f' A' I' 4:E'
+[p1.1] 2:~     p     4:A
+[p1.2] 2:~     ~     4:DE,
+[p1.3] 2:DE,   C,    4:D,
+[p1.4] 2:D,2   E,2   4:Df,2
+
+define_generated_scale(scale="41" divisions=41 tolerance=^1|200)
+use_scale(scale="41")
+[p1.0] 1:A' f' A' I' 4:E#' ; within tolerance
+[p1.1] 2:~     p     4:A
+[p1.2] 2:~     ~     4:DE,
+[p1.3] 2:DE,   C,    4:D,
+[p1.4] 2:D,2   E,2   4:Df,2
+
+define_generated_scale(scale="53" divisions=53 tolerance=^1|600)
+use_scale(scale="53")
+[p1.0] 1:A' f' A' I' 4:E#' ; within tolerance
+[p1.1] 2:~     p     4:A
+[p1.2] 2:~     ~     4:DE,
+[p1.3] 2:DE,   C,    4:D,
+[p1.4] 2:D,2   E,2   4:Df,2
+
+define_generated_scale(scale="17" divisions=17 tolerance=^1|200)
+use_scale(scale="17")
+[p1.0] 1:A' f' A' I' 4:E#' ; not within tolerance
+[p1.1] 2:~     p     4:A
+[p1.2] 2:~     ~     4:DE,
+[p1.3] 2:DE,   C,    4:D,
+[p1.4] 2:D,2   E,2   4:Df,2
+
+define_generated_scale(scale="13" divisions=13)
+use_scale(scale="13")
+[p1.0] 1:A' f' A' I' 4:E'
+[p1.1] 2:~     p     4:A
+[p1.2] 2:~     ~     4:DE,
+[p1.3] 2:DE,   C,    4:D,
+[p1.4] 2:D,2   E,2   4:Df,2

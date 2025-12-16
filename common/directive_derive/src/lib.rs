@@ -388,8 +388,17 @@ fn get_doc_comment(attrs: &[Attribute], doc_comment: &mut String, indent: &'stat
                 ..
             }) = &nv.value
         {
-            doc_comment.push_str(indent);
-            doc_comment.push_str(s.value().trim());
+            let s_value = s.value();
+            let mut value = s_value.trim_end();
+            // Strip at most one space from the beginning to allow lists and indented structures
+            // to generate correctly.
+            if value.starts_with(' ') {
+                value = &value[1..];
+            }
+            if !value.is_empty() {
+                doc_comment.push_str(indent);
+                doc_comment.push_str(value);
+            }
             doc_comment.push('\n');
         }
     }

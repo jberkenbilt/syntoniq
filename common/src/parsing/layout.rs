@@ -921,5 +921,15 @@ mod tests {
             .unwrap();
         assert_eq!(r.name, "e");
         assert_eq!(r.pitch, Pitch::must_parse("450*^1|3"));
+
+        // This isn't as much about layout logic as just having a full round trip for creating
+        // a layout with a generated scale.
+        let layout = &LAYOUTS.layouts[2];
+        assert_eq!(layout.name, "l3");
+        let r = layout
+            .note_at_location(&LAYOUTS.scales, Coordinate { row: 1, col: 3 })
+            .unwrap();
+        assert_eq!(r.name, "E");
+        assert_eq!(r.pitch, Pitch::must_parse("330"));
     }
 }

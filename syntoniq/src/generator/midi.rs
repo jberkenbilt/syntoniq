@@ -210,7 +210,7 @@ struct MtsData<'s> {
 impl<'s> MtsData<'s> {
     fn note_offset(&self, note_event: &NoteEvent) -> i32 {
         let scale_name = &note_event.value.tuning.scale_name;
-        let note_name = note_event.value.note_name;
+        let note_name = &note_event.value.note_name;
         let cycle = note_event.value.cycle;
         let scale = self.scales.get(scale_name).unwrap();
         let scale_degree = scale.notes.get(note_name).unwrap();

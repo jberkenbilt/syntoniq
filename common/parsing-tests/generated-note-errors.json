@@ -1,0 +1,2717 @@
+[
+  {
+    "Ok": [
+      {
+        "span": [
+          0,
+          8
+        ],
+        "value": {
+          "raw": "syntoniq",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          8,
+          9
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          9,
+          16
+        ],
+        "value": {
+          "raw": "version",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          16,
+          17
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          17,
+          18
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  17,
+                  18
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          18,
+          19
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          19,
+          20
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          20,
+          42
+        ],
+        "value": {
+          "raw": "define_generated_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          42,
+          43
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          43,
+          48
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          48,
+          49
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          49,
+          52
+        ],
+        "value": {
+          "raw": "\"A\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                50,
+                51
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          52,
+          53
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          53,
+          62
+        ],
+        "value": {
+          "raw": "tolerance",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          62,
+          63
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          63,
+          64
+        ],
+        "value": {
+          "raw": "^",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          64,
+          65
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  64,
+                  65
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          65,
+          66
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          66,
+          69
+        ],
+        "value": {
+          "raw": "200",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  66,
+                  69
+                ],
+                "value": 200
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          69,
+          70
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          70,
+          71
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          71,
+          93
+        ],
+        "value": {
+          "raw": "define_generated_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          93,
+          94
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          94,
+          99
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          99,
+          100
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          100,
+          103
+        ],
+        "value": {
+          "raw": "\"B\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                101,
+                102
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          103,
+          104
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          104,
+          113
+        ],
+        "value": {
+          "raw": "divisions",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          113,
+          114
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          114,
+          115
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  114,
+                  115
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          115,
+          116
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          116,
+          125
+        ],
+        "value": {
+          "raw": "tolerance",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          125,
+          126
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          126,
+          127
+        ],
+        "value": {
+          "raw": "^",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          127,
+          128
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  127,
+                  128
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          128,
+          129
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          129,
+          132
+        ],
+        "value": {
+          "raw": "200",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  129,
+                  132
+                ],
+                "value": 200
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          132,
+          133
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          133,
+          134
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          134,
+          156
+        ],
+        "value": {
+          "raw": "define_generated_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          156,
+          157
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          157,
+          162
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          162,
+          163
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          163,
+          172
+        ],
+        "value": {
+          "raw": "\"pure-JI\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                164,
+                171
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          172,
+          173
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          173,
+          174
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          174,
+          183
+        ],
+        "value": {
+          "raw": "use_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          183,
+          184
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          184,
+          189
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          189,
+          190
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          190,
+          199
+        ],
+        "value": {
+          "raw": "\"pure-JI\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                191,
+                198
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          199,
+          200
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          200,
+          201
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          201,
+          207
+        ],
+        "value": {
+          "raw": "[p1.0]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                202,
+                204
+              ],
+              "note": {
+                "span": [
+                  205,
+                  206
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          207,
+          208
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          208,
+          209
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  208,
+                  209
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          209,
+          210
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          210,
+          212
+        ],
+        "value": {
+          "raw": "b1",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          212,
+          213
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          213,
+          215
+        ],
+        "value": {
+          "raw": "z0",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          215,
+          216
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          216,
+          217
+        ],
+        "value": {
+          "raw": "z",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          217,
+          218
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          218,
+          220
+        ],
+        "value": {
+          "raw": "a+",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          220,
+          221
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          221,
+          223
+        ],
+        "value": {
+          "raw": "a-",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          223,
+          224
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          224,
+          226
+        ],
+        "value": {
+          "raw": "b2",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          226,
+          227
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          227,
+          231
+        ],
+        "value": {
+          "raw": "a2#1",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          231,
+          232
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          232,
+          234
+        ],
+        "value": {
+          "raw": "z1",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          234,
+          235
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          235,
+          238
+        ],
+        "value": {
+          "raw": "a19",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          238,
+          239
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          239,
+          252
+        ],
+        "value": {
+          "raw": "z141592653589",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          252,
+          253
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          253,
+          264
+        ],
+        "value": {
+          "raw": "z4294967296",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          264,
+          265
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          265,
+          268
+        ],
+        "value": {
+          "raw": "a%#",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          268,
+          269
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          269,
+          272
+        ],
+        "value": {
+          "raw": "a#%",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          272,
+          273
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          273,
+          276
+        ],
+        "value": {
+          "raw": "a##",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          276,
+          277
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          277,
+          280
+        ],
+        "value": {
+          "raw": "a%%",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          280,
+          281
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          281,
+          283
+        ],
+        "value": {
+          "raw": "x/",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          283,
+          284
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          284,
+          306
+        ],
+        "value": {
+          "raw": "define_generated_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          306,
+          307
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          307,
+          312
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          312,
+          313
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          313,
+          327
+        ],
+        "value": {
+          "raw": "\"generated-17\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                314,
+                326
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          327,
+          328
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          328,
+          337
+        ],
+        "value": {
+          "raw": "divisions",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          337,
+          338
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          338,
+          340
+        ],
+        "value": {
+          "raw": "17",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  338,
+                  340
+                ],
+                "value": 17
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          340,
+          341
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          341,
+          342
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          342,
+          351
+        ],
+        "value": {
+          "raw": "use_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          351,
+          352
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          352,
+          357
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          357,
+          358
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          358,
+          372
+        ],
+        "value": {
+          "raw": "\"generated-17\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                359,
+                371
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          372,
+          373
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          373,
+          374
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          374,
+          380
+        ],
+        "value": {
+          "raw": "[p1.0]",
+          "t": {
+            "NoteLeader": {
+              "name_span": [
+                375,
+                377
+              ],
+              "note": {
+                "span": [
+                  378,
+                  379
+                ],
+                "value": 0
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          380,
+          381
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          381,
+          382
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  381,
+                  382
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          382,
+          383
+        ],
+        "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          383,
+          386
+        ],
+        "value": {
+          "raw": "a16",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          386,
+          387
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          387,
+          390
+        ],
+        "value": {
+          "raw": "a17",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          390,
+          391
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          391,
+          393
+        ],
+        "value": {
+          "raw": "a+",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          393,
+          394
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          394,
+          396
+        ],
+        "value": {
+          "raw": "a-",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          396,
+          397
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      }
+    ]
+  },
+  {
+    "Ok": [
+      {
+        "span": [
+          0,
+          19
+        ],
+        "value": {
+          "raw": "syntoniq(version=1)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  0,
+                  8
+                ],
+                "value": "syntoniq"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      9,
+                      16
+                    ],
+                    "value": "version"
+                  },
+                  "value": {
+                    "span": [
+                      17,
+                      18
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          19,
+          20
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          20,
+          70
+        ],
+        "value": {
+          "raw": "define_generated_scale(scale=\"A\" tolerance=^1|200)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  20,
+                  42
+                ],
+                "value": "define_generated_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      43,
+                      48
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      49,
+                      52
+                    ],
+                    "value": {
+                      "String": "A"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      53,
+                      62
+                    ],
+                    "value": "tolerance"
+                  },
+                  "value": {
+                    "span": [
+                      63,
+                      69
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Pitch": "^1|200"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          70,
+          71
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          71,
+          133
+        ],
+        "value": {
+          "raw": "define_generated_scale(scale=\"B\" divisions=1 tolerance=^1|200)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  71,
+                  93
+                ],
+                "value": "define_generated_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      94,
+                      99
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      100,
+                      103
+                    ],
+                    "value": {
+                      "String": "B"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      104,
+                      113
+                    ],
+                    "value": "divisions"
+                  },
+                  "value": {
+                    "span": [
+                      114,
+                      115
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          1,
+                          "1"
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      116,
+                      125
+                    ],
+                    "value": "tolerance"
+                  },
+                  "value": {
+                    "span": [
+                      126,
+                      132
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Pitch": "^1|200"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          133,
+          134
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          134,
+          173
+        ],
+        "value": {
+          "raw": "define_generated_scale(scale=\"pure-JI\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  134,
+                  156
+                ],
+                "value": "define_generated_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      157,
+                      162
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      163,
+                      172
+                    ],
+                    "value": {
+                      "String": "pure-JI"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          173,
+          174
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          174,
+          200
+        ],
+        "value": {
+          "raw": "use_scale(scale=\"pure-JI\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  174,
+                  183
+                ],
+                "value": "use_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      184,
+                      189
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      190,
+                      199
+                    ],
+                    "value": {
+                      "String": "pure-JI"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          200,
+          201
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          201,
+          284
+        ],
+        "value": {
+          "raw": "[p1.0] 1:b1 z0 z a+ a- b2 a2#1 z1 a19 z141592653589 z4294967296 a%# a#% a## a%% x/\n",
+          "t": {
+            "NoteLine": {
+              "leader": {
+                "span": [
+                  201,
+                  207
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      202,
+                      204
+                    ],
+                    "value": "p1"
+                  },
+                  "note": {
+                    "span": [
+                      205,
+                      206
+                    ],
+                    "value": 0
+                  }
+                }
+              },
+              "notes": [
+                {
+                  "span": [
+                    208,
+                    212
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": {
+                        "span": [
+                          208,
+                          209
+                        ],
+                        "value": [
+                          1,
+                          1
+                        ]
+                      },
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          210,
+                          212
+                        ],
+                        "value": "b1"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    213,
+                    215
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          213,
+                          215
+                        ],
+                        "value": "z0"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    216,
+                    217
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          216,
+                          217
+                        ],
+                        "value": "z"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    218,
+                    220
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          218,
+                          220
+                        ],
+                        "value": "a+"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    221,
+                    223
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          221,
+                          223
+                        ],
+                        "value": "a-"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    224,
+                    226
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          224,
+                          226
+                        ],
+                        "value": "b2"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    227,
+                    231
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          227,
+                          231
+                        ],
+                        "value": "a2#1"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    232,
+                    234
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          232,
+                          234
+                        ],
+                        "value": "z1"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    235,
+                    238
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          235,
+                          238
+                        ],
+                        "value": "a19"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    239,
+                    252
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          239,
+                          252
+                        ],
+                        "value": "z141592653589"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    253,
+                    264
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          253,
+                          264
+                        ],
+                        "value": "z4294967296"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    265,
+                    268
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          265,
+                          268
+                        ],
+                        "value": "a%#"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    269,
+                    272
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          269,
+                          272
+                        ],
+                        "value": "a#%"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    273,
+                    276
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          273,
+                          276
+                        ],
+                        "value": "a##"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    277,
+                    280
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          277,
+                          280
+                        ],
+                        "value": "a%%"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    281,
+                    283
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          281,
+                          283
+                        ],
+                        "value": "x/"
+                      },
+                      "octave": null
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          284,
+          341
+        ],
+        "value": {
+          "raw": "define_generated_scale(scale=\"generated-17\" divisions=17)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  284,
+                  306
+                ],
+                "value": "define_generated_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      307,
+                      312
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      313,
+                      327
+                    ],
+                    "value": {
+                      "String": "generated-17"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      328,
+                      337
+                    ],
+                    "value": "divisions"
+                  },
+                  "value": {
+                    "span": [
+                      338,
+                      340
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          17,
+                          "17"
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          341,
+          342
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          342,
+          373
+        ],
+        "value": {
+          "raw": "use_scale(scale=\"generated-17\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  342,
+                  351
+                ],
+                "value": "use_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      352,
+                      357
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      358,
+                      372
+                    ],
+                    "value": {
+                      "String": "generated-17"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          373,
+          374
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          374,
+          397
+        ],
+        "value": {
+          "raw": "[p1.0] 1:a16 a17 a+ a-\n",
+          "t": {
+            "NoteLine": {
+              "leader": {
+                "span": [
+                  374,
+                  380
+                ],
+                "value": {
+                  "name": {
+                    "span": [
+                      375,
+                      377
+                    ],
+                    "value": "p1"
+                  },
+                  "note": {
+                    "span": [
+                      378,
+                      379
+                    ],
+                    "value": 0
+                  }
+                }
+              },
+              "notes": [
+                {
+                  "span": [
+                    381,
+                    386
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": {
+                        "span": [
+                          381,
+                          382
+                        ],
+                        "value": [
+                          1,
+                          1
+                        ]
+                      },
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          383,
+                          386
+                        ],
+                        "value": "a16"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    387,
+                    390
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          387,
+                          390
+                        ],
+                        "value": "a17"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    391,
+                    393
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          391,
+                          393
+                        ],
+                        "value": "a+"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    394,
+                    396
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          394,
+                          396
+                        ],
+                        "value": "a-"
+                      },
+                      "octave": null
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "Err": {
+      "list": [
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [],
+          "message": {
+            "span": [
+              63,
+              69
+            ],
+            "value": "tolerance is only allowed when divisions is specified"
+          }
+        },
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [],
+          "message": {
+            "span": [
+              114,
+              115
+            ],
+            "value": "divisions, if specified, must be >= 2"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              211,
+              212
+            ],
+            "value": "a number is not permitted here"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              208,
+              212
+            ],
+            "value": "note 'b1' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              214,
+              215
+            ],
+            "value": "argument to Z must be >= 2"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              213,
+              215
+            ],
+            "value": "note 'z0' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              0,
+              1
+            ],
+            "value": "argument to Z must be >= 2"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              216,
+              217
+            ],
+            "value": "note 'z' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              219,
+              220
+            ],
+            "value": "+ and - are not permitted in pure Just Intonation generated scales"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              218,
+              220
+            ],
+            "value": "note 'a+' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              222,
+              223
+            ],
+            "value": "+ and - are not permitted in pure Just Intonation generated scales"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              221,
+              223
+            ],
+            "value": "note 'a-' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              225,
+              226
+            ],
+            "value": "a number is not permitted here"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              224,
+              226
+            ],
+            "value": "note 'b2' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              228,
+              229
+            ],
+            "value": "for pure Just Intonation step must be 0 or omitted"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              230,
+              231
+            ],
+            "value": "a number is not permitted here"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              227,
+              231
+            ],
+            "value": "note 'a2#1' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              233,
+              234
+            ],
+            "value": "argument to Z must be >= 2"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              232,
+              234
+            ],
+            "value": "note 'z1' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              236,
+              238
+            ],
+            "value": "for pure Just Intonation step must be 0 or omitted"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              235,
+              238
+            ],
+            "value": "note 'a19' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              250,
+              251
+            ],
+            "value": "overflow handling numeric value"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              251,
+              252
+            ],
+            "value": "overflow handling numeric value"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              239,
+              252
+            ],
+            "value": "note 'z141592653589' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              263,
+              264
+            ],
+            "value": "overflow handling numeric value"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              253,
+              264
+            ],
+            "value": "note 'z4294967296' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              267,
+              268
+            ],
+            "value": "# or % may appear at most once"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              265,
+              268
+            ],
+            "value": "note 'a%#' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              271,
+              272
+            ],
+            "value": "# or % may appear at most once"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              269,
+              272
+            ],
+            "value": "note 'a#%' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              275,
+              276
+            ],
+            "value": "# or % may appear at most once"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              273,
+              276
+            ],
+            "value": "note 'a##' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              279,
+              280
+            ],
+            "value": "# or % may appear at most once"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              277,
+              280
+            ],
+            "value": "note 'a%%' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              282,
+              283
+            ],
+            "value": "this character is not permitted here"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              281,
+              283
+            ],
+            "value": "note 'x/' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              388,
+              390
+            ],
+            "value": "the maximum allowed step for this scale is 16"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              387,
+              390
+            ],
+            "value": "note 'a17' is not in the current scale ('generated-17')"
+          }
+        }
+      ]
+    }
+  }
+]

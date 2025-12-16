@@ -52,6 +52,76 @@ impl<'s> DefineScale<'s> {
 }
 
 #[derive(FromRawDirective)]
+/// Define a generated scale. Note pitches are generated according to the
+/// following rules:
+/// - Notes consist of letters, numbers, +, -, #, and %
+/// - `A` and `a` represent the root of the scale
+/// - `B` through `Y` represent n/n-1 where n is the ordinal position of the
+///   letter (B=2, C=3/2, D=4/3, etc.)
+/// - `b` through `y` are n-1/n, the reciprocal of their upper-case
+///   counterparts (b=1/2, c=2/3, d=3/4, etc.)
+/// - `Z` followed by a number ≥ 2 represents n/n-1 (e.g. Z30 = 30/29)
+/// - `z` followed by a number ≥ 2 represents n-n/n (e.g. z30 = 29/30)
+/// - All factors are multiplied to create the base pitch; e.g, (Bh = 2*7/8 =
+///   7/4, Cl = 3/2*11/12 = 11/8)
+///
+/// When `divisions` is specified, the following additional rules apply:
+/// - `An` represents `n` scale steps up (cycle^n|divisions)
+/// - `an` represents `n` scale steps down (cycle^-n|divisions)
+/// - `+` is short for `A1` (raises the pitch by one scale degree)
+/// - `-` is short for `a1` (lowers the pitch by one scale degree)
+/// - If `tolerance` is not specified or the pitch is within tolerance of its
+///   nearest scale degree, the pitch is rounded to the nearest scale degree,
+///   and the `#` and `%` characters have no effect on the pitch.
+/// - If `tolerance` is specified and the pitch is farther away from its nearest
+///   scale degree than `tolerance`:
+///   - `#` forces the pitch to the next highest scale degree
+///   - `%` forces the pitch to the next lowest scale degree
+///
+/// Example: with divisions = 17 and tolerance of 4¢:
+/// - `E` is `^5|17` because 5/4 is between steps 5 and 6 (zero-based) but is
+///   slightly closer to step 5
+/// - `E%` is also `^5|17`
+/// - `E#` is `^6|17`
+///
+/// See the manual for more details and examples.
+pub struct DefineGeneratedScale<'s> {
+    pub span: Span,
+    /// scale name
+    pub scale: Spanned<Cow<'s, str>>,
+    /// ratio to be applied by the octave marker; default is 2 (one octave)
+    pub cycle_ratio: Option<Spanned<Ratio<u32>>>,
+    /// cycle divisions -- omit for a pure Just-Intonation scale
+    pub divisions: Option<Spanned<u32>>,
+    /// tolerance for `#` and `%` -- `#` and `%` are ignored if computed pitch
+    /// is within `tolerance` of a scale degree; allowed only when `divisions`
+    /// is given
+    pub tolerance: Option<Spanned<Pitch>>,
+}
+impl<'s> DefineGeneratedScale<'s> {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        if let Some(divisions) = self.divisions
+            && divisions.value < 2
+        {
+            diags.err(
+                code::DIRECTIVE_USAGE,
+                divisions.span,
+                "divisions, if specified, must be >= 2",
+            );
+        }
+        if let Some(tolerance) = &self.tolerance
+            && self.divisions.is_none()
+        {
+            diags.err(
+                code::DIRECTIVE_USAGE,
+                tolerance.span,
+                "tolerance is only allowed when divisions is specified",
+            )
+        }
+    }
+}
+
+#[derive(FromRawDirective)]
 /// Change the scale for the specified parts. If no parts are specified, change
 /// the scale used by parts with no explicit scale. This creates a tuning with
 /// the specified scale and the current base pitch.
@@ -356,6 +426,7 @@ impl<'s> PlaceMapping<'s> {
 pub enum Directive<'s> {
     Syntoniq(Syntoniq<'s>),
     DefineScale(DefineScale<'s>),
+    DefineGeneratedScale(DefineGeneratedScale<'s>),
     UseScale(UseScale<'s>),
     Transpose(Transpose<'s>),
     SetBasePitch(SetBasePitch<'s>),

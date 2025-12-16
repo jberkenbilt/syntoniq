@@ -77,3 +77,19 @@ place_mapping(
     anchor_row=10
     anchor_col=7
 )
+; l3 exercises generated scales in a layout
+define_generated_scale(scale="JI")
+define_manual_mapping(
+    mapping="m3"
+    scale="JI"
+) <<
+@A I E D F
+>>
+place_mapping(
+    layout="l3"
+    mapping="m3"
+    base_pitch=264
+    keyboard="salad"
+    anchor_row=1
+    anchor_col=1
+)

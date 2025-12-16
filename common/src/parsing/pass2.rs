@@ -535,6 +535,7 @@ fn note_octave<'s>(
             .parse_next(input)
             .map(|(name, octave)| {
                 let span = model::merge_spans(&[name.get_span(), octave.get_span()]).unwrap();
+                let name = Spanned::new(name.span, Cow::Borrowed(name.value));
                 Spanned::new(span, NoteOctave { name, octave })
             })
     }

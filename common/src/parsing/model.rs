@@ -499,7 +499,7 @@ impl<'s> Display for ScaleBlock<'s> {
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct NoteOctave<'s> {
-    pub name: Spanned<&'s str>,
+    pub name: Spanned<Cow<'s, str>>,
     pub octave: Option<Spanned<i8>>,
 }
 impl<'s> Display for NoteOctave<'s> {
