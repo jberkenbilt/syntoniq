@@ -1,0 +1,36 @@
+syntoniq(version=1)
+midi_instrument(instrument=47)
+
+; timidity -A70,70a -OwM /tmp/a.midi
+
+; See alarm2.stq for a version that creates identical audio using a
+; manual scale. The manual file more clearly shows which harmonic is
+; used, but this file doesn't require assigning note names. See
+; alarm3.stq for a slightly enhanced version of this that overlays the
+; JI harmonics on an EDO scale.
+
+define_generated_scale(scale="harmonics")
+use_scale(scale="harmonics")
+set_base_pitch(absolute=320)
+tempo(bpm=120)
+mark(label="a")
+[p1.0] 9:A, 1:~
+[p1.1] 2:~ 7:C, 1:~
+[p1.2] 4:~ 5:Cl 1:~
+[p1.3] 6:~ 3:Bh 1:~
+[p1.4] 6.1:~ 2.9:I' 1:~
+[p1.5] 6.2:~ 2.8:E' 1:~
+[p1.6] 6.3:~ 2.7:EK' 1:~
+[p1.7] 6.4:~ 2.6:C' 1:~
+[p1.8] 6.5:~ 2.5:CM' 1:~
+[p1.9] 6.6:~ 2.4:CG' 1:~
+[p1.10] 6.7:~ 2.3:Bp' 1:~
+[p1.11] 6.8:~ 2.2:A'2 1:~
+[p1.12] 6.9:~ 2.1:AQ'2 1:~
+[p1] 96@0< 127@3
+mark(label="b")
+repeat(start="a" end="b")
+repeat(start="a" end="b")
+repeat(start="a" end="b")
+repeat(start="a" end="b")
+repeat(start="a" end="b")
