@@ -567,6 +567,7 @@ impl Engine {
         tx.send(Event::UpdateNote(UpdateNoteEvent { position, note }))?;
         Ok(light_event)
     }
+
     fn draw_layout(&self, layout: &Arc<Layout<'static>>) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());

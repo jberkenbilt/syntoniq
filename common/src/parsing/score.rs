@@ -204,24 +204,11 @@ impl<'s> ScaleBuilder<'s> {
             cycle_offset: i32,
         }
 
-        let one_as_pitch = Pitch::unit();
-        let cycle_as_pitch = Pitch::from(self.definition.cycle);
-        let inverted_cycle_as_pitch = cycle_as_pitch.invert();
         let mut intermediate: Vec<Intermediate> = Vec::new();
         let mut distinct_base_relative = HashSet::new();
         for (name, orig_relative) in self.notes {
-            // This may not be the most efficient way to calculate this, but it's probably the
-            // clearest. Calculate the cycle offset to normalize this to within a cycle.
-            let mut normalized_relative = orig_relative.clone();
-            let mut cycle_offset = 0;
-            while normalized_relative < one_as_pitch {
-                normalized_relative *= &cycle_as_pitch;
-                cycle_offset -= 1;
-            }
-            while normalized_relative >= cycle_as_pitch {
-                normalized_relative *= &inverted_cycle_as_pitch;
-                cycle_offset += 1;
-            }
+            let (normalized_relative, cycle_offset) =
+                orig_relative.normalized(self.definition.cycle);
             distinct_base_relative.insert(normalized_relative.clone());
             // Update the primary name map in case the only appearance of a pitch is not within
             // the cycle.

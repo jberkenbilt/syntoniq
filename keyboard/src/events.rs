@@ -411,10 +411,13 @@ mod tests {
             let NoteColors { off, .. } = interval_color(Pitch::must_parse(pitch).as_float());
             off
         }
-        assert_eq!(get_color("1*3/2"), Color::FifthOff); // JI 5th
-        assert_eq!(get_color("1*^9|12"), Color::MinorThirdOff); // 12-EDO major sixth
-        assert_eq!(get_color("1*^10|31"), Color::MajorThirdOff); // 31-EDO major third
-        assert_eq!(get_color("1*^7|17"), Color::FifthOff); // 17-EDO fourth
-        assert_eq!(get_color("1*^5|17"), Color::OtherOff); // nope
+        assert_eq!(get_color("3/2"), Color::FifthOff); // JI 5th
+        assert_eq!(get_color("^9|12"), Color::MinorThirdOff); // 12-EDO major sixth
+        assert_eq!(get_color("^10|31"), Color::MajorThirdOff); // 31-EDO major third
+        assert_eq!(get_color("^41|31"), Color::MajorThirdOff); // 31-EDO major third
+        assert_eq!(get_color("2*^10|31"), Color::MajorThirdOff); // 31-EDO major third
+        assert_eq!(get_color("1/2*^10|31"), Color::MajorThirdOff); // 31-EDO major third
+        assert_eq!(get_color("^7|17"), Color::FifthOff); // 17-EDO fourth
+        assert_eq!(get_color("^5|17"), Color::OtherOff); // nope
     }
 }

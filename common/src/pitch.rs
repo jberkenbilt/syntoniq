@@ -293,6 +293,27 @@ impl Pitch {
         Self::new(factors)
     }
 
+    /// Returns a normalized pitch (1 <= `pitch` < `cycle`) and the cycle offset (`normalized` *
+    /// `cycle^offset` = `orig`)
+    pub fn normalized(&self, cycle: Ratio<u32>) -> (Pitch, i32) {
+        // This may not be the most efficient way to calculate this, but it's probably the
+        // clearest. Calculate the cycle offset to normalize this to within a cycle.
+        let one = Pitch::unit();
+        let cycle_as_pitch = Pitch::from(cycle);
+        let inverted_cycle_as_pitch = cycle_as_pitch.invert();
+        let mut normalized = self.clone();
+        let mut cycle_offset = 0;
+        while normalized < one {
+            normalized *= &cycle_as_pitch;
+            cycle_offset -= 1;
+        }
+        while normalized >= cycle_as_pitch {
+            normalized *= &inverted_cycle_as_pitch;
+            cycle_offset += 1;
+        }
+        (normalized, cycle_offset)
+    }
+
     /// Parse a pitch from a string.
     pub fn parse(s: &str) -> anyhow::Result<Self> {
         s.parse::<Self>()
