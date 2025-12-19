@@ -13697,51 +13697,51 @@
                     "notes": [
                       [
                         {
-                          "base_factor": "1",
-                          "full_name": "p",
+                          "adjusted_base_relative": "1",
+                          "cycle": 0,
                           "note_name": "p"
                         },
                         {
-                          "base_factor": "^1|5",
-                          "full_name": "q",
+                          "adjusted_base_relative": "^1|5",
+                          "cycle": 0,
                           "note_name": "q"
                         },
                         {
-                          "base_factor": "^2|5",
-                          "full_name": "r",
+                          "adjusted_base_relative": "^2|5",
+                          "cycle": 0,
                           "note_name": "r"
                         },
                         {
-                          "base_factor": "^3|5",
-                          "full_name": "s",
+                          "adjusted_base_relative": "^3|5",
+                          "cycle": 0,
                           "note_name": "s"
                         },
                         {
-                          "base_factor": "1/2",
-                          "full_name": "p,",
+                          "adjusted_base_relative": "1/2",
+                          "cycle": -1,
                           "note_name": "p"
                         }
                       ],
                       [
                         {
-                          "base_factor": "^4|5",
-                          "full_name": "t",
+                          "adjusted_base_relative": "^4|5",
+                          "cycle": 0,
                           "note_name": "t"
                         },
                         null,
                         {
-                          "base_factor": "2",
-                          "full_name": "w",
+                          "adjusted_base_relative": "2",
+                          "cycle": 0,
                           "note_name": "w"
                         },
                         {
-                          "base_factor": "2*^1|6",
-                          "full_name": "x",
+                          "adjusted_base_relative": "2*^1|6",
+                          "cycle": 0,
                           "note_name": "x"
                         },
                         {
-                          "base_factor": "2",
-                          "full_name": "p'",
+                          "adjusted_base_relative": "2",
+                          "cycle": 1,
                           "note_name": "p"
                         }
                       ]
@@ -13769,51 +13769,51 @@
                     "notes": [
                       [
                         {
-                          "base_factor": "1",
-                          "full_name": "p",
+                          "adjusted_base_relative": "1",
+                          "cycle": 0,
                           "note_name": "p"
                         },
                         {
-                          "base_factor": "^1|5",
-                          "full_name": "q",
+                          "adjusted_base_relative": "^1|5",
+                          "cycle": 0,
                           "note_name": "q"
                         },
                         {
-                          "base_factor": "^2|5",
-                          "full_name": "r",
+                          "adjusted_base_relative": "^2|5",
+                          "cycle": 0,
                           "note_name": "r"
                         },
                         {
-                          "base_factor": "^3|5",
-                          "full_name": "s",
+                          "adjusted_base_relative": "^3|5",
+                          "cycle": 0,
                           "note_name": "s"
                         },
                         {
-                          "base_factor": "1/2",
-                          "full_name": "p,",
+                          "adjusted_base_relative": "1/2",
+                          "cycle": -1,
                           "note_name": "p"
                         }
                       ],
                       [
                         {
-                          "base_factor": "^4|5",
-                          "full_name": "t",
+                          "adjusted_base_relative": "^4|5",
+                          "cycle": 0,
                           "note_name": "t"
                         },
                         null,
                         {
-                          "base_factor": "2",
-                          "full_name": "w",
+                          "adjusted_base_relative": "2",
+                          "cycle": 0,
                           "note_name": "w"
                         },
                         {
-                          "base_factor": "2*^1|6",
-                          "full_name": "x",
+                          "adjusted_base_relative": "2*^1|6",
+                          "cycle": 0,
                           "note_name": "x"
                         },
                         {
-                          "base_factor": "2",
-                          "full_name": "p'",
+                          "adjusted_base_relative": "2",
+                          "cycle": 1,
                           "note_name": "p"
                         }
                       ]

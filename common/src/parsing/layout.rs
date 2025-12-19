@@ -1,4 +1,4 @@
-use crate::parsing::score::{NamedPitch, Scale, ScalesByName, serialize_scales};
+use crate::parsing::score::{MappingItem, Scale, ScalesByName, serialize_scales};
 use crate::parsing::score_helpers;
 use crate::pitch::Pitch;
 use num_rational::Ratio;
@@ -113,6 +113,7 @@ pub struct Coordinate {
     pub col: i32,
 }
 
+/// This represents all the information about a note from its position in a layout.
 pub struct PlacedNote<'s> {
     /// Note name, including octave/cycle markers
     pub name: Cow<'s, str>,
@@ -120,15 +121,21 @@ pub struct PlacedNote<'s> {
     pub scale_name: Cow<'s, str>,
     /// Configured base pitch of the mapping
     pub scale_base: Pitch,
-    /// Current transposition
+    /// Current transposition; incorporated into pitch
     pub transposition: Pitch,
-    /// Contribution of base factor from tiling of manual mapping
-    pub tile_factor: Pitch,
-    /// Final pitch
+    /// Final pitch; includes all transpositions and offsets
     pub pitch: Pitch,
-    /// Normalized interval over the base pitch
+    /// Relative pitch over scale base pitch including cycle offsets but not including tile offsets;
+    /// used in standard output representation of pitch.
+    pub untiled_base_relative: Pitch,
+    /// Contribution to pitch from tile factor; this is included in pitch and base interval but not
+    /// in untiled_base_relative.
+    pub tile_factor: Pitch,
+    /// Normalized interval over the base pitch; used on keyboard web display. This includes tile
+    /// offsets.
     pub base_interval: Pitch,
-    /// Normalized scale degree (from 0 to degrees-1)
+    /// Normalized scale degree (from 0 to degrees-1); used to compute MIDI note numbers in MTS mode
+    /// and to determine if this is degree 1 on an isomorphic layout
     pub degree: u32,
     /// Whether this comes from an isomorphic layout
     pub isomorphic: bool,
@@ -202,20 +209,21 @@ impl<'s> LayoutMapping<'s> {
                 self.details
                     .note_at_anchor_delta(scale, row_delta, col_delta, stagger)
                     .map(|x| {
-                        let mut pitch = x.base_factor;
+                        let mut pitch = x.untiled_base_relative.clone();
                         pitch *= &self.base_pitch;
                         pitch *= &offsets.transpose;
                         pitch *= &x.tile_factor;
-                        let sd = scale.notes.get(&x.note_name).unwrap();
+                        let sd = scale.notes.get(&x.bare_name).unwrap();
                         let degree = sd.degree.rem_euclid(scale.pitches.len() as i32) as u32;
                         PlacedNote {
-                            name: x.full_name,
+                            name: x.display_name,
                             scale_name: self.scale.clone(),
                             scale_base: self.base_pitch.clone(),
                             transposition: offsets.transpose.clone(),
-                            tile_factor: x.tile_factor,
                             pitch,
-                            base_interval: sd.normalized_relative.clone(),
+                            untiled_base_relative: x.untiled_base_relative,
+                            tile_factor: x.tile_factor,
+                            base_interval: x.normalized_interval,
                             degree,
                             isomorphic: x.isomorphic,
                         }
@@ -229,13 +237,22 @@ impl<'s> LayoutMapping<'s> {
 }
 
 #[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, ToStatic)]
-pub struct MappedPitch<'s> {
-    pub note_name: Cow<'s, str>,
-    pub full_name: Cow<'s, str>,
-    /// Factor of base pitch; may fall outside the cycle; excludes tile offsets and transposition
-    pub base_factor: Pitch,
-    /// Contribution of base factor from tiling of manual mapping
+/// This is an intermediate structure representing the information a mapping can provide about a
+/// note.
+struct MappedPitch<'s> {
+    /// Raw note name without octave markers or other adornments
+    pub bare_name: Cow<'s, str>,
+    /// Note name as given in the mapping definition including any explicit octave markers
+    pub given_name: Cow<'s, str>,
+    /// Name as displayed, including explicit and computed octave marks and tile offsets
+    pub display_name: Cow<'s, str>,
+    /// Relative pitch of note to scale base pitch; includes explicit octave markers; excludes tile
+    /// offsets transpositions. Used to calculate final pitch.
+    pub untiled_base_relative: Pitch,
+    /// Pitch adjustment required from tiling manual mappings.
     pub tile_factor: Pitch,
+    /// Normalized interval within the cycle; used to display the interval on the keyboard.
+    pub normalized_interval: Pitch,
     pub isomorphic: bool,
 }
 
@@ -254,7 +271,9 @@ impl<'s> MappingDetails<'s> {
     ) -> Option<MappedPitch<'s>> {
         match self {
             MappingDetails::Isomorphic(x) => x.note_at_anchor_delta(scale, row_delta, col_delta),
-            MappingDetails::Manual(x) => x.note_at_anchor_delta(row_delta, col_delta, stagger),
+            MappingDetails::Manual(x) => {
+                x.note_at_anchor_delta(scale, row_delta, col_delta, stagger)
+            }
         }
     }
     pub fn name(&self) -> &Cow<'s, str> {
@@ -297,14 +316,17 @@ impl<'s> IsomorphicMapping<'s> {
         let pitch_idx = full_degree.rem_euclid(num_degrees);
         let cycle = full_degree.div_euclid(num_degrees);
         let base_interval = scale.pitches[pitch_idx as usize].clone();
-        let base_factor = &base_interval * &Pitch::from(scale.definition.cycle.pow(cycle));
+        let untiled_base_relative =
+            &base_interval * &Pitch::from(scale.definition.cycle.pow(cycle));
         let given_name = scale.primary_names[pitch_idx as usize].clone();
         let name = score_helpers::format_note_cycle(given_name.clone(), cycle);
         Some(MappedPitch {
-            note_name: given_name,
-            full_name: name,
-            base_factor,
-            tile_factor: Default::default(),
+            bare_name: given_name.clone(),
+            given_name,
+            display_name: name,
+            untiled_base_relative,
+            tile_factor: Pitch::unit(),
+            normalized_interval: base_interval,
             isomorphic: true,
         })
     }
@@ -319,7 +341,7 @@ pub struct ManualMapping<'s> {
     /// Valid column index
     pub anchor_col: i32,
     /// Outer vec is rows, inner vec is columns; all rows have the same number of columns.
-    pub notes: Vec<Vec<Option<NamedPitch<'s>>>>,
+    pub notes: Vec<Vec<Option<MappingItem<'s>>>>,
 }
 
 impl<'s> ManualMapping<'s> {
@@ -327,6 +349,7 @@ impl<'s> ManualMapping<'s> {
     /// `anchor_row` and `anchor_column` are valid indices into notes.
     fn note_at_anchor_delta(
         &self,
+        scale: &Scale<'s>,
         row_delta: i32,
         col_delta: i32,
         stagger: i32,
@@ -352,10 +375,8 @@ impl<'s> ManualMapping<'s> {
             .get(col_idx as usize)
             .expect("col_idx out of range")
             .as_ref();
-        let named_pitch = note_col?.clone();
+        let mapping_item = note_col?.clone();
 
-        // For manual layout, we don't know the relationship between cycles and factors, and there
-        // may not even be one. Don't try to modify the note names. Just adjust the pitches.
         fn adjust(factor: &mut Pitch, mut repetitions: i32, tile_factor: &Pitch) {
             while repetitions > 0 {
                 *factor *= tile_factor;
@@ -373,11 +394,36 @@ impl<'s> ManualMapping<'s> {
         let mut tile_factor = Pitch::from(Ratio::from_integer(1));
         adjust(&mut tile_factor, v_repetitions, &self.v_factor);
         adjust(&mut tile_factor, h_repetitions, &self.h_factor);
+        let untiled_base_relative = mapping_item.adjusted_base_relative.clone();
+        let adjusted_base_relative = &untiled_base_relative * &tile_factor;
+        let (base_interval, _) = adjusted_base_relative.normalized(scale.definition.cycle);
+        // Encode the number of horizontal and vertical tile repetitions with arrows. Use octave
+        // markers to show the degree to which base factor is over the interval shown as
+        // base_interval.
+        let given_name =
+            score_helpers::format_note_cycle(mapping_item.note_name.clone(), mapping_item.cycle);
+        let mut name = given_name.to_string();
+        match v_repetitions {
+            1 => name.push('↑'),
+            x if x > 1 => name.push_str(&format!("↑{x}")),
+            -1 => name.push('↓'),
+            x if x < -1 => name.push_str(&format!("↓{}", -x)),
+            _ => {}
+        }
+        match h_repetitions {
+            1 => name.push('→'),
+            x if x > 1 => name.push_str(&format!("→{x}")),
+            -1 => name.push('←'),
+            x if x < -1 => name.push_str(&format!("y{}", -x)),
+            _ => {}
+        }
         Some(MappedPitch {
-            full_name: named_pitch.full_name,
-            note_name: named_pitch.note_name,
-            base_factor: named_pitch.base_factor,
+            bare_name: mapping_item.note_name,
+            display_name: Cow::Owned(name),
+            given_name,
+            untiled_base_relative,
             tile_factor,
+            normalized_interval: base_interval,
             isomorphic: false,
         })
     }
@@ -407,90 +453,108 @@ mod tests {
         assert_eq!(
             im.note_at_anchor_delta(scale, 0, 0).unwrap(),
             MappedPitch {
-                note_name: "c".into(),
-                full_name: "c".into(),
-                base_factor: Pitch::unit(),
+                bare_name: "c".into(),
+                given_name: "c".into(),
+                display_name: "c".into(),
+                untiled_base_relative: Pitch::unit(),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::unit(),
                 isomorphic: true,
             }
         );
         assert_eq!(
             im.note_at_anchor_delta(scale, 0, 1).unwrap(),
             MappedPitch {
-                note_name: "d".into(),
-                full_name: "d".into(),
-                base_factor: Pitch::must_parse("^1|6"),
+                bare_name: "d".into(),
+                given_name: "d".into(),
+                display_name: "d".into(),
+                untiled_base_relative: Pitch::must_parse("^1|6"),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::must_parse("^1|6"),
                 isomorphic: true,
             }
         );
         assert_eq!(
             im.note_at_anchor_delta(scale, 0, -1).unwrap(),
             MappedPitch {
-                note_name: "b%".into(),
-                full_name: "b%,".into(),
-                base_factor: Pitch::must_parse("1/2*^5|6"),
+                bare_name: "b%".into(),
+                given_name: "b%".into(),
+                display_name: "b%,".into(),
+                untiled_base_relative: Pitch::must_parse("1/2*^5|6"),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::must_parse("^5|6"),
                 isomorphic: true,
             }
         );
         assert_eq!(
             im.note_at_anchor_delta(scale, 1, -1).unwrap(),
             MappedPitch {
-                note_name: "e%".into(),
-                full_name: "e%".into(),
-                base_factor: Pitch::must_parse("^1|4"),
+                bare_name: "e%".into(),
+                given_name: "e%".into(),
+                display_name: "e%".into(),
+                untiled_base_relative: Pitch::must_parse("^1|4"),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::must_parse("^1|4"),
                 isomorphic: true,
             }
         );
         assert_eq!(
             im.note_at_anchor_delta(scale, -1, 1).unwrap(),
             MappedPitch {
-                note_name: "a".into(),
-                full_name: "a,".into(),
-                base_factor: Pitch::must_parse("^-1|4"),
+                bare_name: "a".into(),
+                given_name: "a".into(),
+                display_name: "a,".into(),
+                untiled_base_relative: Pitch::must_parse("^-1|4"),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::must_parse("^3|4"),
                 isomorphic: true,
             }
         );
         assert_eq!(
             im.note_at_anchor_delta(scale, 3, 1).unwrap(),
             MappedPitch {
-                note_name: "f".into(),
-                full_name: "f'".into(),
-                base_factor: Pitch::must_parse("2*^5|12"),
+                bare_name: "f".into(),
+                given_name: "f".into(),
+                display_name: "f'".into(),
+                untiled_base_relative: Pitch::must_parse("2*^5|12"),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::must_parse("^5|12"),
                 isomorphic: true,
             }
         );
         assert_eq!(
             im.note_at_anchor_delta(scale, 5, 1).unwrap(),
             MappedPitch {
-                note_name: "e%".into(),
-                full_name: "e%'2".into(),
-                base_factor: Pitch::must_parse("4*^1|4"),
+                bare_name: "e%".into(),
+                given_name: "e%".into(),
+                display_name: "e%'2".into(),
+                untiled_base_relative: Pitch::must_parse("4*^1|4"),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::must_parse("^1|4"),
                 isomorphic: true,
             }
         );
         assert_eq!(
             im.note_at_anchor_delta(scale, -2, -1).unwrap(),
             MappedPitch {
-                note_name: "c".into(),
-                full_name: "c,".into(),
-                base_factor: Pitch::must_parse("1/2"),
+                bare_name: "c".into(),
+                given_name: "c".into(),
+                display_name: "c,".into(),
+                untiled_base_relative: Pitch::must_parse("1/2"),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::must_parse("1"),
                 isomorphic: true,
             }
         );
         assert_eq!(
             im.note_at_anchor_delta(scale, -3, 1).unwrap(),
             MappedPitch {
-                note_name: "b".into(),
-                full_name: "b,2".into(),
-                base_factor: Pitch::must_parse("1/2*^-1|12"),
+                bare_name: "b".into(),
+                given_name: "b".into(),
+                display_name: "b,2".into(),
+                untiled_base_relative: Pitch::must_parse("1/2*^-1|12"),
                 tile_factor: Pitch::unit(),
+                normalized_interval: Pitch::must_parse("^11|12"),
                 isomorphic: true,
             }
         );
@@ -504,20 +568,21 @@ mod tests {
         assert_eq!(mapping.name, "m1");
         assert!(mapping.details.as_isomorphic().is_none());
         let mm = mapping.details.as_manual().unwrap();
-        assert_eq!(
-            mm.note_at_anchor_delta(0, 0, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("e#"),
-                full_name: Cow::Borrowed("e#"),
-                base_factor: Pitch::must_parse("^7|19"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
-        );
-        assert!(mm.note_at_anchor_delta(0, -2, 0).is_none());
-        assert!(mm.note_at_anchor_delta(1, 2, 0).is_none());
-        assert!(mm.note_at_anchor_delta(4, 7, 0).is_none());
-        assert!(mm.note_at_anchor_delta(-2, -3, 0).is_none());
+        let scale = LAYOUTS.scales.get(&mapping.scale).unwrap();
+        let anchor = MappedPitch {
+            bare_name: Cow::Borrowed("e#"),
+            given_name: Cow::Borrowed("e#"),
+            display_name: Cow::Borrowed("e#"),
+            untiled_base_relative: Pitch::must_parse("^7|19"),
+            tile_factor: Pitch::unit(),
+            normalized_interval: Pitch::must_parse("^7|19"),
+            isomorphic: false,
+        };
+        assert_eq!(mm.note_at_anchor_delta(scale, 0, 0, 0).unwrap(), anchor,);
+        assert!(mm.note_at_anchor_delta(scale, 0, -2, 0).is_none());
+        assert!(mm.note_at_anchor_delta(scale, 1, 2, 0).is_none());
+        assert!(mm.note_at_anchor_delta(scale, 4, 7, 0).is_none());
+        assert!(mm.note_at_anchor_delta(scale, -2, -3, 0).is_none());
         // With staggered, every n rows up effectively shifts the column to the left because
         // things on the keyboard are shifted right. The only sensible values for stagger are 0
         // for rectangular keyboards and 2 for hexagonal keyboards, though one could conceive of
@@ -530,161 +595,152 @@ mod tests {
         // to the *left* when we ask the mapping what character would be that delta. In other words,
         // to find the note in a lookup table that is not staggered in a layout with a stagger value
         // of 2, we have to go 2 steps farther to the left, which *increases* our delta.
-        assert!(mm.note_at_anchor_delta(0, -2, 2).is_none());
-        assert!(mm.note_at_anchor_delta(1, 2, 2).is_none());
-        assert!(mm.note_at_anchor_delta(4, 9, 2).is_none());
-        assert!(mm.note_at_anchor_delta(-2, -4, 2).is_none());
+        assert!(mm.note_at_anchor_delta(scale, 0, -2, 2).is_none());
+        assert!(mm.note_at_anchor_delta(scale, 1, 2, 2).is_none());
+        assert!(mm.note_at_anchor_delta(scale, 4, 9, 2).is_none());
+        assert!(mm.note_at_anchor_delta(scale, -2, -4, 2).is_none());
+        let right_1 = MappedPitch {
+            bare_name: Cow::Borrowed("f"),
+            given_name: Cow::Borrowed("f"),
+            display_name: Cow::Borrowed("f"),
+            untiled_base_relative: Pitch::must_parse("^8|19"),
+            tile_factor: Pitch::unit(),
+            normalized_interval: Pitch::must_parse("^8|19"),
+            isomorphic: false,
+        };
+
+        assert_eq!(mm.note_at_anchor_delta(scale, 0, 1, 0).unwrap(), right_1);
+        let up_1 = MappedPitch {
+            bare_name: Cow::Borrowed("g#"),
+            given_name: Cow::Borrowed("g#"),
+            display_name: Cow::Borrowed("g#"),
+            untiled_base_relative: Pitch::must_parse("^12|19"),
+            tile_factor: Pitch::unit(),
+            normalized_interval: Pitch::must_parse("^12|19"),
+            isomorphic: false,
+        };
+        assert_eq!(mm.note_at_anchor_delta(scale, 1, 0, 0).unwrap(), up_1);
+
+        let up_1_right_1 = MappedPitch {
+            bare_name: Cow::Borrowed("c"),
+            given_name: Cow::Borrowed("c'"),
+            display_name: Cow::Borrowed("c'"),
+            untiled_base_relative: Pitch::must_parse("2"),
+            tile_factor: Pitch::unit(),
+            normalized_interval: Pitch::must_parse("1"),
+            isomorphic: false,
+        };
         assert_eq!(
-            mm.note_at_anchor_delta(0, 1, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("f"),
-                full_name: Cow::Borrowed("f"),
-                base_factor: Pitch::must_parse("^8|19"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
-        );
-        assert_eq!(
-            mm.note_at_anchor_delta(1, 0, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("g#"),
-                full_name: Cow::Borrowed("g#"),
-                base_factor: Pitch::must_parse("^12|19"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
-        );
-        assert_eq!(
-            mm.note_at_anchor_delta(1, 1, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("c"),
-                full_name: Cow::Borrowed("c'"),
-                base_factor: Pitch::must_parse("2"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
+            mm.note_at_anchor_delta(scale, 1, 1, 0).unwrap(),
+            up_1_right_1
         );
         // Go up one vertical repetition
+        let up_4_right_1 = MappedPitch {
+            bare_name: Cow::Borrowed("c"),
+            given_name: Cow::Borrowed("c'"),
+            display_name: Cow::Borrowed("c'↑"),
+            untiled_base_relative: Pitch::must_parse("2"),
+            tile_factor: Pitch::must_parse("^1|2"),
+            normalized_interval: Pitch::must_parse("^1|2"),
+            isomorphic: false,
+        };
         assert_eq!(
-            mm.note_at_anchor_delta(4, 1, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("c"),
-                full_name: Cow::Borrowed("c'"),
-                base_factor: Pitch::must_parse("2"),
-                tile_factor: Pitch::must_parse("^1|2"),
-                isomorphic: false,
-            }
+            mm.note_at_anchor_delta(scale, 4, 1, 0).unwrap(),
+            up_4_right_1
         );
         assert_eq!(
-            mm.note_at_anchor_delta(4, 3, 2).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("c"),
-                full_name: Cow::Borrowed("c'"),
-                base_factor: Pitch::must_parse("2"),
-                tile_factor: Pitch::must_parse("^1|2"),
-                isomorphic: false,
-            }
+            mm.note_at_anchor_delta(scale, 4, 3, 2).unwrap(),
+            up_4_right_1
         );
         // Go right one horizontal repetition
+        let up_4_right_6 = MappedPitch {
+            bare_name: Cow::Borrowed("c"),
+            given_name: Cow::Borrowed("c'"),
+            display_name: Cow::Borrowed("c'↑→"),
+            untiled_base_relative: Pitch::must_parse("2"),
+            tile_factor: Pitch::must_parse("3/2*^1|2"),
+            normalized_interval: Pitch::must_parse("3/4*^1|2"),
+            isomorphic: false,
+        };
+
         assert_eq!(
-            mm.note_at_anchor_delta(4, 6, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("c"),
-                full_name: Cow::Borrowed("c'"),
-                base_factor: Pitch::must_parse("2"),
-                tile_factor: Pitch::must_parse("1.5*^1|2"),
-                isomorphic: false,
-            }
+            mm.note_at_anchor_delta(scale, 4, 6, 0).unwrap(),
+            up_4_right_6
+        );
+        let down_1 = MappedPitch {
+            bare_name: Cow::Borrowed("d%"),
+            given_name: Cow::Borrowed("d%"),
+            display_name: Cow::Borrowed("d%"),
+            untiled_base_relative: Pitch::must_parse("^2|19"),
+            tile_factor: Pitch::unit(),
+            normalized_interval: Pitch::must_parse("^2|19"),
+            isomorphic: false,
+        };
+        assert_eq!(mm.note_at_anchor_delta(scale, -1, 0, 0).unwrap(), down_1);
+        assert_eq!(mm.note_at_anchor_delta(scale, -1, -1, 2).unwrap(), down_1);
+        let down_1_right_1 = MappedPitch {
+            bare_name: Cow::Borrowed("c2"),
+            given_name: Cow::Borrowed("c2"),
+            display_name: Cow::Borrowed("c2"),
+            untiled_base_relative: Pitch::must_parse("2"),
+            tile_factor: Pitch::unit(),
+            normalized_interval: Pitch::must_parse("1"),
+            isomorphic: false,
+        };
+        assert_eq!(
+            mm.note_at_anchor_delta(scale, -1, 1, 0).unwrap(),
+            down_1_right_1
         );
         assert_eq!(
-            mm.note_at_anchor_delta(-1, 0, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("d%"),
-                full_name: Cow::Borrowed("d%"),
-                base_factor: Pitch::must_parse("^2|19"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
+            mm.note_at_anchor_delta(scale, -1, 0, 2).unwrap(),
+            down_1_right_1
         );
+        let down_1_right_2 = MappedPitch {
+            bare_name: Cow::Borrowed("q"),
+            given_name: Cow::Borrowed("q"),
+            display_name: Cow::Borrowed("q"),
+            untiled_base_relative: Pitch::must_parse("^21|20"),
+            tile_factor: Pitch::unit(),
+            normalized_interval: Pitch::must_parse("^1|20"),
+            isomorphic: false,
+        };
         assert_eq!(
-            mm.note_at_anchor_delta(-1, -1, 2).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("d%"),
-                full_name: Cow::Borrowed("d%"),
-                base_factor: Pitch::must_parse("^2|19"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
+            mm.note_at_anchor_delta(scale, -1, 2, 0).unwrap(),
+            down_1_right_2
         );
+        let down_2 = MappedPitch {
+            bare_name: Cow::Borrowed("g#"),
+            given_name: Cow::Borrowed("g#"),
+            display_name: Cow::Borrowed("g#↓"),
+            untiled_base_relative: Pitch::must_parse("^12|19"),
+            tile_factor: Pitch::must_parse("^-1|2"),
+            normalized_interval: Pitch::must_parse("^-1|2*^12|19"),
+            isomorphic: false,
+        };
+        assert_eq!(mm.note_at_anchor_delta(scale, -2, 0, 0).unwrap(), down_2);
+        assert_eq!(mm.note_at_anchor_delta(scale, -2, -1, 2).unwrap(), down_2);
+        let down_5 = MappedPitch {
+            bare_name: Cow::Borrowed("g#"),
+            given_name: Cow::Borrowed("g#"),
+            display_name: Cow::Borrowed("g#↓2"),
+            untiled_base_relative: Pitch::must_parse("^12|19"),
+            tile_factor: Pitch::must_parse("1/2"),
+            normalized_interval: Pitch::must_parse("^12|19"),
+            isomorphic: false,
+        };
+        assert_eq!(mm.note_at_anchor_delta(scale, -5, 0, 0).unwrap(), down_5);
+        let down_2_left_6 = MappedPitch {
+            bare_name: Cow::Borrowed("g"),
+            given_name: Cow::Borrowed("g,"),
+            display_name: Cow::Borrowed("g,↓←"),
+            untiled_base_relative: Pitch::must_parse("1/2*^11|19"),
+            tile_factor: Pitch::must_parse("2/3*^-1|2"),
+            normalized_interval: Pitch::must_parse("^-1|2*4/3*^11|19"),
+            isomorphic: false,
+        };
         assert_eq!(
-            mm.note_at_anchor_delta(-1, 1, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("c2"),
-                full_name: Cow::Borrowed("c2"),
-                base_factor: Pitch::must_parse("2"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
-        );
-        assert_eq!(
-            mm.note_at_anchor_delta(-1, 0, 2).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("c2"),
-                full_name: Cow::Borrowed("c2"),
-                base_factor: Pitch::must_parse("2"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
-        );
-        assert_eq!(
-            mm.note_at_anchor_delta(-1, 2, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("q"),
-                full_name: Cow::Borrowed("q"),
-                base_factor: Pitch::must_parse("^21|20"),
-                tile_factor: Pitch::unit(),
-                isomorphic: false,
-            }
-        );
-        assert_eq!(
-            mm.note_at_anchor_delta(-2, 0, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("g#"),
-                full_name: Cow::Borrowed("g#"),
-                base_factor: Pitch::must_parse("^12|19"),
-                tile_factor: Pitch::must_parse("0.5*^1|2"),
-                isomorphic: false,
-            }
-        );
-        assert_eq!(
-            mm.note_at_anchor_delta(-2, -1, 2).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("g#"),
-                full_name: Cow::Borrowed("g#"),
-                base_factor: Pitch::must_parse("^12|19"),
-                tile_factor: Pitch::must_parse("0.5*^1|2"),
-                isomorphic: false,
-            }
-        );
-        assert_eq!(
-            mm.note_at_anchor_delta(-5, 0, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("g#"),
-                full_name: Cow::Borrowed("g#"),
-                base_factor: Pitch::must_parse("^12|19"),
-                tile_factor: Pitch::must_parse("0.5"),
-                isomorphic: false,
-            }
-        );
-        assert_eq!(
-            mm.note_at_anchor_delta(-2, -6, 0).unwrap(),
-            MappedPitch {
-                note_name: Cow::Borrowed("g"),
-                full_name: Cow::Borrowed("g,"),
-                base_factor: Pitch::must_parse("1/2*^11|19"),
-                tile_factor: Pitch::must_parse("1/3*^1|2"),
-                isomorphic: false,
-            }
+            mm.note_at_anchor_delta(scale, -2, -6, 0).unwrap(),
+            down_2_left_6
         );
     }
 
@@ -721,27 +777,27 @@ mod tests {
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 4 })
             .unwrap();
-        assert_eq!(r.name, "c2");
+        assert_eq!(r.name, "c2↑");
         assert_eq!(r.pitch, Pitch::must_parse("800*^1|2"));
         // With a stagger of 2, we need to three rows and column to the right.
         layout.stagger(2);
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 5 })
             .unwrap();
-        assert_eq!(r.name, "c2");
+        assert_eq!(r.name, "c2↑");
         assert_eq!(r.pitch, Pitch::must_parse("800*^1|2"));
         layout.stagger(0);
         // Five rows to the right should be the same note, but the pitch is up by h_factor.
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 9 })
             .unwrap();
-        assert_eq!(r.name, "c2");
+        assert_eq!(r.name, "c2↑→");
         assert_eq!(r.pitch, Pitch::must_parse("1200*^1|2"));
         // Up one row brings us to the top row in the region.
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 9 })
             .unwrap();
-        assert_eq!(r.name, "f");
+        assert_eq!(r.name, "f↑→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^8|19*^1|2"));
         // Three rows to the left is unmapped explicitly.
         let r = layout.note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 6 });
@@ -785,19 +841,19 @@ mod tests {
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 4, col: 11 })
             .unwrap();
-        assert_eq!(r.name, "q");
+        assert_eq!(r.name, "q→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^21|20"));
         // Three rows above should be the same note one vertical repetition later.
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 7, col: 11 })
             .unwrap();
-        assert_eq!(r.name, "q");
+        assert_eq!(r.name, "q↑→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^21|20*^1|2"));
         // Four rows above is one row higher.
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 11 })
             .unwrap();
-        assert_eq!(r.name, "f#");
+        assert_eq!(r.name, "f#↑→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^9|19*^1|2"));
         // One column to the right should put us in the new mapping.
         let r = layout
@@ -832,20 +888,20 @@ mod tests {
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 4, col: 10 })
             .unwrap();
-        assert_eq!(r.name, "q");
+        assert_eq!(r.name, "q→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^21|20"));
         // What was at 7, 11 should now be at 7, 12.
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 7, col: 12 })
             .unwrap();
-        assert_eq!(r.name, "q");
+        assert_eq!(r.name, "q↑→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^21|20*^1|2"));
         // Going up one more row doesn't further shift the column since we are in the 2-row group
         // above the anchor row.
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 8, col: 12 })
             .unwrap();
-        assert_eq!(r.name, "f#");
+        assert_eq!(r.name, "f#↑→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^9|19*^1|2"));
         // 4, 11 is now outside the region.
         let r = layout
@@ -881,7 +937,7 @@ mod tests {
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 9 })
             .unwrap();
-        assert_eq!(r.name, "f");
+        assert_eq!(r.name, "f↑→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^8|19*^1|2"));
         // Same as before: this is explicitly unmapped.
         let r = layout.note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 6 });
@@ -903,7 +959,7 @@ mod tests {
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 9 })
             .unwrap();
-        assert_eq!(r.name, "f");
+        assert_eq!(r.name, "f↑→");
         assert_eq!(r.pitch, Pitch::must_parse("1200*^8|19*^1|2"));
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 10, col: 9 })
@@ -914,7 +970,7 @@ mod tests {
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 9, col: 9 })
             .unwrap();
-        assert_eq!(r.name, "f");
+        assert_eq!(r.name, "f↑→");
         assert_eq!(r.pitch, Pitch::must_parse("600*^8|19*^1|2"));
         let r = layout
             .note_at_location(&LAYOUTS.scales, Coordinate { row: 10, col: 9 })

@@ -167,12 +167,15 @@ pub struct NamedScaleDegree<'s> {
 }
 
 #[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, ToStatic)]
-pub struct NamedPitch<'s> {
+/// This is created from a token in `define_manual_mapping`. It represents a note along with any
+/// octave markers as it appears in the mapping definition.
+pub struct MappingItem<'s> {
+    /// Bare note name
     pub note_name: Cow<'s, str>,
-    /// Full name includes octave markers
-    pub full_name: Cow<'s, str>,
-    /// Factor of base pitch; may fall outside the cycle
-    pub base_factor: Pitch,
+    /// Cycles as present in the mapping
+    pub cycle: i32,
+    /// Pitch of the note relative to the base along with any octave markers
+    pub adjusted_base_relative: Pitch,
 }
 
 impl<'s> ScaleBuilder<'s> {
@@ -1580,10 +1583,10 @@ impl<'s> Score<'s> {
             return;
         };
         let mut anchor: Option<Spanned<Coordinate>> = None;
-        let mut notes: Vec<Vec<Option<NamedPitch>>> = Vec::new();
+        let mut notes: Vec<Vec<Option<MappingItem>>> = Vec::new();
         let mut prev_row_len = 0usize;
         for (row_idx, row) in directive.layout_block.value.rows.value.iter().enumerate() {
-            let mut note_row: Vec<Option<NamedPitch>> = Vec::new();
+            let mut note_row: Vec<Option<MappingItem>> = Vec::new();
             for (col_idx, item) in row.value.iter().enumerate() {
                 if let Some(anchor_span) = item.value.is_anchor {
                     let anchor_coords = Coordinate {
@@ -1616,19 +1619,15 @@ impl<'s> Score<'s> {
                                 // Push something so counts are accurate.
                                 note_row.push(None);
                             }
-                            Some(base_relative) => {
+                            Some(note_base_relative) => {
                                 let scale_ref = scale.borrow();
                                 let cycle = note.value.octave.map(|x| x.value as i32).unwrap_or(0);
-                                let base_factor = &base_relative
+                                let adjusted_base_relative = &note_base_relative
                                     * &Pitch::from(scale_ref.definition.cycle.pow(cycle));
-                                let full_name = score_helpers::format_note_cycle(
-                                    note.value.name.value.clone(),
-                                    cycle,
-                                );
-                                note_row.push(Some(NamedPitch {
+                                note_row.push(Some(MappingItem {
                                     note_name: note.value.name.value.clone(),
-                                    full_name,
-                                    base_factor,
+                                    cycle,
+                                    adjusted_base_relative,
                                 }));
                             }
                         };

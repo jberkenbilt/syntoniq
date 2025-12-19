@@ -1,7 +1,6 @@
 use askama::Template;
 use derive_more::Debug as DebugMore;
 use std::collections::{HashMap, HashSet};
-use std::fmt::{Display, Formatter};
 use std::sync::Arc;
 use std::time::Instant;
 use syntoniq_common::parsing::{Coordinate, Layout, Layouts, PlacedNote};
@@ -175,19 +174,26 @@ pub struct Note {
     pub off_color: Color,
     pub on_color: Color,
 }
-impl Display for Note {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let name = self.placed.name.as_ref();
-        let scale_description = self.format_mapping();
-        let base_factor = &self.placed.base_interval;
-        write!(f, "Note: {name} pitch=base × {base_factor}")?;
-        if self.placed.tile_factor != Pitch::unit() {
-            write!(f, " × {}", self.placed.tile_factor)?;
-        }
-        write!(f, ", scale={scale_description}")
-    }
-}
 impl Note {
+    fn format_note(&self) -> String {
+        let name = self.placed.name.as_ref();
+        let tile_factor = &self.placed.tile_factor;
+        let base_factor = &self.placed.untiled_base_relative / tile_factor;
+        let tile = if tile_factor == &Pitch::unit() {
+            String::new()
+        } else {
+            format!(" × {tile_factor}")
+        };
+        let pitch = &self.placed.pitch;
+        format!("{name} (base × {base_factor}{tile} = {pitch})")
+    }
+
+    pub fn format_with_scale(&self) -> String {
+        let scale_description = self.format_mapping();
+        let note = self.format_note();
+        format!("{note}, scale={scale_description}")
+    }
+
     fn format_mapping(&self) -> String {
         let scale_name = self.placed.scale_name.as_ref();
         let orig_base_pitch = &self.placed.scale_base;
@@ -265,15 +271,8 @@ impl EngineState {
             let mut notes = scale_to_notes.remove(&scale).unwrap();
             notes.sort_by_key(|note| note.placed.pitch.clone());
             for note in notes {
-                let name = note.placed.name.as_ref();
-                let pitch = &note.placed.pitch;
-                let base_factor = &note.placed.base_interval;
-                let mut s = format!("  Note: {name} (pitch={pitch}, interval={base_factor}");
-                if note.placed.tile_factor != Pitch::unit() {
-                    s.push_str(&format!(", tile factor={}", note.placed.tile_factor));
-                }
-                s.push(')');
-                result.push(s);
+                let formatted = note.format_note();
+                result.push(format!("  Note: {formatted}"));
             }
         }
         result

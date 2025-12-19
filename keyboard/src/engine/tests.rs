@@ -710,17 +710,17 @@ async fn print_notes() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     let exp: Vec<String> = [
         "Scale: 31-EDO, base=264",
-        "  Note: d (pitch=264*^5|31, interval=^5|31)",
+        "  Note: d (base × ^5|31 = 264*^5|31)",
         "Scale: JI-11, base=220*^1|4",
-        "  Note: c# (pitch=935/16*^1|4, interval=17/16, tile factor=1/4)",
-        "  Note: c (pitch=220*^1|4, interval=1)",
-        "  Note: e (pitch=275*^1|4, interval=5/4)",
-        "  Note: g (pitch=330*^1|4, interval=3/2)",
+        "  Note: c#↓2 (base × 17/4 × 1/4 = 935/16*^1|4)",
+        "  Note: c (base × 1 = 220*^1|4)",
+        "  Note: e (base × 5/4 = 275*^1|4)",
+        "  Note: g (base × 3/2 = 330*^1|4)",
         "Scale: JI-11, base=275*^1|4 (transposition: 220*^1|4 × 5/4)",
-        "  Note: e (pitch=343.75*^1|4, interval=5/4)",
-        "  Note: g (pitch=412.5*^1|4, interval=3/2)",
+        "  Note: e (base × 5/4 = 343.75*^1|4)",
+        "  Note: g (base × 3/2 = 412.5*^1|4)",
         "Scale: default, base=220*^1|4",
-        "  Note: d (pitch=220*^5|12, interval=^1|6)",
+        "  Note: d (base × ^1|6 = 220*^5|12)",
     ]
     .into_iter()
     .map(String::from)

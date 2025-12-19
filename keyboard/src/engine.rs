@@ -498,18 +498,21 @@ impl Engine {
         let light_events: Vec<_> = others
             .iter()
             .map(|&position| {
+                let note = self
+                    .transient_state
+                    .notes
+                    .get(&position)
+                    .expect("pitch_positions is inconsistent wiht notes");
                 self.keyboard
-                    .note_light_event(e.note.as_deref(), position, velocity)
+                    .note_light_event(note.as_deref(), position, velocity)
             })
             .collect();
         tx.send(Event::ToDevice(ToDevice::Light(light_events)))?;
-        if let Some(note) = e.note
-            && velocity > 0
-        {
+        if let Some(note) = e.note {
             if self.transient_state.sustain {
                 self.print_notes();
-            } else {
-                println!("{note}");
+            } else if velocity > 0 {
+                println!("Note: {}", note.format_with_scale());
             }
         }
         Ok(())
