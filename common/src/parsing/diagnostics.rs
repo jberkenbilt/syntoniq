@@ -123,6 +123,28 @@ impl Diagnostics {
         }
     }
 
+    pub fn merge_with_offset(&self, other: Diagnostics, offset: usize) {
+        let list: Vec<Diagnostic> = mem::take(other.list.borrow_mut().as_mut());
+        for d in list {
+            let message = Spanned::<String>::new(
+                d.message.span.start + offset..d.message.span.end + offset,
+                d.message.value,
+            );
+            let context = d
+                .context
+                .into_iter()
+                .map(|x| {
+                    Spanned::<String>::new(x.span.start + offset..x.span.end + offset, x.value)
+                })
+                .collect();
+            self.push(Diagnostic {
+                code: d.code,
+                message,
+                context,
+            });
+        }
+    }
+
     pub fn has_errors(&self) -> bool {
         !self.list.borrow_mut().is_empty()
     }

@@ -46,7 +46,7 @@ pub type Input1<'s> = LocatingSlice<&'s str>;
 // These are parsers intended for use by other parsers. This rust idiom of creating a trait that has
 // nothing but a supertrait and then globally implements itself for all instances of the supertrait
 // is the trait equivalent of a type alias.
-trait Parser1Intermediate<'s, O>: Parser<Input1<'s>, O, CErr> {}
+pub(crate) trait Parser1Intermediate<'s, O>: Parser<Input1<'s>, O, CErr> {}
 impl<'s, O, P: Parser<Input1<'s>, O, CErr>> Parser1Intermediate<'s, O> for P {}
 // Our ultimate pass-1 parsers return `Token1` which carries spanned payload of type `Pass1`. These
 // are the basic token types we recognize in this pass. The `Spanned` type attaches a span, and the
@@ -56,7 +56,7 @@ impl<'s, O, P: Parser<Input1<'s>, O, CErr>> Parser1Intermediate<'s, O> for P {}
 pub type Token1<'s> = Spanned<Token<'s, Pass1>>;
 // We define `Parser1` as a trait that parses from our basic input type to our output token type.
 // Resume with pass 1 step 5.
-trait Parser1<'s>: Parser1Intermediate<'s, Token1<'s>> {}
+pub(crate) trait Parser1<'s>: Parser1Intermediate<'s, Token1<'s>> {}
 impl<'s, P: Parser1Intermediate<'s, Token1<'s>>> Parser1<'s> for P {}
 
 /// Characters that have special meaning in note syntax and may appear separately from note names
@@ -187,7 +187,7 @@ enum LexState {
 // intermediate parsing logic has access to the full captured input string and its span. This makes
 // it much more ergonomic (with a lot less boilerplate) to write intermediate parsers that return
 // arbitrary types.
-fn parse1_intermediate<'s, P, T, F, O>(p: P, f: F) -> impl Parser1Intermediate<'s, O>
+pub(crate) fn parse1_intermediate<'s, P, T, F, O>(p: P, f: F) -> impl Parser1Intermediate<'s, O>
 where
     O: 's,
     P: Parser1Intermediate<'s, T>,
@@ -255,7 +255,9 @@ fn identifier<'s>() -> impl Parser1<'s> {
     )
 }
 
-fn number_intermediate<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, Spanned<u32>> {
+pub(crate) fn number_intermediate<'s>(
+    diags: &Diagnostics,
+) -> impl Parser1Intermediate<'s, Spanned<u32>> {
     // Pass1 Step 3: This is a function that recognizes a number that can be parsed into a `u32`.
     // First, look at step 4, which defines a bunch of helper types. You will be routed back here.
     // Pass1 Step 6: This is our first use of a native winnow parser: `take_while`. This combinator

@@ -1,10 +1,16 @@
 use crate::parsing::diagnostics::{Diagnostics, code};
-use crate::parsing::model::{Span, Spanned};
+use crate::parsing::model::{Span, Spanned, Token};
+use crate::parsing::pass1;
+use crate::parsing::pass1::{Parser1Intermediate, number_intermediate};
 use crate::parsing::score::Generator;
 use crate::pitch::{Factor, Pitch};
 use num_rational::Ratio;
 use num_traits::ToPrimitive;
+use serde::Serialize;
 use std::mem;
+use winnow::combinator::{alt, opt};
+use winnow::token::take_while;
+use winnow::{LocatingSlice, Parser, combinator};
 
 pub(crate) struct Overlay {
     pub cycle: Ratio<u32>,
@@ -28,73 +34,90 @@ pub(crate) struct NoteGenerator {
 }
 
 struct NoteParser<'a> {
-    diags: &'a Diagnostics,
     generator: &'a NoteGenerator,
-    num_arg: u32,
-    num_span: Span,
-    allow_num: bool,
-    pending_num_char: Option<char>,
     direction: Option<char>,
-    num_errors: usize,
     factors: Vec<Factor>,
 }
 
-impl<'a> NoteParser<'a> {
-    fn handle_num(&mut self) {
-        let Some(letter) = self.pending_num_char.take() else {
-            return;
-        };
-        let span = self.num_span;
-        self.num_span = Span::from(0..1);
-        let num_arg = self.num_arg;
-        self.num_arg = 0;
-        if letter == 'a' || letter == 'A' {
-            match &self.generator.overlay {
-                None => {
-                    if num_arg > 0 {
-                        self.diags.err(
-                            code::GENERATED_NOTE,
-                            span,
-                            "for pure Just Intonation step must be 0 or omitted",
-                        );
-                    }
-                }
-                Some(overlay) => {
-                    if num_arg < overlay.divisions {
-                        // This is an EDO step. A value of zero doesn't change the pitch, so
-                        // omit.
-                        if num_arg > 0 {
-                            let steps = if letter == 'A' {
-                                num_arg as i32
-                            } else {
-                                -(num_arg as i32)
-                            };
-                            self.factors.push(overlay.factor(steps));
-                        }
-                    } else {
-                        self.diags.err(
-                            code::GENERATED_NOTE,
-                            span,
-                            format!(
-                                "the maximum allowed step for this scale is {}",
-                                overlay.divisions - 1
-                            ),
-                        );
-                    }
-                }
-            }
-        } else {
-            // This only gets called when there is a pending letter,
-            debug_assert!(letter == 'z' || letter == 'Z');
-            if num_arg >= 2 {
-                self.handle_harmonic(num_arg, letter.is_uppercase());
-            } else {
-                self.diags
-                    .err(code::GENERATED_NOTE, span, "argument to Z must be >= 2");
-            }
-        }
-    }
+// Leverage of the pass1 parsing machinery to parse generated notes but without using the Pass1
+// token types.
 
+#[derive(Serialize, Debug, Clone, Copy)]
+enum GenTokenType {
+    A {
+        is_upper: bool,
+        ch: Spanned<char>,
+        n: Option<Spanned<u32>>,
+    },
+    Z {
+        is_upper: bool,
+        ch: Spanned<char>,
+        n: Option<Spanned<u32>>,
+    },
+    BtoY {
+        is_upper: bool,
+        harmonic: Spanned<u32>,
+    },
+    Shift(Spanned<char>),
+}
+type GenToken<'s> = Spanned<Token<'s, GenTokenType>>;
+trait GenParser<'s>: Parser1Intermediate<'s, GenToken<'s>> {}
+impl<'s, P: Parser1Intermediate<'s, GenToken<'s>>> GenParser<'s> for P {}
+
+fn parse_gen<'s, P, F, T>(p: P, f: F) -> impl GenParser<'s>
+where
+    P: Parser1Intermediate<'s, T>,
+    F: Fn(&'s str, Span, T) -> GenTokenType,
+{
+    pass1::parse1_intermediate(p, move |raw, span, out| {
+        Token::new_spanned(raw, span, f(raw, span, out))
+    })
+}
+
+fn az_n<'s>(diags: &Diagnostics) -> impl GenParser<'s> {
+    parse_gen(
+        (
+            alt(('a', 'A', 'z', 'Z')).with_span(),
+            opt(number_intermediate(diags)),
+        ),
+        |_raw, _span, ((ch_ch, ch_span), n)| {
+            let ch = Spanned::new(ch_span, ch_ch);
+            let is_upper = ch_ch.is_ascii_uppercase();
+            if ch_ch == 'a' || ch_ch == 'A' {
+                GenTokenType::A { is_upper, ch, n }
+            } else {
+                debug_assert!(ch_ch == 'z' || ch_ch == 'Z');
+                GenTokenType::Z { is_upper, ch, n }
+            }
+        },
+    )
+}
+
+fn b_to_y<'s>() -> impl GenParser<'s> {
+    parse_gen(
+        take_while(1, |x: char| {
+            ('b'..='y').contains(&x) || ('B'..'Y').contains(&x)
+        }),
+        |_raw, span, out| {
+            let ch = out.chars().next().unwrap();
+            let (harmonic, is_upper) = if ch.is_ascii_uppercase() {
+                (u32::from(ch) - 0x40, true)
+            } else {
+                (u32::from(ch) - 0x60, false)
+            };
+            let harmonic = Spanned::new(span, harmonic);
+            GenTokenType::BtoY { is_upper, harmonic }
+        },
+    )
+}
+
+fn shift<'s>() -> impl GenParser<'s> {
+    parse_gen(alt(('+', '-', '#', '%')), |_raw, span, out| {
+        GenTokenType::Shift(Spanned::new(span, out))
+    })
+}
+
+impl<'a> NoteParser<'a> {
     fn handle_harmonic(&mut self, harmonic: u32, up: bool) {
         debug_assert!(harmonic >= 2);
         let (num, den) = if up {
@@ -105,86 +128,116 @@ impl<'a> NoteParser<'a> {
         self.factors.push(Factor::new(num, den, 1, 1).unwrap());
     }
 
-    fn parse(mut self, name: &Spanned<&str>) -> Option<Pitch> {
-        let mut pos = name.span.start;
-        for ch in name.value.chars() {
-            let span = Span::from(pos..pos + 1);
-            if ch.is_ascii_digit() {
-                if self.num_span.start == 0 {
-                    self.num_span = span;
-                } else {
-                    self.num_span.end += 1;
-                }
-                if self.allow_num {
-                    if let Some(x) = self
-                        .num_arg
-                        .checked_mul(10)
-                        .and_then(|x| x.checked_add(ch.to_digit(10).unwrap()))
-                    {
-                        self.num_arg = x;
-                    } else {
-                        self.diags.err(
-                            code::GENERATED_NOTE,
-                            span,
-                            "overflow handling numeric value",
-                        );
+    fn parse(mut self, diags: &Diagnostics, name: &Spanned<&str>) -> Option<Pitch> {
+        let input = LocatingSlice::new(name.value);
+        let Result::<Vec<GenToken>, _>::Ok(parts) =
+            combinator::repeat(1.., alt((az_n(diags), b_to_y(), shift()))).parse(input)
+        else {
+            diags.err(
+                code::GENERATED_NOTE,
+                0..name.value.len(),
+                "unable to parse as generated note",
+            );
+            return None;
+        };
+        for part in parts {
+            match part.value.t {
+                GenTokenType::A { is_upper, ch: _, n } => {
+                    match &self.generator.overlay {
+                        None => {
+                            if let Some(n) = n
+                                && n.value > 0
+                            {
+                                diags.err(
+                                    code::GENERATED_NOTE,
+                                    n.span,
+                                    "for pure Just Intonation step must be 0 or omitted",
+                                );
+                            }
+                        }
+                        Some(overlay) => {
+                            if let Some(n) = n
+                                && n.value >= overlay.divisions
+                            {
+                                diags.err(
+                                    code::GENERATED_NOTE,
+                                    n.span,
+                                    format!(
+                                        "the maximum allowed step for this scale is {}",
+                                        overlay.divisions - 1
+                                    ),
+                                );
+                            } else {
+                                // This is an EDO step. A value of zero doesn't change the pitch, so
+                                // omit.
+                                let n_value = n.map(Spanned::value).unwrap_or(0) as i32;
+                                if n_value > 0 {
+                                    let steps = if is_upper { n_value } else { -n_value };
+                                    self.factors.push(overlay.factor(steps));
+                                }
+                            }
+                        }
                     }
-                } else {
-                    self.diags
-                        .err(code::GENERATED_NOTE, span, "a number is not permitted here");
                 }
-            } else {
-                self.allow_num = false;
-                self.handle_num();
-                if ch.is_ascii_alphabetic() {
-                    if ch == 'a' || ch == 'A' || ch == 'z' || ch == 'Z' {
-                        self.allow_num = true;
-                        self.pending_num_char = Some(ch)
-                    } else {
-                        // Get the ordinal position of the letter. Upper-case letters go up, and
-                        // lower-case letters go down.
-                        let (harmonic, up) = if ch.is_ascii_uppercase() {
-                            (u32::from(ch) - 0x40, true)
+                GenTokenType::Z { is_upper, ch, n } => {
+                    match n {
+                        None => {
+                            // We could make this mandatory in the combinator, but make it optional
+                            // and reporting an error makes it possible to issue a better error for
+                            // z without a number.
+                            diags.err(
+                                code::GENERATED_NOTE,
+                                ch.span,
+                                format!("{} must be followed by a number >= 2", ch.value),
+                            )
+                        }
+                        Some(n) => {
+                            if n.value >= 2 {
+                                self.handle_harmonic(n.value, is_upper);
+                            } else {
+                                diags.err(
+                                    code::GENERATED_NOTE,
+                                    n.span,
+                                    format!("number after {} must be >= 2", ch.value),
+                                );
+                            }
+                        }
+                    }
+                }
+                GenTokenType::BtoY { is_upper, harmonic } => {
+                    self.handle_harmonic(harmonic.value, is_upper);
+                }
+                GenTokenType::Shift(ch) => {
+                    if ch.value == '+' || ch.value == '-' {
+                        if let Some(overlay) = &self.generator.overlay {
+                            let step = if ch.value == '+' { 1 } else { -1 };
+                            self.factors.push(overlay.factor(step))
                         } else {
-                            (u32::from(ch) - 0x60, false)
-                        };
-                        self.handle_harmonic(harmonic, up);
-                    }
-                } else if ch == '+' || ch == '-' {
-                    if let Some(overlay) = &self.generator.overlay {
-                        let step = if ch == '+' { 1 } else { -1 };
-                        self.factors.push(overlay.factor(step))
+                            diags.err(
+                                code::GENERATED_NOTE,
+                                ch.span,
+                                "+ and - are not permitted in pure Just Intonation generated scales",
+                            );
+                        }
                     } else {
-                        self.diags.err(
-                            code::GENERATED_NOTE,
-                            span,
-                            "+ and - are not permitted in pure Just Intonation generated scales",
-                        );
+                        debug_assert!(ch.value == '#' || ch.value == '%');
+                        if self.direction.is_some() {
+                            diags.err(
+                                code::GENERATED_NOTE,
+                                ch.span,
+                                "# or % may appear at most once",
+                            );
+                        } else {
+                            self.direction = Some(ch.value);
+                        }
                     }
-                } else if ch == '#' || ch == '%' {
-                    if self.direction.is_some() {
-                        self.diags.err(
-                            code::GENERATED_NOTE,
-                            span,
-                            "# or % may appear at most once",
-                        );
-                    } else {
-                        self.direction = Some(ch);
-                    }
-                } else {
-                    self.diags.err(
-                        code::GENERATED_NOTE,
-                        span,
-                        "this character is not permitted here",
-                    );
                 }
             }
-            pos += ch.len_utf8();
         }
-        self.handle_num();
-        if self.diags.num_errors() > self.num_errors {
+        if diags.has_errors() {
             return None;
         }
+
         let pitch = if self.factors.is_empty() {
             Pitch::unit()
         } else {
@@ -219,17 +272,14 @@ impl<'a> NoteParser<'a> {
 impl Generator for NoteGenerator {
     fn get_note(&self, diags: &Diagnostics, name: &Spanned<&str>) -> Option<Pitch> {
         let parser = NoteParser {
-            diags,
             generator: self,
-            num_arg: 0,
-            num_span: Span::from(0..1),
-            allow_num: false,
-            pending_num_char: None,
             direction: None,
-            num_errors: diags.num_errors(),
             factors: Vec::new(),
         };
-        parser.parse(name)
+        let temp_diags = Diagnostics::new();
+        let r = parser.parse(&temp_diags, name);
+        diags.merge_with_offset(temp_diags, name.span.start);
+        r
     }
 }
 
@@ -262,7 +312,7 @@ mod tests {
             ("z30", "29/30"),
         ] {
             let pitch = g.get_note(&diags, &make_note(name));
-            assert!(pitch.is_some());
+            assert!(pitch.is_some(), "failed to parse {name}");
             assert_eq!(pitch.unwrap(), Pitch::must_parse(wanted));
         }
         // EDO Overlay
