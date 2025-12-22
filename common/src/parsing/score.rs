@@ -18,7 +18,7 @@ mod generator;
 use crate::parsing::layout::{
     Coordinate, IsomorphicMapping, Layout, LayoutMapping, Layouts, ManualMapping, MappingDetails,
 };
-use crate::parsing::score::generator::{NoteGenerator, Overlay};
+use crate::parsing::score::generator::NoteGenerator;
 use crate::parsing::{
     CsoundInstrumentId, DynamicEvent, MarkEvent, MidiInstrumentNumber, NoteEvent, NoteValue,
     Options, PartNote, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, score_helpers,
@@ -1059,7 +1059,10 @@ impl<'s> Score<'s> {
         };
         let mut primary_names = HashMap::new();
         let mut notes = HashMap::new();
-        let mut overlay = None;
+        let divided_interval = directive
+            .divided_interval
+            .map(Spanned::value)
+            .unwrap_or(definition.cycle);
         if let Some(divisions) = directive.divisions {
             let steps = divisions.value as i32;
             let num = *definition.cycle.numer();
@@ -1070,13 +1073,12 @@ impl<'s> Score<'s> {
                 primary_names.insert(pitch.clone(), name.clone());
                 notes.insert(name, pitch);
             }
-            overlay = Some(Overlay {
-                divisions: divisions.value,
-                cycle: definition.cycle,
-                tolerance: directive.tolerance.map(Spanned::value).unwrap_or_default(),
-            })
         }
-        let generator: Option<Box<dyn Generator>> = Some(Box::new(NoteGenerator { overlay }));
+        let generator: Option<Box<dyn Generator>> = Some(Box::new(NoteGenerator {
+            divisions: directive.divisions.map(Spanned::value),
+            divided_interval,
+            tolerance: directive.tolerance.map(Spanned::value).unwrap_or_default(),
+        }));
         let scale = ScaleBuilder {
             definition,
             notes,

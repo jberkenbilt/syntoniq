@@ -959,71 +959,24 @@
           257
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
         "span": [
           257,
-          279
+          262
         ],
         "value": {
-          "raw": "define_generated_scale",
-          "t": "Identifier"
+          "raw": "a5!12",
+          "t": "NoteName"
         }
       },
       {
         "span": [
-          279,
-          280
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          280,
-          285
-        ],
-        "value": {
-          "raw": "scale",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          285,
-          286
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          286,
-          300
-        ],
-        "value": {
-          "raw": "\"generated-17\"",
-          "t": {
-            "String": {
-              "inner_span": [
-                287,
-                299
-              ]
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          300,
-          301
+          262,
+          263
         ],
         "value": {
           "raw": " ",
@@ -1032,18 +985,78 @@
       },
       {
         "span": [
-          301,
-          310
+          263,
+          269
         ],
         "value": {
-          "raw": "divisions",
+          "raw": "a13!12",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          269,
+          270
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          270,
+          275
+        ],
+        "value": {
+          "raw": "a+!17",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          275,
+          276
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          276,
+          298
+        ],
+        "value": {
+          "raw": "define_generated_scale",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          310,
-          311
+          298,
+          299
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          299,
+          304
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          304,
+          305
         ],
         "value": {
           "raw": "=",
@@ -1052,8 +1065,55 @@
       },
       {
         "span": [
-          311,
-          313
+          305,
+          319
+        ],
+        "value": {
+          "raw": "\"generated-17\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                306,
+                318
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          319,
+          320
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          320,
+          329
+        ],
+        "value": {
+          "raw": "divisions",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          329,
+          330
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          330,
+          332
         ],
         "value": {
           "raw": "17",
@@ -1061,8 +1121,8 @@
             "Number": {
               "n": {
                 "span": [
-                  311,
-                  313
+                  330,
+                  332
                 ],
                 "value": 17
               }
@@ -1072,8 +1132,8 @@
       },
       {
         "span": [
-          313,
-          314
+          332,
+          333
         ],
         "value": {
           "raw": ")",
@@ -1082,8 +1142,8 @@
       },
       {
         "span": [
-          314,
-          315
+          333,
+          334
         ],
         "value": {
           "raw": "\n",
@@ -1092,8 +1152,8 @@
       },
       {
         "span": [
-          315,
-          324
+          334,
+          343
         ],
         "value": {
           "raw": "use_scale",
@@ -1102,8 +1162,8 @@
       },
       {
         "span": [
-          324,
-          325
+          343,
+          344
         ],
         "value": {
           "raw": "(",
@@ -1112,8 +1172,8 @@
       },
       {
         "span": [
-          325,
-          330
+          344,
+          349
         ],
         "value": {
           "raw": "scale",
@@ -1122,8 +1182,8 @@
       },
       {
         "span": [
-          330,
-          331
+          349,
+          350
         ],
         "value": {
           "raw": "=",
@@ -1132,16 +1192,16 @@
       },
       {
         "span": [
-          331,
-          345
+          350,
+          364
         ],
         "value": {
           "raw": "\"generated-17\"",
           "t": {
             "String": {
               "inner_span": [
-                332,
-                344
+                351,
+                363
               ]
             }
           }
@@ -1149,8 +1209,8 @@
       },
       {
         "span": [
-          345,
-          346
+          364,
+          365
         ],
         "value": {
           "raw": ")",
@@ -1159,8 +1219,8 @@
       },
       {
         "span": [
-          346,
-          347
+          365,
+          366
         ],
         "value": {
           "raw": "\n",
@@ -1169,21 +1229,21 @@
       },
       {
         "span": [
-          347,
-          353
+          366,
+          372
         ],
         "value": {
           "raw": "[p1.0]",
           "t": {
             "NoteLeader": {
               "name_span": [
-                348,
-                350
+                367,
+                369
               ],
               "note": {
                 "span": [
-                  351,
-                  352
+                  370,
+                  371
                 ],
                 "value": 0
               }
@@ -1193,8 +1253,8 @@
       },
       {
         "span": [
-          353,
-          354
+          372,
+          373
         ],
         "value": {
           "raw": " ",
@@ -1203,8 +1263,8 @@
       },
       {
         "span": [
-          354,
-          355
+          373,
+          374
         ],
         "value": {
           "raw": "1",
@@ -1212,8 +1272,8 @@
             "Number": {
               "n": {
                 "span": [
-                  354,
-                  355
+                  373,
+                  374
                 ],
                 "value": 1
               }
@@ -1223,8 +1283,8 @@
       },
       {
         "span": [
-          355,
-          356
+          374,
+          375
         ],
         "value": {
           "raw": ":",
@@ -1233,8 +1293,8 @@
       },
       {
         "span": [
-          356,
-          359
+          375,
+          378
         ],
         "value": {
           "raw": "a16",
@@ -1243,8 +1303,8 @@
       },
       {
         "span": [
-          359,
-          360
+          378,
+          379
         ],
         "value": {
           "raw": " ",
@@ -1253,8 +1313,8 @@
       },
       {
         "span": [
-          360,
-          363
+          379,
+          382
         ],
         "value": {
           "raw": "a17",
@@ -1263,8 +1323,8 @@
       },
       {
         "span": [
-          363,
-          364
+          382,
+          383
         ],
         "value": {
           "raw": " ",
@@ -1273,8 +1333,8 @@
       },
       {
         "span": [
-          364,
-          366
+          383,
+          385
         ],
         "value": {
           "raw": "a+",
@@ -1283,8 +1343,8 @@
       },
       {
         "span": [
-          366,
-          367
+          385,
+          386
         ],
         "value": {
           "raw": " ",
@@ -1293,8 +1353,8 @@
       },
       {
         "span": [
-          367,
-          369
+          386,
+          388
         ],
         "value": {
           "raw": "a-",
@@ -1303,8 +1363,28 @@
       },
       {
         "span": [
-          369,
-          370
+          388,
+          389
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          389,
+          392
+        ],
+        "value": {
+          "raw": "a5!",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          392,
+          393
         ],
         "value": {
           "raw": "\n",
@@ -1636,10 +1716,10 @@
       {
         "span": [
           201,
-          257
+          276
         ],
         "value": {
-          "raw": "[p1.0] 1:b1 z0 z a+ a- b2 a2# z1 a19 a%# a#% a## a%% x/\n",
+          "raw": "[p1.0] 1:b1 z0 z a+ a- b2 a2# z1 a19 a%# a#% a## a%% x/ a5!12 a13!12 a+!17\n",
           "t": {
             "NoteLine": {
               "leader": {
@@ -1953,6 +2033,66 @@
                       "octave": null
                     }
                   }
+                },
+                {
+                  "span": [
+                    257,
+                    262
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          257,
+                          262
+                        ],
+                        "value": "a5!12"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    263,
+                    269
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          263,
+                          269
+                        ],
+                        "value": "a13!12"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    270,
+                    275
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          270,
+                          275
+                        ],
+                        "value": "a+!17"
+                      },
+                      "octave": null
+                    }
+                  }
                 }
               ]
             }
@@ -1961,8 +2101,8 @@
       },
       {
         "span": [
-          257,
-          314
+          276,
+          333
         ],
         "value": {
           "raw": "define_generated_scale(scale=\"generated-17\" divisions=17)",
@@ -1970,8 +2110,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  257,
-                  279
+                  276,
+                  298
                 ],
                 "value": "define_generated_scale"
               },
@@ -1979,15 +2119,15 @@
                 {
                   "key": {
                     "span": [
-                      280,
-                      285
+                      299,
+                      304
                     ],
                     "value": "scale"
                   },
                   "value": {
                     "span": [
-                      286,
-                      300
+                      305,
+                      319
                     ],
                     "value": {
                       "String": "generated-17"
@@ -1997,15 +2137,15 @@
                 {
                   "key": {
                     "span": [
-                      301,
-                      310
+                      320,
+                      329
                     ],
                     "value": "divisions"
                   },
                   "value": {
                     "span": [
-                      311,
-                      313
+                      330,
+                      332
                     ],
                     "value": {
                       "PitchOrNumber": {
@@ -2024,8 +2164,8 @@
       },
       {
         "span": [
-          314,
-          315
+          333,
+          334
         ],
         "value": {
           "raw": "\n",
@@ -2034,8 +2174,8 @@
       },
       {
         "span": [
-          315,
-          346
+          334,
+          365
         ],
         "value": {
           "raw": "use_scale(scale=\"generated-17\")",
@@ -2043,8 +2183,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  315,
-                  324
+                  334,
+                  343
                 ],
                 "value": "use_scale"
               },
@@ -2052,15 +2192,15 @@
                 {
                   "key": {
                     "span": [
-                      325,
-                      330
+                      344,
+                      349
                     ],
                     "value": "scale"
                   },
                   "value": {
                     "span": [
-                      331,
-                      345
+                      350,
+                      364
                     ],
                     "value": {
                       "String": "generated-17"
@@ -2074,8 +2214,8 @@
       },
       {
         "span": [
-          346,
-          347
+          365,
+          366
         ],
         "value": {
           "raw": "\n",
@@ -2084,30 +2224,30 @@
       },
       {
         "span": [
-          347,
-          370
+          366,
+          393
         ],
         "value": {
-          "raw": "[p1.0] 1:a16 a17 a+ a-\n",
+          "raw": "[p1.0] 1:a16 a17 a+ a- a5!\n",
           "t": {
             "NoteLine": {
               "leader": {
                 "span": [
-                  347,
-                  353
+                  366,
+                  372
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      348,
-                      350
+                      367,
+                      369
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      351,
-                      352
+                      370,
+                      371
                     ],
                     "value": 0
                   }
@@ -2116,15 +2256,15 @@
               "notes": [
                 {
                   "span": [
-                    354,
-                    359
+                    373,
+                    378
                   ],
                   "value": {
                     "Regular": {
                       "duration": {
                         "span": [
-                          354,
-                          355
+                          373,
+                          374
                         ],
                         "value": [
                           1,
@@ -2134,8 +2274,8 @@
                       "modifiers": [],
                       "name": {
                         "span": [
-                          356,
-                          359
+                          375,
+                          378
                         ],
                         "value": "a16"
                       },
@@ -2145,8 +2285,8 @@
                 },
                 {
                   "span": [
-                    360,
-                    363
+                    379,
+                    382
                   ],
                   "value": {
                     "Regular": {
@@ -2154,8 +2294,8 @@
                       "modifiers": [],
                       "name": {
                         "span": [
-                          360,
-                          363
+                          379,
+                          382
                         ],
                         "value": "a17"
                       },
@@ -2165,8 +2305,8 @@
                 },
                 {
                   "span": [
-                    364,
-                    366
+                    383,
+                    385
                   ],
                   "value": {
                     "Regular": {
@@ -2174,8 +2314,8 @@
                       "modifiers": [],
                       "name": {
                         "span": [
-                          364,
-                          366
+                          383,
+                          385
                         ],
                         "value": "a+"
                       },
@@ -2185,8 +2325,8 @@
                 },
                 {
                   "span": [
-                    367,
-                    369
+                    386,
+                    388
                   ],
                   "value": {
                     "Regular": {
@@ -2194,10 +2334,30 @@
                       "modifiers": [],
                       "name": {
                         "span": [
-                          367,
-                          369
+                          386,
+                          388
                         ],
                         "value": "a-"
+                      },
+                      "octave": null
+                    }
+                  }
+                },
+                {
+                  "span": [
+                    389,
+                    392
+                  ],
+                  "value": {
+                    "Regular": {
+                      "duration": null,
+                      "modifiers": [],
+                      "name": {
+                        "span": [
+                          389,
+                          392
+                        ],
+                        "value": "a5!"
                       },
                       "octave": null
                     }
@@ -2213,17 +2373,6 @@
   {
     "Err": {
       "list": [
-        {
-          "code": "E1017 incorrect directive usage",
-          "context": [],
-          "message": {
-            "span": [
-              63,
-              69
-            ],
-            "value": "tolerance is only allowed when divisions is specified"
-          }
-        },
         {
           "code": "E1017 incorrect directive usage",
           "context": [],
@@ -2548,10 +2697,10 @@
           "context": [],
           "message": {
             "span": [
-              361,
-              363
+              264,
+              266
             ],
-            "value": "the maximum allowed step for this scale is 16"
+            "value": "step number must be ≤ 11 (divisions - 1)"
           }
         },
         {
@@ -2559,10 +2708,54 @@
           "context": [],
           "message": {
             "span": [
-              360,
-              363
+              263,
+              269
+            ],
+            "value": "note 'a13!12' is not in the current scale ('pure-JI')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              380,
+              382
+            ],
+            "value": "step number must be ≤ 16 (divisions - 1)"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              379,
+              382
             ],
             "value": "note 'a17' is not in the current scale ('generated-17')"
+          }
+        },
+        {
+          "code": "E1025 incorrect generated note",
+          "context": [],
+          "message": {
+            "span": [
+              390,
+              391
+            ],
+            "value": "for pure Just Intonation step must be 0 or omitted"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              389,
+              392
+            ],
+            "value": "note 'a5!' is not in the current scale ('generated-17')"
           }
         }
       ]

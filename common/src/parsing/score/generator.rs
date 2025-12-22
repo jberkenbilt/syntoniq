@@ -8,29 +8,24 @@ use num_rational::Ratio;
 use num_traits::ToPrimitive;
 use serde::Serialize;
 use std::mem;
-use winnow::combinator::{alt, opt};
+use winnow::combinator::{alt, opt, preceded};
 use winnow::token::take_while;
 use winnow::{LocatingSlice, Parser, combinator};
 
-pub(crate) struct Overlay {
-    pub cycle: Ratio<u32>,
-    pub divisions: u32,
-    pub tolerance: Pitch,
-}
-impl Overlay {
-    fn factor(&self, step: i32) -> Factor {
-        Factor::new(
-            *self.cycle.numer(),
-            *self.cycle.denom(),
-            step,
-            self.divisions as i32,
-        )
-        .unwrap()
-    }
+fn step_factor(divided_interval: Ratio<u32>, divisions: u32, step: i32) -> Factor {
+    Factor::new(
+        *divided_interval.numer(),
+        *divided_interval.denom(),
+        step,
+        divisions as i32,
+    )
+    .unwrap()
 }
 
 pub(crate) struct NoteGenerator {
-    pub overlay: Option<Overlay>,
+    pub divisions: Option<u32>,
+    pub divided_interval: Ratio<u32>,
+    pub tolerance: Pitch,
 }
 
 struct NoteParser<'a> {
@@ -63,6 +58,11 @@ enum GenTokenType {
 type GenToken<'s> = Spanned<Token<'s, GenTokenType>>;
 trait GenParser<'s>: Parser1Intermediate<'s, GenToken<'s>> {}
 impl<'s, P: Parser1Intermediate<'s, GenToken<'s>>> GenParser<'s> for P {}
+struct Step {
+    a: Option<Spanned<u32>>,
+    b: Option<Spanned<u32>>,
+    c: Option<Spanned<u32>>,
+}
 
 fn parse_gen<'s, P, F, T>(p: P, f: F) -> impl GenParser<'s>
 where
@@ -117,6 +117,37 @@ fn shift<'s>() -> impl GenParser<'s> {
     })
 }
 
+fn step<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, Step> {
+    pass1::parse1_intermediate(
+        preceded(
+            '!',
+            opt((
+                number_intermediate(diags),
+                opt(preceded(
+                    '/',
+                    (
+                        number_intermediate(diags),
+                        opt(preceded('/', number_intermediate(diags))),
+                    ),
+                )),
+            )),
+        ),
+        |_raw, _span, maybe_abc| {
+            let (a, b, c) = match maybe_abc {
+                None => (None, None, None),
+                Some((a, maybe_bc)) => {
+                    let (b, c) = match maybe_bc {
+                        None => (None, None),
+                        Some((b, maybe_c)) => (Some(b), maybe_c),
+                    };
+                    (Some(a), b, c)
+                }
+            };
+            Step { a, b, c }
+        },
+    )
+}
+
 impl<'a> NoteParser<'a> {
     fn handle_harmonic(&mut self, harmonic: u32, up: bool) {
         debug_assert!(harmonic >= 2);
@@ -130,8 +161,11 @@ impl<'a> NoteParser<'a> {
 
     fn parse(mut self, diags: &Diagnostics, name: &Spanned<&str>) -> Option<Pitch> {
         let input = LocatingSlice::new(name.value);
-        let Result::<Vec<GenToken>, _>::Ok(parts) =
-            combinator::repeat(1.., alt((az_n(diags), b_to_y(), shift()))).parse(input)
+        let Result::<(Vec<GenToken>, Option<Step>), _>::Ok((parts, step)) = (
+            combinator::repeat(1.., alt((az_n(diags), b_to_y(), shift()))),
+            opt(step(diags)),
+        )
+            .parse(input)
         else {
             diags.err(
                 code::GENERATED_NOTE,
@@ -140,10 +174,45 @@ impl<'a> NoteParser<'a> {
             );
             return None;
         };
+        let (divided_interval, divisions) = match step {
+            None => (self.generator.divided_interval, self.generator.divisions),
+            Some(Step { a, b, c }) => {
+                // If there are no values, we don't overlay. If there is one value, it is the number
+                // of divisions of the specified division interval. If two values, the first is a
+                // division interval, and the second is divisions. If three values, the first two
+                // are a rational division interval, and the third is divisions. The parser
+                // guarantees that `b` is Some if `c` is Some and `a` is Some if `b` is Some.
+                match c {
+                    None => match b {
+                        None => match a {
+                            None => (self.generator.divided_interval, None),
+                            Some(a) => {
+                                // If there is only one value, it is the number of divisions of the
+                                // default division interval.
+                                (self.generator.divided_interval, Some(a.value))
+                            }
+                        },
+                        Some(b) => {
+                            // If there are two values, the first is a division interval integer and
+                            // the second is the number of divisions
+                            (Ratio::from_integer(a.unwrap().value), Some(b.value))
+                        }
+                    },
+                    Some(c) => {
+                        // If there are three values, the first two are a division interval and the
+                        // third is the number of divisions
+                        (
+                            Ratio::new(a.unwrap().value, b.unwrap().value),
+                            Some(c.value),
+                        )
+                    }
+                }
+            }
+        };
         for part in parts {
             match part.value.t {
                 GenTokenType::A { is_upper, ch: _, n } => {
-                    match &self.generator.overlay {
+                    match divisions {
                         None => {
                             if let Some(n) = n
                                 && n.value > 0
@@ -155,16 +224,16 @@ impl<'a> NoteParser<'a> {
                                 );
                             }
                         }
-                        Some(overlay) => {
+                        Some(divisions) => {
                             if let Some(n) = n
-                                && n.value >= overlay.divisions
+                                && n.value >= divisions
                             {
                                 diags.err(
                                     code::GENERATED_NOTE,
                                     n.span,
                                     format!(
-                                        "the maximum allowed step for this scale is {}",
-                                        overlay.divisions - 1
+                                        "step number must be ≤ {} (divisions - 1)",
+                                        divisions - 1
                                     ),
                                 );
                             } else {
@@ -173,7 +242,11 @@ impl<'a> NoteParser<'a> {
                                 let n_value = n.map(Spanned::value).unwrap_or(0) as i32;
                                 if n_value > 0 {
                                     let steps = if is_upper { n_value } else { -n_value };
-                                    self.factors.push(overlay.factor(steps));
+                                    self.factors.push(step_factor(
+                                        divided_interval,
+                                        divisions,
+                                        steps,
+                                    ));
                                 }
                             }
                         }
@@ -209,9 +282,10 @@ impl<'a> NoteParser<'a> {
                 }
                 GenTokenType::Shift(ch) => {
                     if ch.value == '+' || ch.value == '-' {
-                        if let Some(overlay) = &self.generator.overlay {
+                        if let Some(divisions) = divisions {
                             let step = if ch.value == '+' { 1 } else { -1 };
-                            self.factors.push(overlay.factor(step))
+                            self.factors
+                                .push(step_factor(divided_interval, divisions, step))
                         } else {
                             diags.err(
                                 code::GENERATED_NOTE,
@@ -241,13 +315,18 @@ impl<'a> NoteParser<'a> {
         let pitch = if self.factors.is_empty() {
             Pitch::unit()
         } else {
-            if let Some(overlay) = &self.generator.overlay {
+            if let Some(divisions) = divisions {
                 // Find the closest scale degree.
                 let factors = mem::take(&mut self.factors);
-                let cycle_f32 = overlay.cycle.to_f32().unwrap();
-                let step = Pitch::new(factors).as_float().log(cycle_f32) * overlay.divisions as f32;
-                let tolerance_steps =
-                    overlay.tolerance.as_float().log(cycle_f32) * overlay.divisions as f32;
+                let divided_interval_f32 = divided_interval.to_f32().unwrap();
+                let step =
+                    Pitch::new(factors).as_float().log(divided_interval_f32) * divisions as f32;
+                let tolerance_steps = self
+                    .generator
+                    .tolerance
+                    .as_float()
+                    .log(divided_interval_f32)
+                    * divisions as f32;
                 let rounded = step.round();
                 let degree = if let Some(d) = self.direction
                     && (rounded - step).abs() > tolerance_steps
@@ -261,7 +340,7 @@ impl<'a> NoteParser<'a> {
                 } else {
                     rounded as i32
                 };
-                self.factors = vec![overlay.factor(degree)];
+                self.factors = vec![step_factor(divided_interval, divisions, degree)];
             }
             Pitch::new(self.factors)
         };
@@ -293,8 +372,14 @@ mod tests {
 
     #[test]
     fn test_generator() {
+        // TODO: test when divided_interval != cycle
+
         // Error conditions are tested through parser tests.
-        let g = NoteGenerator { overlay: None };
+        let g = NoteGenerator {
+            divisions: None,
+            divided_interval: Ratio::from_integer(2),
+            tolerance: Pitch::unit(),
+        };
         // Pure JI (Just Intonation)
         let diags = Diagnostics::new();
         for (name, wanted) in [
@@ -310,19 +395,23 @@ mod tests {
             ("A%", "1"),
             ("Z30", "30/29"),
             ("z30", "29/30"),
+            ("C!12", "^7|12"),
+            ("C!3/18", "3^7|18"),
+            ("C!9/4/8", "9/4^1|2"),
+            ("C!4/3/5", "4/3^7|5"),
+            ("C!3/2/5", "3/2"),
+            ("E+!17", "^6|17"),
         ] {
             let pitch = g.get_note(&diags, &make_note(name));
             assert!(pitch.is_some(), "failed to parse {name}");
             assert_eq!(pitch.unwrap(), Pitch::must_parse(wanted));
         }
         // EDO Overlay
-        fn make_g(cycle: Ratio<u32>, divisions: u32, tolerance: Pitch) -> NoteGenerator {
+        fn make_g(divided_interval: Ratio<u32>, divisions: u32, tolerance: Pitch) -> NoteGenerator {
             NoteGenerator {
-                overlay: Some(Overlay {
-                    cycle,
-                    divisions,
-                    tolerance,
-                }),
+                divisions: Some(divisions),
+                divided_interval,
+                tolerance,
             }
         }
         // Zero tolerance
@@ -351,11 +440,17 @@ mod tests {
         assert_eq!(pitch_of(&g, "a3Bh%+Beee"), Pitch::must_parse("^24|31"));
         let g = make_g(Ratio::from_integer(2), 41, Pitch::must_parse("^1|240")); // 5¢
         assert_eq!(pitch_of(&g, "E"), Pitch::must_parse("^13|41"));
-        // Cycle size other than 2. Neutral third is ~2 steps in 4 divisions of a perfect fifth.
+        // Division interval size other than 2. Neutral third is ~2 steps in 4 divisions of a perfect fifth.
         let g = make_g(Ratio::new(3, 2), 4, Pitch::unit());
         assert_eq!(pitch_of(&g, "JI"), Pitch::must_parse("3/2^1|2"));
         assert_eq!(pitch_of(&g, "JI+"), Pitch::must_parse("3/2^3|4"));
         assert_eq!(pitch_of(&g, "JI-"), Pitch::must_parse("3/2^1|4"));
+        // Override specified overlay
+        assert_eq!(pitch_of(&g, "D"), Pitch::must_parse("3/2^3|4"));
+        assert_eq!(pitch_of(&g, "D!"), Pitch::must_parse("4/3"));
+        assert_eq!(pitch_of(&g, "D!2/12"), Pitch::must_parse("^5|12"));
+        assert_eq!(pitch_of(&g, "D!3/18"), Pitch::must_parse("3^5|18"));
+        assert_eq!(pitch_of(&g, "D!7"), Pitch::must_parse("3/2^5|7"));
 
         assert!(!diags.has_errors());
     }

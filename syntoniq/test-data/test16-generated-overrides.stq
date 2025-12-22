@@ -1,0 +1,15 @@
+syntoniq(version=1)
+
+set_base_pitch(absolute=240)
+
+define_generated_scale(scale="gen1" cycle_ratio=3)
+use_scale(scale="gen1")
+[p1.0] 1:C C' C! C!' C!18 C!18, C!2/12 C!2/12, A1!17
+
+define_generated_scale(scale="gen2" divided_interval=3)
+use_scale(scale="gen2")
+[p1.0] 1:C C' C! C!' C!18 C!18, C!2/12 C!2/12, A1!17
+
+define_generated_scale(scale="gen3" cycle_ratio=3 divided_interval=9/5 divisions=12)
+use_scale(scale="gen3")
+[p1.0] 1:C C' C! C!' C!18 C!18, C!2/12 C!2/12, A1!17 A1

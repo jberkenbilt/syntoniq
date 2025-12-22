@@ -54,7 +54,7 @@ impl<'s> DefineScale<'s> {
 #[derive(FromRawDirective)]
 /// Define a generated scale. Note pitches are generated according to the
 /// following rules:
-/// - Notes consist of letters, numbers, +, -, #, and %
+/// - Notes consist of letters, numbers, +, -, #, %, !, and /.
 /// - `A` and `a` represent the root of the scale
 /// - `B` through `Y` represent n/n-1 where n is the ordinal position of the
 ///   letter (B=2, C=3/2, D=4/3, etc.)
@@ -65,9 +65,10 @@ impl<'s> DefineScale<'s> {
 /// - All factors are multiplied to create the base pitch; e.g, (Bh = 2*7/8 =
 ///   7/4, Cl = 3/2*11/12 = 11/8)
 ///
-/// When `divisions` is specified, the following additional rules apply:
-/// - `An` represents `n` scale steps up (cycle^n|divisions)
-/// - `an` represents `n` scale steps down (cycle^-n|divisions)
+/// When `divisions` is specified, the following additional rules apply, noting that the divided
+/// interval can be explicitly given and defaults to the cycle ratio, which defaults to 2.
+/// - `An` represents `n` scale steps up (divided_interval^n|divisions)
+/// - `an` represents `n` scale steps down (divided_interval^-n|divisions)
 /// - `+` is short for `A1` (raises the pitch by one scale degree)
 /// - `-` is short for `a1` (lowers the pitch by one scale degree)
 /// - If `tolerance` is not specified or the pitch is within tolerance of its
@@ -78,11 +79,21 @@ impl<'s> DefineScale<'s> {
 ///   - `#` forces the pitch to the next highest scale degree
 ///   - `%` forces the pitch to the next lowest scale degree
 ///
-/// Example: with divisions = 17 and tolerance of 4¢:
+/// The specified divisions or divided_interval can be overridden by appending `!` followed
+/// by optional numbers separated by `/`. This causes the following additional changes:
+/// - `!` -- forces the exact ratio to be used, allowing pure ratios to be mixed with equal
+///   divisions
+/// - `!n` -- interprets the note as if `divisions=n` where specified
+/// - `!a/n` -- interprets the notes as if `divided_interval=a divisions=n` where specified
+/// - `!a/b/n` -- interprets the notes as if `divided_interval=a/b divisions=n` where specified
+///
+/// Example: with `divisions=17` and tolerance of 4¢:
 /// - `E` is `^5|17` because 5/4 is between steps 5 and 6 (zero-based) but is
 ///   slightly closer to step 5
 /// - `E%` is also `^5|17`
 /// - `E#` is `^6|17`
+/// - `E!` is `5/4`
+/// - `E!12` is `^4|12`
 ///
 /// See the manual for more details and examples.
 pub struct DefineGeneratedScale<'s> {
@@ -91,11 +102,14 @@ pub struct DefineGeneratedScale<'s> {
     pub scale: Spanned<Cow<'s, str>>,
     /// ratio to be applied by the octave marker; default is 2 (one octave)
     pub cycle_ratio: Option<Spanned<Ratio<u32>>>,
-    /// cycle divisions -- omit for a pure Just-Intonation scale
+    /// divisions -- number steps to divide the divided interval into  -- omit for a pure
+    /// Just-Intonation scale
     pub divisions: Option<Spanned<u32>>,
+    /// interval to divide when `divisions` is given or specified as a single digit in an override;
+    /// defaults to cycle_ratio
+    pub divided_interval: Option<Spanned<Ratio<u32>>>,
     /// tolerance for `#` and `%` -- `#` and `%` are ignored if computed pitch
-    /// is within `tolerance` of a scale degree; allowed only when `divisions`
-    /// is given
+    /// is within `tolerance` of a scale degree; applies only `divisions` is given
     pub tolerance: Option<Spanned<Pitch>>,
 }
 impl<'s> DefineGeneratedScale<'s> {
@@ -108,15 +122,6 @@ impl<'s> DefineGeneratedScale<'s> {
                 divisions.span,
                 "divisions, if specified, must be >= 2",
             );
-        }
-        if let Some(tolerance) = &self.tolerance
-            && self.divisions.is_none()
-        {
-            diags.err(
-                code::DIRECTIVE_USAGE,
-                tolerance.span,
-                "tolerance is only allowed when divisions is specified",
-            )
         }
     }
 }

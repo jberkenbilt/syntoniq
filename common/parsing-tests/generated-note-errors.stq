@@ -3,7 +3,7 @@ define_generated_scale(scale="A" tolerance=^1|200)
 define_generated_scale(scale="B" divisions=1 tolerance=^1|200)
 define_generated_scale(scale="pure-JI")
 use_scale(scale="pure-JI")
-[p1.0] 1:b1 z0 z a+ a- b2 a2# z1 a19 a%# a#% a## a%% x/
+[p1.0] 1:b1 z0 z a+ a- b2 a2# z1 a19 a%# a#% a## a%% x/ a5!12 a13!12 a+!17
 define_generated_scale(scale="generated-17" divisions=17)
 use_scale(scale="generated-17")
-[p1.0] 1:a16 a17 a+ a-
+[p1.0] 1:a16 a17 a+ a- a5!
