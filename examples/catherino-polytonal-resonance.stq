@@ -1,0 +1,89 @@
+syntoniq(version=1)
+define_generated_scale(scale="gen" divisions=106)
+use_scale(scale="gen")
+transpose(written="a0" pitch_from="a12")
+set_base_pitch(relative=1/2)
+
+[p1.01] 10:A
+[p1.02] 1:~ 9:C
+[p1.03] 2:~ 8:F'
+[p1.04] 3:~ 7:A'
+[p1.05] 6:~ 4:Bj'
+[p1.06] 7:~ 3:Cm'
+
+[p1.01] 1:~
+
+mark(label="a")
+[p1.01] 10:A:~
+[p1.02] 1:~ 9:C:~
+[p1.03] 2:~ 8:F':~
+[p1.04] 3:~ 7:A':~
+[p1.05] 4:~ 6:Bj':~
+[p1.06] 5:~ 5:Cm':~
+[p1.07] 6:~ 4:I'2
+[p1.08] 7:~ 3:Bf'
+
+[p1.01] 4:A
+[p1.02] 4:C
+[p1.03] 4:F'
+[p1.04] 4:A'
+[p1.05] 4:Bj'
+[p1.06] 4:Cm'
+[p1.07] 4:I-'2
+[p1.08] 4:Bf-'
+
+[p1.01] 1:~
+
+[p1.01] 8:A
+[p1.02] 1:~ 7:C
+[p1.03] 2:~ 6:F'
+[p1.04] 3:~ 5:A'
+[p1.05] 4:~ 4:Bj'
+[p1.06] 5:~ 3:Cm'
+
+transpose(written="A0" pitch_from="DA2")
+[p1.01] 2:A, A, 4:Ai,
+[p1.02] 2:E  E  4:A
+[p1.03] 2:C  C  4:C
+[p1.04] 2:I' I' 4:A'
+
+[p1.01] 2:A, A, 4:Ai,
+[p1.02] 2:E  E  4:A
+[p1.03] 2:C  C  4:C
+[p1.04] 2:I' I' 4:A'
+
+transpose(written="a6" pitch_from="a0")
+[p1.01] 2:A, 4:A,
+[p1.02] 2:I  4:I
+[p1.03] 2:E  4:E
+[p1.04] 2:C  4:C
+[p1.05] 2:h' 4:h'
+
+transpose(written="a" pitch_from="ha2")
+[p1.01] 2:A,
+[p1.02] 2:E
+[p1.03] 2:C
+[p1.04] 2:A'
+
+transpose(written="a" pitch_from="a1")
+[p1.01] 2:A,
+[p1.02] 2:E
+[p1.03] 2:C
+[p1.04] 2:A'
+
+transpose(written="a" pitch_from="a1")
+[p1.01] 2:A,
+[p1.02] 2:I
+[p1.03] 2:F
+[p1.04] 2:D
+[p1.05] 2:Bqq
+mark(label="b")
+
+transpose(written="a" pitch_from="a1")
+[p1.01] 8:A,
+[p1.02] 8:E
+[p1.03] 8:C
+[p1.04] 8:A'
+[p1.05] 3:~ 5:Bp'
+[p1.06] 3:~ 5:I'
+[p1.07] 5:~ 3:C'
