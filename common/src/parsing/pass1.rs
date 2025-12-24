@@ -69,7 +69,7 @@ static NOTE_PUNCTUATION: &str = "|/.:>~^,'";
 /// ambiguous. Avoid $ in case we introduce macros. Removing characters from this list breaks
 /// backward compatibility, so we want to be cautious about over-doing it. Avoid @ because of its
 /// use in layouts and dynamics.
-static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!\\#%&";
+static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!\\#%&"; // keep consistent with syntoniq.sublime-syntax
 /// Characters allowed in dynamics
 static DYNAMIC_PUNCTUATION: &str = "|<>@/.";
 /// Characters allowed in definitions outside note names and numbers, including pitch characters,

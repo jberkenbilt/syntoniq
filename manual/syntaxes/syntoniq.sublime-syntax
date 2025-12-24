@@ -1,0 +1,158 @@
+%YAML 1.2
+---
+# Reference:
+# - https://www.sublimetext.com/docs/3/syntax.html
+# - https://www.sublimetext.com/docs/scope_naming.html
+name: Syntoniq
+scope: source.syntoniq
+file_extensions: [stq]
+
+variables:
+  ident: '[a-zA-Z][a-zA-Z0-9_]*'
+  # `pitch` matches pitches, ratios, and integers. Match them all
+  # together so that syntactically correct pitches "gel" into a
+  # unified color, making it easier to spot mistakes.
+  number: '\d+(/\d+)?'
+  factor: '((\b{{number}}\b)|((\b{{number}})?\^-?\d+\|\d+\b))'
+  pitch: '\*?{{factor}}(\*{{factor}})*'
+  note_leader: '(\[)({{ident}})(\.)(\d+)(\])'
+  dynamic_leader: '(\[)({{ident}})(\])'
+  duration: '{{number}}:'
+  hold: '~'
+  note_name: '\b[a-zA-Z][a-zA-Z0-9_\*\^/\.\|+\-!\\#%&]*'
+  cycle: "[,']\\d*"
+  modifiers: ':[>\^~\.]+'
+  bare_note: '((?:{{hold}})|(?:{{note_name}}))'
+  score_note: '({{duration}})?{{bare_note}}((?:{{cycle}})?(?:{{modifiers}})?)'
+  dynamic: '(\d+)@({{number}})[<>]?'
+  # layout_note is a superset of note for scale definition
+  layout_note: '@?({{bare_note}})({{cycle}})?'
+
+contexts:
+  main:
+    - match: '^\s*(?={{note_leader}})'
+      push: note_line
+    - match: '^\s*(?={{dynamic_leader}})'
+      push: dynamic_line
+    - match: '<<'
+      scope: punctuation.section.group.begin.syntoniq
+      push: data_block
+    - include: comment
+    - include: string
+    - include: directive
+    # catch-all
+    - match: .
+      scope: text.syntoniq
+
+  comment:
+    - match: ';'
+      scope: punctuation.definition.comment.syntoniq
+      push:
+        - meta_scope: comment.line.semicolon.syntoniq
+        - match: $\n?
+          pop: true
+
+  comment_or_nl:
+    # Terminate if the next thing is a newline or comment.
+    - match: '(?=\n|$)'
+      pop: true
+    - include: comment
+
+  string:
+    - match: '"'
+      scope: punctuation.definition.string.begin.syntoniq
+      push:
+        - meta_scope: string.quoted.double.syntoniq
+        - match: '\\"'
+          scope: constant.character.escape.syntoniq
+        - match: '"'
+          scope: punctuation.definition.string.end.syntoniq
+          pop: true
+
+  directive:
+    - match: '({{ident}})\s*(\()'
+      captures:
+        1: entity.name.function.syntoniq
+        2: punctuation.section.group.begin.syntoniq
+      push: directive_body
+
+  directive_body:
+    - meta_scope: meta.group.syntoniq
+    - match: '\)'
+      scope: punctuation.section.group.end.syntoniq
+      pop: true
+    - match: '{{ident}}'
+      scope: variable.parameter.syntoniq
+    - match: '='
+      scope: keyword.operator.assignment.syntoniq
+    - include: string
+    - match: '{{pitch}}'
+      scope: constant.numeric.pitch.syntoniq
+    - include: comment
+    # ignore whitespace
+    - match: '\s+'
+
+  note_line:
+    - match: '{{note_leader}}'
+      captures:
+        1: punctuation.section.group.begin.syntoniq
+        2: entity.name.function.syntoniq
+        3: punctuation.separator.syntoniq
+        4: constant.numeric.integer.syntoniq
+        5: punctuation.section.group.end.syntoniq
+
+    - match: '\s+'
+
+    - match: '{{score_note}}'
+      captures:
+        1: constant.numeric.integer.syntoniq
+        2: string.quoted.double.syntoniq
+        3: variable.parameter.syntoniq
+
+    - match: '\|'
+      scope: punctuation.separator.syntoniq
+
+    - include: comment_or_nl
+    - match: .
+      scope: invalid.illegal.syntoniq
+
+  dynamic_line:
+    - match: '{{dynamic_leader}}'
+      captures:
+        1: punctuation.section.group.begin.syntoniq
+        2: entity.name.function.syntoniq
+        5: punctuation.section.group.end.syntoniq
+
+    - match: '\s+'
+
+    - match: '{{dynamic}}'
+      captures:
+        1: constant.numeric.integer.syntoniq
+        2: constant.numeric.integer.syntoniq
+
+    - match: '\|'
+      scope: punctuation.separator.syntoniq
+
+    - include: comment_or_nl
+    - match: .
+      scope: invalid.illegal.syntoniq
+
+  data_block:
+    - meta_scope: meta.group.syntoniq
+    - match: '>>'
+      scope: punctuation.section.group.end.syntoniq
+      pop: true
+
+    - match: '{{pitch}}'
+      scope: constant.numeric.pitch.syntoniq
+
+    - match: '{{layout_note}}'
+      scope: string.quoted.double.syntoniq
+
+    - match: '\|'
+      scope: punctuation.separator.syntoniq
+
+    - include: comment
+    - match: '\s+'
+    - match: .
+      scope: invalid.illegal.syntoniq
