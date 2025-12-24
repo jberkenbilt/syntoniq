@@ -22,10 +22,10 @@ tasks:
     desc: "Serve manual for editing"
     dir: manual
     cmds:
-      - mdbook serve --open
+      - zola serve
 
   manual-build:
     desc: "Build manual"
     dir: manual
     cmds:
-      - mdbook build
+      - zola build

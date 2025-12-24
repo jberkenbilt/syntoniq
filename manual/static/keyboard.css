@@ -1,0 +1,92 @@
+.syntoniq-kbd {
+    font-family: Arial, sans-serif;
+    background: #222;
+    color: #eee;
+    filter: none !important;
+}
+.syntoniq-kbd.hexboard {
+    --hex-width: 65px;
+    --hex-margin: 5px;
+    --hex-height: calc(var(--hex-width) * 1.1547); /* 2/sqrt(3) */
+    --off-background: #616161;
+    --control-background: #333;
+}
+.syntoniq-kbd.hexboard .hex-grid-container {
+    padding: 10px;
+    overflow-x: auto;
+    max-width: 100%;
+}
+.syntoniq-kbd.hexboard .hex-row {
+    display: flex;
+    flex-wrap: nowrap;
+    margin-bottom: calc( (var(--hex-height) * -0.25) + var(--hex-margin) );
+}
+.syntoniq-kbd.hexboard .hex-row:last-child {
+    margin-bottom: 0;
+}
+.syntoniq-kbd.hexboard .hex-row:nth-child(odd) {
+    margin-left: calc(var(--hex-width) / 2 + var(--hex-margin) / 2);
+}
+.syntoniq-kbd.hexboard .cell-content {
+    width: var(--hex-width);
+    height: var(--hex-height);
+    flex-shrink: 0;
+    margin-left: calc(var(--hex-margin) / 2);
+    margin-right: calc(var(--hex-margin) / 2);
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+.syntoniq-kbd.hexboard .cell-text {
+    color: #fff;
+    background: var(--off-background);
+    background-color: var(--off-background);
+    padding: 3px;
+}
+
+.syntoniq-kbd.launchpad {
+    --cell-size: 60px;
+    --off-background: #616161;
+    --control-background: #333;
+    --outer-border: 6px solid black;
+    --regular-border: 3px solid black;
+    --thick-border: 9px solid #111;
+    --short-height: 50px;
+}
+.syntoniq-kbd.launchpad table.grid {
+    border-collapse: collapse;
+    border: var(--outer-border);
+}
+.syntoniq-kbd.launchpad table.grid tr {
+    height: var(--cell-size);
+}
+.syntoniq-kbd.launchpad table.grid tr.short {
+    height: var(--short-height);
+}
+.syntoniq-kbd.launchpad table.grid td {
+    width: var(--cell-size);
+    height: 100%;
+    border: var(--regular-border);
+    padding: 0;
+    text-align: center;
+    vertical-align: middle;
+}
+.syntoniq-kbd.launchpad .cell-content {
+    width: var(--cell-size);
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 12px;
+    line-height: 1.1;
+}
+.syntoniq-kbd.launchpad .cell-text {
+    color: #fff;
+    background: var(--off-background);
+    padding: 3px;
+}

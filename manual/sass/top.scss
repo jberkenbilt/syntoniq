@@ -1,0 +1,23 @@
+:root {
+    /* Required to enable the light-dark() function */
+    color-scheme: light dark;
+
+    /* Define your variables once */
+    --bg: light-dark(#eee, #222);
+    --text: light-dark(#222, #eee);
+}
+
+.page {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: Arial, sans-serif;
+}
+.menu {
+    background: var(--bg);
+    color: var(--text);
+    ul {
+        a {
+            color: var(--text);
+        }
+    }
+}
