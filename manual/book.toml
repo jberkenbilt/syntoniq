@@ -5,3 +5,4 @@ src = "src"
 title = "Syntoniq Manual"
 [output.html]
 mathjax-support = true
+additional-css = ["keyboard.css"]

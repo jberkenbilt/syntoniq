@@ -6,6 +6,7 @@
 
 - [Videos](videos.md)
 - [Syntoniq Language](syntoniq_language.md)
+- [Generated Scales](generated_scales.md)
 - [Keyboard](keyboard.md)
 - [Pitch Notation](pitch_notation.md)
 - [Creating Layouts]()

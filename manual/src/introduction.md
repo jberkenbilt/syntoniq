@@ -1,13 +1,23 @@
 # Syntoniq
 
+<img src="assets/syntoniq-logo.svg" alt="Syntoniq Logo" style="height: 10em; vertical-align: middle;">
+
+{{#include hexboard.html}}
+
+{{#include hexboard2.html}}
+
+{{#include launchpad.html}}
+
+{{#include launchpad2.html}}
+
 TODO:
-* Include LOGO
+* Include LOGO using an img tag. Will need build logic to populate the src/assets directory.
+* To get a keyboard HTML file, get the keyboard in the right state, then run `curl http://localhost:8440/board` and save to a file. Make sure this is in manual/README.md along with populating assets.
 * Feature Summary; mention videos with internal link
 * Build and installation
 * Link to other parts of the manual
 * Show a sample input file with audio
 * go through docs/scratch/ and make sure it's all here
-
 
 This is the manual for [Syntoniq](https://github.com/jberkenbilt/syntoniq). Syntoniq converts musical notation in text files to CSound or MIDI output. Its purpose is to allow you to "code" score-like Music files and generate musical output suitable for final use or further manipulation in other tools.
 

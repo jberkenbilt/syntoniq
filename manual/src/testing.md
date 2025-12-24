@@ -14,6 +14,7 @@ TODO:
   * model.rs
   * pass*.rs
   * score.rs
+  * score/generator.rs
   * timeline.rs
 
 as this ensures all error conditions are tested and that there are no unreachable code paths. Unreachable code paths would indicate that the parser isn't coded as tightly as it should be. These would arise if later code relies on earlier validations, which is fragile.
