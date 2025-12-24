@@ -1,11 +1,15 @@
 # TODO
 
+When transposition is in effect, it is not indicated on the web UI. There should be some indication of transposition, perhaps in the area, which can show the mappings in effect with their transposition. Trying to work it into the note name makes the note name too long and busy.
+
 Remember: Windows:
 * Install https://www.tobias-erichsen.de/software/loopmidi.html
 * Create a loop port called `syntoniq-loop`
 ```
 cargo build --config .cargo/windows-cross.toml --no-default-features
 ```
+
+Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mode since it matches the hardware.
 
 # Redesign
 
