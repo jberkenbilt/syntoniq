@@ -48,50 +48,191 @@ place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="launchpad" an
 place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="hexboard" anchor_row=7 anchor_col=8)
 place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
 
-define_scale(scale="JI-11") <<
-1     c
-9/8   d
-5/4   e
-4/3   f
-3/2   g
-5/3   a
-15/8  b
-17/16 c#
-16/15 d%
-6/5   e%
-11/8  h11
-17/12 f#
-8/5   a%
-7/4   h7
-16/9  b%
+define_scale(scale="41-EDO-manual") <<
+ ^0|41 c
+ ^1|41 d%%
+ ^2|41 c#-
+ ^3|41 c#
+ ^4|41 d%
+ ^5|41 d%+
+ ^6|41 c##
+ ^7|41 d
+ ^8|41 e%%
+ ^9|41 d#-
+^10|41 d#
+^11|41 e%
+^12|41 e%+
+^13|41 d##
+^14|41 e
+^15|41 e+
+^16|41 f-
+^17|41 f
+^18|41 g%%
+^19|41 f#-
+^20|41 f#
+^21|41 g%
+^22|41 g%+
+^23|41 f##
+^24|41 g
+^25|41 a%%
+^26|41 g#-
+^27|41 g#
+^28|41 a%
+^29|41 a%+
+^30|41 g##
+^31|41 a
+^32|41 b%%
+^33|41 a#-
+^34|41 a#
+^35|41 b%
+^36|41 b%+
+^37|41 a##
+^38|41 b
+^39|41 b+
+^40|41 c-
 >>
 
-define_manual_mapping(mapping="JI-11" scale="JI-11") <<
- c# d% e% h11 f# a% h7 b%
-@c  d  e  f   g  a  b  c'
+define_generated_scale(scale="41-EDO" divisions=41)
+define_isomorphic_mapping(mapping="41-EDO-h7v3" scale="41-EDO" steps_h=7 steps_v=3)
+place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="launchpad" anchor_row=4 anchor_col=3)
+place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="hexboard" anchor_row=7 anchor_col=8)
+place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
+
+define_scale(scale="53-EDO") <<
+ ^0|53 c
+ ^1|53 c+
+ ^2|53 c#-
+ ^3|53 c#
+ ^4|53 c#+
+ ^5|53 d%
+ ^6|53 d%+
+ ^7|53 d%++
+ ^8|53 d-
+ ^9|53 d
+^10|53 d+
+^11|53 d#-
+^12|53 d#
+^13|53 d#+
+^14|53 e%
+^15|53 e%+
+^16|53 e-
+^17|53 e
+^18|53 e+
+^19|53 f%
+^20|53 e#
+^21|53 f-
+^22|53 f
+^23|53 f+
+^24|53 h11
+^25|53 f#-c#
+^26|53 f#-d
+^27|53 g%
+^28|53 g%+
+^29|53 g%++
+^30|53 g-
+^31|53 g
+^32|53 g+
+^33|53 g#-
+^34|53 g#
+^35|53 g%-
+^36|53 a%
+^37|53 a%+
+^38|53 a-
+^39|53 a
+^40|53 a+
+^41|53 a#-
+^42|53 a#
+^43|53 h7
+^44|53 b%-f
+^45|53 b%-g
+^46|53 b-
+^47|53 b
+^48|53 b+
+^49|53 b#_
+^50|53 b#
+^51|53 b#+
+^52|53 c-
+>>
+define_isomorphic_mapping(mapping="53-EDO-h9v4" scale="53-EDO" steps_h=9 steps_v=4)
+place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="launchpad" anchor_row=4 anchor_col=3)
+place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard" anchor_row=7 anchor_col=8)
+place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
+
+; This scale contains root, whole tone (9/8), minor third (6/5), major
+; third (5/4), fourth (4/3), fifth (3/2), minor sixth (8/5), major
+; sixth (5/3), minor seventh (9/5), major seventh (15/16), 7/4, and
+; 11/8 intervals relative to C, F, and G.
+define_scale(scale="JI-11") <<
+ 1    c    ; f * fifth, g * fourth
+16/15 d%   ; f * minor sixth
+ 9/8  d    ; c * whole step, f * major sixth, g * fifth
+ 7/6  f+7  ; f * h7
+ 6/5  e%   ; c * minor third, g * minor sixth
+ 5/4  e    ; c * major third, f * major seventh, g * major sixth
+21/16 g+7  ; g * h7
+ 4/3  f    ; c * fourth, g * minor seventh
+11/8  c+11 ; c * h11
+45/32 f#   ; g * major seventh
+ 3/2  g    ; c * fifth, f * whole step
+ 8/5  a%   ; c * minor sixth, f * minor third
+ 5/3  a1   ; c * major sixth, f * major third
+27/16 a2   ; g * whole step
+ 7/4  c+7  ; c * h7
+16/9  b%2  ; f * fourth
+ 9/5  b%1  ; c * minor seventh, g * minor third
+11/6  f+11 ; f * h11
+15/8  b    ; c * major seventh, g * major third
+33/16 g+11 ; g * h11
+>>
+
+define_generated_scale(scale="JI")
+; This layout provides a 6 row × 5 column grid that covers all 20
+; notes with some duplication. It is designed so that going vertically
+; across every two rows always goes up by a 5th from any position.
+; Horizontal repetitions jump by octaves.
+;;define_manual_mapping(
+;;    mapping="JI-11"
+;;    scale="JI-11"
+;;    v_factor = 27/8
+;;    h_factor = 2
+;;) <<
+;;f#   b%1  g+11 e%'  g+7'
+;;   g    a2   b    c'   d'
+;;b,   e%   c+11 a%   c+7
+;;  @c    d    e    f    g
+;;e,   a%,  f+11, d%   f+7
+;;   f,   g,   a1,  b%2, c
+;;>>
+define_manual_mapping(
+    mapping="JI"
+    scale="JI"
+    v_factor = 3/2
+    h_factor = 2
+) <<
+p    F   EK    e'   Bh
+  @A   I    E    D    C
 >>
 place_mapping(
-    layout="JI-11"
-    base_pitch=264
-    keyboard="launchpad"
-    mapping="JI-11"
-    anchor_row=5
-    anchor_col=1
-)
-place_mapping(
-    layout="JI-11"
+    layout="JI"
     base_pitch=264
     keyboard="hexboard"
-    mapping="JI-11"
-    anchor_row=5
-    anchor_col=6
+    mapping="JI"
+    anchor_row=7
+    anchor_col=5
 )
-
+;place_mapping(
+;    layout="JI-11"
+;    base_pitch=264
+;    keyboard="launchpad"
+;    mapping="JI-11"
+;    anchor_row=5
+;    anchor_col=1
+;)
 
 place_mapping(
     layout="JI-11-19-EDO"
     keyboard="launchpad"
-    mapping="JI-11"
+    mapping="JI"
     anchor_row=1
     anchor_col=1
     rows_above=3
@@ -107,7 +248,7 @@ place_mapping(
 place_mapping(
     layout="JI-11-19-EDO"
     keyboard="hexboard"
-    mapping="JI-11"
+    mapping="JI"
     anchor_row=1
     anchor_col=2
     rows_above=3
@@ -152,3 +293,11 @@ place_mapping(
     anchor_row=1
     anchor_col=1
 )
+
+define_generated_scale(scale="13-ED3" cycle_ratio=3 divisions=13)
+define_isomorphic_mapping(mapping="13-ED3-h2v3" scale="13-ED3" steps_h=2 steps_v=3)
+place_mapping(layout="13-ED3-h2v3" mapping="13-ED3-h2v3" keyboard="hexboard" anchor_row=7 anchor_col=8)
+
+define_generated_scale(scale="27-ED3" cycle_ratio=3 divisions=27)
+define_isomorphic_mapping(mapping="27-ED3-h3v5" scale="27-ED3" steps_h=3 steps_v=5)
+place_mapping(layout="27-ED3-h3v5" mapping="27-ED3-h3v5" keyboard="hexboard" anchor_row=7 anchor_col=8)
