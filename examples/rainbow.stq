@@ -1,0 +1,656 @@
+syntoniq(version=1)
+define_generated_scale(scale="g")
+use_scale(scale="g")
+
+tempo(bpm=72)
+[p1.0] 1/2:E C E C E C E C |
+[p1.1] 1:I A I A |
+[p1.2] 2:~ 1:p i |
+
+[p1.0] 1/2:D C D C D C D C |
+[p1.1] 1:E 1/2:I E I E I E |
+[p1.2] 2:A p |
+[p1.3] 2:~ f |
+[p1.4] 2:f 1:C, 1/2:D, E, |
+
+tempo(bpm=66 end_bpm=52 duration=4)
+[p1.0] 2/3:f' E' f' E' f' E' |
+[p1.1] 1:D E D E |
+[p1.2] 2:A A |
+[p1.3] 2:p f |
+[p1.4] 2:J, J, |
+
+mark(label="a")
+[p1.0] 2/3:p' p' p' I' p' C |
+[p1.1] 2/3:CP C Cp 2:D |
+[p1.2] 2/3:Cj E Ep 2:I |
+[p1.3] 2:I 1:A p |
+[p1.4] 2:C, C, |
+
+tempo(bpm=72)
+
+;pparta =
+;      \barNumberCheck #6
+;      \tempo4 = \tempoOne
+;      c,2 c'2 |
+;      b4 g8 a b4 c |
+;      c,2 a'2 |
+;      g1 |
+;      a,2 f'2 |
+;      e4 c8 d e4 f |
+;      d4 b8 c d4 e |
+;      c2. r8 g' |
+;
+;      \barNumberCheck #14
+;      e8 g e g e g e g |
+;      f g f g f g f g |
+;      a2 a |
+;      r2. r8 g |
+;      e8 g e g e g e g |
+;      fis a fis a fis a fis a |
+;      b2 b |
+;      \tempo 4 = \tempoTwo
+;      d2 \tempo 4 = \tempoThree a4 g |
+;
+;      \barNumberCheck #22
+;      \tempo 4 = \tempoOne
+;      c,2 c'2 |
+;      b4 g8 a b4 c |
+;      c,2 a'2 |
+;      g1 |
+;      a,2 f'2 |
+;      e4 c8 d e4 f |
+;      d4 b8 c d4 e |
+;      c2. r8 g' |
+;
+;      \barNumberCheck #30
+;      e8 g e g e g e g |
+;      f g f g f g f g |
+;      a1 |
+;      b |
+;
+;      %\set Score.skipTypesetting = ##f
+;      \barNumberCheck #34
+;      \time 3/4
+;      c2. |
+;      a |
+;      g |
+;      g |
+;
+;      \barNumberCheck #38
+;      e4 g c |
+;      \tuplet 3/2 { d4 e8 } e4. r8 |
+;      f,4. g8 c4 |
+;      c4 d4. f,8 |
+;      e4 g b |
+;      c2 g4 |
+;      a2.~ |
+;      a4 g f |
+;
+;      \barNumberCheck #46
+;      e4 g c |
+;      d4 e4. e,8 |
+;      f4. a8 c4 |
+;      c4 d4. f,8 |
+;      e4 g b |
+;      c2 g4 |
+;      a2.~ |
+;      a4 r2 |
+;
+;      \barNumberCheck #54
+;      a4  e' a, |
+;      e' a, e' |
+;      a, e' a, |
+;      e'4 a,4. a8 |
+;      b4 b b |
+;      d b g |
+;      b2.~ |
+;      b4 r2 |
+;
+;      \barNumberCheck #62
+;      f4 a c |
+;      a b4. g8 |
+;      g4 b d |
+;      b cis4. f,8 |
+;      f4 a4. c8 |
+;      e8 e4. d4 |
+;      c2. |
+;      d4. c8 d4 |
+;
+;      \barNumberCheck #70
+;      e4. d8 c4 |
+;      g2 g4 |
+;      a4 b c |
+;      \tempo 4 = \tempoTwo
+;      g c b |
+;      \tempo 4 = \tempoThree
+;      c2.~ |
+;      c4 r2 |
+;
+;      \bar"|."
+
+
+;ppartb =
+;      \barNumberCheck #6
+;      \tempo 4 = \tempoOne
+;      r2 a2 |
+;      g4 e g g |
+;      a,2 f' |
+;      e1 |
+;      r2 d2 |
+;      c4 r4 d des |
+;      r2 b2 |
+;      r1 |
+;
+;      \barNumberCheck #14
+;      r |
+;      r |
+;      r |
+;      f'4 e8 d c4 b4 |
+;      r1 |
+;      r |
+;      g'2 a |
+;      \tempo 4 = \tempoTwo
+;      a \tempo 4 = \tempoThree r |
+;
+;      \barNumberCheck #22
+;      \tempo 4 = \tempoOne
+;      r2 a |
+;      g4 e g g |
+;      a,2 f'2 |
+;      e1 |
+;      r2 d2 |
+;      c4 r4 d4 des4 |
+;      r2 b2 |
+;      r1 |
+;
+;      \barNumberCheck #30
+;      c8 e c e c e c e |
+;      d e d e d e d e |
+;      f1 |
+;      g |
+;
+;      \barNumberCheck #34
+;      \time 3/4
+;      g4 a g |
+;      f g f |
+;      e f e |
+;      f g f |
+;
+;      \barNumberCheck #38
+;      r4 e g |
+;      \tuplet 3/2 { g4 g8 } g4. r8 |
+;      d4. f8 a4 |
+;      f4 f4. d8 |
+;      r4 e g |
+;      g2 e4 |
+;      f2.~ |
+;      f4 f d |
+;
+;      \barNumberCheck #46
+;      r4 e g |
+;      g4 g4. c,8 |
+;      d4. f8 a4 |
+;      f4 f4. d8 |
+;      r4 e g |
+;      g2 e4 |
+;      f2.~ |
+;      f4 r2 |
+;
+;      \barNumberCheck #54
+;      f4. c' |
+;      f, g |
+;      f g |
+;      a4 f2 |
+;      g4 g g |
+;      g g r |
+;      g2. |
+;      fis8 g fis4 e4 |
+;
+;      \barNumberCheck #62
+;      d4 f a |
+;      g4 a4. r8 |
+;      r4 g b |
+;      a b4. r8 |
+;      d,4 f4. a8 |
+;      a8 a4. b4 |
+;      g2. |
+;      b4. a8 b4 |
+;
+;      \barNumberCheck #70
+;      c4. b8 a4 |
+;      e2 e4 |
+;      f4 f a |
+;      \tempo 4 = \tempoTwo
+;      f a g |
+;      \tempo 4 = \tempoThree
+;      g2.~ |
+;      g4 r2 |
+;
+;      \bar"|."
+;    }
+;  }
+
+
+;ppartc =
+;      \barNumberCheck #6
+;      \tempo 4 = \tempoOne
+;      r2 e4 fis4 |
+;      fis4 r4 e d8 c |
+;      r2 c4 d4 |
+;      r2 d4. c8 |
+;      r2 c |
+;      r1 |
+;      r |
+;      r |
+;
+;      \barNumberCheck #14
+;      d2 c |
+;      e d |
+;      e e |
+;      d4 c4 r2 |
+;      d2 c |
+;      e dis |
+;      fis1 |
+;      \tempo 4 = \tempoTwo
+;      f2 \tempo 4 = \tempoThree f |
+;
+;      \barNumberCheck #22
+;      \tempo 4 = \tempoOne
+;      r2 e4 fis4 |
+;      fis4 r e d8 c |
+;      r2 c4 d |
+;      r2 d4. c8 |
+;      r2 c2 |
+;      r1 |
+;      r |
+;      r |
+;
+;      \barNumberCheck #30
+;      r1 |
+;      r1 |
+;      r1 |
+;      f |
+;
+;      \barNumberCheck #34
+;      \time 3/4
+;      e2. |
+;      d |
+;      \tuplet 2/3 { d4 c } |
+;      \tuplet 2/3 { e4 d } |
+;
+;      \barNumberCheck #38
+;      r2 e4 |
+;      \tuplet 3/2 { e4 e8 } e4. r8 |
+;      r2 f4 |
+;      c4 d4. r8 |
+;      r2 e4 |
+;      e2 c4 |
+;      c2.~ |
+;      c4 c c |
+;
+;      \barNumberCheck #46
+;      r2 e4 |
+;      e4 e4. r8 |
+;      r2 f4 |
+;      c4 d4. r8 |
+;      r2 e4 |
+;      e2 r4 |
+;      r2. |
+;      e4 d e |
+;
+;      \barNumberCheck #54
+;      e2. |
+;      e |
+;      e |
+;      e |
+;      fis4 fis fis |
+;      fis fis fis |
+;      fis2. |
+;      d2. |
+;
+;      \barNumberCheck #62
+;      r2 f4 |
+;      f4 f4. r8 |
+;      r2 g4 |
+;      g g4. r8 |
+;      r2 r8 f8 |
+;      f8 f4. f4 |
+;      e2. |
+;      g2. |
+;
+;      \barNumberCheck #70
+;      g2. |
+;      r |
+;      r2 f4 |
+;      \tempo 4 = \tempoTwo
+;      d f f |
+;      \tempo 4 = \tempoThree
+;      e2.~ |
+;      e4 r2 |
+;
+;      \bar"|."
+;    }
+;  }
+
+;ppartd =
+;      \barNumberCheck #6
+;      \tempo 4 = \tempoOne
+;      r2 c2 |
+;      b4 d8 c b4 bes4 |
+;      r1 |
+;      r |
+;      r |
+;      r |
+;      a2 aes |
+;      g2. r8 g |
+;
+;      \barNumberCheck #14
+;      c1 |
+;      c2 r2 |
+;      c2 c2 |
+;      c4 a aes g |
+;      c1 |
+;      b |
+;      e2 dis |
+;      \tempo 4 = \tempoTwo
+;      d \tempo 4 = \tempoThree d |
+;
+;      \barNumberCheck #22
+;      \tempo 4 = \tempoOne
+;      r2 c |
+;      b4 d8 c b4 bes |
+;      r1 |
+;      r |
+;      r |
+;      r |
+;      a2 g |
+;      g2. r8 g8 |
+;
+;      \barNumberCheck #30
+;      c1 |
+;      c |
+;      d |
+;      des |
+;
+;      \barNumberCheck #34
+;      \time 3/4
+;      c2. |
+;      c |
+;      c |
+;      c |
+;
+;      \barNumberCheck #38
+;      r2 c4 |
+;      \tuplet 3/2 { b4 c8 } c4. r8 |
+;      r2 c4 |
+;      a4 b4. r8 |
+;      r2 c4 |
+;      c2 r4 |
+;      r2. |
+;      a4 a a |
+;
+;      \barNumberCheck #46
+;      r2 r8 c8~ |
+;      c8 b8 c4. r8 |
+;      r4. c8 c4 |
+;      a4 b4. r8 |
+;      r2 r8 c8 |
+;      c2 c4 |
+;      c2.~ |
+;      c2. |
+;
+;      \barNumberCheck #54
+;      c2. |
+;      c |
+;      c |
+;      c |
+;      b4 cis d |
+;      cis d cis |
+;      d cis d |
+;      b2. |
+;
+;      \barNumberCheck #62
+;      r4 c c |
+;      d4 d4. r8 |
+;      r4 fis fis |
+;      e e4. r8 |
+;      r4 c4. c8 |
+;      c8 c4. d4 |
+;      d2. |
+;      e2. |
+;
+;      \barNumberCheck #70
+;      e2. |
+;      c2 c4 |
+;      d4 d d |
+;      \tempo 4 = \tempoTwo
+;      c d d |
+;      \tempo 4 = \tempoThree
+;      g,2.~ |
+;      g4 r2 |
+;
+;      \bar"|."
+;    }
+;  }
+
+;pparte =
+;      \barNumberCheck #6
+;      \tempo 4 = \tempoOne
+;      r4 b a2 |
+;      e1 |
+;      f4 g a4 b4 |
+;      d4 c8 b bes4 g |
+;      f2 aes4 bes8 aes |
+;      g2 bes4 a4 |
+;      f2 f2 |
+;      e2. r4 |
+;
+;      \barNumberCheck #14
+;      g1 |
+;      a2 b |
+;      r4 b2 a4 |
+;      d,4 f f2 |
+;      g1 |
+;      a2 g4 fis4 |
+;      e2 b'4 a8 b |
+;      \tempo 4 = \tempoTwo
+;      c4 d8 c \tempo 4 = \tempoThree c4. b8 |
+;
+;      \barNumberCheck #22
+;      \tempo 4 = \tempoOne
+;      r4 b a2 |
+;      e1 |
+;      f4 g a4 b4 |
+;      d4 c8 b bes4 g |
+;      f2 aes4 bes8 aes |
+;      g2 bes4 a4 |
+;      f2 f |
+;      e2. r4 |
+;
+;      \barNumberCheck #30
+;      g1 |
+;      a |
+;      r1 |
+;      g1 |
+;
+;      \barNumberCheck #34
+;      \time 3/4
+;      g2. |
+;      a |
+;      g |
+;      a |
+;
+;      \barNumberCheck #38
+;      d4 c b |
+;      \tuplet 3/2 { a4 a8 } a4. r8 |
+;      c4. b8 a4 |
+;      g4 g4. r8 |
+;      d'4 c b |
+;      a2 g4 |
+;      f2. |
+;      g2. |
+;
+;      \barNumberCheck #46
+;      r8 d'4 c b8~ |
+;      b8 a2 a8 |
+;      r8 c4 b4 a8 |
+;      g2~ g8 r8 |
+;      r8 d'4 c b8 |
+;      a2 g4 |
+;      f2. |
+;      b4. a |
+;
+;      \barNumberCheck #54
+;      f2. |
+;      b |
+;      f |
+;      b2 a4 |
+;      e2. |
+;      b' |
+;      e, |
+;      g4 a b |
+;
+;      \barNumberCheck #62
+;      c4 b a |
+;      g4~ g4. r8 |
+;      fis'4 e d |
+;      a~ a4. r8 |
+;      c4 b a |
+;      g8 g4. g4 |
+;      c2. |
+;      b2. |
+;
+;      \barNumberCheck #70
+;      a2. |
+;      b4 a g |
+;      c b a |
+;      \tempo 4 = \tempoTwo
+;      g2. |
+;      \tempo 4 = \tempoThree
+;      c,2.~ |
+;      c4 r2 |
+;
+;      \bar"|."
+;    }
+;  }
+;
+;vparte =
+;    \context Staff = "parte" <<
+;	\global
+;	\set Staff.midiInstrument = "trumpet"
+;	\set Staff.instrumentName = "5"
+;	\pparte
+;    >>
+;
+;ppartx =
+;  \transpose c \transposeKey {
+;    \relative c''''
+;    {
+;      \tempo 4 = \tempoOne
+;      \time 4/4
+;      c4\ffff c c c |
+;      c c c c |
+;      c c c c |
+;      c8 c c c \tempo 4 = \tempoTwo c c c c |
+;      \tempo 4 = \tempoThree c c c c \tempo 4 = \tempoFour c c c c |
+;
+;      \barNumberCheck #6
+;      \tempo 4 = \tempoOne
+;      c8 c c c c4 c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;
+;      \barNumberCheck #14
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      \tempo 4 = \tempoTwo
+;      c8 c8 c8 c8 \tempo 4 = \tempoThree c8 c8 c8 c8 |
+;
+;      \barNumberCheck #22
+;      \tempo 4 = \tempoOne
+;      c8 c c c c4 c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;
+;      \barNumberCheck #30
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;      c c c c |
+;
+;      \barNumberCheck #34
+;      \time 3/4
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;
+;      \barNumberCheck #38
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;
+;      \barNumberCheck #46
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;
+;      \barNumberCheck #54
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;
+;      \barNumberCheck #62
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;      c c c |
+;
+;      \barNumberCheck #70
+;      c c c |
+;      c c c |
+;      c c c |
+;      \tempo 4 = \tempoTwo
+;      c8 c c c c c |
+;      \tempo 4 = \tempoThree
+;      c8 c c c c c |
+;      c8 c c c c c |
+;
+;      \bar"|."
+;    }
+;  }
