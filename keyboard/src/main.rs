@@ -25,10 +25,6 @@ use tokio::sync::oneshot;
 #[derive(Parser)]
 #[command(version, about, long_about = None, verbatim_doc_comment)]
 struct Cli {
-    /// Substring to match for midi port; run amidi -l
-    #[arg(long)]
-    port: Option<String>,
-
     #[command(subcommand)]
     command: Commands,
 }
@@ -37,6 +33,9 @@ struct Cli {
 enum Commands {
     /// Main command -- handle events and send music commands
     Run {
+        /// Substring to match for midi port; run amidi -l
+        #[arg(long)]
+        port: String,
         /// Syntoniq score file containing layouts
         #[arg(long)]
         score: String,
@@ -59,10 +58,6 @@ async fn main() -> anyhow::Result<()> {
         syntoniq_common::cli_completions(shell, &mut cmd);
         return Ok(());
     }
-    let Some(port) = cli.port else {
-        bail!("the port option is required");
-    };
-
     let mut log_builder = env_logger::builder();
     if env::var("RUST_LOG").is_err() {
         log_builder.filter_level(LevelFilter::Info);
@@ -74,6 +69,9 @@ async fn main() -> anyhow::Result<()> {
     let events_rx = events.receiver();
 
     // Create midi controller.
+    let Commands::Run { port, score, midi } = cli.command else {
+        unreachable!("already handled");
+    };
     let tx2 = events_tx.clone();
     let (id_tx, id_rx) = oneshot::channel();
     let controller = Controller::new(&port, id_tx)?;
@@ -99,9 +97,6 @@ async fn main() -> anyhow::Result<()> {
         let _ = tokio::signal::ctrl_c().await;
         events.shutdown().await;
     });
-    let Commands::Run { score, midi } = cli.command else {
-        unreachable!("already handled");
-    };
 
     let sound_type = if midi {
         SoundType::Midi
