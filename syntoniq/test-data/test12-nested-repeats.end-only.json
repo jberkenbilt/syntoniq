@@ -935,6 +935,12 @@
       ],
       "notes": [
         {
+          "name": "c%",
+          "base_relative": "1/2*^11|12",
+          "normalized_relative": "^11|12",
+          "degree": -1
+        },
+        {
           "name": "c",
           "base_relative": "1",
           "normalized_relative": "1",

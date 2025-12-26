@@ -18,10 +18,12 @@ mod generator;
 use crate::parsing::layout::{
     Coordinate, IsomorphicMapping, Layout, LayoutMapping, Layouts, ManualMapping, MappingDetails,
 };
+use crate::parsing::pass2::Pass2;
 use crate::parsing::score::generator::NoteGenerator;
 use crate::parsing::{
     CsoundInstrumentId, DynamicEvent, MarkEvent, MidiInstrumentNumber, NoteEvent, NoteValue,
-    Options, PartNote, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, score_helpers,
+    Options, PartNote, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, pass2,
+    score_helpers,
 };
 use crate::pitch::{Factor, Pitch};
 pub use directives::*;
@@ -271,70 +273,6 @@ pub struct Tuning<'s> {
 pub struct ScoreBlock<'s> {
     pub note_lines: Vec<NoteLine<'s>>,
     pub dynamic_lines: Vec<DynamicLine<'s>>,
-}
-
-fn default_scale<'s>() -> RefCell<ScaleBuilder<'s>> {
-    let start_pitch = Pitch::unit();
-    let mut pitches = Vec::new();
-    let mut next_pitch = start_pitch.clone();
-    let increment = Pitch::must_parse("^1|12");
-    for _ in 0..=12 {
-        pitches.push(next_pitch.clone());
-        next_pitch *= &increment;
-    }
-    let notes = [
-        ("c", pitches[0].clone()),
-        ("c#", pitches[1].clone()),
-        ("d%", pitches[1].clone()),
-        ("d", pitches[2].clone()),
-        ("d#", pitches[3].clone()),
-        ("e%", pitches[3].clone()),
-        ("e", pitches[4].clone()),
-        ("e#", pitches[5].clone()),
-        ("f%", pitches[4].clone()),
-        ("f", pitches[5].clone()),
-        ("f#", pitches[6].clone()),
-        ("g%", pitches[6].clone()),
-        ("g", pitches[7].clone()),
-        ("g#", pitches[8].clone()),
-        ("a%", pitches[8].clone()),
-        ("a", pitches[9].clone()),
-        ("a#", pitches[10].clone()),
-        ("b%", pitches[10].clone()),
-        ("b", pitches[11].clone()),
-        ("b#", pitches[12].clone()),
-    ]
-    .into_iter()
-    .map(|(k, v)| (Cow::Borrowed(k), v))
-    .collect();
-    // For primary names of accidentals, pick the one that appears first in key signatures.
-    let primary_names = [
-        (pitches[0].clone(), "c"),
-        (pitches[1].clone(), "c#"),
-        (pitches[2].clone(), "d"),
-        (pitches[3].clone(), "e%"),
-        (pitches[4].clone(), "e"),
-        (pitches[5].clone(), "f"),
-        (pitches[6].clone(), "f#"),
-        (pitches[7].clone(), "g"),
-        (pitches[8].clone(), "a%"),
-        (pitches[9].clone(), "a"),
-        (pitches[10].clone(), "b%"),
-        (pitches[11].clone(), "b"),
-    ]
-    .into_iter()
-    .map(|(k, v)| (k, Cow::Borrowed(v)))
-    .collect();
-    RefCell::new(ScaleBuilder {
-        definition: ScaleDefinition {
-            span: (0..1).into(),
-            name: Cow::Borrowed(DEFAULT_SCALE_NAME),
-            cycle: Ratio::from_integer(2),
-        },
-        notes,
-        primary_names,
-        generator: None,
-    })
 }
 
 static DEFAULT_SCALE_NAME: &str = "default";
@@ -858,9 +796,6 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
 
 impl<'s> Score<'s> {
     pub fn new(src: &'s str, s: Syntoniq) -> Self {
-        let scales = [(Cow::Borrowed(DEFAULT_SCALE_NAME), default_scale())]
-            .into_iter()
-            .collect();
         let timeline = Timeline {
             scales: Default::default(),
             events: Default::default(),
@@ -878,10 +813,10 @@ impl<'s> Score<'s> {
                 },
             ),
         ));
-        Self {
+        let mut score = Self {
             src,
             _version: s.version.value,
-            scales,
+            scales: Default::default(),
             pending_score_block: None,
             score_blocks: Default::default(),
             tunings: Default::default(),
@@ -897,7 +832,33 @@ impl<'s> Score<'s> {
             layouts: Default::default(),
             mappings: Default::default(),
             timeline,
+        };
+        score.add_builtin_scales();
+        score
+    }
+
+    fn add_builtin_scales(&mut self) {
+        const DEFAULT_SCALE_DEFINITION: &str = r#"
+define_scale(scale="default") <<
+^-1|12 c%
+ ^0|12 c | ^1|12 c# d%
+ ^2|12 d | ^3|12 e% d#
+ ^4|12 e f%
+ ^5|12 f e# | ^6|12 f# g%
+ ^7|12 g | ^8|12 a% g#
+ ^9|12 a | ^10|12 b% a#
+^11|12 b
+^12|12 b#
+>>
+    "#;
+        let tokens = pass2::parse2(DEFAULT_SCALE_DEFINITION).unwrap();
+        let temp_diags = Diagnostics::new();
+        for tok in tokens {
+            if let Pass2::Directive(rd) = tok.value.t {
+                self.handle_directive(&temp_diags, Span::from(0..1), &rd);
+            };
         }
+        debug_assert!(!temp_diags.has_errors());
     }
 
     pub fn into_output(self) -> ScoreOutput<'s> {

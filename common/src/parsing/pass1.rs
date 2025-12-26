@@ -74,7 +74,7 @@ static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!\\#%&"; // keep consistent with sy
 static DYNAMIC_PUNCTUATION: &str = "|<>@/.";
 /// Characters allowed in definitions outside note names and numbers, including pitch characters,
 /// anchor/place-holder characters for layouts, and octave markers.
-static DEFINITION_PUNCTUATION: &str = "^*|/.@~,'";
+static DEFINITION_PUNCTUATION: &str = "-^*|/.@~,'";
 
 #[derive(Serialize, Debug, Clone, Copy)]
 /// The Pass1 type contains payload for pass-1 tokens. These contain only spans and numbers, which
