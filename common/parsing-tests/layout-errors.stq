@@ -9,7 +9,7 @@ define_scale(scale="z") <<
 ; unknown scale
 define_manual_mapping(
     mapping="m1"
-    scale="19-EDO"
+    scale="20-EDO"
 ) <<
 q w e r t
 >>

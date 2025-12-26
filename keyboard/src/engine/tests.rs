@@ -709,6 +709,8 @@ async fn print_notes() -> anyhow::Result<()> {
     tc.sync().await?;
     let ts = tc.get_engine_state().await;
     let exp: Vec<String> = [
+        "Scale: 12-EDO, base=220*^1|4",
+        "  Note: d (base × ^1|6 = 220*^5|12)",
         "Scale: 31-EDO, base=264",
         "  Note: d (base × ^5|31 = 264*^5|31)",
         "Scale: JI-11, base=220*^1|4",
@@ -719,8 +721,6 @@ async fn print_notes() -> anyhow::Result<()> {
         "Scale: JI-11, base=275*^1|4 (transposition: 220*^1|4 × 5/4)",
         "  Note: e (base × 5/4 = 343.75*^1|4)",
         "  Note: g (base × 3/2 = 412.5*^1|4)",
-        "Scale: default, base=220*^1|4",
-        "  Note: d (base × ^1|6 = 220*^5|12)",
     ]
     .into_iter()
     .map(String::from)

@@ -18,7 +18,7 @@ define_scale(scale="JI1") <<
   15/8   b
 >>
 
-use_scale(scale="default")
+use_scale(scale="12-EDO")
 
 tempo(bpm=30)
 [p1.1] 1:g b    c'

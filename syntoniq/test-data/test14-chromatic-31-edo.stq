@@ -3,40 +3,6 @@ midi_instrument(instrument=55)
 
 ; timidity -A70,70a -OwM /tmp/a.midi
 
-define_scale(scale="31-EDO") <<
- ^0|31 c
- ^1|31 c+ d%%
- ^2|31 c#
- ^3|31 d%
- ^4|31 d- c##
- ^5|31 d
- ^6|31 d+ e%%
- ^7|31 d#
- ^8|31 e%
- ^9|31 e- d##
-^10|31 e
-^11|31 f% e+
-^12|31 e# f-
-^13|31 f
-^14|31 f+ g%%
-^15|31 f#
-^16|31 g%
-^17|31 g- f##
-^18|31 g
-^19|31 g+ a%%
-^20|31 g#
-^21|31 a%
-^22|31 a- g##
-^23|31 a
-^24|31 a+ b%%
-^25|31 a#
-^26|31 b%
-^27|31 b- a##
-^28|31 b
-^29|31 c% b+
-^30|31 b# c-
->>
-
 use_scale(scale="31-EDO")
 tempo(bpm=90)
 [p1.0] 1:c c+ c# d% d- d d+ d# e% e- e e+ f- f f+ f# g% g- g g+ g# a% a- a a+ a# b% b- b b+ c'

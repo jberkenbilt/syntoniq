@@ -27,8 +27,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        602,
-        609
+        211,
+        218
       ],
       "data": {
         "Note": {
@@ -63,8 +63,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        610,
-        614
+        219,
+        223
       ],
       "data": {
         "Note": {
@@ -99,8 +99,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        615,
-        618
+        224,
+        227
       ],
       "data": {
         "Note": {
@@ -135,8 +135,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        619,
-        623
+        228,
+        232
       ],
       "data": {
         "Note": {
@@ -171,8 +171,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        632,
-        639
+        241,
+        248
       ],
       "data": {
         "Note": {
@@ -207,8 +207,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        640,
-        644
+        249,
+        253
       ],
       "data": {
         "Note": {
@@ -243,8 +243,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        645,
-        648
+        254,
+        257
       ],
       "data": {
         "Note": {
@@ -279,8 +279,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        649,
-        653
+        258,
+        262
       ],
       "data": {
         "Note": {
@@ -315,8 +315,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        662,
-        669
+        271,
+        278
       ],
       "data": {
         "Note": {
@@ -351,8 +351,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        670,
-        674
+        279,
+        283
       ],
       "data": {
         "Note": {
@@ -387,8 +387,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        675,
-        678
+        284,
+        287
       ],
       "data": {
         "Note": {
@@ -423,8 +423,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        679,
-        683
+        288,
+        292
       ],
       "data": {
         "Note": {
@@ -459,8 +459,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        692,
-        697
+        301,
+        306
       ],
       "data": {
         "Note": {
@@ -495,8 +495,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        698,
-        700
+        307,
+        309
       ],
       "data": {
         "Note": {
@@ -531,8 +531,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        701,
-        702
+        310,
+        311
       ],
       "data": {
         "Note": {
@@ -567,8 +567,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        703,
-        705
+        312,
+        314
       ],
       "data": {
         "Note": {
@@ -603,8 +603,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        714,
-        721
+        323,
+        330
       ],
       "data": {
         "Note": {
@@ -639,8 +639,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        722,
-        726
+        331,
+        335
       ],
       "data": {
         "Note": {
@@ -675,8 +675,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        727,
-        730
+        336,
+        339
       ],
       "data": {
         "Note": {
@@ -711,8 +711,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        731,
-        735
+        340,
+        344
       ],
       "data": {
         "Note": {
@@ -747,8 +747,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        744,
-        751
+        353,
+        360
       ],
       "data": {
         "Note": {
@@ -783,8 +783,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        752,
-        756
+        361,
+        365
       ],
       "data": {
         "Note": {
@@ -819,8 +819,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        757,
-        760
+        366,
+        369
       ],
       "data": {
         "Note": {
@@ -855,8 +855,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        761,
-        765
+        370,
+        374
       ],
       "data": {
         "Note": {
@@ -891,8 +891,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        774,
-        781
+        383,
+        390
       ],
       "data": {
         "Note": {
@@ -927,8 +927,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        782,
-        786
+        391,
+        395
       ],
       "data": {
         "Note": {
@@ -963,8 +963,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        787,
-        790
+        396,
+        399
       ],
       "data": {
         "Note": {
@@ -999,8 +999,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        791,
-        795
+        400,
+        404
       ],
       "data": {
         "Note": {
@@ -1031,7 +1031,7 @@
   ],
   "scales": [
     {
-      "name": "default",
+      "name": "12-EDO",
       "cycle": [
         2,
         1
@@ -1194,12 +1194,201 @@
       ]
     },
     {
+      "name": "19-EDO",
+      "cycle": [
+        2,
+        1
+      ],
+      "notes": [
+        {
+          "name": "c%",
+          "base_relative": "1/2*^18|19",
+          "normalized_relative": "^18|19",
+          "degree": -1
+        },
+        {
+          "name": "c",
+          "base_relative": "1",
+          "normalized_relative": "1",
+          "degree": 0
+        },
+        {
+          "name": "c#",
+          "base_relative": "^1|19",
+          "normalized_relative": "^1|19",
+          "degree": 1
+        },
+        {
+          "name": "d%",
+          "base_relative": "^2|19",
+          "normalized_relative": "^2|19",
+          "degree": 2
+        },
+        {
+          "name": "d",
+          "base_relative": "^3|19",
+          "normalized_relative": "^3|19",
+          "degree": 3
+        },
+        {
+          "name": "d#",
+          "base_relative": "^4|19",
+          "normalized_relative": "^4|19",
+          "degree": 4
+        },
+        {
+          "name": "e%",
+          "base_relative": "^5|19",
+          "normalized_relative": "^5|19",
+          "degree": 5
+        },
+        {
+          "name": "e",
+          "base_relative": "^6|19",
+          "normalized_relative": "^6|19",
+          "degree": 6
+        },
+        {
+          "name": "e#",
+          "base_relative": "^7|19",
+          "normalized_relative": "^7|19",
+          "degree": 7
+        },
+        {
+          "name": "f%",
+          "base_relative": "^7|19",
+          "normalized_relative": "^7|19",
+          "degree": 7
+        },
+        {
+          "name": "f",
+          "base_relative": "^8|19",
+          "normalized_relative": "^8|19",
+          "degree": 8
+        },
+        {
+          "name": "f#",
+          "base_relative": "^9|19",
+          "normalized_relative": "^9|19",
+          "degree": 9
+        },
+        {
+          "name": "g%",
+          "base_relative": "^10|19",
+          "normalized_relative": "^10|19",
+          "degree": 10
+        },
+        {
+          "name": "g",
+          "base_relative": "^11|19",
+          "normalized_relative": "^11|19",
+          "degree": 11
+        },
+        {
+          "name": "g#",
+          "base_relative": "^12|19",
+          "normalized_relative": "^12|19",
+          "degree": 12
+        },
+        {
+          "name": "a%",
+          "base_relative": "^13|19",
+          "normalized_relative": "^13|19",
+          "degree": 13
+        },
+        {
+          "name": "a",
+          "base_relative": "^14|19",
+          "normalized_relative": "^14|19",
+          "degree": 14
+        },
+        {
+          "name": "a#",
+          "base_relative": "^15|19",
+          "normalized_relative": "^15|19",
+          "degree": 15
+        },
+        {
+          "name": "b%",
+          "base_relative": "^16|19",
+          "normalized_relative": "^16|19",
+          "degree": 16
+        },
+        {
+          "name": "b",
+          "base_relative": "^17|19",
+          "normalized_relative": "^17|19",
+          "degree": 17
+        },
+        {
+          "name": "b#",
+          "base_relative": "^18|19",
+          "normalized_relative": "^18|19",
+          "degree": 18
+        }
+      ],
+      "primary_names": [
+        "c",
+        "c#",
+        "d%",
+        "d",
+        "d#",
+        "e%",
+        "e",
+        "e#",
+        "f",
+        "f#",
+        "g%",
+        "g",
+        "g#",
+        "a%",
+        "a",
+        "a#",
+        "b%",
+        "b",
+        "b#"
+      ],
+      "pitches": [
+        "1",
+        "^1|19",
+        "^2|19",
+        "^3|19",
+        "^4|19",
+        "^5|19",
+        "^6|19",
+        "^7|19",
+        "^8|19",
+        "^9|19",
+        "^10|19",
+        "^11|19",
+        "^12|19",
+        "^13|19",
+        "^14|19",
+        "^15|19",
+        "^16|19",
+        "^17|19",
+        "^18|19"
+      ]
+    },
+    {
       "name": "31-EDO",
       "cycle": [
         2,
         1
       ],
       "notes": [
+        {
+          "name": "c%",
+          "base_relative": "1/2*^29|31",
+          "normalized_relative": "^29|31",
+          "degree": -2
+        },
+        {
+          "name": "c-",
+          "base_relative": "1/2*^30|31",
+          "normalized_relative": "^30|31",
+          "degree": -1
+        },
         {
           "name": "c",
           "base_relative": "1",
@@ -1453,19 +1642,7 @@
           "degree": 29
         },
         {
-          "name": "c%",
-          "base_relative": "^29|31",
-          "normalized_relative": "^29|31",
-          "degree": 29
-        },
-        {
           "name": "b#",
-          "base_relative": "^30|31",
-          "normalized_relative": "^30|31",
-          "degree": 30
-        },
-        {
-          "name": "c-",
           "base_relative": "^30|31",
           "normalized_relative": "^30|31",
           "degree": 30
@@ -1501,7 +1678,7 @@
         "b%",
         "b-",
         "b",
-        "c%",
+        "b+",
         "b#"
       ],
       "pitches": [
@@ -1537,6 +1714,16 @@
         "^29|31",
         "^30|31"
       ]
+    },
+    {
+      "name": "JI",
+      "cycle": [
+        2,
+        1
+      ],
+      "notes": [],
+      "primary_names": [],
+      "pitches": []
     }
   ],
   "midi_instruments": {

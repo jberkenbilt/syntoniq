@@ -841,7 +841,7 @@
           169
         ],
         "value": {
-          "raw": "\"19-EDO\"",
+          "raw": "\"20-EDO\"",
           "t": {
             "String": {
               "inner_span": [
@@ -4378,7 +4378,7 @@
           187
         ],
         "value": {
-          "raw": "define_manual_mapping(\n    mapping=\"m1\"\n    scale=\"19-EDO\"\n) <<\nq w e r t\n>>",
+          "raw": "define_manual_mapping(\n    mapping=\"m1\"\n    scale=\"20-EDO\"\n) <<\nq w e r t\n>>",
           "t": {
             "Directive": {
               "block": {
@@ -4582,7 +4582,7 @@
                       169
                     ],
                     "value": {
-                      "String": "19-EDO"
+                      "String": "20-EDO"
                     }
                   }
                 }
@@ -6581,7 +6581,7 @@
               161,
               169
             ],
-            "value": "scale '19-EDO' is not known"
+            "value": "scale '20-EDO' is not known"
           }
         },
         {

@@ -1,5 +1,4 @@
 syntoniq(version=1)
-define_generated_scale(scale="JI")
 use_scale(scale="JI")
 [p1.0] 1:A' f' A' I' 4:E'
 [p1.1] 2:~     p     4:A

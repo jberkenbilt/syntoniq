@@ -1,6 +1,6 @@
 syntoniq(version=1)
 ; Isomorphic mapping on default scale
-define_scale(scale="19-EDO") <<
+define_scale(scale="19-EDOb") <<
  ^0|19 c
  ^1|19 c#
  ^2|19 d%
@@ -25,7 +25,7 @@ define_scale(scale="19-EDO") <<
 >>
 define_manual_mapping(
     mapping="m1"
-    scale="19-EDO"
+    scale="19-EDOb"
     h_factor=1.5
     v_factor=^1|2
 ) <<
@@ -78,10 +78,10 @@ place_mapping(
     anchor_col=7
 )
 ; l3 exercises generated scales in a layout
-define_generated_scale(scale="JI")
+define_generated_scale(scale="ji")
 define_manual_mapping(
     mapping="m3"
-    scale="JI"
+    scale="ji"
 ) <<
 @A I E D F
 >>

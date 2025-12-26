@@ -337,7 +337,7 @@ impl<'s> MtsData<'s> {
             .into_iter()
             .filter(|(tuning, range)| {
                 // Filter out the default MIDI tuning
-                if tuning.scale_name == "default" && range.min_incl >= -60 && range.max_excl < 68 {
+                if tuning.scale_name == "12-EDO" && range.min_incl >= -60 && range.max_excl < 68 {
                     self.tuning_data
                         .insert(tuning, vec![TuningData::new(-60..68, 0)]);
                     false
