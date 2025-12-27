@@ -2,11 +2,13 @@ use crate::parsing::diagnostics::{Diagnostics, code};
 use crate::parsing::model::{Span, Spanned, Token};
 use crate::parsing::pass1;
 use crate::parsing::pass1::{Parser1Intermediate, number_intermediate};
-use crate::parsing::score::Generator;
+use crate::parsing::score::{Assignments, Generator};
 use crate::pitch::{Factor, Pitch};
 use num_rational::Ratio;
 use num_traits::ToPrimitive;
 use serde::Serialize;
+use std::borrow::Cow;
+use std::collections::HashMap;
 use std::mem;
 use winnow::combinator::{alt, opt, preceded};
 use winnow::token::take_while;
@@ -359,6 +361,26 @@ impl Generator for NoteGenerator {
         let r = parser.parse(&temp_diags, name);
         diags.merge_with_offset(temp_diags, name.span.start);
         r
+    }
+
+    fn assign_generated_notes(&self) -> Assignments {
+        let Some(divisions) = self.divisions.map(|x| x as i32) else {
+            return Default::default();
+        };
+        let mut primary_names = HashMap::new();
+        let mut notes = HashMap::new();
+        let num = *self.divided_interval.numer();
+        let den = *self.divided_interval.denom();
+        for step in 0..divisions {
+            let name: Cow<str> = Cow::Owned(format!("A{step}"));
+            let pitch = Pitch::new(vec![Factor::new(num, den, step, divisions).unwrap()]);
+            primary_names.insert(pitch.clone(), name.clone());
+            notes.insert(name, pitch);
+        }
+        Assignments {
+            notes,
+            primary_names,
+        }
     }
 }
 

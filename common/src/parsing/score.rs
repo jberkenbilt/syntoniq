@@ -25,7 +25,7 @@ use crate::parsing::{
     Options, PartNote, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, pass2,
     score_helpers,
 };
-use crate::pitch::{Factor, Pitch};
+use crate::pitch::Pitch;
 pub use directives::*;
 use to_static_derive::ToStatic;
 
@@ -138,10 +138,17 @@ pub struct Scale<'s> {
     pub pitches: Vec<Pitch>,
 }
 
+#[derive(Default)]
+pub struct Assignments {
+    pub notes: HashMap<Cow<'static, str>, Pitch>,
+    pub primary_names: HashMap<Pitch, Cow<'static, str>>,
+}
+
 /// Generate notes dynamically
 pub trait Generator {
     /// If the name represents a pitch, the pitch.
     fn get_note(&self, diags: &Diagnostics, name: &Spanned<&str>) -> Option<Pitch>;
+    fn assign_generated_notes(&self) -> Assignments;
 }
 
 pub struct ScaleBuilder<'s> {
@@ -1043,32 +1050,21 @@ define_generated_scale(scale="JI")
                 .map(Spanned::value)
                 .unwrap_or(Ratio::from_integer(2)),
         };
-        let mut primary_names = HashMap::new();
-        let mut notes = HashMap::new();
         let divided_interval = directive
             .divided_interval
             .map(Spanned::value)
             .unwrap_or(definition.cycle);
-        if let Some(divisions) = directive.divisions {
-            let steps = divisions.value as i32;
-            let num = *divided_interval.numer();
-            let den = *divided_interval.denom();
-            for step in 0..steps {
-                let name: Cow<str> = Cow::Owned(format!("A{step}"));
-                let pitch = Pitch::new(vec![Factor::new(num, den, step, steps).unwrap()]);
-                primary_names.insert(pitch.clone(), name.clone());
-                notes.insert(name, pitch);
-            }
-        }
         let generator: Option<Box<dyn Generator>> = Some(Box::new(NoteGenerator {
             divisions: directive.divisions.map(Spanned::value),
             divided_interval,
             tolerance: directive.tolerance.map(Spanned::value).unwrap_or_default(),
         }));
+
+        let assignments = generator.as_ref().unwrap().assign_generated_notes();
         let scale = ScaleBuilder {
             definition,
-            notes,
-            primary_names,
+            notes: assignments.notes,
+            primary_names: assignments.primary_names,
             generator,
         };
         self.add_scale(diags, scale);
