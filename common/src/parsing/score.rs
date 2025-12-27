@@ -217,9 +217,14 @@ impl<'s> ScaleBuilder<'s> {
             distinct_base_relative.insert(normalized_relative.clone());
             // Update the primary name map in case the only appearance of a pitch is not within
             // the cycle.
+            let new_name = self
+                .primary_names
+                .get(&orig_relative)
+                .unwrap_or(&name)
+                .clone();
             self.primary_names
                 .entry(normalized_relative.clone())
-                .or_insert(name.clone());
+                .or_insert(new_name);
             intermediate.push(Intermediate {
                 name,
                 orig_relative,
@@ -1046,8 +1051,8 @@ define_generated_scale(scale="JI")
             .unwrap_or(definition.cycle);
         if let Some(divisions) = directive.divisions {
             let steps = divisions.value as i32;
-            let num = *definition.cycle.numer();
-            let den = *definition.cycle.denom();
+            let num = *divided_interval.numer();
+            let den = *divided_interval.denom();
             for step in 0..steps {
                 let name: Cow<str> = Cow::Owned(format!("A{step}"));
                 let pitch = Pitch::new(vec![Factor::new(num, den, step, steps).unwrap()]);

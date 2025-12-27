@@ -1013,7 +1013,7 @@
               "scale_name": "gen3",
               "base_pitch": "240"
             },
-            "absolute_pitch": "240*3^1|12",
+            "absolute_pitch": "48*3^1|6*5^11|12",
             "cycle": 0,
             "velocity": 72,
             "end_time": [
@@ -1493,93 +1493,93 @@
         },
         {
           "name": "A1",
-          "base_relative": "3^1|12",
-          "normalized_relative": "3^1|12",
+          "base_relative": "1/5*3^1|6*5^11|12",
+          "normalized_relative": "1/5*3^1|6*5^11|12",
           "degree": 2
         },
         {
           "name": "A2",
-          "base_relative": "3^1|6",
-          "normalized_relative": "3^1|6",
+          "base_relative": "1/5*3^1|3*5^5|6",
+          "normalized_relative": "1/5*3^1|3*5^5|6",
           "degree": 3
         },
         {
           "name": "A3",
-          "base_relative": "3^1|4",
-          "normalized_relative": "3^1|4",
+          "base_relative": "1/5*3^1|2*5^3|4",
+          "normalized_relative": "1/5*3^1|2*5^3|4",
           "degree": 4
         },
         {
           "name": "A4",
-          "base_relative": "3^1|3",
-          "normalized_relative": "3^1|3",
+          "base_relative": "1/5*3^2|3*5^2|3",
+          "normalized_relative": "1/5*3^2|3*5^2|3",
           "degree": 5
+        },
+        {
+          "name": "A5",
+          "base_relative": "1/5*3^5|6*5^7|12",
+          "normalized_relative": "1/5*3^5|6*5^7|12",
+          "degree": 6
+        },
+        {
+          "name": "A6",
+          "base_relative": "3/5*5^1|2",
+          "normalized_relative": "3/5*5^1|2",
+          "degree": 7
+        },
+        {
+          "name": "A7",
+          "base_relative": "3/5*3^1|6*5^5|12",
+          "normalized_relative": "3/5*3^1|6*5^5|12",
+          "degree": 8
+        },
+        {
+          "name": "A8",
+          "base_relative": "3/5*3^1|3*5^1|3",
+          "normalized_relative": "3/5*3^1|3*5^1|3",
+          "degree": 9
         },
         {
           "name": "C",
           "base_relative": "3/5*3^1|3*5^1|3",
           "normalized_relative": "3/5*3^1|3*5^1|3",
-          "degree": 6
+          "degree": 9
         },
         {
           "name": "C!18",
           "base_relative": "3/5*3^1|3*5^1|3",
           "normalized_relative": "3/5*3^1|3*5^1|3",
-          "degree": 6
+          "degree": 9
         },
         {
           "name": "C!2/12",
           "base_relative": "^7|12",
           "normalized_relative": "^7|12",
-          "degree": 7
+          "degree": 10
         },
         {
           "name": "C!",
           "base_relative": "3/2",
           "normalized_relative": "3/2",
-          "degree": 8
-        },
-        {
-          "name": "A5",
-          "base_relative": "3^5|12",
-          "normalized_relative": "3^5|12",
-          "degree": 9
-        },
-        {
-          "name": "A6",
-          "base_relative": "3^1|2",
-          "normalized_relative": "3^1|2",
-          "degree": 10
-        },
-        {
-          "name": "A7",
-          "base_relative": "3^7|12",
-          "normalized_relative": "3^7|12",
           "degree": 11
         },
         {
-          "name": "A8",
-          "base_relative": "3^2|3",
-          "normalized_relative": "3^2|3",
+          "name": "A9",
+          "base_relative": "3/5*3^1|2*5^1|4",
+          "normalized_relative": "3/5*3^1|2*5^1|4",
           "degree": 12
         },
         {
-          "name": "A9",
-          "base_relative": "3^3|4",
-          "normalized_relative": "3^3|4",
+          "name": "A10",
+          "base_relative": "3/5*3^2|3*5^1|6",
+          "normalized_relative": "3/5*3^2|3*5^1|6",
           "degree": 13
         },
         {
-          "name": "A10",
-          "base_relative": "3^5|6",
-          "normalized_relative": "3^5|6",
-          "degree": 14
-        },
-        {
           "name": "A11",
-          "base_relative": "3^11|12",
-          "normalized_relative": "3^11|12",
-          "degree": 15
+          "base_relative": "3/5*3^5|6*5^1|12",
+          "normalized_relative": "3/5*3^5|6*5^1|12",
+          "degree": 14
         }
       ],
       "primary_names": [
@@ -1589,13 +1589,12 @@
         "A2",
         "A3",
         "A4",
-        "C",
-        "C!2/12",
-        "C!",
         "A5",
         "A6",
         "A7",
         "A8",
+        "C!2/12",
+        "C!",
         "A9",
         "A10",
         "A11"
@@ -1603,20 +1602,19 @@
       "pitches": [
         "1",
         "1/5*3^2|17*5^16|17",
-        "3^1|12",
-        "3^1|6",
-        "3^1|4",
-        "3^1|3",
+        "1/5*3^1|6*5^11|12",
+        "1/5*3^1|3*5^5|6",
+        "1/5*3^1|2*5^3|4",
+        "1/5*3^2|3*5^2|3",
+        "1/5*3^5|6*5^7|12",
+        "3/5*5^1|2",
+        "3/5*3^1|6*5^5|12",
         "3/5*3^1|3*5^1|3",
         "^7|12",
         "3/2",
-        "3^5|12",
-        "3^1|2",
-        "3^7|12",
-        "3^2|3",
-        "3^3|4",
-        "3^5|6",
-        "3^11|12"
+        "3/5*3^1|2*5^1|4",
+        "3/5*3^2|3*5^1|6",
+        "3/5*3^5|6*5^1|12"
       ]
     },
     {
