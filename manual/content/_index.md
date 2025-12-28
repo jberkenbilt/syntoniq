@@ -1,3 +1,3 @@
 +++
-redirect_to = "introduction"
+redirect_to = "start"
 +++

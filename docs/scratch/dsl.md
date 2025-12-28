@@ -1,6 +1,6 @@
 # TODO
 
-* Create syntax highlighting with `.sublime-syntax`, then transpile to `.tmLanguage` for Zola and syntax-highlighting.
+Create 53-EDO and 106-EDO generated scales in demo.stq with offsets like h1v9 so we can get all the notes of an octave onto the keyboard for finding pitches.
 
 ----------
 

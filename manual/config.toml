@@ -15,8 +15,8 @@ theme = "book"
 highlight_code = true
 
 extra_syntaxes_and_themes = ["syntaxes"]
-# Note: Zola comes with many built-in themes. 
-# "base16-ocean.dark" or "monokai" are safe bets for testing.
+# Note: Zola comes with many built-in themes.
+# "base16-ocean-dark" or "monokai" are safe bets for testing.
 #highlight_theme = "base16-ocean.dark"
 
 [extra]

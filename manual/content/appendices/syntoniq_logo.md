@@ -1,6 +1,6 @@
 +++
 title = "syntoniq_logo.md"
-weight = 320
+weight = 10
 sort_by = "weight"
 +++
 * Archimedean spiral, colors, Q, hexagons

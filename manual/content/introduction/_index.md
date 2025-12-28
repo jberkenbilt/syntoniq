@@ -1,244 +1,52 @@
 +++
-title = "Introduction"
-weight = 1
+title = "INTRODUCTION"
+weight = 20
 sort_by = "weight"
 +++
 
-```syntoniq
-syntoniq(version=1)
-tempo(bpm=60)
-
-; Define two 5-note scales with different pitches and partial overlap
-; in note names.
-define_scale(
-
-  ; comment and blank line here
-
-  scale="5-EDO"
-
-) <<
-  ^0|5 p
-  ; comment in scale definition
-  ^1|5 q
-
-  ; also blank lines
-
-  ^2|5 r
-  ^3|5 s
-  ^4|5 t
-     2 w  ; same pitch class as p but out of cycle
-  ^7|6 x  ; out of cycle, unique pitch class
->>
-define_scale(scale="5-JI" cycle_ratio=2) <<
-    1 p
-  5/4 q
-  4/3 r
-  3/2 u
-  7/4 v
->>
-
-[p1.0]  1:c d e' f,
-
-use_scale(scale="5-EDO" part="p1")
-
-[p1.0]  1:p'2 q,2:> r:^ s:~
-[p2.1]  1:c   d:.   e:> f:.^
-
-; Transpose to set the base pitch to the current pitch of `d`, then
-; switch to the 5-JI scale for p2.
-transpose(written="c" pitch_from="d" part="p2") use_scale(scale="5-JI" part="p2")
-
-mark(label="a")
-tempo(bpm=72 start_time=1 end_bpm=96 duration=2)
-[p1.0]  1:p q r s
-[p2.1]  1:p q r u
-[p3.0]  1:a e ~ 1/2:b% b#
-  [p3]  64@2< 96@3
-mark(label="b")
-
-; Exercise scale degree logic more thoroughly by having notes that
-; extend outside the cycle (beyond b#). This ensures notes are sorted
-; properly. These go up by fifths.
-define_scale(scale="fifths" cycle_ratio=2) <<
-   1    c cc
-   3/2  g
-   9/4  d  ;  9/8
-  27/8  a  ; 27/16
-  81/16 e  ; 81/64
->>
-define_scale(scale="fifths-3" cycle_ratio=3) <<
-   1    c! c!!
-   1/2  g!  ;  3/2  * cycle
-   9/4  d!
-  27/8  a!  ;  9/8  * cycle
-  81/16 e!  ; 27/16 * cycle
->>
-use_scale(scale="fifths" part="p1") set_base_pitch(absolute=264 part="p1")
-use_scale(scale="fifths-3" part="p2") set_base_pitch(absolute=264 part="p2")
-[p1.1] 2/5:c d, e,2 1/5:g:~ g 2/5:a,
-[p2.1] 2/5:c!' a! g!'2 e! d!'
-
-repeat(start="a" end="b")
-
-; Create a manual mapping that has all the notes from 5-EDO
-define_manual_mapping(mapping="m1" scale="5-EDO") <<
-t ~ w x p'
-p @q r s p,
->>
-define_isomorphic_mapping(mapping="m2" steps_h=2 steps_v=5)
-; Place the manual mapping in two distinct spots with different parameters.
-place_mapping(
-    layout="l1"
-    mapping="m1"
-    base_pitch=400
-    keyboard="k"
-    anchor_row=5
-    anchor_col=4
-    rows_above=3
-    rows_below=1
-    cols_left=2
-    cols_right=6
-)
-place_mapping(
-    layout="l1"
-    mapping="m1"
-    base_pitch=500
-    keyboard="k"
-    anchor_row=1
-    anchor_col=8
-    rows_above=1
-    rows_below=0
-    cols_left=1
-    cols_right=2
-)
-; Place the isomorphic mapping to cover the whole keyboard
-place_mapping(
-    layout="l1"
-    mapping="m2"
-    base_pitch=300
-    keyboard="k"
-    anchor_row=12
-    anchor_col=7
-)
-```
-
-
-
-# TODO
-
-- [Generated Scales](generated_scales.md)
-- [Keyboard](keyboard.md)
-- [Pitch Notation](pitch_notation.md)
-- Creating Layouts
-- [Examples](examples.md)
-
-# Design and Implementation Notes
-
-- Syntoniq Generator
-  - [Testing](testing.md)
-  - [Parser Infrastructure](parser_infrastructure.md)
-  - Pass 1 Tokenizer]
-  - Pass 2 Parser
-  - Pass 3 Output
-  - Timeline
-  - [Layout Engine](layout_engine.md)
-  - [Owned Layouts](owned_layouts.md)
-  - [Directives](directives.md)
-  - [Data Blocks](data_blocks.md)
-  - [Generators](generators.md)
-    - [CSound Generator](csound_generator.md)
-    - [MIDI Generators](midi_generators.md)
-- Keyboard Architecture
-   - Event System
-   - [Keyboard Core Components](keyboard_core_components.md)
-   - [Web UI](web_ui.md)
-   - [CSound Playback](csound_playback.md)
-   - [MIDI Playback](midi_playback.md)
-   - [Device Isolation](device_isolation.md)
-   - [Lauchpad Specifics](launchpad.md)
-   - [HexBoard Specifics](hexboard.md)
-
-# Appendices
-
-- [Syntoniq Name](syntoniq_name.md)
-- [Syntoniq Logo](syntoniq_logo.md)
-- [Roadmap](roadmap.md)
-
-
-# Syntoniq
-
+<div style="padding: 2ex;">
+<center>
 <img src="/syntoniq-logo.svg" alt="Syntoniq Logo" style="height: 10em; vertical-align: middle;">
+</center>
+</div>
 
-```rs
-if let Some(potato) = salad && "a".is_empty() {
-    // TODO
-}
-```
+**TODO: after the docs are written, include copious xref links to other sections of the doc.**
 
-```syntoniq
-; This is a comment
-nothing
-sample_directive (x = "potato \"salad\"" y=3 
-z=5/2 w=*^2|3*2/3*^-5|6  )
-   [potato.1]  asdf
-   [potato.2]   1:as3/df':~ ; comment
-[salad] 12@1/2> ; potato 
+**TODO: include video links**
 
-mark(label="a")
-tempo(bpm=72 start_time=1 end_bpm=96 duration=2)
-[p1.0]  1:p q r s
-[p2.1]  1:p q r u
-[p3.0]  1:a e ~ 1/2:b% b#
-  [p3]  64@2< 96@3
-mark(label="b")
+<!-- This opening paragraph also appears in ../start/_index.md -->
+This is the manual for [Syntoniq](https://github.com/jberkenbilt/syntoniq). Syntoniq converts musical notation in text files to CSound or MIDI output. It was designed from the beginning to represent music in any tuning system, which makes it ideal for use with microtonal music. Syntoniq can generate MIDI using MTS (Midi Tuning System) with custom tunings and also MPE (MIDI Polyphonic Expression) with pitch-bend, specifically designed to be friendly to import into a Digital Audio Workstation for further refinement.
 
-define_scale(scale="5-JI" cycle_ratio=2) <<
-    1 p | 5/4 q
-  4/3 r
-  3/2 u
-  7/4 v
->>
+Syntoniq consists of two components:
+* A *music creation language*, which allows you to "code" score-like Music files and generate musical output suitable for final use or further manipulation in other tools
+* A *keyboard* that allows you to program a very small number of keyboards with arbitrary layouts and scales for experimenting with different tuning systems
 
-define_manual_mapping(mapping="m1" scale="5-EDO") <<
-t ~ w x p'
-p @q r s p,
->>
+**Syntoniq's main features include**
+* Score-like layout of musical input text files that give you a dedicated line for each voice in a part, giving you full control of how notes transition. These notes also map to MIDI channels in a way that allows generated MIDI to be more editable.
+* The ability to define arbitrary scales using flexible note names (including enharmonics) and lossless pitch representation. You can specify a pitch as a product of rational numbers and rational numbers raised to rational powers, which makes them *lossless* (no accumulating rounding errors). This makes it possible to play with Just Intonation, equal divisions of any interval, or to combine them. Syntoniq does not support Scala or other tuning files. The intention is to create scales that include *semantically meaningful* pitch definitions.
+* Three built-in EDO (equal division of the octave) scales: 12-EDO, 19-EDO, and 31-EDO, that use "conventional" letter note names (`a` through `g` with "regular" sharps and flats). Adding many built-in scales is a *non-goal* of Syntoniq. This is about creating and exploring scales. Other tools allow you to use large libraries of existing scales.
+* A *generated scale* concept that allows you to construct note names by chaining intervals. This is designed to make it easier to work with pure Just Intonation or overlays of Just Intonation on scales based on divided intervals. This is an advanced feature but is also arguably the most exciting and versatile feature.
+* Generalized transposition. You can define a scale and then create a *tuning* with the scale by specifying a base pitch. You can specify an absolute base pitch, or you can transpose by multiplying a relative pitch factor with the base pitch or by assigning the pitch of one note to another note. This makes it possible to pivot from one tuning to another around a pivot note and to reverse any transposition. Flexible transposition and scale creation are available in the Syntoniq language and in the keyboard.
+* Flexible layout engine. The keyboard allows you to create isomorphic layouts, where you specify the number of scale steps in each of two directions, or manual layouts, where you assign notes explicitly to grid locations. A layout can include multiple mappings and can combine manual and isomorphic mappings. Layouts can be "shifted" as well as transposed, meaning you can effectively slide the keys over. Shifting works with isomorphic mappings, allowing you to extend beyond what fits on the keys. It also works with manual mappings, where the entire mapped region is "tiled" horizontally and vertically with optional pitch shifting. Being able to create complex and combined layouts with shift and transpose allows you do things like create Just Intonation tunings and transpose them to different keys.
 
-```
+**You might like using Syntoniq if...**
+* You like creating music in [LilyPond](https://lilypond.org/). Like LilyPond, Syntoniq scores are plain text files. The `syntoniq` command-line tool uses Syntoniq files to generate a [CSound](https://csound.com) file, a standard MIDI file (either using MPE or MTS -- more details later in the docs), or a JSON file containing details about the timeline of musical events.
+* You like creating music with [CSound](https://csound.com). Some ideas from Syntoniq are similar to CSound, and Syntoniq can generate CSound files or add timeline events to existing CSound files.
+* You are interested in microtonal music. Syntoniq represents pitches using a *lossless notation* that represents pitches *exactly* and with *semantic meaning*. It does not use cents. Syntoniq allows you to create arbitrary scales and name the notes however you want. It also has its own native note naming convention that constructs pitches from *just intonation ratios* and/or *even interval division steps*. It breaks free of the baggage of traditional 12-tone constructs.
+* You are primarily interested in arranging, composition, transcription, or study and are willing to use other tools to create a finished product. By design, Syntoniq doesn't have all the things you need to create finished musical works. It is concerned with pitch, rhythm, and dynamics. Syntoniq can create a MIDI file that's ready to import into any microtonal-capable DAW (Digital Audio Workstation), and it can create CSound events that you can use with the provided (minimal) orchestra file or combine with your own.
+* You are comfortable working with command-line tools like compilers or content generators. The `syntoniq` command-line tool operates like a compiler: it validates your input, provides *clear, detailed error messages* if there are mistakes, and then generates output.
 
-{{ include(path="introduction/hexboard.html") }}
+**You might want to look elsewhere if...**
+* You are looking for a single tool to bring you from idea to finished product. Syntoniq is not intended to do that, instead focusing on the hardest part (notating pitches for microtonal music), and leaving final production details to tools like the DAW. Syntoniq aims to supplement other tools, not to replace them.
+* You are looking for a graphical interface for composing or arranging. Syntoniq doesn't have a GUI. You have to edit text files in an editor and "compile" them into MIDI or CSound.
+* You want to use Scala or TUN files. Syntoniq has its own pitch notation and doesn't currently have support for Scala or TUN files. A future version of Syntoniq might *generate* scala or TUN files, but it is not likely to read them for the simple reason that Syntoniq's pitch notation aims to *improve upon* Scala and TUN files by providing semantic information about how a pitch is constructed and representing pitches *exactly* using a lossless notation (no floating point rounding errors).
+* You are primarily interested in live performance or live coding. Syntoniq's keyboard component can be used for live performance, but it's not what it's made for, and it supports a very small number of devices.
+* You want a printed score. Syntoniq does not generate printed scores. The Syntoniq syntax is designed to look score-like, but it doesn't substitute for a real printed score. Syntoniq has no opinion about how printed music should be represented, and it allows you to work with scales or arbitrary pitches for which there is no standard notation.
 
-{{ include(path="introduction/hexboard2.html") }}
+**You might use Syntoniq to...**
+* Transcribe microtonal music for study. You can listen to passages of microtonal music, pick out notes using the keyboard, and notate them in a score file.
+* Experiment with harmonies in different tuning systems. You can define whatever scale you want (You want 22 divisions of the interval 13/8? Syntoniq can do it!), create one or more keyboard layouts, and poke around. Then create scores using notes from that system.
+* Play with Just Intonation. Using pure Just Intonation usually requires calculating lots of ratios and making lots of decisions about exactly which note to use. Are you looking for a perfect fifth from a particular scale degree? Do you want chords to sound perfectly still, or are you intentionally picking a wolf interval or out-of-tune note for effect? Syntoniq's generated note system frees you from a lot of explicit calculation of ratios and makes it much easier to iterate. You still have to think about intervals and ratios as this is an inherent part of Just Intonation. Generated scales significantly reduce the friction of doing so.
+* Use Syntoniq as a proxy for playing live music. If you are better as a composer or arranger than as an instrumentalist, or if you don't have an instrument that can produce the notes in your head, Syntoniq can help you produce a MIDI file that you can load into a workstation and edit. You can think of Syntoniq as a non-real-time musical instrument. The same applies if your workflow is CSound-based. Syntoniq frees you from calculating frequencies without taking away your freedom to use CSound's full capabilities to create sounds.
 
-{{ include(path="introduction/launchpad.html") }}
-
-{{ include(path="introduction/launchpad2.html") }}
-
-TODO:
-* Include LOGO using an img tag. Will need build logic to populate the src/assets directory.
-* To get a keyboard HTML file, get the keyboard in the right state, then run `curl http://localhost:8440/board` and save to a file. Make sure this is in manual/README.md along with populating assets.
-* Feature Summary; mention videos with internal link
-* Build and installation
-* Link to other parts of the manual
-* Show a sample input file with audio
-* go through docs/scratch/ and make sure it's all here
-
-This is the manual for [Syntoniq](https://github.com/jberkenbilt/syntoniq). Syntoniq converts musical notation in text files to CSound or MIDI output. Its purpose is to allow you to "code" score-like Music files and generate musical output suitable for final use or further manipulation in other tools.
-
-Syntoniq's main feature is first-class support of arbitrary scales and tunings. Pitches are represented with a lossless notation. A score allows creation of scales and tunings dynamically with an array of transposition options available.
-
-## What does it do?
-
-* You work with a text file containing musical notation. Syntoniq "compiles" it into a musical timeline and converts it to one more or output formats.
-* You generate one of several outputs:
-  * A [CSound](https://csound.com) file
-  * A Standard MIDI file
-  * A JSON dump of the timeline
-
-## What does it not do?
-
-In the first iteration, Syntoniq does not create printed scores. It's possible that a future version of Syntoniq may generate MusicXML or LilyPond notation, depending on interest and time.
-
-## Who is it for?
-
-If you like creating audio with (LilyPond)[https://lilypond.org/] and are not trying to create printed scores, or you create music directly with CSound and are experimenting with microtonal music, you may like using Syntoniq. You can think of it is as a programmer's musical notation system. It's higher-level and more tightly focused than CSound. Syntoniq can be used to create a finished musical product, but it's designed to be more of a helper. Syntoniq creates note events CSound files that you can drop into your own template, thus freeing you from computing frequencies and so forth. The goal for MIDI output is that you should be able to import Syntoniq's MIDI files into whatever MIDI workflow you have and do additional fine-tuning.
+The rest of this manual describes Syntoniq's features in depth. It contains links to video files and sample audio, reference material, tutorials, and blog-style articles.

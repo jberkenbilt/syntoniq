@@ -1,6 +1,6 @@
 +++
 title = "pitch_notation.md"
-weight = 290
+weight = 10
 sort_by = "weight"
 +++
 # Pitch Notation

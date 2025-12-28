@@ -26,3 +26,79 @@ Date:   Fri Mar 14 12:12:57 2025 -0700
 ```
 
 TODO: after cleaning commits, make a vendor branch off the book theme.
+
+```
++++
+title = "??TITLE??"
+weight = 0
+sort_by = "weight"
++++
+```
+
+Note ./ordering for tweaking section order
+* git commit
+* Run `./ordering --current >| /tmp/a`
+* Edit /tmp/a to put the sections in order
+* Run `./ordering --apply /tmp/a`
+
+----------
+
+TODO:
+* Include LOGO using an img tag. Will need build logic to populate the src/assets directory.
+* To get a keyboard HTML file, get the keyboard in the right state, then run `curl http://localhost:8440/board` and save to a file. Make sure this is in manual/README.md along with populating assets.
+* Feature Summary; mention videos with internal link
+* Build and installation
+* Link to other parts of the manual
+* Show a sample input file with audio
+* go through docs/scratch/ and make sure it's all here
+* Embed KeTeX rather than getting from a CDN
+
+# Doc outline
+
+For CONTRIBUTING.md, not the manual:
+
+* Various sections on how Syntoniq is implemented including pub/sub architecture, MIDI port/channel allocation strategies, CSound polyphony logic, others
+* Deeper dives on Syntoniq's architecture, written as blog-style articles; many will become blog posts (like my particular use of winnow, `ToStatic` pattern for keyboard layout reload, bindgen for csound library)
+* Testing -- how to run the automated tests, coverage analysis, how to listen to generated audio from the test suite, how to compare actual vs. expected MIDI files for both MTS and MPE
+* Managing the docs: including HTML keyboard dumps, generated content, etc.
+
+
+# TODO
+
+- [Generated Scales](generated_scales.md)
+- [Keyboard](keyboard.md)
+- [Pitch Notation](pitch_notation.md)
+- Creating Layouts
+- [Examples](examples.md)
+
+# Design and Implementation Notes
+
+- Syntoniq Generator
+  - [Testing](testing.md)
+  - [Parser Infrastructure](parser_infrastructure.md)
+  - Pass 1 Tokenizer]
+  - Pass 2 Parser
+  - Pass 3 Output
+  - Timeline
+  - [Layout Engine](layout_engine.md)
+  - [Owned Layouts](owned_layouts.md)
+  - [Directives](directives.md)
+  - [Data Blocks](data_blocks.md)
+  - [Generators](generators.md)
+    - [CSound Generator](csound_generator.md)
+    - [MIDI Generators](midi_generators.md)
+- Keyboard Architecture
+   - Event System
+   - [Keyboard Core Components](keyboard_core_components.md)
+   - [Web UI](web_ui.md)
+   - [CSound Playback](csound_playback.md)
+   - [MIDI Playback](midi_playback.md)
+   - [Device Isolation](device_isolation.md)
+   - [Lauchpad Specifics](launchpad.md)
+   - [HexBoard Specifics](hexboard.md)
+
+# Appendices
+
+- [Syntoniq Name](syntoniq_name.md)
+- [Syntoniq Logo](syntoniq_logo.md)
+- [Roadmap](roadmap.md)

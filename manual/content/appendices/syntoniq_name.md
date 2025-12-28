@@ -1,6 +1,6 @@
 +++
 title = "syntoniq_name.md"
-weight = 330
+weight = 20
 sort_by = "weight"
 +++
 * syntonic comma

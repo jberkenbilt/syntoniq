@@ -1,0 +1,132 @@
+#!/usr/bin/env python3
+import os
+import sys
+import argparse
+import re
+
+whoami = os.path.basename(sys.argv[0])
+whereami = os.path.dirname(os.path.realpath(__file__))
+TOP = os.path.join(whereami, 'content')
+
+
+class _Main:
+    def main(self, args=sys.argv[1:], prog=whoami):
+        options = self.parse_args(args, prog)
+        self.top(options)
+
+    def parse_args(self, args, prog):
+        parser = argparse.ArgumentParser(
+            prog=prog,
+            description='help with section ordering',
+        )
+        mxg = parser.add_mutually_exclusive_group(required=True)
+        mxg.add_argument('--current',
+                         help='output current ordering',
+                         action='store_true', default=False)
+        mxg.add_argument('--apply',
+                         help='apply new ordering')
+
+        return parser.parse_args(args)
+
+    @staticmethod
+    def get_weight(filename):
+        with open(filename, 'r') as f:
+            for line in f.readlines():
+                m = re.search(r'^\s*weight\s*=\s*(\d+)', line)
+                if m:
+                    return int(m.group(1))
+        exit(f'no weight for {filename}')
+
+    @staticmethod
+    def get_pages(d):
+        files = os.listdir(d)
+        weights = []
+        weight = 0
+        for base in files:
+            full = os.path.join(d, base)
+            if not (os.path.isfile(full) and base.endswith('.md')):
+                continue
+            w = _Main.get_weight(full)
+            if base == '_index.md':
+                weight = w
+            else:
+                weights.append((w, base))
+        weights.sort()
+        weights = list([x[1] for x in weights])
+        return (weight, weights)
+
+    @staticmethod
+    def get_order():
+        subdirs = os.listdir(TOP)
+        order = []
+        for base in subdirs:
+            full = os.path.join(TOP, base)
+            if os.path.isdir(full):
+                (weight, weights) = _Main.get_pages(full)
+                order.append((weight, base, weights))
+        order.sort()
+        order = list([(x[1], x[2]) for x in order])
+        return order
+
+    @staticmethod
+    def set_weight(section, page, weight):
+        full = os.path.join(TOP, section, page)
+        old = _Main.get_weight(full)
+        if old == weight:
+            return
+        print(f'updating {section}/{page}')
+        with open(full, 'r') as f:
+            lines = f.readlines()
+        state = 0
+        out = []
+        for line in lines:
+            if line.strip() == '+++':
+                state += 1
+            if state == 1 and re.search(r'^weight\s*=\s*\d+', line.strip()):
+                line = f'weight = {weight}\n'
+            out.append(line)
+        with open(full, 'w') as f:
+            for line in out:
+                f.write(line)
+
+    @staticmethod
+    def apply_order(order):
+        for (weight, section, pages) in order:
+            _Main.set_weight(section, '_index.md', weight)
+            for (weight, page) in pages:
+                _Main.set_weight(section, page, weight)
+
+    def top(self, options):
+        if options.current:
+            order = self.get_order()
+            for (section, pages) in order:
+                print(section)
+                for page in pages:
+                    print(f'  {page}')
+        else:
+            with open(options.apply, 'r') as f:
+                lines = f.readlines()
+            cur_section = 10
+            cur_page = None
+            order = []
+            section = None
+            for line in lines:
+                line = line.rstrip()
+                if line.startswith(' '):
+                    if cur_page is None:
+                        exit('{line}: page without section')
+                    section.append((cur_page, line.strip()))
+                    cur_page += 10
+                else:
+                    section = []
+                    cur_page = 10
+                    order.append((cur_section, line.strip(), section))
+                    cur_section += 10
+            self.apply_order(order)
+
+
+if __name__ == '__main__':
+    try:
+        _Main().main()
+    except KeyboardInterrupt:
+        exit(130)
