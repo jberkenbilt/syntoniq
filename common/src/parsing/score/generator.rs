@@ -372,8 +372,6 @@ mod tests {
 
     #[test]
     fn test_generator() {
-        // TODO: test when divided_interval != cycle
-
         // Error conditions are tested through parser tests.
         let g = NoteGenerator {
             divisions: None,

@@ -8,6 +8,13 @@ TODO:
 * common/parsing-tests/refresh
 * syntoniq/test-data/actual/
 * how to play test data
+  * csound a.csd
+  * timidity a.mts.midi
+  * for mpe.midi:
+    * start surge XT
+    * use `aplaymidi -l` to find suitable port
+    * `aplaymidi --port 'Midi Through' file.mpe.midi`
+
 * test coverage requirements including rationale for 100% in some files
 
 100% coverage:

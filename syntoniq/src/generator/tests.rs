@@ -222,7 +222,7 @@ fn test_options() -> anyhow::Result<()> {
             score: orig_file("stq").into(),
             json: Some(outfile("json")),
             midi_mts: Some(outfile("mts.midi")),
-            midi_mpe: None, // TODO
+            midi_mpe: Some(outfile("mpe.midi")),
             csound: Some(outfile("csd")),
             csound_template: None,
             parse_options,
@@ -230,7 +230,7 @@ fn test_options() -> anyhow::Result<()> {
         if let Err(e) = generator::run(options) {
             errors.push(format!("{base}: {e}"));
         }
-        for suf in ["json", "mts.midi", "csd"] {
+        for suf in ["json", "mts.midi", "mpe.midi", "csd"] {
             let actual = fs::read(outfile(suf))?;
             let exp = fs::read(exp_file(suf)).unwrap_or_default();
             if actual == exp {

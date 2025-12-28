@@ -163,7 +163,8 @@ impl Pitch {
         // we have positive bases.
 
         //TODO: This code doesn't really handle overflow properly. If it happens in practice,
-        // consider switching to bigint.
+        // consider switching to bigint (easy with performance penalty), u64 or u128, or handling
+        // gracefully.
 
         // Split (a/b)^x to a^x * b^(-x)
         let factors = {
