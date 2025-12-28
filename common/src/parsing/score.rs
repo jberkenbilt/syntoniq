@@ -10,9 +10,11 @@ use std::borrow::Cow;
 use std::cell::RefCell;
 use std::collections::Bound::Excluded;
 use std::collections::{BTreeMap, HashMap, HashSet};
+use std::fmt::{Debug, Formatter};
 use std::sync::atomic::AtomicI32;
 use std::sync::{Arc, LazyLock, RwLock};
 use std::{cmp, mem};
+
 mod directives;
 mod generator;
 use crate::parsing::layout::{
@@ -143,6 +145,25 @@ pub struct Assignments {
     pub notes: HashMap<Cow<'static, str>, Pitch>,
     pub primary_names: HashMap<Pitch, Cow<'static, str>>,
 }
+impl Debug for Assignments {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        let mut tuples: Vec<_> = self
+            .notes
+            .iter()
+            .map(|(name, pitch)| (pitch, name))
+            .collect();
+        tuples.sort();
+        for (pitch, name) in tuples {
+            writeln!(f, "{name} -> {pitch}")?;
+        }
+        let mut tuples: Vec<_> = self.primary_names.iter().collect();
+        tuples.sort();
+        for (pitch, name) in tuples {
+            writeln!(f, "{pitch} <- {name}")?;
+        }
+        write!(f, "---")
+    }
+}
 
 /// Generate notes dynamically
 pub trait Generator {
@@ -216,6 +237,24 @@ impl<'s> ScaleBuilder<'s> {
             cycle_offset: i32,
         }
 
+        // Up to this point, for generated scales, the scale will only have notes the user actually
+        // used in the score. If this scale divides an interval, we should fill in useful names for
+        // the rest of the notes. This provides more useful data about the scale in the generated
+        // JSON file, and for the keyboard program, it allows a more semantically meaningful note
+        // name to be displayed. The result of this code is that note names explicitly used by users
+        // will always take precedence over computed note names, but every pitch in the scale will
+        // have a name, even if the pitch never appeared in the score.
+        let assignments = self
+            .generator
+            .map(|g| g.assign_generated_notes())
+            .unwrap_or_default();
+        for (name, pitch) in assignments.notes {
+            self.notes.insert(name, pitch);
+        }
+        for (pitch, name) in assignments.primary_names.into_iter() {
+            self.primary_names.entry(pitch).or_insert(name);
+        }
+
         let mut intermediate: Vec<Intermediate> = Vec::new();
         let mut distinct_base_relative = HashSet::new();
         for (name, orig_relative) in self.notes {
@@ -254,7 +293,7 @@ impl<'s> ScaleBuilder<'s> {
             .collect();
         // Now we can compute the scale degree of each note
         let degrees_per_cycle = pitches.len() as i32;
-        let notes = intermediate
+        let notes: BTreeMap<_, _> = intermediate
             .into_iter()
             .map(|i| {
                 let degree = degrees[&i.normalized_relative];
@@ -266,6 +305,7 @@ impl<'s> ScaleBuilder<'s> {
                 (i.name, Arc::new(s))
             })
             .collect();
+
         Scale {
             definition: self.definition,
             notes,
@@ -1059,12 +1099,10 @@ define_generated_scale(scale="JI")
             divided_interval,
             tolerance: directive.tolerance.map(Spanned::value).unwrap_or_default(),
         }));
-
-        let assignments = generator.as_ref().unwrap().assign_generated_notes();
         let scale = ScaleBuilder {
             definition,
-            notes: assignments.notes,
-            primary_names: assignments.primary_names,
+            notes: Default::default(),
+            primary_names: Default::default(),
             generator,
         };
         self.add_scale(diags, scale);

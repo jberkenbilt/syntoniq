@@ -9,6 +9,7 @@ use num_traits::ToPrimitive;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::HashMap;
+use std::collections::hash_map::Entry;
 use std::mem;
 use winnow::combinator::{alt, opt, preceded};
 use winnow::token::take_while;
@@ -350,6 +351,116 @@ impl<'a> NoteParser<'a> {
     }
 }
 
+/// Candidate represents a note's closeness to a step.
+struct Candidate {
+    closest_step: i32,
+    delta: f64,
+    note_path: NotePath,
+}
+impl Candidate {
+    /// Call as new_candidate.closer(old_candidate).
+    fn closer_than(&self, other: &Candidate) -> bool {
+        // If two pitches are the same distance from their closest step, consider the other one
+        // closer. This way, earlier, "simpler" notes take precedence when this code is called the
+        // way the note assignment code calls it.
+        self.delta.abs() < other.delta.abs()
+    }
+
+    fn step_letter(step: i32) -> char {
+        // Step n represents n/n-1, which is the uppercase letter in position n, e.g. 3 -> 3/2 -> C.
+        // Step -n represents the reciprocal, e.g. -3 -> 2/3 -> c.
+        if step > 0 {
+            char::from_u32((64 + step) as u32).unwrap()
+        } else {
+            char::from_u32((96 - step) as u32).unwrap()
+        }
+    }
+
+    fn name(&self) -> Cow<'static, str> {
+        // Prepend `B` (2/1) for each octave, then append the letter for each step.
+        let mut s = String::new();
+        for _ in 0..self.note_path.octaves {
+            s.push('B');
+        }
+        s.push(Self::step_letter(self.note_path.step1));
+        if self.note_path.step2 != 0 {
+            s.push(Self::step_letter(self.note_path.step2));
+        }
+        // Since we only consider candidates that are closest to a step, it is never necessary to
+        // add `%` or `#` to the note name. This serves as a visual indicator that the match is
+        // slightly farther away from the note. It seldom appears because we can get quite close
+        // with two steps to most pitches.
+        if self.delta > 0.2 {
+            s.push('%');
+        } else if self.delta < -0.2 {
+            s.push('#');
+        }
+        Cow::Owned(s)
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Hash)]
+/// When assigning note names, we limit ourselves to notes with at most two intervals other than
+/// `B` (ratio 2). This is an efficient intermediate representation. Logic is divided between
+/// NotePath and Candidate.
+struct NotePath {
+    octaves: i32,
+    step1: i32,
+    step2: i32,
+}
+impl NotePath {
+    fn candidate(
+        octaves: i32,
+        step1: i32,
+        step2: i32,
+        divided_interval: f64,
+        divisions: i32,
+    ) -> Option<Candidate> {
+        let note_path = NotePath {
+            octaves,
+            step1,
+            step2,
+        };
+        note_path.into_candidate(divided_interval, divisions)
+    }
+
+    fn step_to_ratio(step: i32) -> Ratio<i32> {
+        if step > 0 {
+            // 5 -> 5/4
+            Ratio::new(step, step - 1)
+        } else if step < 0 {
+            // -5 -> 4/5
+            Ratio::new(-step - 1, -step)
+        } else {
+            Ratio::from_integer(1)
+        }
+    }
+
+    fn into_candidate(self, divided_interval: f64, divisions: i32) -> Option<Candidate> {
+        // Find which step the ratio is closest to.
+        let step1 = Self::step_to_ratio(self.step1);
+        let step2 = Self::step_to_ratio(self.step2);
+        let val = (step1 * step2).to_f64().unwrap() * 2i32.pow(self.octaves as u32) as f64;
+        if !(1.0..divided_interval).contains(&val) {
+            // If this falls outside the interval, discard it regardless of how close it is.
+            return None;
+        }
+        let steps = val.log(divided_interval) * divisions as f64;
+        let closest_step = steps.round() as i32;
+        let delta = steps - steps.round();
+        if delta.abs() > 0.4 {
+            // We could use >= 0.5 here, but we require the candidate to be slightly closer to the
+            // target to create less auditory ambiguity.
+            return None;
+        }
+        Some(Candidate {
+            closest_step,
+            delta,
+            note_path: self,
+        })
+    }
+}
+
 impl Generator for NoteGenerator {
     fn get_note(&self, diags: &Diagnostics, name: &Spanned<&str>) -> Option<Pitch> {
         let parser = NoteParser {
@@ -364,18 +475,132 @@ impl Generator for NoteGenerator {
     }
 
     fn assign_generated_notes(&self) -> Assignments {
+        // This code tries to assign the "simplest" and "closest" generated note to each degree of a
+        // divided scale. In practice, it will not always pick what a user would pick; e.g., in
+        // 17-EDO, this picks `Dx` for the sixth scale degree, while a user would probably call it
+        // `E%`, but it produces something that tells a reader who is used to the generated note
+        // system something about where the pitch is. The main place someone would see these would
+        // be in an isomorphic keyboard layout based on a generated scale, but they can also be
+        // hints. An experienced user might see the sequence `GU`, `Dx` and recognize that `E` (5/4)
+        // is going to fall somewhere between `GU` and `Dx`. `GU` is a little above 7/6, and `Dx` is
+        // a little below 4/3. Other cues, such as color and auditory feedback will contribute. See
+        // comments in line.
         let Some(divisions) = self.divisions.map(|x| x as i32) else {
+            // If this is pure JI, we have infinite scale degrees, so we just assign notes that the
+            // user actually uses.
             return Default::default();
         };
+        // Generate two lists of candidates in priority order. `candidates1` contains single-letter
+        // note names. `candidates2` contains double-letter note names. We want to try all
+        // single-letter note names first and favor them even over double-letter names that might be
+        // closer. For example, if the scale has something a tiny bit sharper than `C`, we'd rather
+        // just see `C` than something like `Cy`, even if `Cy` is a little bit closer. On the other
+        // hand, if `Cy` is closest to some step but `Cx` is even closer to the same step, we'd
+        // rather use `Cx`. Initialize `candidates1` with the candidate representing `A`, which will
+        // always be a perfect match for the root pitch.
+        let mut candidates1: Vec<Candidate> = vec![Candidate {
+            closest_step: 0,
+            delta: 0.0,
+            note_path: NotePath {
+                octaves: 0,
+                step1: 1,
+                step2: 0,
+            },
+        }];
+        let mut candidates2: Vec<Candidate> = Default::default();
+        let divided_interval_f64 = self.divided_interval.to_f64().unwrap();
+        let max_octaves = divided_interval_f64.log2().ceil() as i32;
+        // Consider larger intervals (lower letters) first...
+        for step1 in 2..=25 {
+            // ...and consider the "up" direction before the "down" direction.
+            for neg1 in [false, true] {
+                // Never consider `b` (which drops a whole octave). Also ignore `d` and `c` since
+                // `Bd` = `C` and `Bc` = `D`.
+                if neg1 && step1 < 5 {
+                    continue;
+                }
+                // The loops so far give us `B`, `C`, `D`, `E`, `e`, `F`, `f`, `G`, `g`, etc.
+                // Consider as many leading `B` notes as necessary to get us within the interval
+                // range. This allows us to find things like `Bi` as a single-letter note for 8/9
+                // and also allows us to find names for notes that are farther than an octave away
+                // from the root on a scale that divides a larger interval. For example, `BE` would
+                // be step 16 in 19-ED3, which is very close to just extending 12-EDO to an octave
+                // and a fifth.
+                for octaves in 0..=max_octaves {
+                    if let Some(candidate) = NotePath::candidate(
+                        octaves,
+                        if neg1 { -step1 } else { step1 },
+                        0,
+                        divided_interval_f64,
+                        divisions,
+                    ) {
+                        candidates1.push(candidate);
+                    };
+                    // Consider all the second step refinements of the single-letter notes.
+                    if step1 == 2 {
+                        // We don't need to consider two-latter cases starting with `B` -- those are
+                        // automatically handled as single-letter cases since prepending `B` is free.
+                        continue;
+                    }
+                    // Allow step 2 to be the same size or smaller than step 1. Never consider a
+                    // step 2 of `b` (meaningless -- will always drop below the interval) or `c` or
+                    // `d` since we'd prefer to go up by `C` than down by `d` or up by `D` than down
+                    // by `c`. Notes like `II` (81/64) are valid, but any note where the second step
+                    // is larger than the first would be picked up in the other direction. In other
+                    // words, we don't need to look at `eC` -- we will find `Ce` instead.
+                    for step2 in std::cmp::max(step1, 5)..=25 {
+                        for neg2 in [false, true] {
+                            if let Some(candidate) = NotePath::candidate(
+                                octaves,
+                                if neg1 { -step1 } else { step1 },
+                                if neg2 { -step2 } else { step2 },
+                                divided_interval_f64,
+                                divisions,
+                            ) {
+                                candidates2.push(candidate);
+                            };
+                        }
+                    }
+                }
+            }
+        }
+        // After we've identified all the candidates, iterate through them, tracking the best pitch
+        // we've seen so far. See docs on `Candidate`.
+        let mut winners: HashMap<i32, Candidate> = Default::default();
+        for candidate in candidates1.into_iter().chain(candidates2) {
+            match winners.entry(candidate.closest_step) {
+                Entry::Occupied(mut e) => {
+                    let old = e.get();
+                    // If a single-letter note's closest step is this step, don't override that
+                    // choice with a double-letter note. For example, if `C`'s closest step and
+                    // `Cy`'s closest step are the same, we'd rather see `C` than `Cy`. Otherwise,
+                    // replace notes with better candidates.
+                    if (candidate.note_path.step2 == 0 || old.note_path.step2 != 0)
+                        && candidate.closer_than(old)
+                    {
+                        e.insert(candidate);
+                    }
+                }
+                Entry::Vacant(e) => {
+                    e.insert(candidate);
+                }
+            }
+        }
+
+        // Generate notes and primary names based on the winning candidates.
         let mut primary_names = HashMap::new();
         let mut notes = HashMap::new();
         let num = *self.divided_interval.numer();
         let den = *self.divided_interval.denom();
         for step in 0..divisions {
-            let name: Cow<str> = Cow::Owned(format!("A{step}"));
+            let mut name: Cow<str> = Cow::Owned(format!("A{step}"));
             let pitch = Pitch::new(vec![Factor::new(num, den, step, divisions).unwrap()]);
-            primary_names.insert(pitch.clone(), name.clone());
-            notes.insert(name, pitch);
+            notes.insert(name.clone(), pitch.clone());
+            if let Some(candidate) = winners.get(&step) {
+                name = candidate.name();
+                notes.insert(name.clone(), pitch.clone());
+            }
+            primary_names.insert(pitch, name);
         }
         Assignments {
             notes,
@@ -473,5 +698,37 @@ mod tests {
         assert_eq!(pitch_of(&g, "D!7"), Pitch::must_parse("3/2^5|7"));
 
         assert!(!diags.has_errors());
+    }
+
+    #[test]
+    fn test_assign_notes() {
+        // This is mostly tested through test17-generated.stq, which make a bunch of different
+        // generated scales. This test can be used for manual debugging.
+        let g = NoteGenerator {
+            divisions: Some(12),
+            divided_interval: Ratio::from_integer(2),
+            tolerance: Default::default(),
+        };
+        let a = g.assign_generated_notes();
+        println!("{a:?}");
+        let exp: HashMap<Pitch, Cow<str>> = [
+            ("1", "A"),
+            ("^1|12", "R"),
+            ("^2|12", "I"),
+            ("^3|12", "F"),
+            ("^4|12", "E"),
+            ("^5|12", "D"),
+            ("^6|12", "Cq"),
+            ("^7|12", "C"),
+            ("^8|12", "Be"),
+            ("^9|12", "Bf"),
+            ("^10|12", "Bi"),
+            ("^11|12", "Br"),
+        ]
+        .into_iter()
+        .map(|(pitch, name)| (Pitch::must_parse(pitch), Cow::Owned(name.to_string())))
+        .collect();
+
+        assert_eq!(a.primary_names, exp);
     }
 }

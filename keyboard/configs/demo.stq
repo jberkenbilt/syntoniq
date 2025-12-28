@@ -78,61 +78,7 @@ place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="launchpad" an
 place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="hexboard" anchor_row=7 anchor_col=8)
 place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
 
-define_scale(scale="53-EDO") <<
- ^0|53 c
- ^1|53 c+
- ^2|53 c#-
- ^3|53 c#
- ^4|53 c#+
- ^5|53 d%
- ^6|53 d%+
- ^7|53 d%++
- ^8|53 d-
- ^9|53 d
-^10|53 d+
-^11|53 d#-
-^12|53 d#
-^13|53 d#+
-^14|53 e%
-^15|53 e%+
-^16|53 e-
-^17|53 e
-^18|53 e+
-^19|53 f%
-^20|53 e#
-^21|53 f-
-^22|53 f
-^23|53 f+
-^24|53 h11
-^25|53 f#-c#
-^26|53 f#-d
-^27|53 g%
-^28|53 g%+
-^29|53 g%++
-^30|53 g-
-^31|53 g
-^32|53 g+
-^33|53 g#-
-^34|53 g#
-^35|53 g%-
-^36|53 a%
-^37|53 a%+
-^38|53 a-
-^39|53 a
-^40|53 a+
-^41|53 a#-
-^42|53 a#
-^43|53 h7
-^44|53 b%-f
-^45|53 b%-g
-^46|53 b-
-^47|53 b
-^48|53 b+
-^49|53 b#_
-^50|53 b#
-^51|53 b#+
-^52|53 c-
->>
+define_generated_scale(scale="53-EDO" divisions=53)
 define_isomorphic_mapping(mapping="53-EDO-h9v4" scale="53-EDO" steps_h=9 steps_v=4)
 place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="launchpad" anchor_row=4 anchor_col=3)
 place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard" anchor_row=7 anchor_col=8)

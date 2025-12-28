@@ -1539,8 +1539,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        658,
-        662
+        681,
+        685
       ],
       "data": {
         "Note": {
@@ -1550,7 +1550,7 @@
             "text": "1:A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -1575,8 +1575,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        736,
-        741
+        809,
+        814
       ],
       "data": {
         "Note": {
@@ -1586,10 +1586,10 @@
             "text": "2:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^123|124",
+            "absolute_pitch": "110*^1|4*3^9|19",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -1611,8 +1611,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        762,
-        767
+        835,
+        840
       ],
       "data": {
         "Note": {
@@ -1622,10 +1622,10 @@
             "text": "2:D,2",
             "note_name": "D",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^83|124",
+            "absolute_pitch": "55*^1|4*3^5|19",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -1647,8 +1647,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        663,
-        665
+        686,
+        688
       ],
       "data": {
         "Note": {
@@ -1658,10 +1658,10 @@
             "text": "f'",
             "note_name": "f",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^123|124",
+            "absolute_pitch": "440/3*^1|4*3^16|19",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -1683,22 +1683,22 @@
       ],
       "repeat_depth": 0,
       "span": [
-        666,
-        668
+        689,
+        690
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "A'",
-            "note_name": "A",
+            "text": "B",
+            "note_name": "B",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^1|4",
-            "cycle": 1,
+            "absolute_pitch": "220*^1|4*3^12|19",
+            "cycle": 0,
             "velocity": 72,
             "end_time": [
               27,
@@ -1719,8 +1719,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        692,
-        693
+        765,
+        766
       ],
       "data": {
         "Note": {
@@ -1730,10 +1730,10 @@
             "text": "p",
             "note_name": "p",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^19|124",
+            "absolute_pitch": "220/3*^1|4*3^18|19",
             "cycle": 0,
             "velocity": 72,
             "end_time": [
@@ -1755,8 +1755,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        744,
-        746
+        817,
+        819
       ],
       "data": {
         "Note": {
@@ -1766,10 +1766,10 @@
             "text": "C,",
             "note_name": "C",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^103|124",
+            "absolute_pitch": "110*^1|4*3^7|19",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -1791,8 +1791,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        770,
-        773
+        843,
+        846
       ],
       "data": {
         "Note": {
@@ -1802,10 +1802,10 @@
             "text": "E,2",
             "note_name": "E",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^71|124",
+            "absolute_pitch": "55*^1|4*3^4|19",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -1827,8 +1827,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        669,
-        671
+        692,
+        694
       ],
       "data": {
         "Note": {
@@ -1838,10 +1838,10 @@
             "text": "I'",
             "note_name": "I",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^51|124",
+            "absolute_pitch": "440*^1|4*3^2|19",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -1863,8 +1863,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        672,
-        676
+        695,
+        699
       ],
       "data": {
         "Note": {
@@ -1874,10 +1874,10 @@
             "text": "4:E'",
             "note_name": "E",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^71|124",
+            "absolute_pitch": "440*^1|4*3^4|19",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -1899,8 +1899,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        698,
-        701
+        771,
+        774
       ],
       "data": {
         "Note": {
@@ -1910,7 +1910,7 @@
             "text": "4:A",
             "note_name": "A",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^1|4",
@@ -1935,8 +1935,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        723,
-        728
+        796,
+        801
       ],
       "data": {
         "Note": {
@@ -1946,10 +1946,10 @@
             "text": "4:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^123|124",
+            "absolute_pitch": "110*^1|4*3^9|19",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -1971,8 +1971,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        750,
-        754
+        823,
+        827
       ],
       "data": {
         "Note": {
@@ -1982,10 +1982,10 @@
             "text": "4:D,",
             "note_name": "D",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^83|124",
+            "absolute_pitch": "110*^1|4*3^5|19",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -2007,8 +2007,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        776,
-        782
+        849,
+        855
       ],
       "data": {
         "Note": {
@@ -2018,10 +2018,10 @@
             "text": "4:Df,2",
             "note_name": "Df",
             "tuning": {
-              "scale_name": "31",
+              "scale_name": "19-3",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^51|124",
+            "absolute_pitch": "55*^1|4*3^2|19",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -2043,8 +2043,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        878,
-        882
+        934,
+        938
       ],
       "data": {
         "Note": {
@@ -2054,7 +2054,7 @@
             "text": "1:A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -2079,8 +2079,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        976,
-        981
+        1012,
+        1017
       ],
       "data": {
         "Note": {
@@ -2090,10 +2090,10 @@
             "text": "2:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^161|164",
+            "absolute_pitch": "110*^123|124",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -2115,8 +2115,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1002,
-        1007
+        1038,
+        1043
       ],
       "data": {
         "Note": {
@@ -2126,10 +2126,10 @@
             "text": "2:D,2",
             "note_name": "D",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^109|164",
+            "absolute_pitch": "55*^83|124",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -2151,8 +2151,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        883,
-        885
+        939,
+        941
       ],
       "data": {
         "Note": {
@@ -2162,10 +2162,10 @@
             "text": "f'",
             "note_name": "f",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^161|164",
+            "absolute_pitch": "220*^123|124",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -2187,8 +2187,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        886,
-        888
+        942,
+        944
       ],
       "data": {
         "Note": {
@@ -2198,7 +2198,7 @@
             "text": "A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -2223,8 +2223,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        932,
-        933
+        968,
+        969
       ],
       "data": {
         "Note": {
@@ -2234,10 +2234,10 @@
             "text": "p",
             "note_name": "p",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^25|164",
+            "absolute_pitch": "220*^19|124",
             "cycle": 0,
             "velocity": 72,
             "end_time": [
@@ -2259,8 +2259,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        984,
-        986
+        1020,
+        1022
       ],
       "data": {
         "Note": {
@@ -2270,10 +2270,10 @@
             "text": "C,",
             "note_name": "C",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^137|164",
+            "absolute_pitch": "110*^103|124",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -2295,8 +2295,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1010,
-        1013
+        1046,
+        1049
       ],
       "data": {
         "Note": {
@@ -2306,10 +2306,10 @@
             "text": "E,2",
             "note_name": "E",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^93|164",
+            "absolute_pitch": "55*^71|124",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -2331,8 +2331,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        889,
-        891
+        945,
+        947
       ],
       "data": {
         "Note": {
@@ -2342,10 +2342,10 @@
             "text": "I'",
             "note_name": "I",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^69|164",
+            "absolute_pitch": "440*^51|124",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -2367,21 +2367,21 @@
       ],
       "repeat_depth": 0,
       "span": [
-        892,
-        897
+        948,
+        952
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "4:E#'",
-            "note_name": "E#",
+            "text": "4:E'",
+            "note_name": "E",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^93|164",
+            "absolute_pitch": "440*^71|124",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -2403,8 +2403,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        938,
-        941
+        974,
+        977
       ],
       "data": {
         "Note": {
@@ -2414,7 +2414,7 @@
             "text": "4:A",
             "note_name": "A",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^1|4",
@@ -2439,8 +2439,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        963,
-        968
+        999,
+        1004
       ],
       "data": {
         "Note": {
@@ -2450,10 +2450,10 @@
             "text": "4:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^161|164",
+            "absolute_pitch": "110*^123|124",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -2475,8 +2475,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        990,
-        994
+        1026,
+        1030
       ],
       "data": {
         "Note": {
@@ -2486,10 +2486,10 @@
             "text": "4:D,",
             "note_name": "D",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^109|164",
+            "absolute_pitch": "110*^83|124",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -2511,8 +2511,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1016,
-        1022
+        1052,
+        1058
       ],
       "data": {
         "Note": {
@@ -2522,10 +2522,10 @@
             "text": "4:Df,2",
             "note_name": "Df",
             "tuning": {
-              "scale_name": "41",
+              "scale_name": "31",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^65|164",
+            "absolute_pitch": "55*^51|124",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -2547,8 +2547,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1118,
-        1122
+        1154,
+        1158
       ],
       "data": {
         "Note": {
@@ -2558,7 +2558,7 @@
             "text": "1:A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -2583,8 +2583,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1216,
-        1221
+        1252,
+        1257
       ],
       "data": {
         "Note": {
@@ -2594,10 +2594,10 @@
             "text": "2:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^209|212",
+            "absolute_pitch": "110*^161|164",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -2619,8 +2619,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1242,
-        1247
+        1278,
+        1283
       ],
       "data": {
         "Note": {
@@ -2630,10 +2630,10 @@
             "text": "2:D,2",
             "note_name": "D",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^141|212",
+            "absolute_pitch": "55*^109|164",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -2655,8 +2655,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1123,
-        1125
+        1159,
+        1161
       ],
       "data": {
         "Note": {
@@ -2666,10 +2666,10 @@
             "text": "f'",
             "note_name": "f",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^209|212",
+            "absolute_pitch": "220*^161|164",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -2691,8 +2691,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1126,
-        1128
+        1162,
+        1164
       ],
       "data": {
         "Note": {
@@ -2702,7 +2702,7 @@
             "text": "A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -2727,8 +2727,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1172,
-        1173
+        1208,
+        1209
       ],
       "data": {
         "Note": {
@@ -2738,10 +2738,10 @@
             "text": "p",
             "note_name": "p",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^33|212",
+            "absolute_pitch": "220*^25|164",
             "cycle": 0,
             "velocity": 72,
             "end_time": [
@@ -2763,8 +2763,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1224,
-        1226
+        1260,
+        1262
       ],
       "data": {
         "Note": {
@@ -2774,10 +2774,10 @@
             "text": "C,",
             "note_name": "C",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^177|212",
+            "absolute_pitch": "110*^137|164",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -2799,8 +2799,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1250,
-        1253
+        1286,
+        1289
       ],
       "data": {
         "Note": {
@@ -2810,10 +2810,10 @@
             "text": "E,2",
             "note_name": "E",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^121|212",
+            "absolute_pitch": "55*^93|164",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -2835,8 +2835,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1129,
-        1131
+        1165,
+        1167
       ],
       "data": {
         "Note": {
@@ -2846,10 +2846,10 @@
             "text": "I'",
             "note_name": "I",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^89|212",
+            "absolute_pitch": "440*^69|164",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -2871,8 +2871,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1132,
-        1137
+        1168,
+        1173
       ],
       "data": {
         "Note": {
@@ -2882,10 +2882,10 @@
             "text": "4:E#'",
             "note_name": "E#",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^121|212",
+            "absolute_pitch": "440*^93|164",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -2907,8 +2907,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1178,
-        1181
+        1214,
+        1217
       ],
       "data": {
         "Note": {
@@ -2918,7 +2918,7 @@
             "text": "4:A",
             "note_name": "A",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^1|4",
@@ -2943,8 +2943,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1203,
-        1208
+        1239,
+        1244
       ],
       "data": {
         "Note": {
@@ -2954,10 +2954,10 @@
             "text": "4:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^209|212",
+            "absolute_pitch": "110*^161|164",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -2979,8 +2979,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1230,
-        1234
+        1266,
+        1270
       ],
       "data": {
         "Note": {
@@ -2990,10 +2990,10 @@
             "text": "4:D,",
             "note_name": "D",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^141|212",
+            "absolute_pitch": "110*^109|164",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -3015,8 +3015,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1256,
-        1262
+        1292,
+        1298
       ],
       "data": {
         "Note": {
@@ -3026,10 +3026,10 @@
             "text": "4:Df,2",
             "note_name": "Df",
             "tuning": {
-              "scale_name": "53",
+              "scale_name": "41",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^85|212",
+            "absolute_pitch": "55*^65|164",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -3051,8 +3051,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1358,
-        1362
+        1394,
+        1398
       ],
       "data": {
         "Note": {
@@ -3062,7 +3062,7 @@
             "text": "1:A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -3087,8 +3087,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1460,
-        1465
+        1492,
+        1497
       ],
       "data": {
         "Note": {
@@ -3098,10 +3098,10 @@
             "text": "2:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^1|68",
+            "absolute_pitch": "110*^209|212",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -3123,8 +3123,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1486,
-        1491
+        1518,
+        1523
       ],
       "data": {
         "Note": {
@@ -3134,10 +3134,10 @@
             "text": "2:D,2",
             "note_name": "D",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^45|68",
+            "absolute_pitch": "55*^141|212",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -3159,8 +3159,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1363,
-        1365
+        1399,
+        1401
       ],
       "data": {
         "Note": {
@@ -3170,10 +3170,10 @@
             "text": "f'",
             "note_name": "f",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^1|68",
+            "absolute_pitch": "220*^209|212",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -3195,8 +3195,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1366,
-        1368
+        1402,
+        1404
       ],
       "data": {
         "Note": {
@@ -3206,7 +3206,7 @@
             "text": "A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -3231,8 +3231,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1416,
-        1417
+        1448,
+        1449
       ],
       "data": {
         "Note": {
@@ -3242,10 +3242,10 @@
             "text": "p",
             "note_name": "p",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^9|68",
+            "absolute_pitch": "220*^33|212",
             "cycle": 0,
             "velocity": 72,
             "end_time": [
@@ -3267,8 +3267,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1468,
-        1470
+        1500,
+        1502
       ],
       "data": {
         "Note": {
@@ -3278,10 +3278,10 @@
             "text": "C,",
             "note_name": "C",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^57|68",
+            "absolute_pitch": "110*^177|212",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -3303,8 +3303,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1494,
-        1497
+        1526,
+        1529
       ],
       "data": {
         "Note": {
@@ -3314,10 +3314,10 @@
             "text": "E,2",
             "note_name": "E",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^37|68",
+            "absolute_pitch": "55*^121|212",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -3339,8 +3339,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1369,
-        1371
+        1405,
+        1407
       ],
       "data": {
         "Note": {
@@ -3350,10 +3350,10 @@
             "text": "I'",
             "note_name": "I",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^29|68",
+            "absolute_pitch": "440*^89|212",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -3375,8 +3375,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1372,
-        1377
+        1408,
+        1413
       ],
       "data": {
         "Note": {
@@ -3386,10 +3386,10 @@
             "text": "4:E#'",
             "note_name": "E#",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^41|68",
+            "absolute_pitch": "440*^121|212",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -3411,8 +3411,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1422,
-        1425
+        1454,
+        1457
       ],
       "data": {
         "Note": {
@@ -3422,7 +3422,7 @@
             "text": "4:A",
             "note_name": "A",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^1|4",
@@ -3447,8 +3447,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1447,
-        1452
+        1479,
+        1484
       ],
       "data": {
         "Note": {
@@ -3458,10 +3458,10 @@
             "text": "4:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^1|68",
+            "absolute_pitch": "110*^209|212",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -3483,8 +3483,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1474,
-        1478
+        1506,
+        1510
       ],
       "data": {
         "Note": {
@@ -3494,10 +3494,10 @@
             "text": "4:D,",
             "note_name": "D",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^45|68",
+            "absolute_pitch": "110*^141|212",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -3519,8 +3519,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1500,
-        1506
+        1532,
+        1538
       ],
       "data": {
         "Note": {
@@ -3530,10 +3530,10 @@
             "text": "4:Df,2",
             "note_name": "Df",
             "tuning": {
-              "scale_name": "17",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^29|68",
+            "absolute_pitch": "55*^85|212",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -3555,8 +3555,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1585,
-        1589
+        1636,
+        1640
       ],
       "data": {
         "Note": {
@@ -3566,7 +3566,7 @@
             "text": "1:A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -3591,8 +3591,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1663,
-        1668
+        1714,
+        1719
       ],
       "data": {
         "Note": {
@@ -3602,10 +3602,10 @@
             "text": "2:DE,",
             "note_name": "DE",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^1|52",
+            "absolute_pitch": "110*^209|212",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -3627,8 +3627,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1689,
-        1694
+        1740,
+        1745
       ],
       "data": {
         "Note": {
@@ -3638,10 +3638,10 @@
             "text": "2:D,2",
             "note_name": "D",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^33|52",
+            "absolute_pitch": "55*^141|212",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -3663,8 +3663,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1590,
-        1592
+        1641,
+        1643
       ],
       "data": {
         "Note": {
@@ -3674,10 +3674,10 @@
             "text": "f'",
             "note_name": "f",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^1|52",
+            "absolute_pitch": "220*^209|212",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -3699,8 +3699,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1593,
-        1595
+        1644,
+        1646
       ],
       "data": {
         "Note": {
@@ -3710,7 +3710,7 @@
             "text": "A'",
             "note_name": "A",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "440*^1|4",
@@ -3735,8 +3735,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1619,
-        1620
+        1670,
+        1671
       ],
       "data": {
         "Note": {
@@ -3746,10 +3746,10 @@
             "text": "p",
             "note_name": "p",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "220*^9|52",
+            "absolute_pitch": "220*^33|212",
             "cycle": 0,
             "velocity": 72,
             "end_time": [
@@ -3771,8 +3771,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1671,
-        1673
+        1722,
+        1724
       ],
       "data": {
         "Note": {
@@ -3782,10 +3782,10 @@
             "text": "C,",
             "note_name": "C",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "110*^45|52",
+            "absolute_pitch": "110*^177|212",
             "cycle": -1,
             "velocity": 72,
             "end_time": [
@@ -3807,8 +3807,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1697,
-        1700
+        1748,
+        1751
       ],
       "data": {
         "Note": {
@@ -3818,10 +3818,10 @@
             "text": "E,2",
             "note_name": "E",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "55*^29|52",
+            "absolute_pitch": "55*^121|212",
             "cycle": -2,
             "velocity": 72,
             "end_time": [
@@ -3843,8 +3843,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1596,
-        1598
+        1647,
+        1649
       ],
       "data": {
         "Note": {
@@ -3854,10 +3854,10 @@
             "text": "I'",
             "note_name": "I",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^21|52",
+            "absolute_pitch": "440*^89|212",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -3879,8 +3879,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1599,
-        1603
+        1650,
+        1654
       ],
       "data": {
         "Note": {
@@ -3890,10 +3890,10 @@
             "text": "4:E'",
             "note_name": "E",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
-            "absolute_pitch": "440*^29|52",
+            "absolute_pitch": "440*^121|212",
             "cycle": 1,
             "velocity": 72,
             "end_time": [
@@ -3915,8 +3915,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1625,
-        1628
+        1676,
+        1679
       ],
       "data": {
         "Note": {
@@ -3926,7 +3926,7 @@
             "text": "4:A",
             "note_name": "A",
             "tuning": {
-              "scale_name": "13",
+              "scale_name": "53",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^1|4",
@@ -3951,8 +3951,1016 @@
       ],
       "repeat_depth": 0,
       "span": [
-        1650,
-        1655
+        1701,
+        1706
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 2,
+          "value": {
+            "text": "4:DE,",
+            "note_name": "DE",
+            "tuning": {
+              "scale_name": "53",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "110*^209|212",
+            "cycle": -1,
+            "velocity": 72,
+            "end_time": [
+              64,
+              1
+            ],
+            "adjusted_end_time": [
+              64,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        60,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1728,
+        1732
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 3,
+          "value": {
+            "text": "4:D,",
+            "note_name": "D",
+            "tuning": {
+              "scale_name": "53",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "110*^141|212",
+            "cycle": -1,
+            "velocity": 72,
+            "end_time": [
+              64,
+              1
+            ],
+            "adjusted_end_time": [
+              64,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        60,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1754,
+        1760
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 4,
+          "value": {
+            "text": "4:Df,2",
+            "note_name": "Df",
+            "tuning": {
+              "scale_name": "53",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "55*^85|212",
+            "cycle": -2,
+            "velocity": 72,
+            "end_time": [
+              64,
+              1
+            ],
+            "adjusted_end_time": [
+              64,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        64,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1856,
+        1860
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "1:A'",
+            "note_name": "A",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^1|4",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              65,
+              1
+            ],
+            "adjusted_end_time": [
+              65,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        64,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1958,
+        1963
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 3,
+          "value": {
+            "text": "2:DE,",
+            "note_name": "DE",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^1|68",
+            "cycle": -1,
+            "velocity": 72,
+            "end_time": [
+              66,
+              1
+            ],
+            "adjusted_end_time": [
+              66,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        64,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1984,
+        1989
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 4,
+          "value": {
+            "text": "2:D,2",
+            "note_name": "D",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "55*^45|68",
+            "cycle": -2,
+            "velocity": 72,
+            "end_time": [
+              66,
+              1
+            ],
+            "adjusted_end_time": [
+              66,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        65,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1861,
+        1863
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "f'",
+            "note_name": "f",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^1|68",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              66,
+              1
+            ],
+            "adjusted_end_time": [
+              66,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        66,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1864,
+        1866
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "A'",
+            "note_name": "A",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^1|4",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              67,
+              1
+            ],
+            "adjusted_end_time": [
+              67,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        66,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1914,
+        1915
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 1,
+          "value": {
+            "text": "p",
+            "note_name": "p",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^9|68",
+            "cycle": 0,
+            "velocity": 72,
+            "end_time": [
+              68,
+              1
+            ],
+            "adjusted_end_time": [
+              68,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        66,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1966,
+        1968
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 3,
+          "value": {
+            "text": "C,",
+            "note_name": "C",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "110*^57|68",
+            "cycle": -1,
+            "velocity": 72,
+            "end_time": [
+              68,
+              1
+            ],
+            "adjusted_end_time": [
+              68,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        66,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1992,
+        1995
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 4,
+          "value": {
+            "text": "E,2",
+            "note_name": "E",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "55*^37|68",
+            "cycle": -2,
+            "velocity": 72,
+            "end_time": [
+              68,
+              1
+            ],
+            "adjusted_end_time": [
+              68,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        67,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1867,
+        1869
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "I'",
+            "note_name": "I",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^29|68",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              68,
+              1
+            ],
+            "adjusted_end_time": [
+              68,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        68,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1870,
+        1875
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "4:E#'",
+            "note_name": "E#",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^41|68",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              72,
+              1
+            ],
+            "adjusted_end_time": [
+              72,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        68,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1920,
+        1923
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 1,
+          "value": {
+            "text": "4:A",
+            "note_name": "A",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^1|4",
+            "cycle": 0,
+            "velocity": 72,
+            "end_time": [
+              72,
+              1
+            ],
+            "adjusted_end_time": [
+              72,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        68,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1945,
+        1950
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 2,
+          "value": {
+            "text": "4:DE,",
+            "note_name": "DE",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^1|68",
+            "cycle": -1,
+            "velocity": 72,
+            "end_time": [
+              72,
+              1
+            ],
+            "adjusted_end_time": [
+              72,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        68,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1972,
+        1976
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 3,
+          "value": {
+            "text": "4:D,",
+            "note_name": "D",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "110*^45|68",
+            "cycle": -1,
+            "velocity": 72,
+            "end_time": [
+              72,
+              1
+            ],
+            "adjusted_end_time": [
+              72,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        68,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1998,
+        2004
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 4,
+          "value": {
+            "text": "4:Df,2",
+            "note_name": "Df",
+            "tuning": {
+              "scale_name": "17",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "55*^29|68",
+            "cycle": -2,
+            "velocity": 72,
+            "end_time": [
+              72,
+              1
+            ],
+            "adjusted_end_time": [
+              72,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        72,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2083,
+        2087
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "1:A'",
+            "note_name": "A",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^1|4",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              73,
+              1
+            ],
+            "adjusted_end_time": [
+              73,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        72,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2161,
+        2166
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 3,
+          "value": {
+            "text": "2:DE,",
+            "note_name": "DE",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^1|52",
+            "cycle": -1,
+            "velocity": 72,
+            "end_time": [
+              74,
+              1
+            ],
+            "adjusted_end_time": [
+              74,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        72,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2187,
+        2192
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 4,
+          "value": {
+            "text": "2:D,2",
+            "note_name": "D",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "55*^33|52",
+            "cycle": -2,
+            "velocity": 72,
+            "end_time": [
+              74,
+              1
+            ],
+            "adjusted_end_time": [
+              74,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        73,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2088,
+        2090
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "f'",
+            "note_name": "f",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^1|52",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              74,
+              1
+            ],
+            "adjusted_end_time": [
+              74,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        74,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2091,
+        2093
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "A'",
+            "note_name": "A",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^1|4",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              75,
+              1
+            ],
+            "adjusted_end_time": [
+              75,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        74,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2117,
+        2118
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 1,
+          "value": {
+            "text": "p",
+            "note_name": "p",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^9|52",
+            "cycle": 0,
+            "velocity": 72,
+            "end_time": [
+              76,
+              1
+            ],
+            "adjusted_end_time": [
+              76,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        74,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2169,
+        2171
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 3,
+          "value": {
+            "text": "C,",
+            "note_name": "C",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "110*^45|52",
+            "cycle": -1,
+            "velocity": 72,
+            "end_time": [
+              76,
+              1
+            ],
+            "adjusted_end_time": [
+              76,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        74,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2195,
+        2198
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 4,
+          "value": {
+            "text": "E,2",
+            "note_name": "E",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "55*^29|52",
+            "cycle": -2,
+            "velocity": 72,
+            "end_time": [
+              76,
+              1
+            ],
+            "adjusted_end_time": [
+              76,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        75,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2094,
+        2096
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "I'",
+            "note_name": "I",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^21|52",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              76,
+              1
+            ],
+            "adjusted_end_time": [
+              76,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        76,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2097,
+        2101
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "4:E'",
+            "note_name": "E",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "440*^29|52",
+            "cycle": 1,
+            "velocity": 72,
+            "end_time": [
+              80,
+              1
+            ],
+            "adjusted_end_time": [
+              80,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        76,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2123,
+        2126
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 1,
+          "value": {
+            "text": "4:A",
+            "note_name": "A",
+            "tuning": {
+              "scale_name": "13",
+              "base_pitch": "220*^1|4"
+            },
+            "absolute_pitch": "220*^1|4",
+            "cycle": 0,
+            "velocity": 72,
+            "end_time": [
+              80,
+              1
+            ],
+            "adjusted_end_time": [
+              80,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        76,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        2148,
+        2153
       ],
       "data": {
         "Note": {
@@ -3969,11 +4977,11 @@
             "cycle": -1,
             "velocity": 72,
             "end_time": [
-              64,
+              80,
               1
             ],
             "adjusted_end_time": [
-              64,
+              80,
               1
             ]
           }
@@ -3982,13 +4990,13 @@
     },
     {
       "time": [
-        60,
+        76,
         1
       ],
       "repeat_depth": 0,
       "span": [
-        1677,
-        1681
+        2175,
+        2179
       ],
       "data": {
         "Note": {
@@ -4005,11 +5013,11 @@
             "cycle": -1,
             "velocity": 72,
             "end_time": [
-              64,
+              80,
               1
             ],
             "adjusted_end_time": [
-              64,
+              80,
               1
             ]
           }
@@ -4018,13 +5026,13 @@
     },
     {
       "time": [
-        60,
+        76,
         1
       ],
       "repeat_depth": 0,
       "span": [
-        1703,
-        1709
+        2201,
+        2207
       ],
       "data": {
         "Note": {
@@ -4041,11 +5049,11 @@
             "cycle": -2,
             "velocity": 72,
             "end_time": [
-              64,
+              80,
               1
             ],
             "adjusted_end_time": [
-              64,
+              80,
               1
             ]
           }
@@ -4255,6 +5263,12 @@
           "degree": 1
         },
         {
+          "name": "R",
+          "base_relative": "^1|12",
+          "normalized_relative": "^1|12",
+          "degree": 1
+        },
+        {
           "name": "A2",
           "base_relative": "^1|6",
           "normalized_relative": "^1|6",
@@ -4274,6 +5288,12 @@
         },
         {
           "name": "A3",
+          "base_relative": "^1|4",
+          "normalized_relative": "^1|4",
+          "degree": 3
+        },
+        {
+          "name": "F",
           "base_relative": "^1|4",
           "normalized_relative": "^1|4",
           "degree": 3
@@ -4309,6 +5329,12 @@
           "degree": 6
         },
         {
+          "name": "Cq",
+          "base_relative": "^1|2",
+          "normalized_relative": "^1|2",
+          "degree": 6
+        },
+        {
           "name": "A7",
           "base_relative": "^7|12",
           "normalized_relative": "^7|12",
@@ -4327,7 +5353,19 @@
           "degree": 8
         },
         {
+          "name": "Be",
+          "base_relative": "^2|3",
+          "normalized_relative": "^2|3",
+          "degree": 8
+        },
+        {
           "name": "A9",
+          "base_relative": "^3|4",
+          "normalized_relative": "^3|4",
+          "degree": 9
+        },
+        {
+          "name": "Bf",
           "base_relative": "^3|4",
           "normalized_relative": "^3|4",
           "degree": 9
@@ -4345,25 +5383,37 @@
           "degree": 10
         },
         {
+          "name": "Bi",
+          "base_relative": "^5|6",
+          "normalized_relative": "^5|6",
+          "degree": 10
+        },
+        {
           "name": "A11",
+          "base_relative": "^11|12",
+          "normalized_relative": "^11|12",
+          "degree": 11
+        },
+        {
+          "name": "Br",
           "base_relative": "^11|12",
           "normalized_relative": "^11|12",
           "degree": 11
         }
       ],
       "primary_names": [
-        "A0",
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6",
-        "A7",
-        "A8",
-        "A9",
-        "A10",
-        "A11"
+        "A",
+        "R",
+        "I",
+        "F",
+        "E",
+        "D",
+        "Cq",
+        "C",
+        "Be",
+        "DE",
+        "Bi",
+        "Br"
       ],
       "pitches": [
         "1",
@@ -4595,7 +5645,19 @@
           "degree": 1
         },
         {
+          "name": "Y",
+          "base_relative": "^1|19",
+          "normalized_relative": "^1|19",
+          "degree": 1
+        },
+        {
           "name": "A2",
+          "base_relative": "^2|19",
+          "normalized_relative": "^2|19",
+          "degree": 2
+        },
+        {
+          "name": "N",
           "base_relative": "^2|19",
           "normalized_relative": "^2|19",
           "degree": 2
@@ -4619,13 +5681,31 @@
           "degree": 3
         },
         {
+          "name": "J",
+          "base_relative": "^3|19",
+          "normalized_relative": "^3|19",
+          "degree": 3
+        },
+        {
           "name": "A4",
           "base_relative": "^4|19",
           "normalized_relative": "^4|19",
           "degree": 4
         },
         {
+          "name": "G%",
+          "base_relative": "^4|19",
+          "normalized_relative": "^4|19",
+          "degree": 4
+        },
+        {
           "name": "A5",
+          "base_relative": "^5|19",
+          "normalized_relative": "^5|19",
+          "degree": 5
+        },
+        {
+          "name": "F",
           "base_relative": "^5|19",
           "normalized_relative": "^5|19",
           "degree": 5
@@ -4649,6 +5729,12 @@
           "degree": 7
         },
         {
+          "name": "FN",
+          "base_relative": "^7|19",
+          "normalized_relative": "^7|19",
+          "degree": 7
+        },
+        {
           "name": "A8",
           "base_relative": "^8|19",
           "normalized_relative": "^8|19",
@@ -4667,7 +5753,19 @@
           "degree": 9
         },
         {
+          "name": "DY",
+          "base_relative": "^9|19",
+          "normalized_relative": "^9|19",
+          "degree": 9
+        },
+        {
           "name": "A10",
+          "base_relative": "^10|19",
+          "normalized_relative": "^10|19",
+          "degree": 10
+        },
+        {
+          "name": "Cy",
           "base_relative": "^10|19",
           "normalized_relative": "^10|19",
           "degree": 10
@@ -4691,13 +5789,31 @@
           "degree": 12
         },
         {
+          "name": "Bfn",
+          "base_relative": "^12|19",
+          "normalized_relative": "^12|19",
+          "degree": 12
+        },
+        {
           "name": "A13",
           "base_relative": "^13|19",
           "normalized_relative": "^13|19",
           "degree": 13
         },
         {
+          "name": "Be",
+          "base_relative": "^13|19",
+          "normalized_relative": "^13|19",
+          "degree": 13
+        },
+        {
           "name": "A14",
+          "base_relative": "^14|19",
+          "normalized_relative": "^14|19",
+          "degree": 14
+        },
+        {
+          "name": "Bf",
           "base_relative": "^14|19",
           "normalized_relative": "^14|19",
           "degree": 14
@@ -4715,7 +5831,19 @@
           "degree": 15
         },
         {
+          "name": "Bg#",
+          "base_relative": "^15|19",
+          "normalized_relative": "^15|19",
+          "degree": 15
+        },
+        {
           "name": "A16",
+          "base_relative": "^16|19",
+          "normalized_relative": "^16|19",
+          "degree": 16
+        },
+        {
+          "name": "Bj",
           "base_relative": "^16|19",
           "normalized_relative": "^16|19",
           "degree": 16
@@ -4727,32 +5855,44 @@
           "degree": 17
         },
         {
+          "name": "Bn",
+          "base_relative": "^17|19",
+          "normalized_relative": "^17|19",
+          "degree": 17
+        },
+        {
           "name": "A18",
+          "base_relative": "^18|19",
+          "normalized_relative": "^18|19",
+          "degree": 18
+        },
+        {
+          "name": "By",
           "base_relative": "^18|19",
           "normalized_relative": "^18|19",
           "degree": 18
         }
       ],
       "primary_names": [
-        "A0",
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6",
-        "A7",
-        "A8",
-        "A9",
-        "A10",
-        "A11",
-        "A12",
-        "A13",
-        "A14",
-        "A15",
-        "A16",
-        "A17",
-        "A18"
+        "A",
+        "Y",
+        "N",
+        "I",
+        "G%",
+        "F",
+        "E",
+        "FN",
+        "D",
+        "DY",
+        "Cy",
+        "C",
+        "Bfn",
+        "Be",
+        "DE",
+        "Bg#",
+        "Bj",
+        "Bn",
+        "By"
       ],
       "pitches": [
         "1",
@@ -5122,6 +6262,313 @@
       ]
     },
     {
+      "name": "19-3",
+      "cycle": [
+        2,
+        1
+      ],
+      "notes": [
+        {
+          "name": "f",
+          "base_relative": "1/3*3^16|19",
+          "normalized_relative": "2/3*3^16|19",
+          "degree": -5
+        },
+        {
+          "name": "p",
+          "base_relative": "1/3*3^18|19",
+          "normalized_relative": "2/3*3^18|19",
+          "degree": -2
+        },
+        {
+          "name": "A",
+          "base_relative": "1",
+          "normalized_relative": "1",
+          "degree": 0
+        },
+        {
+          "name": "A0",
+          "base_relative": "1",
+          "normalized_relative": "1",
+          "degree": 0
+        },
+        {
+          "name": "A1",
+          "base_relative": "3^1|19",
+          "normalized_relative": "3^1|19",
+          "degree": 2
+        },
+        {
+          "name": "R",
+          "base_relative": "3^1|19",
+          "normalized_relative": "3^1|19",
+          "degree": 2
+        },
+        {
+          "name": "A2",
+          "base_relative": "3^2|19",
+          "normalized_relative": "3^2|19",
+          "degree": 4
+        },
+        {
+          "name": "Df",
+          "base_relative": "3^2|19",
+          "normalized_relative": "3^2|19",
+          "degree": 4
+        },
+        {
+          "name": "I",
+          "base_relative": "3^2|19",
+          "normalized_relative": "3^2|19",
+          "degree": 4
+        },
+        {
+          "name": "A3",
+          "base_relative": "3^3|19",
+          "normalized_relative": "3^3|19",
+          "degree": 6
+        },
+        {
+          "name": "F",
+          "base_relative": "3^3|19",
+          "normalized_relative": "3^3|19",
+          "degree": 6
+        },
+        {
+          "name": "A4",
+          "base_relative": "3^4|19",
+          "normalized_relative": "3^4|19",
+          "degree": 8
+        },
+        {
+          "name": "E",
+          "base_relative": "3^4|19",
+          "normalized_relative": "3^4|19",
+          "degree": 8
+        },
+        {
+          "name": "A5",
+          "base_relative": "3^5|19",
+          "normalized_relative": "3^5|19",
+          "degree": 10
+        },
+        {
+          "name": "D",
+          "base_relative": "3^5|19",
+          "normalized_relative": "3^5|19",
+          "degree": 10
+        },
+        {
+          "name": "A6",
+          "base_relative": "3^6|19",
+          "normalized_relative": "3^6|19",
+          "degree": 12
+        },
+        {
+          "name": "Cr",
+          "base_relative": "3^6|19",
+          "normalized_relative": "3^6|19",
+          "degree": 12
+        },
+        {
+          "name": "A7",
+          "base_relative": "3^7|19",
+          "normalized_relative": "3^7|19",
+          "degree": 14
+        },
+        {
+          "name": "C",
+          "base_relative": "3^7|19",
+          "normalized_relative": "3^7|19",
+          "degree": 14
+        },
+        {
+          "name": "A8",
+          "base_relative": "3^8|19",
+          "normalized_relative": "3^8|19",
+          "degree": 15
+        },
+        {
+          "name": "Be",
+          "base_relative": "3^8|19",
+          "normalized_relative": "3^8|19",
+          "degree": 15
+        },
+        {
+          "name": "A9",
+          "base_relative": "3^9|19",
+          "normalized_relative": "3^9|19",
+          "degree": 17
+        },
+        {
+          "name": "Bf",
+          "base_relative": "3^9|19",
+          "normalized_relative": "3^9|19",
+          "degree": 17
+        },
+        {
+          "name": "DE",
+          "base_relative": "3^9|19",
+          "normalized_relative": "3^9|19",
+          "degree": 17
+        },
+        {
+          "name": "A10",
+          "base_relative": "3^10|19",
+          "normalized_relative": "3^10|19",
+          "degree": 18
+        },
+        {
+          "name": "Bi",
+          "base_relative": "3^10|19",
+          "normalized_relative": "3^10|19",
+          "degree": 18
+        },
+        {
+          "name": "A11",
+          "base_relative": "3^11|19",
+          "normalized_relative": "3^11|19",
+          "degree": 20
+        },
+        {
+          "name": "Br",
+          "base_relative": "3^11|19",
+          "normalized_relative": "3^11|19",
+          "degree": 20
+        },
+        {
+          "name": "A12",
+          "base_relative": "3^12|19",
+          "normalized_relative": "1/2*3^12|19",
+          "degree": 22
+        },
+        {
+          "name": "B",
+          "base_relative": "3^12|19",
+          "normalized_relative": "1/2*3^12|19",
+          "degree": 22
+        },
+        {
+          "name": "A13",
+          "base_relative": "3^13|19",
+          "normalized_relative": "1/2*3^13|19",
+          "degree": 24
+        },
+        {
+          "name": "BR",
+          "base_relative": "3^13|19",
+          "normalized_relative": "1/2*3^13|19",
+          "degree": 24
+        },
+        {
+          "name": "A14",
+          "base_relative": "3^14|19",
+          "normalized_relative": "1/2*3^14|19",
+          "degree": 26
+        },
+        {
+          "name": "BI",
+          "base_relative": "3^14|19",
+          "normalized_relative": "1/2*3^14|19",
+          "degree": 26
+        },
+        {
+          "name": "A15",
+          "base_relative": "3^15|19",
+          "normalized_relative": "1/2*3^15|19",
+          "degree": 28
+        },
+        {
+          "name": "BF",
+          "base_relative": "3^15|19",
+          "normalized_relative": "1/2*3^15|19",
+          "degree": 28
+        },
+        {
+          "name": "A16",
+          "base_relative": "3^16|19",
+          "normalized_relative": "1/2*3^16|19",
+          "degree": 30
+        },
+        {
+          "name": "BE",
+          "base_relative": "3^16|19",
+          "normalized_relative": "1/2*3^16|19",
+          "degree": 30
+        },
+        {
+          "name": "A17",
+          "base_relative": "3^17|19",
+          "normalized_relative": "1/2*3^17|19",
+          "degree": 32
+        },
+        {
+          "name": "BD",
+          "base_relative": "3^17|19",
+          "normalized_relative": "1/2*3^17|19",
+          "degree": 32
+        },
+        {
+          "name": "A18",
+          "base_relative": "3^18|19",
+          "normalized_relative": "1/2*3^18|19",
+          "degree": 34
+        },
+        {
+          "name": "BCr",
+          "base_relative": "3^18|19",
+          "normalized_relative": "1/2*3^18|19",
+          "degree": 34
+        }
+      ],
+      "primary_names": [
+        "A",
+        "B",
+        "R",
+        "BR",
+        "I",
+        "BI",
+        "F",
+        "BF",
+        "E",
+        "BE",
+        "D",
+        "BD",
+        "Cr",
+        "BCr",
+        "C",
+        "Be",
+        "f",
+        "DE",
+        "Bi",
+        "p",
+        "Br"
+      ],
+      "pitches": [
+        "1",
+        "1/2*3^12|19",
+        "3^1|19",
+        "1/2*3^13|19",
+        "3^2|19",
+        "1/2*3^14|19",
+        "3^3|19",
+        "1/2*3^15|19",
+        "3^4|19",
+        "1/2*3^16|19",
+        "3^5|19",
+        "1/2*3^17|19",
+        "3^6|19",
+        "1/2*3^18|19",
+        "3^7|19",
+        "3^8|19",
+        "2/3*3^16|19",
+        "3^9|19",
+        "3^10|19",
+        "2/3*3^18|19",
+        "3^11|19"
+      ]
+    },
+    {
       "name": "31",
       "cycle": [
         2,
@@ -5159,7 +6606,19 @@
           "degree": 1
         },
         {
+          "name": "Ik",
+          "base_relative": "^1|31",
+          "normalized_relative": "^1|31",
+          "degree": 1
+        },
+        {
           "name": "A2",
+          "base_relative": "^2|31",
+          "normalized_relative": "^2|31",
+          "degree": 2
+        },
+        {
+          "name": "W",
           "base_relative": "^2|31",
           "normalized_relative": "^2|31",
           "degree": 2
@@ -5171,7 +6630,19 @@
           "degree": 3
         },
         {
+          "name": "O",
+          "base_relative": "^3|31",
+          "normalized_relative": "^3|31",
+          "degree": 3
+        },
+        {
           "name": "A4",
+          "base_relative": "^4|31",
+          "normalized_relative": "^4|31",
+          "degree": 4
+        },
+        {
+          "name": "L",
           "base_relative": "^4|31",
           "normalized_relative": "^4|31",
           "degree": 4
@@ -5195,7 +6666,19 @@
           "degree": 5
         },
         {
+          "name": "I%",
+          "base_relative": "^5|31",
+          "normalized_relative": "^5|31",
+          "degree": 5
+        },
+        {
           "name": "A6",
+          "base_relative": "^6|31",
+          "normalized_relative": "^6|31",
+          "degree": 6
+        },
+        {
+          "name": "H",
           "base_relative": "^6|31",
           "normalized_relative": "^6|31",
           "degree": 6
@@ -5207,13 +6690,31 @@
           "degree": 7
         },
         {
+          "name": "G",
+          "base_relative": "^7|31",
+          "normalized_relative": "^7|31",
+          "degree": 7
+        },
+        {
           "name": "A8",
           "base_relative": "^8|31",
           "normalized_relative": "^8|31",
           "degree": 8
         },
         {
+          "name": "F",
+          "base_relative": "^8|31",
+          "normalized_relative": "^8|31",
+          "degree": 8
+        },
+        {
           "name": "A9",
+          "base_relative": "^9|31",
+          "normalized_relative": "^9|31",
+          "degree": 9
+        },
+        {
+          "name": "Dl",
           "base_relative": "^9|31",
           "normalized_relative": "^9|31",
           "degree": 9
@@ -5237,7 +6738,19 @@
           "degree": 11
         },
         {
+          "name": "Dx",
+          "base_relative": "^11|31",
+          "normalized_relative": "^11|31",
+          "degree": 11
+        },
+        {
           "name": "A12",
+          "base_relative": "^12|31",
+          "normalized_relative": "^12|31",
+          "degree": 12
+        },
+        {
+          "name": "EW",
           "base_relative": "^12|31",
           "normalized_relative": "^12|31",
           "degree": 12
@@ -5261,7 +6774,19 @@
           "degree": 14
         },
         {
+          "name": "Beg",
+          "base_relative": "^14|31",
+          "normalized_relative": "^14|31",
+          "degree": 14
+        },
+        {
           "name": "A15",
+          "base_relative": "^15|31",
+          "normalized_relative": "^15|31",
+          "degree": 15
+        },
+        {
+          "name": "Co",
           "base_relative": "^15|31",
           "normalized_relative": "^15|31",
           "degree": 15
@@ -5273,7 +6798,19 @@
           "degree": 16
         },
         {
+          "name": "Cu",
+          "base_relative": "^16|31",
+          "normalized_relative": "^16|31",
+          "degree": 16
+        },
+        {
           "name": "A17",
+          "base_relative": "^17|31",
+          "normalized_relative": "^17|31",
+          "degree": 17
+        },
+        {
+          "name": "EG",
           "base_relative": "^17|31",
           "normalized_relative": "^17|31",
           "degree": 17
@@ -5297,7 +6834,19 @@
           "degree": 19
         },
         {
+          "name": "Bew",
+          "base_relative": "^19|31",
+          "normalized_relative": "^19|31",
+          "degree": 19
+        },
+        {
           "name": "A20",
+          "base_relative": "^20|31",
+          "normalized_relative": "^20|31",
+          "degree": 20
+        },
+        {
+          "name": "CX",
           "base_relative": "^20|31",
           "normalized_relative": "^20|31",
           "degree": 20
@@ -5309,13 +6858,31 @@
           "degree": 21
         },
         {
+          "name": "Be",
+          "base_relative": "^21|31",
+          "normalized_relative": "^21|31",
+          "degree": 21
+        },
+        {
           "name": "A22",
           "base_relative": "^22|31",
           "normalized_relative": "^22|31",
           "degree": 22
         },
         {
+          "name": "CL",
+          "base_relative": "^22|31",
+          "normalized_relative": "^22|31",
+          "degree": 22
+        },
+        {
           "name": "A23",
+          "base_relative": "^23|31",
+          "normalized_relative": "^23|31",
+          "degree": 23
+        },
+        {
+          "name": "Bf",
           "base_relative": "^23|31",
           "normalized_relative": "^23|31",
           "degree": 23
@@ -5333,7 +6900,19 @@
           "degree": 24
         },
         {
+          "name": "Bg",
+          "base_relative": "^24|31",
+          "normalized_relative": "^24|31",
+          "degree": 24
+        },
+        {
           "name": "A25",
+          "base_relative": "^25|31",
+          "normalized_relative": "^25|31",
+          "degree": 25
+        },
+        {
+          "name": "Bh",
           "base_relative": "^25|31",
           "normalized_relative": "^25|31",
           "degree": 25
@@ -5345,7 +6924,19 @@
           "degree": 26
         },
         {
+          "name": "Bi#",
+          "base_relative": "^26|31",
+          "normalized_relative": "^26|31",
+          "degree": 26
+        },
+        {
           "name": "A27",
+          "base_relative": "^27|31",
+          "normalized_relative": "^27|31",
+          "degree": 27
+        },
+        {
+          "name": "Bl",
           "base_relative": "^27|31",
           "normalized_relative": "^27|31",
           "degree": 27
@@ -5357,7 +6948,19 @@
           "degree": 28
         },
         {
+          "name": "Bo",
+          "base_relative": "^28|31",
+          "normalized_relative": "^28|31",
+          "degree": 28
+        },
+        {
           "name": "A29",
+          "base_relative": "^29|31",
+          "normalized_relative": "^29|31",
+          "degree": 29
+        },
+        {
+          "name": "Bw",
           "base_relative": "^29|31",
           "normalized_relative": "^29|31",
           "degree": 29
@@ -5367,40 +6970,46 @@
           "base_relative": "^30|31",
           "normalized_relative": "^30|31",
           "degree": 30
+        },
+        {
+          "name": "BiK",
+          "base_relative": "^30|31",
+          "normalized_relative": "^30|31",
+          "degree": 30
         }
       ],
       "primary_names": [
-        "A0",
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6",
-        "A7",
-        "A8",
-        "A9",
-        "A10",
-        "A11",
-        "A12",
-        "A13",
-        "A14",
-        "A15",
-        "A16",
-        "A17",
-        "A18",
-        "A19",
-        "A20",
-        "A21",
-        "A22",
-        "A23",
-        "A24",
-        "A25",
-        "A26",
-        "A27",
-        "A28",
-        "A29",
-        "A30"
+        "A",
+        "Ik",
+        "W",
+        "O",
+        "L",
+        "I",
+        "H",
+        "G",
+        "F",
+        "Dl",
+        "E",
+        "Dx",
+        "EW",
+        "D",
+        "Beg",
+        "Co",
+        "Cu",
+        "EG",
+        "C",
+        "Bew",
+        "CX",
+        "Be",
+        "CL",
+        "DE",
+        "Bg",
+        "Bh",
+        "Bi#",
+        "Bl",
+        "Bo",
+        "Bw",
+        "BiK"
       ],
       "pitches": [
         "1",
@@ -5434,407 +7043,6 @@
         "^28|31",
         "^29|31",
         "^30|31"
-      ]
-    },
-    {
-      "name": "41",
-      "cycle": [
-        2,
-        1
-      ],
-      "notes": [
-        {
-          "name": "f",
-          "base_relative": "1/2*^30|41",
-          "normalized_relative": "^30|41",
-          "degree": -11
-        },
-        {
-          "name": "p",
-          "base_relative": "1/2*^37|41",
-          "normalized_relative": "^37|41",
-          "degree": -4
-        },
-        {
-          "name": "A",
-          "base_relative": "1",
-          "normalized_relative": "1",
-          "degree": 0
-        },
-        {
-          "name": "A0",
-          "base_relative": "1",
-          "normalized_relative": "1",
-          "degree": 0
-        },
-        {
-          "name": "A1",
-          "base_relative": "^1|41",
-          "normalized_relative": "^1|41",
-          "degree": 1
-        },
-        {
-          "name": "A2",
-          "base_relative": "^2|41",
-          "normalized_relative": "^2|41",
-          "degree": 2
-        },
-        {
-          "name": "A3",
-          "base_relative": "^3|41",
-          "normalized_relative": "^3|41",
-          "degree": 3
-        },
-        {
-          "name": "A4",
-          "base_relative": "^4|41",
-          "normalized_relative": "^4|41",
-          "degree": 4
-        },
-        {
-          "name": "A5",
-          "base_relative": "^5|41",
-          "normalized_relative": "^5|41",
-          "degree": 5
-        },
-        {
-          "name": "A6",
-          "base_relative": "^6|41",
-          "normalized_relative": "^6|41",
-          "degree": 6
-        },
-        {
-          "name": "Df",
-          "base_relative": "^6|41",
-          "normalized_relative": "^6|41",
-          "degree": 6
-        },
-        {
-          "name": "A7",
-          "base_relative": "^7|41",
-          "normalized_relative": "^7|41",
-          "degree": 7
-        },
-        {
-          "name": "I",
-          "base_relative": "^7|41",
-          "normalized_relative": "^7|41",
-          "degree": 7
-        },
-        {
-          "name": "A8",
-          "base_relative": "^8|41",
-          "normalized_relative": "^8|41",
-          "degree": 8
-        },
-        {
-          "name": "A9",
-          "base_relative": "^9|41",
-          "normalized_relative": "^9|41",
-          "degree": 9
-        },
-        {
-          "name": "A10",
-          "base_relative": "^10|41",
-          "normalized_relative": "^10|41",
-          "degree": 10
-        },
-        {
-          "name": "A11",
-          "base_relative": "^11|41",
-          "normalized_relative": "^11|41",
-          "degree": 11
-        },
-        {
-          "name": "A12",
-          "base_relative": "^12|41",
-          "normalized_relative": "^12|41",
-          "degree": 12
-        },
-        {
-          "name": "A13",
-          "base_relative": "^13|41",
-          "normalized_relative": "^13|41",
-          "degree": 13
-        },
-        {
-          "name": "E",
-          "base_relative": "^13|41",
-          "normalized_relative": "^13|41",
-          "degree": 13
-        },
-        {
-          "name": "E#",
-          "base_relative": "^13|41",
-          "normalized_relative": "^13|41",
-          "degree": 13
-        },
-        {
-          "name": "A14",
-          "base_relative": "^14|41",
-          "normalized_relative": "^14|41",
-          "degree": 14
-        },
-        {
-          "name": "A15",
-          "base_relative": "^15|41",
-          "normalized_relative": "^15|41",
-          "degree": 15
-        },
-        {
-          "name": "A16",
-          "base_relative": "^16|41",
-          "normalized_relative": "^16|41",
-          "degree": 16
-        },
-        {
-          "name": "A17",
-          "base_relative": "^17|41",
-          "normalized_relative": "^17|41",
-          "degree": 17
-        },
-        {
-          "name": "D",
-          "base_relative": "^17|41",
-          "normalized_relative": "^17|41",
-          "degree": 17
-        },
-        {
-          "name": "A18",
-          "base_relative": "^18|41",
-          "normalized_relative": "^18|41",
-          "degree": 18
-        },
-        {
-          "name": "A19",
-          "base_relative": "^19|41",
-          "normalized_relative": "^19|41",
-          "degree": 19
-        },
-        {
-          "name": "A20",
-          "base_relative": "^20|41",
-          "normalized_relative": "^20|41",
-          "degree": 20
-        },
-        {
-          "name": "A21",
-          "base_relative": "^21|41",
-          "normalized_relative": "^21|41",
-          "degree": 21
-        },
-        {
-          "name": "A22",
-          "base_relative": "^22|41",
-          "normalized_relative": "^22|41",
-          "degree": 22
-        },
-        {
-          "name": "A23",
-          "base_relative": "^23|41",
-          "normalized_relative": "^23|41",
-          "degree": 23
-        },
-        {
-          "name": "A24",
-          "base_relative": "^24|41",
-          "normalized_relative": "^24|41",
-          "degree": 24
-        },
-        {
-          "name": "C",
-          "base_relative": "^24|41",
-          "normalized_relative": "^24|41",
-          "degree": 24
-        },
-        {
-          "name": "A25",
-          "base_relative": "^25|41",
-          "normalized_relative": "^25|41",
-          "degree": 25
-        },
-        {
-          "name": "A26",
-          "base_relative": "^26|41",
-          "normalized_relative": "^26|41",
-          "degree": 26
-        },
-        {
-          "name": "A27",
-          "base_relative": "^27|41",
-          "normalized_relative": "^27|41",
-          "degree": 27
-        },
-        {
-          "name": "A28",
-          "base_relative": "^28|41",
-          "normalized_relative": "^28|41",
-          "degree": 28
-        },
-        {
-          "name": "A29",
-          "base_relative": "^29|41",
-          "normalized_relative": "^29|41",
-          "degree": 29
-        },
-        {
-          "name": "A30",
-          "base_relative": "^30|41",
-          "normalized_relative": "^30|41",
-          "degree": 30
-        },
-        {
-          "name": "DE",
-          "base_relative": "^30|41",
-          "normalized_relative": "^30|41",
-          "degree": 30
-        },
-        {
-          "name": "A31",
-          "base_relative": "^31|41",
-          "normalized_relative": "^31|41",
-          "degree": 31
-        },
-        {
-          "name": "A32",
-          "base_relative": "^32|41",
-          "normalized_relative": "^32|41",
-          "degree": 32
-        },
-        {
-          "name": "A33",
-          "base_relative": "^33|41",
-          "normalized_relative": "^33|41",
-          "degree": 33
-        },
-        {
-          "name": "A34",
-          "base_relative": "^34|41",
-          "normalized_relative": "^34|41",
-          "degree": 34
-        },
-        {
-          "name": "A35",
-          "base_relative": "^35|41",
-          "normalized_relative": "^35|41",
-          "degree": 35
-        },
-        {
-          "name": "A36",
-          "base_relative": "^36|41",
-          "normalized_relative": "^36|41",
-          "degree": 36
-        },
-        {
-          "name": "A37",
-          "base_relative": "^37|41",
-          "normalized_relative": "^37|41",
-          "degree": 37
-        },
-        {
-          "name": "A38",
-          "base_relative": "^38|41",
-          "normalized_relative": "^38|41",
-          "degree": 38
-        },
-        {
-          "name": "A39",
-          "base_relative": "^39|41",
-          "normalized_relative": "^39|41",
-          "degree": 39
-        },
-        {
-          "name": "A40",
-          "base_relative": "^40|41",
-          "normalized_relative": "^40|41",
-          "degree": 40
-        }
-      ],
-      "primary_names": [
-        "A0",
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6",
-        "A7",
-        "A8",
-        "A9",
-        "A10",
-        "A11",
-        "A12",
-        "A13",
-        "A14",
-        "A15",
-        "A16",
-        "A17",
-        "A18",
-        "A19",
-        "A20",
-        "A21",
-        "A22",
-        "A23",
-        "A24",
-        "A25",
-        "A26",
-        "A27",
-        "A28",
-        "A29",
-        "A30",
-        "A31",
-        "A32",
-        "A33",
-        "A34",
-        "A35",
-        "A36",
-        "A37",
-        "A38",
-        "A39",
-        "A40"
-      ],
-      "pitches": [
-        "1",
-        "^1|41",
-        "^2|41",
-        "^3|41",
-        "^4|41",
-        "^5|41",
-        "^6|41",
-        "^7|41",
-        "^8|41",
-        "^9|41",
-        "^10|41",
-        "^11|41",
-        "^12|41",
-        "^13|41",
-        "^14|41",
-        "^15|41",
-        "^16|41",
-        "^17|41",
-        "^18|41",
-        "^19|41",
-        "^20|41",
-        "^21|41",
-        "^22|41",
-        "^23|41",
-        "^24|41",
-        "^25|41",
-        "^26|41",
-        "^27|41",
-        "^28|41",
-        "^29|41",
-        "^30|41",
-        "^31|41",
-        "^32|41",
-        "^33|41",
-        "^34|41",
-        "^35|41",
-        "^36|41",
-        "^37|41",
-        "^38|41",
-        "^39|41",
-        "^40|41"
       ]
     },
     {
@@ -5921,6 +7129,623 @@
       ]
     },
     {
+      "name": "41",
+      "cycle": [
+        2,
+        1
+      ],
+      "notes": [
+        {
+          "name": "f",
+          "base_relative": "1/2*^30|41",
+          "normalized_relative": "^30|41",
+          "degree": -11
+        },
+        {
+          "name": "p",
+          "base_relative": "1/2*^37|41",
+          "normalized_relative": "^37|41",
+          "degree": -4
+        },
+        {
+          "name": "A",
+          "base_relative": "1",
+          "normalized_relative": "1",
+          "degree": 0
+        },
+        {
+          "name": "A0",
+          "base_relative": "1",
+          "normalized_relative": "1",
+          "degree": 0
+        },
+        {
+          "name": "A1",
+          "base_relative": "^1|41",
+          "normalized_relative": "^1|41",
+          "degree": 1
+        },
+        {
+          "name": "Nr",
+          "base_relative": "^1|41",
+          "normalized_relative": "^1|41",
+          "degree": 1
+        },
+        {
+          "name": "A2",
+          "base_relative": "^2|41",
+          "normalized_relative": "^2|41",
+          "degree": 2
+        },
+        {
+          "name": "Mv",
+          "base_relative": "^2|41",
+          "normalized_relative": "^2|41",
+          "degree": 2
+        },
+        {
+          "name": "A3",
+          "base_relative": "^3|41",
+          "normalized_relative": "^3|41",
+          "degree": 3
+        },
+        {
+          "name": "T",
+          "base_relative": "^3|41",
+          "normalized_relative": "^3|41",
+          "degree": 3
+        },
+        {
+          "name": "A4",
+          "base_relative": "^4|41",
+          "normalized_relative": "^4|41",
+          "degree": 4
+        },
+        {
+          "name": "O",
+          "base_relative": "^4|41",
+          "normalized_relative": "^4|41",
+          "degree": 4
+        },
+        {
+          "name": "A5",
+          "base_relative": "^5|41",
+          "normalized_relative": "^5|41",
+          "degree": 5
+        },
+        {
+          "name": "L",
+          "base_relative": "^5|41",
+          "normalized_relative": "^5|41",
+          "degree": 5
+        },
+        {
+          "name": "A6",
+          "base_relative": "^6|41",
+          "normalized_relative": "^6|41",
+          "degree": 6
+        },
+        {
+          "name": "Df",
+          "base_relative": "^6|41",
+          "normalized_relative": "^6|41",
+          "degree": 6
+        },
+        {
+          "name": "J%",
+          "base_relative": "^6|41",
+          "normalized_relative": "^6|41",
+          "degree": 6
+        },
+        {
+          "name": "A7",
+          "base_relative": "^7|41",
+          "normalized_relative": "^7|41",
+          "degree": 7
+        },
+        {
+          "name": "I",
+          "base_relative": "^7|41",
+          "normalized_relative": "^7|41",
+          "degree": 7
+        },
+        {
+          "name": "A8",
+          "base_relative": "^8|41",
+          "normalized_relative": "^8|41",
+          "degree": 8
+        },
+        {
+          "name": "H",
+          "base_relative": "^8|41",
+          "normalized_relative": "^8|41",
+          "degree": 8
+        },
+        {
+          "name": "A9",
+          "base_relative": "^9|41",
+          "normalized_relative": "^9|41",
+          "degree": 9
+        },
+        {
+          "name": "G",
+          "base_relative": "^9|41",
+          "normalized_relative": "^9|41",
+          "degree": 9
+        },
+        {
+          "name": "A10",
+          "base_relative": "^10|41",
+          "normalized_relative": "^10|41",
+          "degree": 10
+        },
+        {
+          "name": "Es",
+          "base_relative": "^10|41",
+          "normalized_relative": "^10|41",
+          "degree": 10
+        },
+        {
+          "name": "A11",
+          "base_relative": "^11|41",
+          "normalized_relative": "^11|41",
+          "degree": 11
+        },
+        {
+          "name": "F#",
+          "base_relative": "^11|41",
+          "normalized_relative": "^11|41",
+          "degree": 11
+        },
+        {
+          "name": "A12",
+          "base_relative": "^12|41",
+          "normalized_relative": "^12|41",
+          "degree": 12
+        },
+        {
+          "name": "GU",
+          "base_relative": "^12|41",
+          "normalized_relative": "^12|41",
+          "degree": 12
+        },
+        {
+          "name": "A13",
+          "base_relative": "^13|41",
+          "normalized_relative": "^13|41",
+          "degree": 13
+        },
+        {
+          "name": "E",
+          "base_relative": "^13|41",
+          "normalized_relative": "^13|41",
+          "degree": 13
+        },
+        {
+          "name": "E#",
+          "base_relative": "^13|41",
+          "normalized_relative": "^13|41",
+          "degree": 13
+        },
+        {
+          "name": "A14",
+          "base_relative": "^14|41",
+          "normalized_relative": "^14|41",
+          "degree": 14
+        },
+        {
+          "name": "Dt",
+          "base_relative": "^14|41",
+          "normalized_relative": "^14|41",
+          "degree": 14
+        },
+        {
+          "name": "A15",
+          "base_relative": "^15|41",
+          "normalized_relative": "^15|41",
+          "degree": 15
+        },
+        {
+          "name": "Cg",
+          "base_relative": "^15|41",
+          "normalized_relative": "^15|41",
+          "degree": 15
+        },
+        {
+          "name": "A16",
+          "base_relative": "^16|41",
+          "normalized_relative": "^16|41",
+          "degree": 16
+        },
+        {
+          "name": "EV",
+          "base_relative": "^16|41",
+          "normalized_relative": "^16|41",
+          "degree": 16
+        },
+        {
+          "name": "A17",
+          "base_relative": "^17|41",
+          "normalized_relative": "^17|41",
+          "degree": 17
+        },
+        {
+          "name": "D",
+          "base_relative": "^17|41",
+          "normalized_relative": "^17|41",
+          "degree": 17
+        },
+        {
+          "name": "A18",
+          "base_relative": "^18|41",
+          "normalized_relative": "^18|41",
+          "degree": 18
+        },
+        {
+          "name": "EM",
+          "base_relative": "^18|41",
+          "normalized_relative": "^18|41",
+          "degree": 18
+        },
+        {
+          "name": "A19",
+          "base_relative": "^19|41",
+          "normalized_relative": "^19|41",
+          "degree": 19
+        },
+        {
+          "name": "Cl",
+          "base_relative": "^19|41",
+          "normalized_relative": "^19|41",
+          "degree": 19
+        },
+        {
+          "name": "A20",
+          "base_relative": "^20|41",
+          "normalized_relative": "^20|41",
+          "degree": 20
+        },
+        {
+          "name": "DT",
+          "base_relative": "^20|41",
+          "normalized_relative": "^20|41",
+          "degree": 20
+        },
+        {
+          "name": "A21",
+          "base_relative": "^21|41",
+          "normalized_relative": "^21|41",
+          "degree": 21
+        },
+        {
+          "name": "Ct",
+          "base_relative": "^21|41",
+          "normalized_relative": "^21|41",
+          "degree": 21
+        },
+        {
+          "name": "A22",
+          "base_relative": "^22|41",
+          "normalized_relative": "^22|41",
+          "degree": 22
+        },
+        {
+          "name": "DL",
+          "base_relative": "^22|41",
+          "normalized_relative": "^22|41",
+          "degree": 22
+        },
+        {
+          "name": "A23",
+          "base_relative": "^23|41",
+          "normalized_relative": "^23|41",
+          "degree": 23
+        },
+        {
+          "name": "Bem",
+          "base_relative": "^23|41",
+          "normalized_relative": "^23|41",
+          "degree": 23
+        },
+        {
+          "name": "A24",
+          "base_relative": "^24|41",
+          "normalized_relative": "^24|41",
+          "degree": 24
+        },
+        {
+          "name": "C",
+          "base_relative": "^24|41",
+          "normalized_relative": "^24|41",
+          "degree": 24
+        },
+        {
+          "name": "A25",
+          "base_relative": "^25|41",
+          "normalized_relative": "^25|41",
+          "degree": 25
+        },
+        {
+          "name": "Bev",
+          "base_relative": "^25|41",
+          "normalized_relative": "^25|41",
+          "degree": 25
+        },
+        {
+          "name": "A26",
+          "base_relative": "^26|41",
+          "normalized_relative": "^26|41",
+          "degree": 26
+        },
+        {
+          "name": "DG",
+          "base_relative": "^26|41",
+          "normalized_relative": "^26|41",
+          "degree": 26
+        },
+        {
+          "name": "A27",
+          "base_relative": "^27|41",
+          "normalized_relative": "^27|41",
+          "degree": 27
+        },
+        {
+          "name": "CT",
+          "base_relative": "^27|41",
+          "normalized_relative": "^27|41",
+          "degree": 27
+        },
+        {
+          "name": "A28",
+          "base_relative": "^28|41",
+          "normalized_relative": "^28|41",
+          "degree": 28
+        },
+        {
+          "name": "Be",
+          "base_relative": "^28|41",
+          "normalized_relative": "^28|41",
+          "degree": 28
+        },
+        {
+          "name": "A29",
+          "base_relative": "^29|41",
+          "normalized_relative": "^29|41",
+          "degree": 29
+        },
+        {
+          "name": "Bgu",
+          "base_relative": "^29|41",
+          "normalized_relative": "^29|41",
+          "degree": 29
+        },
+        {
+          "name": "A30",
+          "base_relative": "^30|41",
+          "normalized_relative": "^30|41",
+          "degree": 30
+        },
+        {
+          "name": "Bf%",
+          "base_relative": "^30|41",
+          "normalized_relative": "^30|41",
+          "degree": 30
+        },
+        {
+          "name": "DE",
+          "base_relative": "^30|41",
+          "normalized_relative": "^30|41",
+          "degree": 30
+        },
+        {
+          "name": "A31",
+          "base_relative": "^31|41",
+          "normalized_relative": "^31|41",
+          "degree": 31
+        },
+        {
+          "name": "BeS",
+          "base_relative": "^31|41",
+          "normalized_relative": "^31|41",
+          "degree": 31
+        },
+        {
+          "name": "A32",
+          "base_relative": "^32|41",
+          "normalized_relative": "^32|41",
+          "degree": 32
+        },
+        {
+          "name": "Bg",
+          "base_relative": "^32|41",
+          "normalized_relative": "^32|41",
+          "degree": 32
+        },
+        {
+          "name": "A33",
+          "base_relative": "^33|41",
+          "normalized_relative": "^33|41",
+          "degree": 33
+        },
+        {
+          "name": "Bh",
+          "base_relative": "^33|41",
+          "normalized_relative": "^33|41",
+          "degree": 33
+        },
+        {
+          "name": "A34",
+          "base_relative": "^34|41",
+          "normalized_relative": "^34|41",
+          "degree": 34
+        },
+        {
+          "name": "Bi",
+          "base_relative": "^34|41",
+          "normalized_relative": "^34|41",
+          "degree": 34
+        },
+        {
+          "name": "A35",
+          "base_relative": "^35|41",
+          "normalized_relative": "^35|41",
+          "degree": 35
+        },
+        {
+          "name": "Bj#",
+          "base_relative": "^35|41",
+          "normalized_relative": "^35|41",
+          "degree": 35
+        },
+        {
+          "name": "A36",
+          "base_relative": "^36|41",
+          "normalized_relative": "^36|41",
+          "degree": 36
+        },
+        {
+          "name": "Bl",
+          "base_relative": "^36|41",
+          "normalized_relative": "^36|41",
+          "degree": 36
+        },
+        {
+          "name": "A37",
+          "base_relative": "^37|41",
+          "normalized_relative": "^37|41",
+          "degree": 37
+        },
+        {
+          "name": "Bo",
+          "base_relative": "^37|41",
+          "normalized_relative": "^37|41",
+          "degree": 37
+        },
+        {
+          "name": "A38",
+          "base_relative": "^38|41",
+          "normalized_relative": "^38|41",
+          "degree": 38
+        },
+        {
+          "name": "Bt",
+          "base_relative": "^38|41",
+          "normalized_relative": "^38|41",
+          "degree": 38
+        },
+        {
+          "name": "A39",
+          "base_relative": "^39|41",
+          "normalized_relative": "^39|41",
+          "degree": 39
+        },
+        {
+          "name": "BmV",
+          "base_relative": "^39|41",
+          "normalized_relative": "^39|41",
+          "degree": 39
+        },
+        {
+          "name": "A40",
+          "base_relative": "^40|41",
+          "normalized_relative": "^40|41",
+          "degree": 40
+        },
+        {
+          "name": "BnR",
+          "base_relative": "^40|41",
+          "normalized_relative": "^40|41",
+          "degree": 40
+        }
+      ],
+      "primary_names": [
+        "A",
+        "Nr",
+        "Mv",
+        "T",
+        "O",
+        "L",
+        "Df",
+        "I",
+        "H",
+        "G",
+        "Es",
+        "F#",
+        "GU",
+        "E#",
+        "Dt",
+        "Cg",
+        "EV",
+        "D",
+        "EM",
+        "Cl",
+        "DT",
+        "Ct",
+        "DL",
+        "Bem",
+        "C",
+        "Bev",
+        "DG",
+        "CT",
+        "Be",
+        "Bgu",
+        "DE",
+        "BeS",
+        "Bg",
+        "Bh",
+        "Bi",
+        "Bj#",
+        "Bl",
+        "Bo",
+        "Bt",
+        "BmV",
+        "BnR"
+      ],
+      "pitches": [
+        "1",
+        "^1|41",
+        "^2|41",
+        "^3|41",
+        "^4|41",
+        "^5|41",
+        "^6|41",
+        "^7|41",
+        "^8|41",
+        "^9|41",
+        "^10|41",
+        "^11|41",
+        "^12|41",
+        "^13|41",
+        "^14|41",
+        "^15|41",
+        "^16|41",
+        "^17|41",
+        "^18|41",
+        "^19|41",
+        "^20|41",
+        "^21|41",
+        "^22|41",
+        "^23|41",
+        "^24|41",
+        "^25|41",
+        "^26|41",
+        "^27|41",
+        "^28|41",
+        "^29|41",
+        "^30|41",
+        "^31|41",
+        "^32|41",
+        "^33|41",
+        "^34|41",
+        "^35|41",
+        "^36|41",
+        "^37|41",
+        "^38|41",
+        "^39|41",
+        "^40|41"
+      ]
+    },
+    {
       "name": "53",
       "cycle": [
         2,
@@ -5958,7 +7783,19 @@
           "degree": 1
         },
         {
+          "name": "Pt",
+          "base_relative": "^1|53",
+          "normalized_relative": "^1|53",
+          "degree": 1
+        },
+        {
           "name": "A2",
+          "base_relative": "^2|53",
+          "normalized_relative": "^2|53",
+          "degree": 2
+        },
+        {
+          "name": "Ko",
           "base_relative": "^2|53",
           "normalized_relative": "^2|53",
           "degree": 2
@@ -5970,7 +7807,19 @@
           "degree": 3
         },
         {
+          "name": "Y",
+          "base_relative": "^3|53",
+          "normalized_relative": "^3|53",
+          "degree": 3
+        },
+        {
           "name": "A4",
+          "base_relative": "^4|53",
+          "normalized_relative": "^4|53",
+          "degree": 4
+        },
+        {
+          "name": "T",
           "base_relative": "^4|53",
           "normalized_relative": "^4|53",
           "degree": 4
@@ -5982,13 +7831,31 @@
           "degree": 5
         },
         {
+          "name": "P",
+          "base_relative": "^5|53",
+          "normalized_relative": "^5|53",
+          "degree": 5
+        },
+        {
           "name": "A6",
           "base_relative": "^6|53",
           "normalized_relative": "^6|53",
           "degree": 6
         },
         {
+          "name": "M",
+          "base_relative": "^6|53",
+          "normalized_relative": "^6|53",
+          "degree": 6
+        },
+        {
           "name": "A7",
+          "base_relative": "^7|53",
+          "normalized_relative": "^7|53",
+          "degree": 7
+        },
+        {
+          "name": "K%",
           "base_relative": "^7|53",
           "normalized_relative": "^7|53",
           "degree": 7
@@ -6001,6 +7868,12 @@
         },
         {
           "name": "Df",
+          "base_relative": "^8|53",
+          "normalized_relative": "^8|53",
+          "degree": 8
+        },
+        {
+          "name": "J",
           "base_relative": "^8|53",
           "normalized_relative": "^8|53",
           "degree": 8
@@ -6024,7 +7897,19 @@
           "degree": 10
         },
         {
+          "name": "H%",
+          "base_relative": "^10|53",
+          "normalized_relative": "^10|53",
+          "degree": 10
+        },
+        {
           "name": "A11",
+          "base_relative": "^11|53",
+          "normalized_relative": "^11|53",
+          "degree": 11
+        },
+        {
+          "name": "KU",
           "base_relative": "^11|53",
           "normalized_relative": "^11|53",
           "degree": 11
@@ -6036,7 +7921,19 @@
           "degree": 12
         },
         {
+          "name": "G#",
+          "base_relative": "^12|53",
+          "normalized_relative": "^12|53",
+          "degree": 12
+        },
+        {
           "name": "A13",
+          "base_relative": "^13|53",
+          "normalized_relative": "^13|53",
+          "degree": 13
+        },
+        {
+          "name": "Di",
           "base_relative": "^13|53",
           "normalized_relative": "^13|53",
           "degree": 13
@@ -6048,13 +7945,31 @@
           "degree": 14
         },
         {
+          "name": "F",
+          "base_relative": "^14|53",
+          "normalized_relative": "^14|53",
+          "degree": 14
+        },
+        {
           "name": "A15",
           "base_relative": "^15|53",
           "normalized_relative": "^15|53",
           "degree": 15
         },
         {
+          "name": "GX",
+          "base_relative": "^15|53",
+          "normalized_relative": "^15|53",
+          "degree": 15
+        },
+        {
           "name": "A16",
+          "base_relative": "^16|53",
+          "normalized_relative": "^16|53",
+          "degree": 16
+        },
+        {
+          "name": "GS",
           "base_relative": "^16|53",
           "normalized_relative": "^16|53",
           "degree": 16
@@ -6084,7 +7999,19 @@
           "degree": 18
         },
         {
+          "name": "II",
+          "base_relative": "^18|53",
+          "normalized_relative": "^18|53",
+          "degree": 18
+        },
+        {
           "name": "A19",
+          "base_relative": "^19|53",
+          "normalized_relative": "^19|53",
+          "degree": 19
+        },
+        {
+          "name": "GK",
           "base_relative": "^19|53",
           "normalized_relative": "^19|53",
           "degree": 19
@@ -6096,7 +8023,19 @@
           "degree": 20
         },
         {
+          "name": "FM",
+          "base_relative": "^20|53",
+          "normalized_relative": "^20|53",
+          "degree": 20
+        },
+        {
           "name": "A21",
+          "base_relative": "^21|53",
+          "normalized_relative": "^21|53",
+          "degree": 21
+        },
+        {
+          "name": "ET",
           "base_relative": "^21|53",
           "normalized_relative": "^21|53",
           "degree": 21
@@ -6120,7 +8059,19 @@
           "degree": 23
         },
         {
+          "name": "Cj",
+          "base_relative": "^23|53",
+          "normalized_relative": "^23|53",
+          "degree": 23
+        },
+        {
           "name": "A24",
+          "base_relative": "^24|53",
+          "normalized_relative": "^24|53",
+          "degree": 24
+        },
+        {
+          "name": "Beg",
           "base_relative": "^24|53",
           "normalized_relative": "^24|53",
           "degree": 24
@@ -6132,7 +8083,19 @@
           "degree": 25
         },
         {
+          "name": "Cm",
+          "base_relative": "^25|53",
+          "normalized_relative": "^25|53",
+          "degree": 25
+        },
+        {
           "name": "A26",
+          "base_relative": "^26|53",
+          "normalized_relative": "^26|53",
+          "degree": 26
+        },
+        {
+          "name": "Cp",
           "base_relative": "^26|53",
           "normalized_relative": "^26|53",
           "degree": 26
@@ -6144,7 +8107,19 @@
           "degree": 27
         },
         {
+          "name": "DP",
+          "base_relative": "^27|53",
+          "normalized_relative": "^27|53",
+          "degree": 27
+        },
+        {
           "name": "A28",
+          "base_relative": "^28|53",
+          "normalized_relative": "^28|53",
+          "degree": 28
+        },
+        {
+          "name": "DM",
           "base_relative": "^28|53",
           "normalized_relative": "^28|53",
           "degree": 28
@@ -6156,7 +8131,19 @@
           "degree": 29
         },
         {
+          "name": "EG",
+          "base_relative": "^29|53",
+          "normalized_relative": "^29|53",
+          "degree": 29
+        },
+        {
           "name": "A30",
+          "base_relative": "^30|53",
+          "normalized_relative": "^30|53",
+          "degree": 30
+        },
+        {
+          "name": "DJ",
           "base_relative": "^30|53",
           "normalized_relative": "^30|53",
           "degree": 30
@@ -6180,7 +8167,19 @@
           "degree": 32
         },
         {
+          "name": "Bet",
+          "base_relative": "^32|53",
+          "normalized_relative": "^32|53",
+          "degree": 32
+        },
+        {
           "name": "A33",
+          "base_relative": "^33|53",
+          "normalized_relative": "^33|53",
+          "degree": 33
+        },
+        {
+          "name": "Bfm",
           "base_relative": "^33|53",
           "normalized_relative": "^33|53",
           "degree": 33
@@ -6192,7 +8191,19 @@
           "degree": 34
         },
         {
+          "name": "Bgk",
+          "base_relative": "^34|53",
+          "normalized_relative": "^34|53",
+          "degree": 34
+        },
+        {
           "name": "A35",
+          "base_relative": "^35|53",
+          "normalized_relative": "^35|53",
+          "degree": 35
+        },
+        {
+          "name": "Bii",
           "base_relative": "^35|53",
           "normalized_relative": "^35|53",
           "degree": 35
@@ -6204,7 +8215,19 @@
           "degree": 36
         },
         {
+          "name": "Be",
+          "base_relative": "^36|53",
+          "normalized_relative": "^36|53",
+          "degree": 36
+        },
+        {
           "name": "A37",
+          "base_relative": "^37|53",
+          "normalized_relative": "^37|53",
+          "degree": 37
+        },
+        {
+          "name": "Bgs",
           "base_relative": "^37|53",
           "normalized_relative": "^37|53",
           "degree": 37
@@ -6216,7 +8239,19 @@
           "degree": 38
         },
         {
+          "name": "Bgx",
+          "base_relative": "^38|53",
+          "normalized_relative": "^38|53",
+          "degree": 38
+        },
+        {
           "name": "A39",
+          "base_relative": "^39|53",
+          "normalized_relative": "^39|53",
+          "degree": 39
+        },
+        {
+          "name": "Bf",
           "base_relative": "^39|53",
           "normalized_relative": "^39|53",
           "degree": 39
@@ -6234,7 +8269,19 @@
           "degree": 40
         },
         {
+          "name": "CI",
+          "base_relative": "^40|53",
+          "normalized_relative": "^40|53",
+          "degree": 40
+        },
+        {
           "name": "A41",
+          "base_relative": "^41|53",
+          "normalized_relative": "^41|53",
+          "degree": 41
+        },
+        {
+          "name": "Bg%",
           "base_relative": "^41|53",
           "normalized_relative": "^41|53",
           "degree": 41
@@ -6246,7 +8293,19 @@
           "degree": 42
         },
         {
+          "name": "Bku",
+          "base_relative": "^42|53",
+          "normalized_relative": "^42|53",
+          "degree": 42
+        },
+        {
           "name": "A43",
+          "base_relative": "^43|53",
+          "normalized_relative": "^43|53",
+          "degree": 43
+        },
+        {
+          "name": "Bh#",
           "base_relative": "^43|53",
           "normalized_relative": "^43|53",
           "degree": 43
@@ -6258,7 +8317,19 @@
           "degree": 44
         },
         {
+          "name": "Bi",
+          "base_relative": "^44|53",
+          "normalized_relative": "^44|53",
+          "degree": 44
+        },
+        {
           "name": "A45",
+          "base_relative": "^45|53",
+          "normalized_relative": "^45|53",
+          "degree": 45
+        },
+        {
+          "name": "Bj",
           "base_relative": "^45|53",
           "normalized_relative": "^45|53",
           "degree": 45
@@ -6270,7 +8341,19 @@
           "degree": 46
         },
         {
+          "name": "Bk#",
+          "base_relative": "^46|53",
+          "normalized_relative": "^46|53",
+          "degree": 46
+        },
+        {
           "name": "A47",
+          "base_relative": "^47|53",
+          "normalized_relative": "^47|53",
+          "degree": 47
+        },
+        {
+          "name": "Bm",
           "base_relative": "^47|53",
           "normalized_relative": "^47|53",
           "degree": 47
@@ -6282,7 +8365,19 @@
           "degree": 48
         },
         {
+          "name": "Bp",
+          "base_relative": "^48|53",
+          "normalized_relative": "^48|53",
+          "degree": 48
+        },
+        {
           "name": "A49",
+          "base_relative": "^49|53",
+          "normalized_relative": "^49|53",
+          "degree": 49
+        },
+        {
+          "name": "Bt",
           "base_relative": "^49|53",
           "normalized_relative": "^49|53",
           "degree": 49
@@ -6294,7 +8389,19 @@
           "degree": 50
         },
         {
+          "name": "By",
+          "base_relative": "^50|53",
+          "normalized_relative": "^50|53",
+          "degree": 50
+        },
+        {
           "name": "A51",
+          "base_relative": "^51|53",
+          "normalized_relative": "^51|53",
+          "degree": 51
+        },
+        {
+          "name": "BkO",
           "base_relative": "^51|53",
           "normalized_relative": "^51|53",
           "degree": 51
@@ -6304,62 +8411,68 @@
           "base_relative": "^52|53",
           "normalized_relative": "^52|53",
           "degree": 52
+        },
+        {
+          "name": "BpT",
+          "base_relative": "^52|53",
+          "normalized_relative": "^52|53",
+          "degree": 52
         }
       ],
       "primary_names": [
-        "A0",
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6",
-        "A7",
-        "A8",
-        "A9",
-        "A10",
-        "A11",
-        "A12",
-        "A13",
-        "A14",
-        "A15",
-        "A16",
-        "A17",
-        "A18",
-        "A19",
-        "A20",
-        "A21",
-        "A22",
-        "A23",
-        "A24",
-        "A25",
-        "A26",
-        "A27",
-        "A28",
-        "A29",
-        "A30",
-        "A31",
-        "A32",
-        "A33",
-        "A34",
-        "A35",
-        "A36",
-        "A37",
-        "A38",
-        "A39",
-        "A40",
-        "A41",
-        "A42",
-        "A43",
-        "A44",
-        "A45",
-        "A46",
-        "A47",
-        "A48",
-        "A49",
-        "A50",
-        "A51",
-        "A52"
+        "A",
+        "Pt",
+        "Ko",
+        "Y",
+        "T",
+        "P",
+        "M",
+        "K%",
+        "Df",
+        "I",
+        "H%",
+        "KU",
+        "G#",
+        "Di",
+        "F",
+        "GX",
+        "GS",
+        "E#",
+        "II",
+        "GK",
+        "FM",
+        "ET",
+        "D",
+        "Cj",
+        "Beg",
+        "Cm",
+        "Cp",
+        "DP",
+        "DM",
+        "EG",
+        "DJ",
+        "C",
+        "Bet",
+        "Bfm",
+        "Bgk",
+        "Bii",
+        "Be",
+        "Bgs",
+        "Bgx",
+        "DE",
+        "CI",
+        "Bg%",
+        "Bku",
+        "Bh#",
+        "Bi",
+        "Bj",
+        "Bk#",
+        "Bm",
+        "Bp",
+        "Bt",
+        "By",
+        "BkO",
+        "BpT"
       ],
       "pitches": [
         "1",
@@ -6418,6 +8531,1503 @@
       ]
     },
     {
+      "name": "106",
+      "cycle": [
+        2,
+        1
+      ],
+      "notes": [
+        {
+          "name": "A",
+          "base_relative": "1",
+          "normalized_relative": "1",
+          "degree": 0
+        },
+        {
+          "name": "A0",
+          "base_relative": "1",
+          "normalized_relative": "1",
+          "degree": 0
+        },
+        {
+          "name": "A1",
+          "base_relative": "^1|106",
+          "normalized_relative": "^1|106",
+          "degree": 1
+        },
+        {
+          "name": "Qs",
+          "base_relative": "^1|106",
+          "normalized_relative": "^1|106",
+          "degree": 1
+        },
+        {
+          "name": "A2",
+          "base_relative": "^1|53",
+          "normalized_relative": "^1|53",
+          "degree": 2
+        },
+        {
+          "name": "Pt",
+          "base_relative": "^1|53",
+          "normalized_relative": "^1|53",
+          "degree": 2
+        },
+        {
+          "name": "A3",
+          "base_relative": "^3|106",
+          "normalized_relative": "^3|106",
+          "degree": 3
+        },
+        {
+          "name": "Qy",
+          "base_relative": "^3|106",
+          "normalized_relative": "^3|106",
+          "degree": 3
+        },
+        {
+          "name": "A4",
+          "base_relative": "^2|53",
+          "normalized_relative": "^2|53",
+          "degree": 4
+        },
+        {
+          "name": "Ko",
+          "base_relative": "^2|53",
+          "normalized_relative": "^2|53",
+          "degree": 4
+        },
+        {
+          "name": "A5",
+          "base_relative": "^5|106",
+          "normalized_relative": "^5|106",
+          "degree": 5
+        },
+        {
+          "name": "Ls",
+          "base_relative": "^5|106",
+          "normalized_relative": "^5|106",
+          "degree": 5
+        },
+        {
+          "name": "A6",
+          "base_relative": "^3|53",
+          "normalized_relative": "^3|53",
+          "degree": 6
+        },
+        {
+          "name": "Y%",
+          "base_relative": "^3|53",
+          "normalized_relative": "^3|53",
+          "degree": 6
+        },
+        {
+          "name": "A7",
+          "base_relative": "^7|106",
+          "normalized_relative": "^7|106",
+          "degree": 7
+        },
+        {
+          "name": "V",
+          "base_relative": "^7|106",
+          "normalized_relative": "^7|106",
+          "degree": 7
+        },
+        {
+          "name": "A8",
+          "base_relative": "^4|53",
+          "normalized_relative": "^4|53",
+          "degree": 8
+        },
+        {
+          "name": "T",
+          "base_relative": "^4|53",
+          "normalized_relative": "^4|53",
+          "degree": 8
+        },
+        {
+          "name": "A9",
+          "base_relative": "^9|106",
+          "normalized_relative": "^9|106",
+          "degree": 9
+        },
+        {
+          "name": "R#",
+          "base_relative": "^9|106",
+          "normalized_relative": "^9|106",
+          "degree": 9
+        },
+        {
+          "name": "A10",
+          "base_relative": "^5|53",
+          "normalized_relative": "^5|53",
+          "degree": 10
+        },
+        {
+          "name": "P",
+          "base_relative": "^5|53",
+          "normalized_relative": "^5|53",
+          "degree": 10
+        },
+        {
+          "name": "A11",
+          "base_relative": "^11|106",
+          "normalized_relative": "^11|106",
+          "degree": 11
+        },
+        {
+          "name": "N%",
+          "base_relative": "^11|106",
+          "normalized_relative": "^11|106",
+          "degree": 11
+        },
+        {
+          "name": "A12",
+          "base_relative": "^6|53",
+          "normalized_relative": "^6|53",
+          "degree": 12
+        },
+        {
+          "name": "M%",
+          "base_relative": "^6|53",
+          "normalized_relative": "^6|53",
+          "degree": 12
+        },
+        {
+          "name": "A13",
+          "base_relative": "^13|106",
+          "normalized_relative": "^13|106",
+          "degree": 13
+        },
+        {
+          "name": "L%",
+          "base_relative": "^13|106",
+          "normalized_relative": "^13|106",
+          "degree": 13
+        },
+        {
+          "name": "A14",
+          "base_relative": "^7|53",
+          "normalized_relative": "^7|53",
+          "degree": 14
+        },
+        {
+          "name": "UX",
+          "base_relative": "^7|53",
+          "normalized_relative": "^7|53",
+          "degree": 14
+        },
+        {
+          "name": "A15",
+          "base_relative": "^15|106",
+          "normalized_relative": "^15|106",
+          "degree": 15
+        },
+        {
+          "name": "RY",
+          "base_relative": "^15|106",
+          "normalized_relative": "^15|106",
+          "degree": 15
+        },
+        {
+          "name": "A16",
+          "base_relative": "^8|53",
+          "normalized_relative": "^8|53",
+          "degree": 16
+        },
+        {
+          "name": "J",
+          "base_relative": "^8|53",
+          "normalized_relative": "^8|53",
+          "degree": 16
+        },
+        {
+          "name": "A17",
+          "base_relative": "^17|106",
+          "normalized_relative": "^17|106",
+          "degree": 17
+        },
+        {
+          "name": "RS",
+          "base_relative": "^17|106",
+          "normalized_relative": "^17|106",
+          "degree": 17
+        },
+        {
+          "name": "A18",
+          "base_relative": "^9|53",
+          "normalized_relative": "^9|53",
+          "degree": 18
+        },
+        {
+          "name": "I",
+          "base_relative": "^9|53",
+          "normalized_relative": "^9|53",
+          "degree": 18
+        },
+        {
+          "name": "A19",
+          "base_relative": "^19|106",
+          "normalized_relative": "^19|106",
+          "degree": 19
+        },
+        {
+          "name": "MW",
+          "base_relative": "^19|106",
+          "normalized_relative": "^19|106",
+          "degree": 19
+        },
+        {
+          "name": "A20",
+          "base_relative": "^10|53",
+          "normalized_relative": "^10|53",
+          "degree": 20
+        },
+        {
+          "name": "Ft",
+          "base_relative": "^10|53",
+          "normalized_relative": "^10|53",
+          "degree": 20
+        },
+        {
+          "name": "A21",
+          "base_relative": "^21|106",
+          "normalized_relative": "^21|106",
+          "degree": 21
+        },
+        {
+          "name": "MR",
+          "base_relative": "^21|106",
+          "normalized_relative": "^21|106",
+          "degree": 21
+        },
+        {
+          "name": "A22",
+          "base_relative": "^11|53",
+          "normalized_relative": "^11|53",
+          "degree": 22
+        },
+        {
+          "name": "KU",
+          "base_relative": "^11|53",
+          "normalized_relative": "^11|53",
+          "degree": 22
+        },
+        {
+          "name": "A23",
+          "base_relative": "^23|106",
+          "normalized_relative": "^23|106",
+          "degree": 23
+        },
+        {
+          "name": "JW",
+          "base_relative": "^23|106",
+          "normalized_relative": "^23|106",
+          "degree": 23
+        },
+        {
+          "name": "A24",
+          "base_relative": "^12|53",
+          "normalized_relative": "^12|53",
+          "degree": 24
+        },
+        {
+          "name": "JT",
+          "base_relative": "^12|53",
+          "normalized_relative": "^12|53",
+          "degree": 24
+        },
+        {
+          "name": "A25",
+          "base_relative": "^25|106",
+          "normalized_relative": "^25|106",
+          "degree": 25
+        },
+        {
+          "name": "IV",
+          "base_relative": "^25|106",
+          "normalized_relative": "^25|106",
+          "degree": 25
+        },
+        {
+          "name": "A26",
+          "base_relative": "^13|53",
+          "normalized_relative": "^13|53",
+          "degree": 26
+        },
+        {
+          "name": "Di",
+          "base_relative": "^13|53",
+          "normalized_relative": "^13|53",
+          "degree": 26
+        },
+        {
+          "name": "A27",
+          "base_relative": "^27|106",
+          "normalized_relative": "^27|106",
+          "degree": 27
+        },
+        {
+          "name": "Ev",
+          "base_relative": "^27|106",
+          "normalized_relative": "^27|106",
+          "degree": 27
+        },
+        {
+          "name": "A28",
+          "base_relative": "^14|53",
+          "normalized_relative": "^14|53",
+          "degree": 28
+        },
+        {
+          "name": "F",
+          "base_relative": "^14|53",
+          "normalized_relative": "^14|53",
+          "degree": 28
+        },
+        {
+          "name": "A29",
+          "base_relative": "^29|106",
+          "normalized_relative": "^29|106",
+          "degree": 29
+        },
+        {
+          "name": "KK",
+          "base_relative": "^29|106",
+          "normalized_relative": "^29|106",
+          "degree": 29
+        },
+        {
+          "name": "A30",
+          "base_relative": "^15|53",
+          "normalized_relative": "^15|53",
+          "degree": 30
+        },
+        {
+          "name": "GX",
+          "base_relative": "^15|53",
+          "normalized_relative": "^15|53",
+          "degree": 30
+        },
+        {
+          "name": "A31",
+          "base_relative": "^31|106",
+          "normalized_relative": "^31|106",
+          "degree": 31
+        },
+        {
+          "name": "HO",
+          "base_relative": "^31|106",
+          "normalized_relative": "^31|106",
+          "degree": 31
+        },
+        {
+          "name": "A32",
+          "base_relative": "^16|53",
+          "normalized_relative": "^16|53",
+          "degree": 32
+        },
+        {
+          "name": "GS",
+          "base_relative": "^16|53",
+          "normalized_relative": "^16|53",
+          "degree": 32
+        },
+        {
+          "name": "A33",
+          "base_relative": "^33|106",
+          "normalized_relative": "^33|106",
+          "degree": 33
+        },
+        {
+          "name": "GQ",
+          "base_relative": "^33|106",
+          "normalized_relative": "^33|106",
+          "degree": 33
+        },
+        {
+          "name": "A34",
+          "base_relative": "^17|53",
+          "normalized_relative": "^17|53",
+          "degree": 34
+        },
+        {
+          "name": "E",
+          "base_relative": "^17|53",
+          "normalized_relative": "^17|53",
+          "degree": 34
+        },
+        {
+          "name": "A35",
+          "base_relative": "^35|106",
+          "normalized_relative": "^35|106",
+          "degree": 35
+        },
+        {
+          "name": "FV",
+          "base_relative": "^35|106",
+          "normalized_relative": "^35|106",
+          "degree": 35
+        },
+        {
+          "name": "A36",
+          "base_relative": "^18|53",
+          "normalized_relative": "^18|53",
+          "degree": 36
+        },
+        {
+          "name": "II",
+          "base_relative": "^18|53",
+          "normalized_relative": "^18|53",
+          "degree": 36
+        },
+        {
+          "name": "A37",
+          "base_relative": "^37|106",
+          "normalized_relative": "^37|106",
+          "degree": 37
+        },
+        {
+          "name": "Dv",
+          "base_relative": "^37|106",
+          "normalized_relative": "^37|106",
+          "degree": 37
+        },
+        {
+          "name": "A38",
+          "base_relative": "^19|53",
+          "normalized_relative": "^19|53",
+          "degree": 38
+        },
+        {
+          "name": "GK",
+          "base_relative": "^19|53",
+          "normalized_relative": "^19|53",
+          "degree": 38
+        },
+        {
+          "name": "A39",
+          "base_relative": "^39|106",
+          "normalized_relative": "^39|106",
+          "degree": 39
+        },
+        {
+          "name": "FN%",
+          "base_relative": "^39|106",
+          "normalized_relative": "^39|106",
+          "degree": 39
+        },
+        {
+          "name": "A40",
+          "base_relative": "^20|53",
+          "normalized_relative": "^20|53",
+          "degree": 40
+        },
+        {
+          "name": "FM",
+          "base_relative": "^20|53",
+          "normalized_relative": "^20|53",
+          "degree": 40
+        },
+        {
+          "name": "A41",
+          "base_relative": "^41|106",
+          "normalized_relative": "^41|106",
+          "degree": 41
+        },
+        {
+          "name": "EW",
+          "base_relative": "^41|106",
+          "normalized_relative": "^41|106",
+          "degree": 41
+        },
+        {
+          "name": "A42",
+          "base_relative": "^21|53",
+          "normalized_relative": "^21|53",
+          "degree": 42
+        },
+        {
+          "name": "ET",
+          "base_relative": "^21|53",
+          "normalized_relative": "^21|53",
+          "degree": 42
+        },
+        {
+          "name": "A43",
+          "base_relative": "^43|106",
+          "normalized_relative": "^43|106",
+          "degree": 43
+        },
+        {
+          "name": "ER",
+          "base_relative": "^43|106",
+          "normalized_relative": "^43|106",
+          "degree": 43
+        },
+        {
+          "name": "A44",
+          "base_relative": "^22|53",
+          "normalized_relative": "^22|53",
+          "degree": 44
+        },
+        {
+          "name": "D",
+          "base_relative": "^22|53",
+          "normalized_relative": "^22|53",
+          "degree": 44
+        },
+        {
+          "name": "A45",
+          "base_relative": "^45|106",
+          "normalized_relative": "^45|106",
+          "degree": 45
+        },
+        {
+          "name": "EO#",
+          "base_relative": "^45|106",
+          "normalized_relative": "^45|106",
+          "degree": 45
+        },
+        {
+          "name": "A46",
+          "base_relative": "^23|53",
+          "normalized_relative": "^23|53",
+          "degree": 46
+        },
+        {
+          "name": "Cj",
+          "base_relative": "^23|53",
+          "normalized_relative": "^23|53",
+          "degree": 46
+        },
+        {
+          "name": "A47",
+          "base_relative": "^47|106",
+          "normalized_relative": "^47|106",
+          "degree": 47
+        },
+        {
+          "name": "GG",
+          "base_relative": "^47|106",
+          "normalized_relative": "^47|106",
+          "degree": 47
+        },
+        {
+          "name": "A48",
+          "base_relative": "^24|53",
+          "normalized_relative": "^24|53",
+          "degree": 48
+        },
+        {
+          "name": "Beg%",
+          "base_relative": "^24|53",
+          "normalized_relative": "^24|53",
+          "degree": 48
+        },
+        {
+          "name": "A49",
+          "base_relative": "^49|106",
+          "normalized_relative": "^49|106",
+          "degree": 49
+        },
+        {
+          "name": "Cl#",
+          "base_relative": "^49|106",
+          "normalized_relative": "^49|106",
+          "degree": 49
+        },
+        {
+          "name": "A50",
+          "base_relative": "^25|53",
+          "normalized_relative": "^25|53",
+          "degree": 50
+        },
+        {
+          "name": "Cm#",
+          "base_relative": "^25|53",
+          "normalized_relative": "^25|53",
+          "degree": 50
+        },
+        {
+          "name": "A51",
+          "base_relative": "^51|106",
+          "normalized_relative": "^51|106",
+          "degree": 51
+        },
+        {
+          "name": "DV",
+          "base_relative": "^51|106",
+          "normalized_relative": "^51|106",
+          "degree": 51
+        },
+        {
+          "name": "A52",
+          "base_relative": "^26|53",
+          "normalized_relative": "^26|53",
+          "degree": 52
+        },
+        {
+          "name": "Cp",
+          "base_relative": "^26|53",
+          "normalized_relative": "^26|53",
+          "degree": 52
+        },
+        {
+          "name": "A53",
+          "base_relative": "^1|2",
+          "normalized_relative": "^1|2",
+          "degree": 53
+        },
+        {
+          "name": "Cq#",
+          "base_relative": "^1|2",
+          "normalized_relative": "^1|2",
+          "degree": 53
+        },
+        {
+          "name": "A54",
+          "base_relative": "^27|53",
+          "normalized_relative": "^27|53",
+          "degree": 54
+        },
+        {
+          "name": "DP",
+          "base_relative": "^27|53",
+          "normalized_relative": "^27|53",
+          "degree": 54
+        },
+        {
+          "name": "A55",
+          "base_relative": "^55|106",
+          "normalized_relative": "^55|106",
+          "degree": 55
+        },
+        {
+          "name": "Cv",
+          "base_relative": "^55|106",
+          "normalized_relative": "^55|106",
+          "degree": 55
+        },
+        {
+          "name": "A56",
+          "base_relative": "^28|53",
+          "normalized_relative": "^28|53",
+          "degree": 56
+        },
+        {
+          "name": "DM%",
+          "base_relative": "^28|53",
+          "normalized_relative": "^28|53",
+          "degree": 56
+        },
+        {
+          "name": "A57",
+          "base_relative": "^57|106",
+          "normalized_relative": "^57|106",
+          "degree": 57
+        },
+        {
+          "name": "DL%",
+          "base_relative": "^57|106",
+          "normalized_relative": "^57|106",
+          "degree": 57
+        },
+        {
+          "name": "A58",
+          "base_relative": "^29|53",
+          "normalized_relative": "^29|53",
+          "degree": 58
+        },
+        {
+          "name": "EG#",
+          "base_relative": "^29|53",
+          "normalized_relative": "^29|53",
+          "degree": 58
+        },
+        {
+          "name": "A59",
+          "base_relative": "^59|106",
+          "normalized_relative": "^59|106",
+          "degree": 59
+        },
+        {
+          "name": "Bgg",
+          "base_relative": "^59|106",
+          "normalized_relative": "^59|106",
+          "degree": 59
+        },
+        {
+          "name": "A60",
+          "base_relative": "^30|53",
+          "normalized_relative": "^30|53",
+          "degree": 60
+        },
+        {
+          "name": "DJ",
+          "base_relative": "^30|53",
+          "normalized_relative": "^30|53",
+          "degree": 60
+        },
+        {
+          "name": "A61",
+          "base_relative": "^61|106",
+          "normalized_relative": "^61|106",
+          "degree": 61
+        },
+        {
+          "name": "Beo%",
+          "base_relative": "^61|106",
+          "normalized_relative": "^61|106",
+          "degree": 61
+        },
+        {
+          "name": "A62",
+          "base_relative": "^31|53",
+          "normalized_relative": "^31|53",
+          "degree": 62
+        },
+        {
+          "name": "C",
+          "base_relative": "^31|53",
+          "normalized_relative": "^31|53",
+          "degree": 62
+        },
+        {
+          "name": "A63",
+          "base_relative": "^63|106",
+          "normalized_relative": "^63|106",
+          "degree": 63
+        },
+        {
+          "name": "Ber",
+          "base_relative": "^63|106",
+          "normalized_relative": "^63|106",
+          "degree": 63
+        },
+        {
+          "name": "A64",
+          "base_relative": "^32|53",
+          "normalized_relative": "^32|53",
+          "degree": 64
+        },
+        {
+          "name": "Bet",
+          "base_relative": "^32|53",
+          "normalized_relative": "^32|53",
+          "degree": 64
+        },
+        {
+          "name": "A65",
+          "base_relative": "^65|106",
+          "normalized_relative": "^65|106",
+          "degree": 65
+        },
+        {
+          "name": "Bew",
+          "base_relative": "^65|106",
+          "normalized_relative": "^65|106",
+          "degree": 65
+        },
+        {
+          "name": "A66",
+          "base_relative": "^33|53",
+          "normalized_relative": "^33|53",
+          "degree": 66
+        },
+        {
+          "name": "Bfm",
+          "base_relative": "^33|53",
+          "normalized_relative": "^33|53",
+          "degree": 66
+        },
+        {
+          "name": "A67",
+          "base_relative": "^67|106",
+          "normalized_relative": "^67|106",
+          "degree": 67
+        },
+        {
+          "name": "Bfn#",
+          "base_relative": "^67|106",
+          "normalized_relative": "^67|106",
+          "degree": 67
+        },
+        {
+          "name": "A68",
+          "base_relative": "^34|53",
+          "normalized_relative": "^34|53",
+          "degree": 68
+        },
+        {
+          "name": "Bgk",
+          "base_relative": "^34|53",
+          "normalized_relative": "^34|53",
+          "degree": 68
+        },
+        {
+          "name": "A69",
+          "base_relative": "^69|106",
+          "normalized_relative": "^69|106",
+          "degree": 69
+        },
+        {
+          "name": "CV",
+          "base_relative": "^69|106",
+          "normalized_relative": "^69|106",
+          "degree": 69
+        },
+        {
+          "name": "A70",
+          "base_relative": "^35|53",
+          "normalized_relative": "^35|53",
+          "degree": 70
+        },
+        {
+          "name": "Bii",
+          "base_relative": "^35|53",
+          "normalized_relative": "^35|53",
+          "degree": 70
+        },
+        {
+          "name": "A71",
+          "base_relative": "^71|106",
+          "normalized_relative": "^71|106",
+          "degree": 71
+        },
+        {
+          "name": "Bfv",
+          "base_relative": "^71|106",
+          "normalized_relative": "^71|106",
+          "degree": 71
+        },
+        {
+          "name": "A72",
+          "base_relative": "^36|53",
+          "normalized_relative": "^36|53",
+          "degree": 72
+        },
+        {
+          "name": "Be",
+          "base_relative": "^36|53",
+          "normalized_relative": "^36|53",
+          "degree": 72
+        },
+        {
+          "name": "A73",
+          "base_relative": "^73|106",
+          "normalized_relative": "^73|106",
+          "degree": 73
+        },
+        {
+          "name": "Bgq",
+          "base_relative": "^73|106",
+          "normalized_relative": "^73|106",
+          "degree": 73
+        },
+        {
+          "name": "A74",
+          "base_relative": "^37|53",
+          "normalized_relative": "^37|53",
+          "degree": 74
+        },
+        {
+          "name": "Bgs",
+          "base_relative": "^37|53",
+          "normalized_relative": "^37|53",
+          "degree": 74
+        },
+        {
+          "name": "A75",
+          "base_relative": "^75|106",
+          "normalized_relative": "^75|106",
+          "degree": 75
+        },
+        {
+          "name": "Bho",
+          "base_relative": "^75|106",
+          "normalized_relative": "^75|106",
+          "degree": 75
+        },
+        {
+          "name": "A76",
+          "base_relative": "^38|53",
+          "normalized_relative": "^38|53",
+          "degree": 76
+        },
+        {
+          "name": "Bgx",
+          "base_relative": "^38|53",
+          "normalized_relative": "^38|53",
+          "degree": 76
+        },
+        {
+          "name": "A77",
+          "base_relative": "^77|106",
+          "normalized_relative": "^77|106",
+          "degree": 77
+        },
+        {
+          "name": "Bkk",
+          "base_relative": "^77|106",
+          "normalized_relative": "^77|106",
+          "degree": 77
+        },
+        {
+          "name": "A78",
+          "base_relative": "^39|53",
+          "normalized_relative": "^39|53",
+          "degree": 78
+        },
+        {
+          "name": "Bf",
+          "base_relative": "^39|53",
+          "normalized_relative": "^39|53",
+          "degree": 78
+        },
+        {
+          "name": "A79",
+          "base_relative": "^79|106",
+          "normalized_relative": "^79|106",
+          "degree": 79
+        },
+        {
+          "name": "BeV",
+          "base_relative": "^79|106",
+          "normalized_relative": "^79|106",
+          "degree": 79
+        },
+        {
+          "name": "A80",
+          "base_relative": "^40|53",
+          "normalized_relative": "^40|53",
+          "degree": 80
+        },
+        {
+          "name": "CI",
+          "base_relative": "^40|53",
+          "normalized_relative": "^40|53",
+          "degree": 80
+        },
+        {
+          "name": "A81",
+          "base_relative": "^81|106",
+          "normalized_relative": "^81|106",
+          "degree": 81
+        },
+        {
+          "name": "Biv",
+          "base_relative": "^81|106",
+          "normalized_relative": "^81|106",
+          "degree": 81
+        },
+        {
+          "name": "A82",
+          "base_relative": "^41|53",
+          "normalized_relative": "^41|53",
+          "degree": 82
+        },
+        {
+          "name": "Bjt",
+          "base_relative": "^41|53",
+          "normalized_relative": "^41|53",
+          "degree": 82
+        },
+        {
+          "name": "A83",
+          "base_relative": "^83|106",
+          "normalized_relative": "^83|106",
+          "degree": 83
+        },
+        {
+          "name": "Bjw",
+          "base_relative": "^83|106",
+          "normalized_relative": "^83|106",
+          "degree": 83
+        },
+        {
+          "name": "A84",
+          "base_relative": "^42|53",
+          "normalized_relative": "^42|53",
+          "degree": 84
+        },
+        {
+          "name": "Bku",
+          "base_relative": "^42|53",
+          "normalized_relative": "^42|53",
+          "degree": 84
+        },
+        {
+          "name": "A85",
+          "base_relative": "^85|106",
+          "normalized_relative": "^85|106",
+          "degree": 85
+        },
+        {
+          "name": "Bmr",
+          "base_relative": "^85|106",
+          "normalized_relative": "^85|106",
+          "degree": 85
+        },
+        {
+          "name": "A86",
+          "base_relative": "^43|53",
+          "normalized_relative": "^43|53",
+          "degree": 86
+        },
+        {
+          "name": "BfT",
+          "base_relative": "^43|53",
+          "normalized_relative": "^43|53",
+          "degree": 86
+        },
+        {
+          "name": "A87",
+          "base_relative": "^87|106",
+          "normalized_relative": "^87|106",
+          "degree": 87
+        },
+        {
+          "name": "Bmw",
+          "base_relative": "^87|106",
+          "normalized_relative": "^87|106",
+          "degree": 87
+        },
+        {
+          "name": "A88",
+          "base_relative": "^44|53",
+          "normalized_relative": "^44|53",
+          "degree": 88
+        },
+        {
+          "name": "Bi",
+          "base_relative": "^44|53",
+          "normalized_relative": "^44|53",
+          "degree": 88
+        },
+        {
+          "name": "A89",
+          "base_relative": "^89|106",
+          "normalized_relative": "^89|106",
+          "degree": 89
+        },
+        {
+          "name": "Brs",
+          "base_relative": "^89|106",
+          "normalized_relative": "^89|106",
+          "degree": 89
+        },
+        {
+          "name": "A90",
+          "base_relative": "^45|53",
+          "normalized_relative": "^45|53",
+          "degree": 90
+        },
+        {
+          "name": "Bj",
+          "base_relative": "^45|53",
+          "normalized_relative": "^45|53",
+          "degree": 90
+        },
+        {
+          "name": "A91",
+          "base_relative": "^91|106",
+          "normalized_relative": "^91|106",
+          "degree": 91
+        },
+        {
+          "name": "Bry",
+          "base_relative": "^91|106",
+          "normalized_relative": "^91|106",
+          "degree": 91
+        },
+        {
+          "name": "A92",
+          "base_relative": "^46|53",
+          "normalized_relative": "^46|53",
+          "degree": 92
+        },
+        {
+          "name": "Bux",
+          "base_relative": "^46|53",
+          "normalized_relative": "^46|53",
+          "degree": 92
+        },
+        {
+          "name": "A93",
+          "base_relative": "^93|106",
+          "normalized_relative": "^93|106",
+          "degree": 93
+        },
+        {
+          "name": "Bl#",
+          "base_relative": "^93|106",
+          "normalized_relative": "^93|106",
+          "degree": 93
+        },
+        {
+          "name": "A94",
+          "base_relative": "^47|53",
+          "normalized_relative": "^47|53",
+          "degree": 94
+        },
+        {
+          "name": "Bm#",
+          "base_relative": "^47|53",
+          "normalized_relative": "^47|53",
+          "degree": 94
+        },
+        {
+          "name": "A95",
+          "base_relative": "^95|106",
+          "normalized_relative": "^95|106",
+          "degree": 95
+        },
+        {
+          "name": "Bn#",
+          "base_relative": "^95|106",
+          "normalized_relative": "^95|106",
+          "degree": 95
+        },
+        {
+          "name": "A96",
+          "base_relative": "^48|53",
+          "normalized_relative": "^48|53",
+          "degree": 96
+        },
+        {
+          "name": "Bp",
+          "base_relative": "^48|53",
+          "normalized_relative": "^48|53",
+          "degree": 96
+        },
+        {
+          "name": "A97",
+          "base_relative": "^97|106",
+          "normalized_relative": "^97|106",
+          "degree": 97
+        },
+        {
+          "name": "Br%",
+          "base_relative": "^97|106",
+          "normalized_relative": "^97|106",
+          "degree": 97
+        },
+        {
+          "name": "A98",
+          "base_relative": "^49|53",
+          "normalized_relative": "^49|53",
+          "degree": 98
+        },
+        {
+          "name": "Bt",
+          "base_relative": "^49|53",
+          "normalized_relative": "^49|53",
+          "degree": 98
+        },
+        {
+          "name": "A99",
+          "base_relative": "^99|106",
+          "normalized_relative": "^99|106",
+          "degree": 99
+        },
+        {
+          "name": "Bv",
+          "base_relative": "^99|106",
+          "normalized_relative": "^99|106",
+          "degree": 99
+        },
+        {
+          "name": "A100",
+          "base_relative": "^50|53",
+          "normalized_relative": "^50|53",
+          "degree": 100
+        },
+        {
+          "name": "By#",
+          "base_relative": "^50|53",
+          "normalized_relative": "^50|53",
+          "degree": 100
+        },
+        {
+          "name": "A101",
+          "base_relative": "^101|106",
+          "normalized_relative": "^101|106",
+          "degree": 101
+        },
+        {
+          "name": "BlS",
+          "base_relative": "^101|106",
+          "normalized_relative": "^101|106",
+          "degree": 101
+        },
+        {
+          "name": "A102",
+          "base_relative": "^51|53",
+          "normalized_relative": "^51|53",
+          "degree": 102
+        },
+        {
+          "name": "BkO",
+          "base_relative": "^51|53",
+          "normalized_relative": "^51|53",
+          "degree": 102
+        },
+        {
+          "name": "A103",
+          "base_relative": "^103|106",
+          "normalized_relative": "^103|106",
+          "degree": 103
+        },
+        {
+          "name": "BqY",
+          "base_relative": "^103|106",
+          "normalized_relative": "^103|106",
+          "degree": 103
+        },
+        {
+          "name": "A104",
+          "base_relative": "^52|53",
+          "normalized_relative": "^52|53",
+          "degree": 104
+        },
+        {
+          "name": "BpT",
+          "base_relative": "^52|53",
+          "normalized_relative": "^52|53",
+          "degree": 104
+        },
+        {
+          "name": "A105",
+          "base_relative": "^105|106",
+          "normalized_relative": "^105|106",
+          "degree": 105
+        },
+        {
+          "name": "BqS",
+          "base_relative": "^105|106",
+          "normalized_relative": "^105|106",
+          "degree": 105
+        }
+      ],
+      "primary_names": [
+        "A",
+        "Qs",
+        "Pt",
+        "Qy",
+        "Ko",
+        "Ls",
+        "Y%",
+        "V",
+        "T",
+        "R#",
+        "P",
+        "N%",
+        "M%",
+        "L%",
+        "UX",
+        "RY",
+        "J",
+        "RS",
+        "I",
+        "MW",
+        "Ft",
+        "MR",
+        "KU",
+        "JW",
+        "JT",
+        "IV",
+        "Di",
+        "Ev",
+        "F",
+        "KK",
+        "GX",
+        "HO",
+        "GS",
+        "GQ",
+        "E",
+        "FV",
+        "II",
+        "Dv",
+        "GK",
+        "FN%",
+        "FM",
+        "EW",
+        "ET",
+        "ER",
+        "D",
+        "EO#",
+        "Cj",
+        "GG",
+        "Beg%",
+        "Cl#",
+        "Cm#",
+        "DV",
+        "Cp",
+        "Cq#",
+        "DP",
+        "Cv",
+        "DM%",
+        "DL%",
+        "EG#",
+        "Bgg",
+        "DJ",
+        "Beo%",
+        "C",
+        "Ber",
+        "Bet",
+        "Bew",
+        "Bfm",
+        "Bfn#",
+        "Bgk",
+        "CV",
+        "Bii",
+        "Bfv",
+        "Be",
+        "Bgq",
+        "Bgs",
+        "Bho",
+        "Bgx",
+        "Bkk",
+        "Bf",
+        "BeV",
+        "CI",
+        "Biv",
+        "Bjt",
+        "Bjw",
+        "Bku",
+        "Bmr",
+        "BfT",
+        "Bmw",
+        "Bi",
+        "Brs",
+        "Bj",
+        "Bry",
+        "Bux",
+        "Bl#",
+        "Bm#",
+        "Bn#",
+        "Bp",
+        "Br%",
+        "Bt",
+        "Bv",
+        "By#",
+        "BlS",
+        "BkO",
+        "BqY",
+        "BpT",
+        "BqS"
+      ],
+      "pitches": [
+        "1",
+        "^1|106",
+        "^1|53",
+        "^3|106",
+        "^2|53",
+        "^5|106",
+        "^3|53",
+        "^7|106",
+        "^4|53",
+        "^9|106",
+        "^5|53",
+        "^11|106",
+        "^6|53",
+        "^13|106",
+        "^7|53",
+        "^15|106",
+        "^8|53",
+        "^17|106",
+        "^9|53",
+        "^19|106",
+        "^10|53",
+        "^21|106",
+        "^11|53",
+        "^23|106",
+        "^12|53",
+        "^25|106",
+        "^13|53",
+        "^27|106",
+        "^14|53",
+        "^29|106",
+        "^15|53",
+        "^31|106",
+        "^16|53",
+        "^33|106",
+        "^17|53",
+        "^35|106",
+        "^18|53",
+        "^37|106",
+        "^19|53",
+        "^39|106",
+        "^20|53",
+        "^41|106",
+        "^21|53",
+        "^43|106",
+        "^22|53",
+        "^45|106",
+        "^23|53",
+        "^47|106",
+        "^24|53",
+        "^49|106",
+        "^25|53",
+        "^51|106",
+        "^26|53",
+        "^1|2",
+        "^27|53",
+        "^55|106",
+        "^28|53",
+        "^57|106",
+        "^29|53",
+        "^59|106",
+        "^30|53",
+        "^61|106",
+        "^31|53",
+        "^63|106",
+        "^32|53",
+        "^65|106",
+        "^33|53",
+        "^67|106",
+        "^34|53",
+        "^69|106",
+        "^35|53",
+        "^71|106",
+        "^36|53",
+        "^73|106",
+        "^37|53",
+        "^75|106",
+        "^38|53",
+        "^77|106",
+        "^39|53",
+        "^79|106",
+        "^40|53",
+        "^81|106",
+        "^41|53",
+        "^83|106",
+        "^42|53",
+        "^85|106",
+        "^43|53",
+        "^87|106",
+        "^44|53",
+        "^89|106",
+        "^45|53",
+        "^91|106",
+        "^46|53",
+        "^93|106",
+        "^47|53",
+        "^95|106",
+        "^48|53",
+        "^97|106",
+        "^49|53",
+        "^99|106",
+        "^50|53",
+        "^101|106",
+        "^51|53",
+        "^103|106",
+        "^52|53",
+        "^105|106"
+      ]
+    },
+    {
       "name": "17",
       "cycle": [
         2,
@@ -6455,7 +10065,19 @@
           "degree": 1
         },
         {
+          "name": "Y",
+          "base_relative": "^1|17",
+          "normalized_relative": "^1|17",
+          "degree": 1
+        },
+        {
           "name": "A2",
+          "base_relative": "^2|17",
+          "normalized_relative": "^2|17",
+          "degree": 2
+        },
+        {
+          "name": "M",
           "base_relative": "^2|17",
           "normalized_relative": "^2|17",
           "degree": 2
@@ -6485,6 +10107,12 @@
           "degree": 4
         },
         {
+          "name": "G#",
+          "base_relative": "^4|17",
+          "normalized_relative": "^4|17",
+          "degree": 4
+        },
+        {
           "name": "A5",
           "base_relative": "^5|17",
           "normalized_relative": "^5|17",
@@ -6497,7 +10125,19 @@
           "degree": 5
         },
         {
+          "name": "GU",
+          "base_relative": "^5|17",
+          "normalized_relative": "^5|17",
+          "degree": 5
+        },
+        {
           "name": "A6",
+          "base_relative": "^6|17",
+          "normalized_relative": "^6|17",
+          "degree": 6
+        },
+        {
+          "name": "Dx",
           "base_relative": "^6|17",
           "normalized_relative": "^6|17",
           "degree": 6
@@ -6527,7 +10167,19 @@
           "degree": 8
         },
         {
+          "name": "Cm",
+          "base_relative": "^8|17",
+          "normalized_relative": "^8|17",
+          "degree": 8
+        },
+        {
           "name": "A9",
+          "base_relative": "^9|17",
+          "normalized_relative": "^9|17",
+          "degree": 9
+        },
+        {
+          "name": "DM",
           "base_relative": "^9|17",
           "normalized_relative": "^9|17",
           "degree": 9
@@ -6551,13 +10203,31 @@
           "degree": 11
         },
         {
+          "name": "CX",
+          "base_relative": "^11|17",
+          "normalized_relative": "^11|17",
+          "degree": 11
+        },
+        {
           "name": "A12",
           "base_relative": "^12|17",
           "normalized_relative": "^12|17",
           "degree": 12
         },
         {
+          "name": "Bgu",
+          "base_relative": "^12|17",
+          "normalized_relative": "^12|17",
+          "degree": 12
+        },
+        {
           "name": "A13",
+          "base_relative": "^13|17",
+          "normalized_relative": "^13|17",
+          "degree": 13
+        },
+        {
+          "name": "Bg%",
           "base_relative": "^13|17",
           "normalized_relative": "^13|17",
           "degree": 13
@@ -6575,7 +10245,19 @@
           "degree": 14
         },
         {
+          "name": "Bi",
+          "base_relative": "^14|17",
+          "normalized_relative": "^14|17",
+          "degree": 14
+        },
+        {
           "name": "A15",
+          "base_relative": "^15|17",
+          "normalized_relative": "^15|17",
+          "degree": 15
+        },
+        {
+          "name": "Bm",
           "base_relative": "^15|17",
           "normalized_relative": "^15|17",
           "degree": 15
@@ -6585,26 +10267,32 @@
           "base_relative": "^16|17",
           "normalized_relative": "^16|17",
           "degree": 16
+        },
+        {
+          "name": "By",
+          "base_relative": "^16|17",
+          "normalized_relative": "^16|17",
+          "degree": 16
         }
       ],
       "primary_names": [
-        "A0",
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6",
-        "A7",
-        "A8",
-        "A9",
-        "A10",
-        "A11",
-        "A12",
-        "A13",
-        "A14",
-        "A15",
-        "A16"
+        "A",
+        "Y",
+        "M",
+        "I",
+        "G#",
+        "E",
+        "E#",
+        "D",
+        "Cm",
+        "DM",
+        "C",
+        "CX",
+        "Bgu",
+        "DE",
+        "Bi",
+        "Bm",
+        "By"
       ],
       "pitches": [
         "1",
@@ -6664,6 +10352,12 @@
           "degree": 1
         },
         {
+          "name": "S",
+          "base_relative": "^1|13",
+          "normalized_relative": "^1|13",
+          "degree": 1
+        },
+        {
           "name": "A2",
           "base_relative": "^2|13",
           "normalized_relative": "^2|13",
@@ -6682,7 +10376,19 @@
           "degree": 2
         },
         {
+          "name": "J",
+          "base_relative": "^2|13",
+          "normalized_relative": "^2|13",
+          "degree": 2
+        },
+        {
           "name": "A3",
+          "base_relative": "^3|13",
+          "normalized_relative": "^3|13",
+          "degree": 3
+        },
+        {
+          "name": "G",
           "base_relative": "^3|13",
           "normalized_relative": "^3|13",
           "degree": 3
@@ -6712,13 +10418,31 @@
           "degree": 5
         },
         {
+          "name": "D%",
+          "base_relative": "^5|13",
+          "normalized_relative": "^5|13",
+          "degree": 5
+        },
+        {
           "name": "A6",
           "base_relative": "^6|13",
           "normalized_relative": "^6|13",
           "degree": 6
         },
         {
+          "name": "Cl",
+          "base_relative": "^6|13",
+          "normalized_relative": "^6|13",
+          "degree": 6
+        },
+        {
           "name": "A7",
+          "base_relative": "^7|13",
+          "normalized_relative": "^7|13",
+          "degree": 7
+        },
+        {
+          "name": "DL",
           "base_relative": "^7|13",
           "normalized_relative": "^7|13",
           "degree": 7
@@ -6736,13 +10460,31 @@
           "degree": 8
         },
         {
+          "name": "C#",
+          "base_relative": "^8|13",
+          "normalized_relative": "^8|13",
+          "degree": 8
+        },
+        {
           "name": "A9",
           "base_relative": "^9|13",
           "normalized_relative": "^9|13",
           "degree": 9
         },
         {
+          "name": "Be",
+          "base_relative": "^9|13",
+          "normalized_relative": "^9|13",
+          "degree": 9
+        },
+        {
           "name": "A10",
+          "base_relative": "^10|13",
+          "normalized_relative": "^10|13",
+          "degree": 10
+        },
+        {
+          "name": "Bg",
           "base_relative": "^10|13",
           "normalized_relative": "^10|13",
           "degree": 10
@@ -6760,26 +10502,38 @@
           "degree": 11
         },
         {
+          "name": "Bj",
+          "base_relative": "^11|13",
+          "normalized_relative": "^11|13",
+          "degree": 11
+        },
+        {
           "name": "A12",
+          "base_relative": "^12|13",
+          "normalized_relative": "^12|13",
+          "degree": 12
+        },
+        {
+          "name": "Bs",
           "base_relative": "^12|13",
           "normalized_relative": "^12|13",
           "degree": 12
         }
       ],
       "primary_names": [
-        "A0",
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "A6",
-        "A7",
-        "A8",
-        "A9",
-        "A10",
-        "A11",
-        "A12"
+        "A",
+        "S",
+        "I",
+        "G",
+        "E",
+        "D",
+        "Cl",
+        "DL",
+        "C",
+        "Be",
+        "DE",
+        "Bj",
+        "Bs"
       ],
       "pitches": [
         "1",
