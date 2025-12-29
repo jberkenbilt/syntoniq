@@ -1,0 +1,19 @@
+#!/bin/bash
+set -eo pipefail
+cd $(dirname $0)
+bucket=web-qbilt-org
+prefix=external/syntoniq.cc/manual
+if ! aws s3 ls s3://$bucket >/dev/null 2>&1; then
+    echo "Unable to access S3 bucket $bucket; check credentials"
+    exit 2
+fi
+zola build
+GREEN="\e[32m"
+RESET="\e[0m"
+printf "${GREEN}Dry run:${RESET}\n"
+aws s3 sync --dryrun --delete public/ s3://$bucket/$prefix/
+printf "${GREEN}Proceed? ${RESET}"
+read x
+if [[ $x =~ ^y.* ]]; then
+    aws s3 sync --delete public/ s3://$bucket/$prefix/
+fi

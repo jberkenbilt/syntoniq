@@ -4,12 +4,16 @@ weight = 10
 sort_by = "weight"
 +++
 
-Gemini:
+# TODO
 
-* Download and Install
-* Audio Smoke Test (verify sound generation)
+* Package with [dist](https://github.com/axodotdev/cargo-dist)
+  * Decide which other files, such as examples, should go there; probably examples should be a separate download
+* Embed examples/microtonal-hello.stq -- see docs/TODO
+* `cargo install --locked --git https://github.com/jberkenbilt/syntoniq`
+* Link to https://github.com/jberkenbilt/syntoniq/
+
+Cover:
+* Download and install using whatever distribution method
 * Build from source including disabling csound feature and how build.rs works
-
-Installation -- download and install + smoke test: make sure you can hear sounds so you know the tool is working
-
-TODO: best way to distribute this beyond making the user run `cargo install`.
+* Run `syntoniq demo` (see TODO) and play resulting files
+* If hardware is available, run the keyboard with a demo file. Do we want an embedded keyboard demo? If so, also provide a way to output the file.

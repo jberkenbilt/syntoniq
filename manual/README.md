@@ -41,6 +41,8 @@ Note ./ordering for tweaking section order
 * Edit /tmp/a to put the sections in order
 * Run `./ordering --apply /tmp/a`
 
+Remember to use get_url for absolute paths in the Zola templates -- see manual/templates/index.html.
+
 ----------
 
 TODO:

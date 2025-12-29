@@ -1,5 +1,5 @@
 # The URL the site will be built for
-base_url = "https://syntoniq.cc"
+base_url = "https://syntoniq.cc/manual/"
 
 # Whether to automatically compile all Sass files in the sass directory
 compile_sass = true
@@ -16,8 +16,9 @@ highlight_code = true
 
 extra_syntaxes_and_themes = ["syntaxes"]
 # Note: Zola comes with many built-in themes.
-# "base16-ocean-dark" or "monokai" are safe bets for testing.
-#highlight_theme = "base16-ocean.dark"
+#highlight_theme = "base16-ocean-dark"
+#highlight_theme = "monokai"
+highlight_theme = "boron"
 
 [extra]
 # Put all your custom variables here

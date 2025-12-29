@@ -709,6 +709,8 @@ Step 3: prepend `]`-aligned part names:
   [bass] 2:c,     1:f  g,
 ```
 
+For dynamics, like the `@` up with the beat but only add spaces as necessary to keep dynamics from colliding so they don't make things too wide. See examples/hello.stq.
+
 # Morphing
 
 One way to support morphing might be to allow a note to start or end with `>`, e.g.

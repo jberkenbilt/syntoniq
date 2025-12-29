@@ -1,17 +1,23 @@
 # Build and Test
 
-```
+Last full review: 2025-12-29
+
+There is a top-level Taskfile.yml that contains tasks for most of these things. Run `task -l`.
+
+You can build and test for routine development with
+
+```sh
 ./build.sh
 ```
 
 # Coverage
-```
+```sh
 ./coverage.sh
 open target/debug/coverage/index.html
 ```
 
 Run
-```
+```sh
 export LLVM_PROFILE_FILE="$PWD/.grcov/%p-%m.profraw"
 ```
 to avoid creating profraw files when running things manually from a coverage build.

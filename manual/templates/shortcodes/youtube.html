@@ -1,0 +1,16 @@
+<figure>
+  <center>
+    <iframe
+      src="https://www.youtube.com/embed/{{id}}"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+    </iframe>
+    {% if caption %}
+    <figcaption style="font-size: 0.9em; color: #666; text-align: center; margin-top: 0.5em;">
+      {{ caption }}
+    </figcaption>
+    {% endif %}
+  </center>
+</figure>

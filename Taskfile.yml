@@ -29,3 +29,9 @@ tasks:
     dir: manual
     cmds:
       - zola build
+
+  deploy-manual:
+    desc: "Deploy manual to S3"
+    dir: manual
+    cmds:
+      - ./deploy

@@ -1,12 +1,18 @@
+# To-do List
 
-Make sure everything in this file that should be in the manual goes there.
+Work in things from docs/scratch
 
-Use cargo-dist for creating distributions.
+## Software
 
-Use a top-level hand-coded HTML file with links. Remember to use get_url in the Zola templates -- see manual/templates/index.html.
+* Create a `demo` mode. Embed examples/microtonal-hello.stq. Generate the stq, csound, mpe MIDI, and mts MIDI files, and suggest ways to play them back.
 
-cargo install --git https://github.com/jberkenbilt/syntoniq
+## Documentation
 
-Remember not to use "DSL" in the docs.
+* Find all occurrences of `TODO` in the docs.
+* Tweak theme for better colors
+* Remember not to use "DSL" in the docs.
+* Figure out where to document the stuff in misc
 
-Figure out where to document the stuff in misc
+## Release
+
+* Use cargo-dist for creating distributions.
