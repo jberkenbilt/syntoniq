@@ -1,6 +1,6 @@
 +++
 title = "Quick Start: Microtonality"
-weight = 40
+weight = 20
 sort_by = "weight"
 +++
 

@@ -1,6 +1,6 @@
 +++
 title = "SYNTONIQ LANGUAGE"
-weight = 30
+weight = 40
 sort_by = "weight"
 +++
 
