@@ -58,7 +58,7 @@ A Syntoniq file consists of the following things:
 
 For a complete description of the Syntoniq language, see [SYNTONIQ LANGUAGE](../../syntoniq_language/). Here are a few basics so you know what you're looking at.
 
-A note consists of up to three parts: `duration:name:modifiers`. The duration is a *number of beats*. If you use csound, this will be familiar. If you are used to LilyPond, it is different. In LilyPond, `4` is a quarter note, `2` is a half note, etc. In Syntoniq, `1` is a beat, `2` is two beats, etc. Syntoniq doesn't have any concept of quarter notes, etc., as it breaks free from the usual notational conventions of Western music.
+A note consists of up to three parts: `duration:name:modifiers`. The duration is a *number of beats*. If you use csound, this will be familiar. If you are used to LilyPond, it is different. In LilyPond, `4` is a quarter note, `2` is a half note, etc. In Syntoniq, `1` is a beat, `2` is two beats, etc. Syntoniq doesn't have any concept of quarter notes, etc., as it breaks free from the usual notational conventions of Western music. Durations in Syntoniq can be fractions of a beat, but we'll come back to that later.
 
 The note name always starts with a letter and may contain a wide range of characters. A note name may end with `'` followed by an optional number or `,` followed by an optional number. These indicate the number of *cycles* to go up (`'`) or down (`,`). These are similar to octave marks in LilyPond with some differences. If you want to go up or down two octaves, use `'2` or `,2` rather than repeating the mark. Also, notice that we used the term *cycle*, not *octave*. The term *cycle* refers to the interval over which a scale repeats. The default cycle size is the octave, but you can use other intervals&mdash;more on that later!
 
@@ -103,6 +103,7 @@ The file `hello-mpe.midi` is a standard MIDI file with MPE (Midi Polyphonic Expr
 # start Surge XT and set up audio
 aplaymidi --port='Midi Through' hello-mpe.midi
 ```
+On other platforms, you can just load this into your favorite DAW or MIDI player.
 
 {{ audio(src="introduction/hello-mpe.mp3", caption="Audio Created by Surge XT with Luna/Analog Brass") }}
 
