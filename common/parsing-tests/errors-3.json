@@ -20668,6 +20668,28 @@
           }
         },
         {
+          "code": "E1018 incorrect scale data",
+          "context": [],
+          "message": {
+            "span": [
+              1040,
+              1042
+            ],
+            "value": "part p2 is unknown"
+          }
+        },
+        {
+          "code": "E1018 incorrect scale data",
+          "context": [],
+          "message": {
+            "span": [
+              1121,
+              1123
+            ],
+            "value": "part p3 is unknown"
+          }
+        },
+        {
           "code": "E1021 incorrect score block",
           "context": [],
           "message": {
@@ -20714,6 +20736,17 @@
               1169
             ],
             "value": "this dynamic level must be larger than the previous one, which contained a crescendo"
+          }
+        },
+        {
+          "code": "E1018 incorrect scale data",
+          "context": [],
+          "message": {
+            "span": [
+              1176,
+              1178
+            ],
+            "value": "part p2 is unknown"
           }
         },
         {
@@ -20876,6 +20909,17 @@
               1554
             ],
             "value": "not enough bar checks; number expected: 1"
+          }
+        },
+        {
+          "code": "E1018 incorrect scale data",
+          "context": [],
+          "message": {
+            "span": [
+              1569,
+              1571
+            ],
+            "value": "part p3 is unknown"
           }
         },
         {

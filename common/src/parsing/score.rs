@@ -687,9 +687,17 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
         line: &DynamicLine<'s>,
         beats_per_bar: &Option<Vec<Ratio<u32>>>,
     ) {
-        self.score
+        if !self
+            .score
             .known_parts
-            .insert(Cow::Borrowed(line.leader.value.name.value));
+            .contains(line.leader.value.name.value)
+        {
+            self.diags.err(
+                code::SCALE,
+                line.leader.value.name.span,
+                format!("part {} is unknown", line.leader.value.name.value),
+            );
+        }
         self.check_duplicated_dynamic_line(&line.leader);
         let mut bar_check_idx = 0usize;
         let mut check_bars = beats_per_bar.is_some();
