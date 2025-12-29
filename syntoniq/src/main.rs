@@ -6,6 +6,7 @@ use std::{env, process};
 use syntoniq::generator;
 use syntoniq::generator::GenerateOptions;
 use syntoniq_common::parsing;
+use syntoniq_common::parsing::score;
 
 /// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
 /// If RUST_LOG is not set, the log level defaults to Info.
@@ -33,6 +34,8 @@ enum Commands {
     },
     /// Write built-in CSound template to standard output
     CsoundTemplate,
+    /// Write built-in scales in syntoniq format to standard output
+    BuiltInScales,
 }
 
 fn run() -> anyhow::Result<()> {
@@ -51,6 +54,10 @@ fn run() -> anyhow::Result<()> {
         }
         Commands::CsoundTemplate => {
             print!("{}", generator::CSOUND_TEMPLATE);
+            Ok(())
+        }
+        Commands::BuiltInScales => {
+            print!("{}", score::BUILTIN_SCALES);
             Ok(())
         }
         Commands::Generate(options) => generator::run(options),
