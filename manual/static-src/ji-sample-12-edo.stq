@@ -1,0 +1,19 @@
+syntoniq(version=1)
+tempo(bpm=60)
+[p1.1] 2:d    d     4:c
+[p1.2] 2:f#   f     4:e
+[p1.3] 3:a      1:g 4:g
+[p1.4] 2:c'   b     4:b
+[p1.5] 2:~    ~     ~    d'
+[p1.6] 2:~    ~     ~    f#'
+[p1.7] 2:~    ~     ~    a'
+
+define_generated_scale(scale="gen-12" divisions=12)
+use_scale(scale="gen-12")
+[p1.1] 2:I    I       4:A
+[p1.2] 2:IE   IF      4:E
+[p1.3] 3:IC       1:C 4:C
+[p1.4] 2:Ih'  If'     4:p'
+[p1.5] 2:~    ~       ~    I'
+[p1.6] 2:~    ~       ~    Cl'
+[p1.7] 2:~    ~       ~    IC'

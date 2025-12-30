@@ -15,6 +15,9 @@ tasks:
       - stq-csound-mp3:major-thirds
       - stq-csound-mp3:5-edo-pqrst
       - stq-csound-mp3:13-ed3
+      - stq-csound-mp3:ji-sample-12-edo
+      - stq-csound-mp3:ji-sample
+      - stq-csound-mp3:ji-sample-41-edo
       - built-in-scales
       - directives
     cmds:
