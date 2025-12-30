@@ -8,6 +8,9 @@ Work in things from docs/scratch
 
 ## Documentation
 
+* Extend autogen:
+  * Have something that postprocesses the output of `syntonic doc` into markdodwn
+  * include `syntoniq built-in-scales`
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
 * Find all occurrences of `TODO` in the docs.
 * Tweak theme for better colors

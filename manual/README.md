@@ -43,6 +43,22 @@ Note ./ordering for tweaking section order
 
 Remember to use get_url for absolute paths in the Zola templates -- see manual/templates/index.html.
 
+# Generated Content
+
+There is a magic comment `<!-- generate ... -->` that can appear in markdown sources. It has a very exact syntax that is recognized by `./autogen`.
+
+Generated sections are always delimited with
+```
+<!-- generate k=v k=v ... -->
+# generated material
+<!-- end-generate -->
+```
+
+Valid operations:
+* `include=file checksum=...` -- include the contents of `static-src/file` verbatim. The checksum is updated if the file changes so we can avoid gratuitously updating files. This can be used to include source examples or other things. Files in `static-src` can be generated or manual. The script knows to quote .stq files with ` ```syntoniq ` and may have other special case logic.
+
+Audio files can be automatically generated from stq files for the manual. You have to add them to `manual/static-src/Taskfile.yml`.
+
 ----------
 
 TODO:

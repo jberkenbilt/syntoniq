@@ -1,0 +1,26 @@
+version: '3'
+
+tasks:
+  default:
+    cmds:
+      # Every *-csound.mp3 file included in the docs can be generated
+      # from a *.stq file in this directory. They have to be
+      # explicitly added here. Currently, *-mpe.mp3 and *-mts.mp3 are
+      # manually generated.
+      - task: stq-csound-mp3:110-to-880hz
+      - task: stq-csound-mp3:440-to-660hz
+      - task: stq-csound-mp3:440hz
+      - task: stq-csound-mp3:harmonic-1-to-12
+      - task: stq-csound-mp3:hello
+      - task: stq-csound-mp3:major-thirds
+
+  stq-csound-mp3:*:
+    cmds:
+      - "../../target/debug/syntoniq generate --score={{index .MATCH 0}}.stq --csound={{index .MATCH 0}}.csd"
+      - "csound --wave -o {{index .MATCH 0}}.wav {{index .MATCH 0}}.csd"
+      - "lame -V 0 -h {{index .MATCH 0}}.wav ../static/{{index .MATCH 0}}-csound.mp3"
+      - "rm {{index .MATCH 0}}.wav {{index .MATCH 0}}.csd"
+    sources:
+      - ./{{index .MATCH 0}}.stq
+    generates:
+      - ../static/{{index .MATCH 0}}-csound.mp3

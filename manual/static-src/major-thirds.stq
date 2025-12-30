@@ -1,0 +1,29 @@
+syntoniq(version=1)
+; Part p1 uses the default scale. Part p2 uses the built-in "JI"
+; scale, for just intonation.
+use_scale(scale="JI" part="p2")
+
+; Play two whole steps and a major third using 12-tone equal
+; temperament
+[p1.0] 1:c d e ~ 3:e 1:~
+[p1.1] 4:~       3:c 1:~
+
+; Play two whole steps and the 81/64 interval using just intonation
+[p2.0] 1:A I II ~ 3:II 1:~
+[p2.1] 4:~        3:A  1:~
+
+; Switch back and forth between a perfect 5/4 major third, a 12-tone
+; equal temperament major third (2^(1/3)), and the 81/64 ratio from
+; stacking two whole tones.
+tempo(bpm=30)
+mark(label="a")
+[p1.0] 1:~ c ~  ~
+[p1.1] 1:~ e ~  ~
+[p2.1] 1:A ~ A  ~
+[p2.2] 1:E ~ II ~
+mark(label="b")
+
+; Repeat three more times
+repeat(start="a" end="b")
+repeat(start="a" end="b")
+repeat(start="a" end="b")

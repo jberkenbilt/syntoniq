@@ -8,6 +8,7 @@ In this section, we will discuss the basics of the Syntoniq language and produce
 
 Here's a simple Syntoniq score file:
 
+<!-- generate include=hello.stq checksum=f7c2a15b5a54491b3b9f9e1c471b01ed442e3f2f5d1f75691ebc9e8c9bd4631e -->
 ```syntoniq
 syntoniq(version=1)
 
@@ -19,6 +20,7 @@ syntoniq(version=1)
 [p1.4]  1:~ a,   g, c,
   [p1] 64@0<    127@4
 ```
+<!-- generate-end -->
 
 In this example:
 * `syntoniq(version=1)` is a *directive*. The `syntoniq` directive has to appear before any other content (except comments, spaces, and blank lines).
@@ -96,6 +98,11 @@ The file `hello.csd` contains [CSound](https://csound.com) output. If you want t
 
 The file `hello-mts.midi` is a standard MIDI file that embeds MTS (Midi Tuning System) SysEx (System Exclusive) messages and assigns a MIDI note number to each pitch. For most workflows, you will want the MPE version of MIDI, but the MTS version may be better with stand-alone MIDI to audio converters. If you're using the regular 12-tone scale, you can play this with any converter or player. Otherwise, you need software that understand these messages. If you have [TiMidity++](https://timidity.sourceforge.net/), you can run `timidity hello-mts.midi`. TiMidity++ is a very old but highly functional MIDI to WAVE converter. It is one of the few tools that natively understands MIDI with embedded MTS.
 
+<!--
+To generate
+* timidity -A100,100a -OwM /tmp/a.midi /tmp/a.wav
+* convert to mp3 using same lame as in static-src/Taskfile.yml
+-->
 {{ audio(src="introduction/hello-mts.mp3", caption="Audio Created by TiMidity++ with Fluid sound font") }}
 
 The file `hello-mpe.midi` is a standard MIDI file with MPE (Midi Polyphonic Expression) compatible pitch bend statements. In this example, which uses regular 12-tone pitches, there won't be any, but for microtonal music, these are essential. A file like this can be loaded into a Digital Audio Workstation (DAW) or consumed by other MIDI tools. You can play this with a MIDI player of your choice. One way to hear this on Linux is to install a synth tool, such as Surge XT, and to send the file to it using a tool such as `aplaymidi`. For example:
@@ -105,6 +112,15 @@ aplaymidi --port='Midi Through' hello-mpe.midi
 ```
 On other platforms, you can just load this into your favorite DAW or MIDI player.
 
+<!--
+To generate
+* Start Surge XT
+* Select Luna -> Analog Brass
+* Start sox `rec` command with input set to monitoring the output device of Surge XT
+* Use `aplaymidi --port='Midi Through'`
+* Stop `rec`
+* Trim the with with audacity and convert to mp3 using same lame as in static-src/Taskfile.yml
+-->
 {{ audio(src="introduction/hello-mpe.mp3", caption="Audio Created by Surge XT with Luna/Analog Brass") }}
 
 TODO:

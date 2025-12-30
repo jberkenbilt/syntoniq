@@ -18,15 +18,24 @@ tasks:
       - ./coverage.sh
     silent: true
 
+  manual-autogen:
+    dir: manual/static-src
+    cmds:
+      - task default
+
   manual-serve:
     desc: "Serve manual for editing"
     dir: manual
+    deps:
+      - manual-autogen
     cmds:
       - zola serve
 
   manual-build:
     desc: "Build manual"
     dir: manual
+    deps:
+      - manual-autogen
     cmds:
       - zola build
 

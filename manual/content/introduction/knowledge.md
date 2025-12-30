@@ -17,32 +17,38 @@ Sound is created by vibration. When a physical object, such as a metal string or
 
 Our perception of frequency as pitch is *logarithmic*. That means that, to increase a pitch by a fixed amount, you have to *multiply* something by the frequency rather than adding it. (If it were adding, we'd say our perception of pitch were linear.) For example, when you double the frequency of a sound, the pitch goes up by one octave. As a concrete example, consider the sound 440 Hz. That is the pitch of the A above middle C on a piano.
 
+<!-- generate include=440hz.stq checksum=c981b1f7d65cc6f0de9baf72a7c03eb0e3f28e3b226f9f10a512b776b16d8995 -->
 ```syntoniq
 syntoniq(version=1)
 [p1.0] 4:a
 ```
+<!-- generate-end -->
 
-{{ audio(src="introduction/440hz.mp3", caption="440 Hz") }}
+{{ audio(src="440hz-csound.mp3", caption="440 Hz") }}
 
 If we play 110, 220, 440, and 880 Hz tones, we hear the A in four separate octaves.
 
+<!-- generate include=110-to-880hz.stq checksum=f8896e309759782f1f2ecbefb021df30d02789087cc6aefe1efaeee685c70f98 -->
 ```syntoniq
 syntoniq(version=1)
 [p1.0] 1:a,2 a, a a'
 ```
+<!-- generate-end -->
 
-{{ audio(src="introduction/110-to-880hz.mp3", caption="110, 220, 440, 880 Hz") }}
+{{ audio(src="110-to-880hz-csound.mp3", caption="110, 220, 440, 880 Hz") }}
 
 # Pure Intervals
 
 Since doubling the frequency of a sound increases the pitch by an octave, we say the octave has a ratio of 2:1, or 2/1 or just 2. Other ratios represent other intervals. The ratio of a perfect fifth is 3:2, or 3/2. We will write ratios as fractions, like 3/2. Here's 440 Hz followed by 660 Hz, where $660 = 440 \times \frac{3}{2}$.
 
+<!-- generate include=440-to-660hz.stq checksum=95b62e0246c61842d4be5cf183f9c16317b5ea265c24dde3e6a639d09701a9ee -->
 ```syntoniq
 syntoniq(version=1)
 [p1.0] 1:a e'
 ```
+<!-- generate-end -->
 
-{{ audio(src="introduction/440-to-660hz.mp3", caption="440, 660 Hz") }}
+{{ audio(src="440-to-660hz-csound.mp3", caption="440, 660 Hz") }}
 
 # The Harmonic Series
 
@@ -50,6 +56,7 @@ In nature, when something vibrates, there are *overtones*, which are integer mul
 
 The sample below holds a fundamental frequency of 100 Hz and plays, on top of it, each successive note in the harmonic series up to the 12th harmonic. This is our first example of a custom scale, but don't worry about the syntax yet...that will be explained later.
 
+<!-- generate include=harmonic-1-to-12.stq checksum=f90e5645f118d70fe17da69afe7d4dfa4e41c57aa509fbe92a569c32847f2fad -->
 ```syntoniq
 syntoniq(version=1)
 define_scale(scale="harmonics") <<
@@ -61,8 +68,9 @@ set_base_pitch(absolute=100)
 [p1.0] 12:h1
 [p1.1] 1:h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12
 ```
+<!-- generate-end -->
 
-{{ audio(src="introduction/harmonic-1-to-12.mp3", caption="First 12 notes in harmonic series") }}
+{{ audio(src="harmonic-1-to-12-csound.mp3", caption="First 12 notes in harmonic series") }}
 
 # Just Intonation and Equal Tuning
 
@@ -87,6 +95,7 @@ Let's make this more concrete with a different discrepancy. If a perfect fifth i
 
 Let's hear what this sounds like. In this example, you'll see the use of the built-in "JI" scale with some unfamiliar note names like `I` and `II`. We will come back to that later! You'll also get a sneak preview of a few of Syntoniq's other features.
 
+<!-- generate include=major-thirds.stq checksum=d6f7cad666d76135998a7f70a313bc71acca404c37f690a3f30a4f9103540a2b -->
 ```syntoniq
 syntoniq(version=1)
 ; Part p1 uses the default scale. Part p2 uses the built-in "JI"
@@ -118,7 +127,8 @@ repeat(start="a" end="b")
 repeat(start="a" end="b")
 repeat(start="a" end="b")
 ```
+<!-- generate-end -->
 
-{{ audio(src="introduction/major-thirds.mp3", caption="5/4, $\sqrt[3]{2}$, 81/64") }}
+{{ audio(src="major-thirds-csound.mp3", caption="5/4, $\sqrt[3]{2}$, 81/64") }}
 
 Syntoniq has its own notation for [representing pitches](TODO). We'll discuss that later in the manual. For now, this has been a review of the basics of just intonation and equal-step tuning. We'll continue to build upon that in the remainder of the manual.
