@@ -43,6 +43,19 @@ Note ./ordering for tweaking section order
 
 Remember to use get_url for absolute paths in the Zola templates -- see manual/templates/index.html.
 
+# Elisp Help
+
+```elisp
+(progn
+  (set-register ?s "♯")
+  (set-register ?b "♭")
+  (set-register ?x "𝄪")
+  (set-register ?f "𝄫")
+  (set-register ?u "↑")
+  (set-register ?d "↓")
+)
+```
+
 # Generated Content
 
 There is a magic comment `<!-- generate ... -->` that can appear in markdown sources. It has a very exact syntax that is recognized by `./autogen`.

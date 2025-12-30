@@ -1,6 +1,6 @@
 +++
 title = "Prerequisite Knowledge"
-weight = 30
+weight = 10
 sort_by = "weight"
 +++
 
@@ -56,12 +56,12 @@ In nature, when something vibrates, there are *overtones*, which are integer mul
 
 The sample below holds a fundamental frequency of 100 Hz and plays, on top of it, each successive note in the harmonic series up to the 12th harmonic. This is our first example of a custom scale, but don't worry about the syntax yet...that will be explained later.
 
-<!-- generate include=harmonic-1-to-12.stq checksum=f90e5645f118d70fe17da69afe7d4dfa4e41c57aa509fbe92a569c32847f2fad -->
+<!-- generate include=harmonic-1-to-12.stq checksum=fda04e5705774d5914914bddc822f9baa553058ad36a4e6d9b37de5f5942a9ea -->
 ```syntoniq
 syntoniq(version=1)
 define_scale(scale="harmonics") <<
-1 h1 | 2 h2 | 3 h3 | 4 h4 | 5 h5 | 6 h6
-7 h7 | 8 h8 | 9 h9 | 10 h10 | 11 h11 | 12 h12
+1 h1   2 h2   3 h3   4 h4   5 h5   6 h6
+7 h7   8 h8   9 h9   10 h10   11 h11   12 h12
 >>
 use_scale(scale="harmonics")
 set_base_pitch(absolute=100)

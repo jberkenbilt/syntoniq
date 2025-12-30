@@ -1,0 +1,13 @@
+syntoniq(version=1)
+define_scale(scale="13-ED3" cycle_ratio=3) <<
+ 3^0|13 j x0    3^1|13 k x1    3^2|13 l x2
+ 3^3|13 m x3    3^4|13 n x4    3^5|13 o x5
+ 3^6|13 p x6    3^7|13 q x7    3^8|13 r x8
+ 3^9|13 s x9   3^10|13 t x10  3^11|13 u x11
+3^12|13 v x12
+>>
+use_scale(scale="13-ED3")
+
+[p1.0] 1:j  k  l  m  n  o  p  q   4:~
+[p1.1] 1:x3 x4 x5 x6 x7 x8 x9 x10   ~ 3:j
+[p1.3] 1:p  q  r  s  t  u  v  j'    ~ 3:j'

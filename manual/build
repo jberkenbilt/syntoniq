@@ -1,0 +1,5 @@
+#!/bin/bash
+set -eo pipefail
+cd $(dirname $0)
+task --dir static-src
+zola build

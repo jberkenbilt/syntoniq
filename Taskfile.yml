@@ -34,10 +34,8 @@ tasks:
   manual-build:
     desc: "Build manual"
     dir: manual
-    deps:
-      - manual-autogen
     cmds:
-      - zola build
+      - ./build
 
   deploy-manual:
     desc: "Deploy manual to S3"

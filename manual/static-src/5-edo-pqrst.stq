@@ -1,0 +1,11 @@
+syntoniq(version=1)
+define_scale(scale="5-EDO") <<
+^0|5 p
+^1|5 q
+^2|5 r
+^3|5 s
+^4|5 t
+>>
+use_scale(scale="5-EDO")
+
+[p1.0] 1:p q r s t p'

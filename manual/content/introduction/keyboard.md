@@ -1,6 +1,6 @@
 +++
 title = "About the Keyboard"
-weight = 40
+weight = 30
 sort_by = "weight"
 +++
 

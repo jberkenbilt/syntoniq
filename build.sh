@@ -11,5 +11,6 @@ cargo clippy --tests --no-deps
 # Avoid --document-private-items -- generates warnings with csound docs
 cargo doc --no-deps
 cargo build --workspace --all-targets
+./manual/build
 export RUST_BACKTRACE=1
 cargo test --workspace
