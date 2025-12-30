@@ -1163,30 +1163,10 @@
       {
         "span": [
           290,
-          291
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          291,
-          292
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          292,
           293
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1233,30 +1213,10 @@
       {
         "span": [
           296,
-          297
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          297,
-          298
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          298,
           299
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1303,30 +1263,10 @@
       {
         "span": [
           302,
-          303
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          303,
-          304
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          304,
           305
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1373,30 +1313,10 @@
       {
         "span": [
           308,
-          309
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          309,
-          310
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          310,
           311
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1610,30 +1530,10 @@
       {
         "span": [
           354,
-          355
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          355,
-          356
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          356,
           357
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1680,30 +1580,10 @@
       {
         "span": [
           360,
-          361
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          361,
-          362
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          362,
           363
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1780,30 +1660,10 @@
       {
         "span": [
           368,
-          369
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          369,
-          370
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          370,
           371
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -2207,30 +2067,10 @@
       {
         "span": [
           477,
-          478
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          478,
-          479
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          479,
           480
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -5838,7 +5678,7 @@
           319
         ],
         "value": {
-          "raw": "define_scale(scale=\"5-EDO\") << 1 u | 2 v | 3 w | 4 x | 5 y/z >>",
+          "raw": "define_scale(scale=\"5-EDO\") << 1 u   2 v   3 w   4 x   5 y/z >>",
           "t": {
             "Directive": {
               "block": {
@@ -6051,7 +5891,7 @@
           378
         ],
         "value": {
-          "raw": "define_scale(scale=\"3-EDO\") << 1 u | 2 v | 3/2 w | 4/3 x>>",
+          "raw": "define_scale(scale=\"3-EDO\") << 1 u   2 v   3/2 w   4/3 x>>",
           "t": {
             "Directive": {
               "block": {
@@ -6261,7 +6101,7 @@
           523
         ],
         "value": {
-          "raw": "define_scale(scale=\"random\")\n<< ; opening comment\n*1 q+\n*^2|17 r* potato | 3.14 pi ;comment\r\n*^3|13 z!!\n22/7 w/x/yZ\n>>",
+          "raw": "define_scale(scale=\"random\")\n<< ; opening comment\n*1 q+\n*^2|17 r* potato   3.14 pi ;comment\r\n*^3|13 z!!\n22/7 w/x/yZ\n>>",
           "t": {
             "Directive": {
               "block": {

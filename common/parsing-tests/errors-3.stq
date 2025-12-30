@@ -2,11 +2,11 @@ syntoniq(version=1 potato="salad")
 syntoniq(version=2) syntoniq(version=1)
 onceThere(quack="moo π" a=3.14 b = *^-2|17 d = 1/5)
 
-define_scale(scale="5-EDO") << 1 u | 2 v | 3 w | 4 w | 5 y/z >>
-define_scale(scale="5-EDO") << 1 u | 2 v | 3/2 w | 4/3 x>> ; terminate with no space
+define_scale(scale="5-EDO") << 1 u   2 v   3 w   4 w   5 y/z >>
+define_scale(scale="5-EDO") << 1 u   2 v   3/2 w   4/3 x>> ; terminate with no space
 define_scale(scale="random") << ; opening comment
 *1 q+
-*^2|17 r* potato | 3.14 pi ; comment
+*^2|17 r* potato   3.14 pi ; comment
 *^3|13 z!!
 *^3|13 x!! potato
 22/7 w/x/yZ

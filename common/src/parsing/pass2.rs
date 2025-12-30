@@ -783,7 +783,7 @@ fn scale_note<'s>(
                 preceded(optional_space, pitch_or_number(diags)),
                 terminated(
                     combinator::repeat(1.., preceded(space_only, note_name())),
-                    opt(space(false)),
+                    opt(some_space),
                 ),
             ),
             optional_space,
@@ -795,15 +795,6 @@ fn scale_note<'s>(
                 model::merge_spans(&[pitch.get_span(), note_names.as_slice().get_span()]).unwrap();
             Spanned::new(span, ScaleNote { pitch, note_names })
         })?;
-        // If this is followed by a newline or a bar, we need to consume it, but if it's followed
-        // by scale end, we need to leave it there. It's easier to do this explicitly.
-        if peek(definition_end).parse_next(input).is_err() {
-            (
-                optional_space,
-                alt((character('|').map(|_| ()), space(true))),
-            )
-                .parse_next(input)?;
-        }
         Ok(r1)
     }
 }

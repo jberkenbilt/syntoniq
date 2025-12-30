@@ -61,7 +61,7 @@ for notes in all_notes:
         if i == 3 or i == len(notes) - 1:
             print('')
         else:
-            print(' |', end='')
+            print(' ', end='')
     print('>>')
     print(f'define_manual_mapping(scale="{name}" mapping="{name}") <<')
     for (i, (a, b)) in enumerate(notes):

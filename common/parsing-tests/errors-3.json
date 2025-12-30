@@ -825,30 +825,10 @@
       {
         "span": [
           163,
-          164
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          164,
-          165
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          165,
           166
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -895,30 +875,10 @@
       {
         "span": [
           169,
-          170
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          170,
-          171
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          171,
           172
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -965,30 +925,10 @@
       {
         "span": [
           175,
-          176
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          176,
-          177
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          177,
           178
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1035,30 +975,10 @@
       {
         "span": [
           181,
-          182
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          182,
-          183
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          183,
           184
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1272,30 +1192,10 @@
       {
         "span": [
           227,
-          228
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          228,
-          229
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          229,
           230
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1342,30 +1242,10 @@
       {
         "span": [
           233,
-          234
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          234,
-          235
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          235,
           236
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1442,30 +1322,10 @@
       {
         "span": [
           241,
-          242
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          242,
-          243
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          243,
           244
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -1869,30 +1729,10 @@
       {
         "span": [
           350,
-          351
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          351,
-          352
-        ],
-        "value": {
-          "raw": "|",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          352,
           353
         ],
         "value": {
-          "raw": " ",
+          "raw": "   ",
           "t": "Space"
         }
       },
@@ -12773,7 +12613,7 @@
           192
         ],
         "value": {
-          "raw": "define_scale(scale=\"5-EDO\") << 1 u | 2 v | 3 w | 4 w | 5 y/z >>",
+          "raw": "define_scale(scale=\"5-EDO\") << 1 u   2 v   3 w   4 w   5 y/z >>",
           "t": {
             "Directive": {
               "block": {
@@ -12986,7 +12826,7 @@
           251
         ],
         "value": {
-          "raw": "define_scale(scale=\"5-EDO\") << 1 u | 2 v | 3/2 w | 4/3 x>>",
+          "raw": "define_scale(scale=\"5-EDO\") << 1 u   2 v   3/2 w   4/3 x>>",
           "t": {
             "Directive": {
               "block": {
@@ -13196,7 +13036,7 @@
           414
         ],
         "value": {
-          "raw": "define_scale(scale=\"random\") << ; opening comment\n*1 q+\n*^2|17 r* potato | 3.14 pi ; comment\n*^3|13 z!!\n*^3|13 x!! potato\n22/7 w/x/yZ\n>>",
+          "raw": "define_scale(scale=\"random\") << ; opening comment\n*1 q+\n*^2|17 r* potato   3.14 pi ; comment\n*^3|13 z!!\n*^3|13 x!! potato\n22/7 w/x/yZ\n>>",
           "t": {
             "Directive": {
               "block": {

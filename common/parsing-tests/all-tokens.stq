@@ -11,12 +11,12 @@ else( ; comment
   a=1
   b="immediate close")
 
-define_scale(scale="5-EDO") << 1 u | 2 v | 3 w | 4 x | 5 y/z >>
-define_scale(scale="3-EDO") << 1 u | 2 v | 3/2 w | 4/3 x>> ; terminate with no space
+define_scale(scale="5-EDO") << 1 u   2 v   3 w   4 x   5 y/z >>
+define_scale(scale="3-EDO") << 1 u   2 v   3/2 w   4/3 x>> ; terminate with no space
 define_scale(scale="random")
 << ; opening comment
 *1 q+
-*^2|17 r* potato | 3.14 pi ;comment
+*^2|17 r* potato   3.14 pi ;comment
 *^3|13 z!!
 22/7 w/x/yZ
 >>

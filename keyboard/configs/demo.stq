@@ -6,12 +6,12 @@ place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="hexboard" anc
 place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="hexboard-60" anchor_row=9 anchor_col=8)
 
 define_scale(scale="17-EDO") <<
- ^0|17 c | ^1|17 c# | ^2|17 d%
- ^3|17 d | ^4|17 d# | ^5|17 e%
+ ^0|17 c   ^1|17 c#   ^2|17 d%
+ ^3|17 d   ^4|17 d#   ^5|17 e%
  ^6|17 e
- ^7|17 f | ^8|17 f# | ^9|17 g%
-^10|17 g | ^11|17 g# | ^12|17 a%
-^13|17 a | ^14|17 a# | ^15|17 b%
+ ^7|17 f   ^8|17 f#   ^9|17 g%
+^10|17 g   ^11|17 g#   ^12|17 a%
+^13|17 a   ^14|17 a#   ^15|17 b%
 ^16|17 b
 >>
 
@@ -191,14 +191,14 @@ place_mapping(
 )
 
 define_scale(scale="harmonics") <<
-1 h1 | 2 h2 | 3 h3 | 4 h4 | 5 h5 | 6 h6 | 7 h7 | 8 h8
-9 h9 | 10 h10 | 11 h11 | 12 h12 | 13 h13 | 14 h14 | 15 h15 | 16 h16
-17 h17 | 18 h18 | 19 h19 | 20 h20 | 21 h21 | 22 h22 | 23 h23 | 24 h24
-25 h25 | 26 h26 | 27 h27 | 28 h28 | 29 h29 | 30 h30 | 31 h31 | 32 h32
-33 h33 | 34 h34 | 35 h35 | 36 h36 | 37 h37 | 38 h38 | 39 h39 | 40 h40
-41 h41 | 42 h42 | 43 h43 | 44 h44 | 45 h45 | 46 h46 | 47 h47 | 48 h48
-49 h49 | 50 h50 | 51 h51 | 52 h52 | 53 h53 | 54 h54 | 55 h55 | 56 h56
-57 h57 | 58 h58 | 59 h59 | 60 h60 | 61 h61 | 62 h62 | 63 h63 | 64 h64
+1 h1   2 h2   3 h3   4 h4   5 h5   6 h6   7 h7   8 h8
+9 h9   10 h10   11 h11   12 h12   13 h13   14 h14   15 h15   16 h16
+17 h17   18 h18   19 h19   20 h20   21 h21   22 h22   23 h23   24 h24
+25 h25   26 h26   27 h27   28 h28   29 h29   30 h30   31 h31   32 h32
+33 h33   34 h34   35 h35   36 h36   37 h37   38 h38   39 h39   40 h40
+41 h41   42 h42   43 h43   44 h44   45 h45   46 h46   47 h47   48 h48
+49 h49   50 h50   51 h51   52 h52   53 h53   54 h54   55 h55   56 h56
+57 h57   58 h58   59 h59   60 h60   61 h61   62 h62   63 h63   64 h64
 >>
 
 define_manual_mapping(mapping="harmonics" scale="harmonics") <<
