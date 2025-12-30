@@ -15,6 +15,9 @@ pub trait FromRawDirective<'s>: Sized {
     fn show_help(w: &mut impl io::Write) -> io::Result<()>;
 }
 
+// NOTE: doc comments directives must be valid markdown. They are automatically included in the
+// manual.
+
 #[derive(FromRawDirective)]
 /// Set the syntoniq file format version. This must be the first functional item
 /// in the file.
@@ -54,7 +57,7 @@ impl<'s> DefineScale<'s> {
 #[derive(FromRawDirective)]
 /// Define a generated scale. Note pitches are generated according to the
 /// following rules:
-/// - Notes consist of letters, numbers, +, -, #, %, !, and /.
+/// - Notes consist of letters, numbers, `+`, `-`, `#`, `%`, `!`, and `/`.
 /// - `A` and `a` represent the root of the scale
 /// - `B` through `Y` represent n/n-1 where n is the ordinal position of the
 ///   letter (B=2, C=3/2, D=4/3, etc.)
@@ -62,8 +65,8 @@ impl<'s> DefineScale<'s> {
 ///   counterparts (b=1/2, c=2/3, d=3/4, etc.)
 /// - `Z` followed by a number ≥ 2 represents n/n-1 (e.g. Z30 = 30/29)
 /// - `z` followed by a number ≥ 2 represents n-n/n (e.g. z30 = 29/30)
-/// - All factors are multiplied to create the base pitch; e.g, (Bh = 2*7/8 =
-///   7/4, Cl = 3/2*11/12 = 11/8)
+/// - All factors are multiplied to create the base pitch; e.g, (Bh = 2×7/8 =
+///   7/4, Cl = 3/2×11/12 = 11/8)
 ///
 /// When `divisions` is specified, the following additional rules apply, noting that the divided
 /// interval can be explicitly given and defaults to the cycle ratio, which defaults to 2.
@@ -81,11 +84,11 @@ impl<'s> DefineScale<'s> {
 ///
 /// The specified divisions or divided_interval can be overridden by appending `!` followed
 /// by optional numbers separated by `/`. This causes the following additional changes:
-/// - `!` -- forces the exact ratio to be used, allowing pure ratios to be mixed with equal
+/// - `!` — forces the exact ratio to be used, allowing pure ratios to be mixed with equal
 ///   divisions
-/// - `!n` -- interprets the note as if `divisions=n` where specified
-/// - `!a/n` -- interprets the notes as if `divided_interval=a divisions=n` where specified
-/// - `!a/b/n` -- interprets the notes as if `divided_interval=a/b divisions=n` where specified
+/// - `!n` — interprets the note as if `divisions=n` where specified
+/// - `!a/n` — interprets the notes as if `divided_interval=a divisions=n` where specified
+/// - `!a/b/n` — interprets the notes as if `divided_interval=a/b divisions=n` where specified
 ///
 /// Example: with `divisions=17` and tolerance of 4¢:
 /// - `E` is `^5|17` because 5/4 is between steps 5 and 6 (zero-based) but is
@@ -102,14 +105,13 @@ pub struct DefineGeneratedScale<'s> {
     pub scale: Spanned<Cow<'s, str>>,
     /// ratio to be applied by the octave marker; default is 2 (one octave)
     pub cycle_ratio: Option<Spanned<Ratio<u32>>>,
-    /// divisions -- number steps to divide the divided interval into  -- omit for a pure
-    /// Just-Intonation scale
+    /// number steps to divide the divided interval into; omit for a pure just intonation scale
     pub divisions: Option<Spanned<u32>>,
     /// interval to divide when `divisions` is given or specified as a single digit in an override;
     /// defaults to cycle_ratio
     pub divided_interval: Option<Spanned<Ratio<u32>>>,
-    /// tolerance for `#` and `%` -- `#` and `%` are ignored if computed pitch
-    /// is within `tolerance` of a scale degree; applies only `divisions` is given
+    /// tolerance for `#` and `%` — `#` and `%` are ignored if computed pitch
+    /// is within `tolerance` of a scale degree; applies only when `divisions` is given
     pub tolerance: Option<Spanned<Pitch>>,
 }
 impl<'s> DefineGeneratedScale<'s> {
@@ -134,7 +136,7 @@ pub struct UseScale<'s> {
     pub span: Span,
     /// Scale name
     pub scale: Spanned<Cow<'s, str>>,
-    /// Which parts the tune; if not specified, all parts are tuned
+    /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Cow<'s, str>>>,
 }
 impl<'s> UseScale<'s> {
@@ -161,7 +163,7 @@ pub struct Transpose<'s> {
     /// Name of the note in the existing tuning whose pitch will be given to the
     /// `written` note after transposition.
     pub pitch_from: Spanned<Cow<'s, str>>,
-    /// Which parts the tune; if not specified, all parts are tuned
+    /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Cow<'s, str>>>,
 }
 impl<'s> Transpose<'s> {
@@ -183,7 +185,7 @@ pub struct SetBasePitch<'s> {
     pub absolute: Option<Spanned<Pitch>>,
     /// Multiply the base pitch of the current tuning by the specified factor
     pub relative: Option<Spanned<Pitch>>,
-    /// Which parts the tune; if not specified, all parts are tuned
+    /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Cow<'s, str>>>,
 }
 impl<'s> SetBasePitch<'s> {
@@ -207,7 +209,7 @@ impl<'s> SetBasePitch<'s> {
 /// resets the tuning for each specified part to use the global tuning.
 pub struct ResetTuning<'s> {
     pub span: Span,
-    /// Which parts the tune; if not specified, all parts are tuned
+    /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Cow<'s, str>>>,
 }
 impl<'s> ResetTuning<'s> {

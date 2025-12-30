@@ -6,6 +6,7 @@
 use heck::ToSnakeCase;
 use proc_macro::TokenStream;
 use quote::{ToTokens, quote};
+use std::collections::BTreeMap;
 use syn::{
     Attribute, Data, DataStruct, DeriveInput, GenericArgument, PathArguments, Type, TypeGroup,
     TypeParen, TypePath,
@@ -78,20 +79,22 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
     let mut arg_checks = Vec::new();
     let mut required_checks = Vec::new();
     let mut inits = Vec::new();
-    let mut help_statements = vec![quote! {
-        write!(w, "\n*** '{}' ***\n", #directive_name)?;
+    let mut top_help = vec![quote! {
+        write!(w, "\n## {}\n\n", #directive_name)?;
     }];
+    let mut data_block_help = Vec::new();
+    let mut arg_help = Vec::new();
     let mut wanted_data_block = DataBlockType::None;
     let mut top_doc_comment = String::new();
-    get_doc_comment(&input.attrs, &mut top_doc_comment, "  ");
+    get_doc_comment(&input.attrs, &mut top_doc_comment);
     if !top_doc_comment.is_empty() {
-        help_statements.push(quote! {
+        top_help.push(quote! {
             write!(w, "{}", #top_doc_comment)?;
         });
     }
     if !data.fields.is_empty() {
-        help_statements.push(quote! {
-            write!(w, "  ---\n")?;
+        arg_help.push(quote! {
+            write!(w, "\n**Parameters**:\n")?;
         });
     }
 
@@ -116,8 +119,8 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
                     DataBlockType::None => DataBlockType::Scale,
                     _ => panic!("at most one data block field may appear"),
                 };
-                help_statements.push(quote! {
-                    write!(w, "  This directive must be followed by a scale block.\n")?;
+                data_block_help.push(quote! {
+                    write!(w, "\nThis directive must be followed by a scale block.\n")?;
                 });
             }
             if *field_name == "layout_block" {
@@ -125,8 +128,8 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
                     DataBlockType::None => DataBlockType::Layout,
                     _ => panic!("at most one data block field may appear"),
                 };
-                help_statements.push(quote! {
-                    write!(w, "  This directive must be followed by a layout block.\n")?;
+                data_block_help.push(quote! {
+                    write!(w, "\nThis directive must be followed by a layout block.\n")?;
                 });
             }
             continue;
@@ -139,7 +142,7 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
         // Generate code fragments. These are in context of the generated function (at the end).
 
         let mut doc_comment = String::new();
-        get_doc_comment(&f.attrs, &mut doc_comment, "    ");
+        get_doc_comment(&f.attrs, &mut doc_comment);
         let field_name_str = field_name.to_string();
         let qualifier = if vec_type.is_some() {
             " (repeatable)"
@@ -148,12 +151,16 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
         } else {
             ""
         };
-        help_statements.push(quote! {
-            write!(w, "  {}{}\n", #field_name_str, #qualifier)?;
+        arg_help.push(quote! {
+            write!(w, "* **{}{}**", #field_name_str, #qualifier)?;
         });
-        if !doc_comment.is_empty() {
-            help_statements.push(quote! {
-                write!(w, "{}", #doc_comment)?;
+        if doc_comment.is_empty() {
+            arg_help.push(quote! {
+                write!(w, "\n")?;
+            })
+        } else {
+            arg_help.push(quote! {
+                write!(w, " — {}", #doc_comment)?;
             });
         }
 
@@ -319,7 +326,9 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
             }
 
             fn show_help(w: &mut impl io::Write) -> io::Result<()> {
-                #(#help_statements)*
+                #(#top_help)*
+                #(#data_block_help)*
+                #(#arg_help)*
                 Ok(())
             }
         }
@@ -332,7 +341,7 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
 
     let top_name = &input.ident;
     let mut match_arms = Vec::new();
-    let mut help_calls = Vec::new();
+    let mut help_calls = BTreeMap::new();
 
     for v in &data.variants {
         let variant = &v.ident;
@@ -350,10 +359,14 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
                 Some(#top_name::#variant(<#field_type as FromRawDirective>::from_raw(diags, span, d)?))
             }
         });
-        help_calls.push(quote! {
-            <#field_type as FromRawDirective>::show_help(w)?;
-        });
+        help_calls.insert(
+            directive_name,
+            quote! {
+                <#field_type as FromRawDirective>::show_help(w)?;
+            },
+        );
     }
+    let help_calls: Vec<_> = help_calls.into_values().collect();
 
     quote! {
         impl<'s> FromRawDirective<'s> for #top_name<'s> {
@@ -379,7 +392,7 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
     }
 }
 
-fn get_doc_comment(attrs: &[Attribute], doc_comment: &mut String, indent: &'static str) {
+fn get_doc_comment(attrs: &[Attribute], doc_comment: &mut String) {
     for attr in attrs {
         if attr.path().is_ident("doc")
             && let syn::Meta::NameValue(nv) = &attr.meta
@@ -396,7 +409,6 @@ fn get_doc_comment(attrs: &[Attribute], doc_comment: &mut String, indent: &'stat
                 value = &value[1..];
             }
             if !value.is_empty() {
-                doc_comment.push_str(indent);
                 doc_comment.push_str(value);
             }
             doc_comment.push('\n');
