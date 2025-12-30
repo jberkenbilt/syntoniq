@@ -4,6 +4,12 @@ weight = 20
 sort_by = "weight"
 +++
 
+# TODO
+
+* remember decimals
+* cover all the syntactic bits
+
+
 # Directives
 
 <!-- generate include=directive_doc.md checksum=0599b70e52081fb24b05e7734f1dfb5e30f457ed2caeddbda2220eaf2d331198 -->
