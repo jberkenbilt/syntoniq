@@ -99,7 +99,7 @@ fn az_n<'s>(diags: &Diagnostics) -> impl GenParser<'s> {
 fn b_to_y<'s>() -> impl GenParser<'s> {
     parse_gen(
         take_while(1, |x: char| {
-            ('b'..='y').contains(&x) || ('B'..'Y').contains(&x)
+            ('b'..='y').contains(&x) || ('B'..='Y').contains(&x)
         }),
         |_raw, span, out| {
             let ch = out.chars().next().unwrap();
