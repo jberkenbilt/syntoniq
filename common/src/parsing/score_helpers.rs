@@ -216,7 +216,7 @@ impl<'s> CheckValue<'s> for Ratio<u32> {
 
 impl<'s> CheckValue<'s> for Pitch {
     fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
-        pv.try_as_pitch().cloned().ok_or("should be an pitch")
+        pv.try_as_pitch().cloned().ok_or("should be a pitch")
     }
 }
 
