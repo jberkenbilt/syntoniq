@@ -20,17 +20,28 @@ instr 1
   iFreq = p4
   kAmp chnget "amp"
 
-  ; Amplitude is controlled by the channel now
-  aTone oscil3 kAmp, iFreq, 1
-  aVoc moogladder aTone, 2000, 0.1
-  out aVoc
+  aEnv madsr 0.05, 0.05, 0.9, 0.15
+  aMain poscil3 1, iFreq, 1
+  aSine poscil3 0.8, iFreq
+  aTriangle vco2 0.8, iFreq, 12
+  aHigh = (aSine * 0.5) + (aTriangle * 0.5)
+
+  iLowThresh = 2000
+  iHighThresh = 4000
+  iInterp linlin iFreq, 1, 0, iLowThresh, iHighThresh
+  iMainMix limit iInterp, 0, 1
+
+  iHighMix = 1 - iMainMix
+  aSignal = (aHigh * iHighMix) + (aMain * iMainMix) * aEnv * kAmp
+  aOut moogladder aSignal, 2000, 0.1
+  outs aOut
 endin
 
 </CsInstruments>
 
 <CsScore>
 f 0 31536000 ; keep csound running until stopped or this number of seconds elapses
-f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
+f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 
 ; Set the initial amplitude.
 i "SetChan" 0 -1 .4 "amp"

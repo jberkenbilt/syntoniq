@@ -55,19 +55,39 @@ instr 1
   kAmp = kBaseVol * iVelocity
   ; Attenuate based on polyphony
   kFinalAmp = kAmp / sqrt(kNoteCount)
-  kEnv madsr 0.05, 0, 0.8, 0.2
+  aEnv madsr 0.05, 0.05, 0.9, 0.15
 
-  aTone oscil3 kFinalAmp * kEnv, iFreq, 1
-  aFilt moogladder aTone, 2000 + (kEnv * 3000), 0.2
+  ; For most of the frequency range, we use a custom sound mixed with
+  ; specific harmonics. At higher frequency ranges, we fall back to a
+  ; sine/triangle mix for fewer artifacts.
+  aMain poscil3 1, iFreq, 1
 
-  outs aFilt, aFilt
+  ; blend sine and triangle
+  aSine poscil3 0.9, iFreq
+  aTriangle vco2 0.9, iFreq, 12
+  aHigh = (aSine * 0.5) + (aTriangle * 0.5)
+
+  ; For frequencies in the range of iLowThresh to iHighThresh,
+  ; interpolate how much of the main mix we want. It drops to 0
+  ; through that range.
+  iLowThresh = 2000
+  iHighThresh = 4000
+  ; map iLowThresh, iHighThresh -> 1, 0 and clamp
+  iInterp linlin iFreq, 1, 0, iLowThresh, iHighThresh
+  iMainMix limit iInterp, 0, 1
+
+  ; blend
+  iHighMix = 1 - iMainMix
+  aSignal = (aHigh * iHighMix) + (aMain * iMainMix) * aEnv * kFinalAmp
+  aOut moogladder aSignal, 2000, 0.1
+  outs aOut, aOut
 endin
 
 </CsInstruments>
 <CsScore>
 
 ; function table for oscilator
-f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
+f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 
 ; i instr start duration [params...]
 
