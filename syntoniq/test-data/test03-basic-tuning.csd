@@ -11,6 +11,12 @@ ksmps = 32
 nchnls = 2
 0dbfs = 1
 
+; Each part has associated channels:
+; - p<n>_amp -- a volume level from 0 to 1 inclusive
+; - p<n>_notes -- the maximum number of notes ever "on" for the part's instrument
+; These are set using the "SetPartParam" and "SetPartParamRamp" control
+; instruments.
+
 instr SetPartParam
   iPartNum = p4
   SParam = p5
@@ -29,12 +35,6 @@ instr SetPartParamRamp
   kValue expseg iStart, iDuration, iEnd
   chnset kValue, SChan
 endin
-
-; Each part has associated channels:
-; - p<n>_amp -- a volume level from 0 to 1 inclusive
-; - p<n>_notes -- the number of notes currently "on" for the part
-; These are set using the "SetPartParam" and "SetPartParamRamp" control
-; instruments.
 
 ; A single instrument may be used for multiple parts. Any additional
 ; instrument must accept the same parameters to be a target for
@@ -83,12 +83,10 @@ f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
 ; [p1.3] => 1.4
 
 i "SetPartParam" 0 0.01 1 "amp" 0.5
+i "SetPartParam" 0 0.01 1 "notes" 4
 t 0 72
-i "SetPartParam" 0 0.01 1 "notes" 1
 i 1.1 0 1 1 261.626 0.567 ; 1:p @236
-i "SetPartParam" 0 0.01 1 "notes" 2
 i 1.2 0 1 1 345.217 0.567 ; 1:r @264
-i "SetPartParam" 0 0.01 1 "notes" 3
 i 1.3 0 1 1 455.517 0.567 ; 1:t @292
 i 1.1 1 1 1 300.529 0.567 ; q @240
 i 1.2 1 1 1 396.55 0.567 ; s @268
@@ -105,16 +103,12 @@ i 1.3 4 1 1 793.1 0.567 ; s' @305
 i 1.1 5 1 1 523.251 0.567 ; p' @252
 i 1.2 5 1 1 690.434 0.567 ; r' @280
 i 1.3 5 1 1 911.033 0.567 ; t' @308
-i "SetPartParam" 7 0.01 1 "notes" 1
 i 1.1 7 1 1 261.626 0.567 ; 1:c @431
-i "SetPartParam" 7 0.01 1 "notes" 2
 i 1.2 7 1 1 329.628 0.567 ; 1:e @446
-i "SetPartParam" 7 0.01 1 "notes" 3
 i 1.3 7 1 1 391.995 0.567 ; 1:g @460
 i 1.1 8 1 1 523.251 0.567 ; c' @435
 i 1.2 8 1 1 329.628 0.567 ; e @450
 i 1.3 8 1 1 195.998 0.567 ; g, @464
-i "SetPartParam" 8 0.01 1 "notes" 4
 i 1.4 8 1 1 130.813 0.567 ; c, @479
 ;; END SYNTONIQ
 

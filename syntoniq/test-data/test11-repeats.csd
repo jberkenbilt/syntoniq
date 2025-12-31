@@ -11,6 +11,12 @@ ksmps = 32
 nchnls = 2
 0dbfs = 1
 
+; Each part has associated channels:
+; - p<n>_amp -- a volume level from 0 to 1 inclusive
+; - p<n>_notes -- the maximum number of notes ever "on" for the part's instrument
+; These are set using the "SetPartParam" and "SetPartParamRamp" control
+; instruments.
+
 instr SetPartParam
   iPartNum = p4
   SParam = p5
@@ -29,12 +35,6 @@ instr SetPartParamRamp
   kValue expseg iStart, iDuration, iEnd
   chnset kValue, SChan
 endin
-
-; Each part has associated channels:
-; - p<n>_amp -- a volume level from 0 to 1 inclusive
-; - p<n>_notes -- the number of notes currently "on" for the part
-; These are set using the "SetPartParam" and "SetPartParamRamp" control
-; instruments.
 
 ; A single instrument may be used for multiple parts. Any additional
 ; instrument must accept the same parameters to be a target for
@@ -84,25 +84,19 @@ f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
 ; [p2.0] => 1.4
 
 i "SetPartParam" 0 0.01 1 "amp" 0.5
-i "SetPartParam" 0 0.01 2 "amp" 0.5
-t 0 45
-i "SetPartParam" 0 0.01 1 "notes" 1
-i 1.1 0 1 1 293.665 0.567 ; 1:d @106
-i "SetPartParam" 0 0.01 1 "notes" 2
-i 1.2 0 1 1 369.994 0.567 ; 1:f# @120
 i "SetPartParam" 0 0.01 1 "notes" 3
+i "SetPartParam" 0 0.01 2 "amp" 0.5
+i "SetPartParam" 0 0.01 2 "notes" 3
+t 0 45
+i 1.1 0 1 1 293.665 0.567 ; 1:d @106
+i 1.2 0 1 1 369.994 0.567 ; 1:f# @120
 i 1.3 0 1 1 440 0.567 ; 1:a @134
 ; mark 'a' @'[219,222)
-i "SetPartParam" 2 0.01 1 "notes" 1
 i 1.1 2 1 1 130.813 0.567 ; 1:p, @282
-i "SetPartParam" 2 0.01 2 "notes" 1
 i 1.4 2 1 2 261.626 0.567 ; 1:c @294
 i 1.1 3 1 1 329.628 0.567 ; 1:e @331
-i "SetPartParam" 3 0.01 1 "notes" 2
 i 1.2 3 1 1 391.995 0.567 ; 1:g @342
-i "SetPartParam" 3 0.01 1 "notes" 3
 i 1.3 3 1 1 493.883 0.567 ; 1:b @353
-i "SetPartParam" 4 0.01 1 "notes" 1
 i 1.1 4 1 1 195.998 0.567 ; 1:q, @406
 i 1.4 4 1 2 391.995 0.567 ; 1:q @418
 ; mark 'b' @'[433,436)
@@ -113,11 +107,8 @@ i 1.4 6 1 2 783.991 0.567 ; g' @521
 i 1.1 8 1 1 130.813 0.567 ; 1:p, @282
 i 1.4 8 1 2 261.626 0.567 ; 1:c @294
 i 1.1 9 1 1 329.628 0.567 ; 1:e @331
-i "SetPartParam" 9 0.01 1 "notes" 2
 i 1.2 9 1 1 391.995 0.567 ; 1:g @342
-i "SetPartParam" 9 0.01 1 "notes" 3
 i 1.3 9 1 1 493.883 0.567 ; 1:b @353
-i "SetPartParam" 10 0.01 1 "notes" 1
 i 1.1 10 1 1 195.998 0.567 ; 1:q, @406
 i 1.4 10 1 2 391.995 0.567 ; 1:q @418
 ; repeat end 'b' @'[645,648)
@@ -129,11 +120,8 @@ i 1.4 12 1 2 523.251 0.567 ; c' @697
 i 1.1 14 1 1 130.813 0.567 ; 1:p, @282
 i 1.4 14 1 2 261.626 0.567 ; 1:c @294
 i 1.1 15 1 1 329.628 0.567 ; 1:e @331
-i "SetPartParam" 15 0.01 1 "notes" 2
 i 1.2 15 1 1 391.995 0.567 ; 1:g @342
-i "SetPartParam" 15 0.01 1 "notes" 3
 i 1.3 15 1 1 493.883 0.567 ; 1:b @353
-i "SetPartParam" 16 0.01 1 "notes" 1
 i 1.1 16 1 1 195.998 0.567 ; 1:q, @406
 i 1.4 16 1 2 391.995 0.567 ; 1:q @418
 ; repeat end 'b' @'[645,648)

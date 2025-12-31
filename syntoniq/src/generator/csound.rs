@@ -14,18 +14,10 @@ struct PartData {
     note_numbers: BTreeMap<u32, usize>,
 }
 
-struct PendingNoteCount {
-    command: String,
-    note_count: usize,
-}
-
 struct CSoundGenerator<'s> {
     timeline: &'s Timeline<'s>,
     content: String,
     part_data: BTreeMap<&'s str, PartData>,
-    notes_on: HashMap<&'s str, HashSet<u32>>,
-    pending_note_count: HashMap<usize, PendingNoteCount>,
-    last_note_count: HashMap<usize, PendingNoteCount>,
 }
 
 pub fn rounded_float(val: impl Into<f64>, max_decimals: usize) -> String {
@@ -57,9 +49,6 @@ impl<'s> CSoundGenerator<'s> {
             timeline,
             content: Default::default(),
             part_data: Default::default(),
-            notes_on: Default::default(),
-            pending_note_count: Default::default(),
-            last_note_count: Default::default(),
         })
     }
 
@@ -76,11 +65,27 @@ impl<'s> CSoundGenerator<'s> {
         // Assign a number to each part. Number from 1.
         let mut next_part = 1;
         let mut next_note_number_by_instrument: HashMap<CsoundInstrumentId, usize> = HashMap::new();
+        let mut max_notes_by_instrument: HashMap<CsoundInstrumentId, usize> = HashMap::new();
+        let mut cur_notes_by_instrument: HashMap<CsoundInstrumentId, HashSet<u32>> = HashMap::new();
         for event in &self.timeline.events {
             let TimelineData::Note(e) = &event.data else {
                 continue;
             };
             let instrument = self.instrument_for_part(e.part_note.part);
+            // Track notes by instrument for polyphonic amplitude adjustment.
+            let notes_on = cur_notes_by_instrument
+                .entry(instrument.clone())
+                .or_default();
+            if e.value.velocity == 0 {
+                notes_on.remove(&e.part_note.note_number);
+            } else if notes_on.insert(e.part_note.note_number) {
+                let note_count = notes_on.len();
+                let max_notes = max_notes_by_instrument
+                    .entry(instrument.clone())
+                    .or_default();
+                *max_notes = cmp::max(*max_notes, note_count);
+            }
+
             let part_data = self.part_data.entry(e.part_note.part).or_insert_with(|| {
                 let new_value = PartData {
                     part_number: next_part,
@@ -89,6 +94,7 @@ impl<'s> CSoundGenerator<'s> {
                 next_part += 1;
                 new_value
             });
+
             if let Entry::Vacant(nv) = part_data.note_numbers.entry(e.part_note.note_number) {
                 // Number notes from 1
                 let note_number = next_note_number_by_instrument
@@ -112,9 +118,18 @@ impl<'s> CSoundGenerator<'s> {
             }
         }
         self.content.push('\n');
-        for data in self.part_data.values() {
+        for (&part_str, data) in &self.part_data {
+            let instrument = self.instrument_for_part(part_str);
+            let max_notes = max_notes_by_instrument
+                .get(&instrument)
+                .copied()
+                .unwrap_or(1);
             self.content.push_str(&format!(
                 "i \"SetPartParam\" 0 0.01 {} \"amp\" 0.5\n",
+                data.part_number
+            ));
+            self.content.push_str(&format!(
+                "i \"SetPartParam\" 0 0.01 {} \"notes\" {max_notes}\n",
                 data.part_number
             ));
         }
@@ -218,34 +233,7 @@ impl<'s> CSoundGenerator<'s> {
                         Ratio::new(cmp::min(127, e.value.velocity as u32), 127),
                         3,
                     );
-                    let notes_on_for_part = self.notes_on.entry(e.part_note.part).or_default();
-                    if e.value.velocity == 0 {
-                        notes_on_for_part.remove(&e.part_note.note_number);
-                    } else if notes_on_for_part.insert(e.part_note.note_number) {
-                        let note_count = notes_on_for_part.len();
-                        self.pending_note_count.insert(
-                            part_number,
-                            PendingNoteCount {
-                                command: format!(
-                                    "i \"SetPartParam\" {time} 0.01 {part_number} \"notes\" {note_count}\n"
-                                ),
-                                note_count,
-                            },
-                        );
-                    }
                     let note_text = &e.value.text;
-                    // Change the note count if it has actually changed
-                    let mut pending = self.pending_note_count.remove(&part_number);
-                    if let Some(pending_val) = &pending
-                        && let Some(last) = self.last_note_count.get(&part_number)
-                        && last.note_count == pending_val.note_count
-                    {
-                        pending = None;
-                    }
-                    if let Some(pending_val) = pending {
-                        self.content.push_str(&pending_val.command);
-                        self.last_note_count.insert(part_number, pending_val);
-                    }
                     if event.time > e.value.adjusted_end_time {
                         bail!("end time is in the past")
                     }

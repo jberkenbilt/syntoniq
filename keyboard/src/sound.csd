@@ -32,7 +32,7 @@ endin
 f 0 31536000 ; keep csound running until stopped or this number of seconds elapses
 f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
 
-; Set the amplitude initially to 1. It can be reset.
+; Set the initial amplitude.
 i "SetChan" 0 -1 .4 "amp"
 
 ; Remaining score events come from the API.

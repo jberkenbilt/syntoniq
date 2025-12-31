@@ -112,9 +112,6 @@ In the meantime, it may generate better results to use generated scales with a h
 
 Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep.
 
-Bugs
-* Polyphony for csound doesn't work correctly when splitting parts to use simultaneous tunings. We need something else...perhaps polyphony groups that default to instrument or maybe that default to global but you can assign parts to polyphony groups along with instruments. Maybe csound_instrument takes an optional polyphony group parameter?
-
 nerds.de loopbe1 -- windows virtual midi port
 
 * CSound: interpret accents with envelope, then figure out what this does to articulation adjustment.

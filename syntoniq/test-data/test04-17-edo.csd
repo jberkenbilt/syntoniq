@@ -82,34 +82,25 @@ f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
 ; [p1.2] => "potato".1
 
 i "SetPartParam" 0 0.01 1 "amp" 0.5
+i "SetPartParam" 0 0.01 1 "notes" 3
 t 0 72
-i "SetPartParam" 0 0.01 1 "notes" 1
 i "potato.1" 0 6 1 65.406 0.567 ; 6:c,2 @376
-i "SetPartParam" 2 0.01 1 "notes" 2
 i "potato.2" 2 1 1 196.665 0.567 ; 1:g, @360
-i "SetPartParam" 3 0.01 1 "notes" 3
 i "potato.3" 3 3 1 393.33 0.567 ; 3:g @345
 i "potato.2" 3 3 1 261.626 0.567 ; 3:c @365
-i "SetPartParam" 6 0.01 1 "notes" 1
 i "potato.1" 6 6 1 65.406 0.567 ; 6:c,2 @436
-i "SetPartParam" 7 0.01 1 "notes" 2
 i "potato.2" 7 1 1 196.665 0.567 ; 1:g, @414
 i "potato.2" 8 1 1 213.374 0.567 ; a%, @419
-i "SetPartParam" 9 0.01 1 "notes" 3
 i "potato.3" 9 3 1 393.33 0.567 ; 3:g @399
 i "potato.2" 9 1 1 261.626 0.567 ; c @423
 i "potato.2" 10 2 1 295.667 0.567 ; 2:d @425
-i "SetPartParam" 12 0.01 1 "notes" 1
 i "potato.1" 12 6 1 65.406 0.567 ; 6:c,2 @476
-i "SetPartParam" 13 0.01 1 "notes" 2
 i "potato.2" 13 1 1 196.665 0.567 ; 1:g, @454
 i "potato.2" 14 1 1 213.374 0.567 ; a%, @459
 i "potato.2" 15 1 1 295.667 0.567 ; d @463
 i "potato.2" 16 1 1 334.138 0.567 ; e @465
 i "potato.2" 17 1 1 295.667 0.567 ; d @467
-i "SetPartParam" 18 0.01 1 "notes" 1
 i "potato.2" 18 5 1 65.406 0.567 ; 5:c,2 @519
-i "SetPartParam" 19 0.01 1 "notes" 2
 i "potato.3" 19 1 1 196.665 0.567 ; 1:g, @494
 i "potato.3" 20 1 1 213.374 0.567 ; a%, @499
 i "potato.3" 21 1 1 295.667 0.567 ; d @503
