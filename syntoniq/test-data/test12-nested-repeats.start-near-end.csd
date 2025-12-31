@@ -43,7 +43,8 @@ instr 1
   ; p1..p3 are always instrument, start time, duration
   iPartNum = p4
   iFreq = p5
-  iVelocity = p6 // 0 to 1
+  iEndFreq = p6  // place-holder
+  iVelocity = p7 // 0 to 1
 
   SAmpChan sprintf "p%d_amp", iPartNum
   SNotesChan sprintf "p%d_notes", iPartNum
@@ -82,12 +83,12 @@ f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 1
 t 0 180
-i 1.1 0 2 1 391.995 0.567 ; 2:g @550
-i 1.1 2 1 1 391.995 0.567 ; 1:g @554
-i 1.1 3 1 1 349.228 0.567 ; f @558
-i 1.1 4 1 1 329.628 0.567 ; e @560
-i 1.1 5 1 1 293.665 0.567 ; d @562
-i 1.1 6 4 1 261.626 0.567 ; 4:c @566
+i 1.1 0 2 1 391.995 0 0.567 ; 2:g @550
+i 1.1 2 1 1 391.995 0 0.567 ; 1:g @554
+i 1.1 3 1 1 349.228 0 0.567 ; f @558
+i 1.1 4 1 1 329.628 0 0.567 ; e @560
+i 1.1 5 1 1 293.665 0 0.567 ; d @562
+i 1.1 6 4 1 261.626 0 0.567 ; 4:c @566
 ;; END SYNTONIQ
 
 e

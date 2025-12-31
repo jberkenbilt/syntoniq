@@ -254,8 +254,9 @@ impl<'s> CSoundGenerator<'s> {
                         // on the number of note numbers.
                         let note_number = pad_number(*note_number, part_data.note_numbers.len());
                         let instr = instrument.output(Some(note_number));
+                        let end_freq = "0"; // TODO: implement glide
                         self.content.push_str(
-                            &format!("i {instr} {time} {duration} {part_number} {freq} {velocity} ; {note_text} @{offset}\n"),
+                            &format!("i {instr} {time} {duration} {part_number} {freq} {end_freq} {velocity} ; {note_text} @{offset}\n"),
                         );
                     }
                 }

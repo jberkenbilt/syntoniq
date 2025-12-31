@@ -43,7 +43,8 @@ instr 1
   ; p1..p3 are always instrument, start time, duration
   iPartNum = p4
   iFreq = p5
-  iVelocity = p6 // 0 to 1
+  iEndFreq = p6  // place-holder
+  iVelocity = p7 // 0 to 1
 
   SAmpChan sprintf "p%d_amp", iPartNum
   SNotesChan sprintf "p%d_notes", iPartNum

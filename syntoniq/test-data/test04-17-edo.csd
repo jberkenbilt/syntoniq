@@ -11,6 +11,12 @@ ksmps = 32
 nchnls = 2
 0dbfs = 1
 
+; Each part has associated channels:
+; - p<n>_amp -- a volume level from 0 to 1 inclusive
+; - p<n>_notes -- the maximum number of notes ever "on" for the part's instrument
+; These are set using the "SetPartParam" and "SetPartParamRamp" control
+; instruments.
+
 instr SetPartParam
   iPartNum = p4
   SParam = p5
@@ -30,12 +36,6 @@ instr SetPartParamRamp
   chnset kValue, SChan
 endin
 
-; Each part has associated channels:
-; - p<n>_amp -- a volume level from 0 to 1 inclusive
-; - p<n>_notes -- the number of notes currently "on" for the part
-; These are set using the "SetPartParam" and "SetPartParamRamp" control
-; instruments.
-
 ; A single instrument may be used for multiple parts. Any additional
 ; instrument must accept the same parameters to be a target for
 ; syntoniq notes.
@@ -43,7 +43,8 @@ instr potato
   ; p1..p3 are always instrument, start time, duration
   iPartNum = p4
   iFreq = p5
-  iVelocity = p6 // 0 to 1
+  iEndFreq = p6  // place-holder
+  iVelocity = p7 // 0 to 1
 
   SAmpChan sprintf "p%d_amp", iPartNum
   SNotesChan sprintf "p%d_notes", iPartNum
@@ -84,29 +85,29 @@ f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 3
 t 0 72
-i "potato.1" 0 6 1 65.406 0.567 ; 6:c,2 @376
-i "potato.2" 2 1 1 196.665 0.567 ; 1:g, @360
-i "potato.3" 3 3 1 393.33 0.567 ; 3:g @345
-i "potato.2" 3 3 1 261.626 0.567 ; 3:c @365
-i "potato.1" 6 6 1 65.406 0.567 ; 6:c,2 @436
-i "potato.2" 7 1 1 196.665 0.567 ; 1:g, @414
-i "potato.2" 8 1 1 213.374 0.567 ; a%, @419
-i "potato.3" 9 3 1 393.33 0.567 ; 3:g @399
-i "potato.2" 9 1 1 261.626 0.567 ; c @423
-i "potato.2" 10 2 1 295.667 0.567 ; 2:d @425
-i "potato.1" 12 6 1 65.406 0.567 ; 6:c,2 @476
-i "potato.2" 13 1 1 196.665 0.567 ; 1:g, @454
-i "potato.2" 14 1 1 213.374 0.567 ; a%, @459
-i "potato.2" 15 1 1 295.667 0.567 ; d @463
-i "potato.2" 16 1 1 334.138 0.567 ; e @465
-i "potato.2" 17 1 1 295.667 0.567 ; d @467
-i "potato.2" 18 5 1 65.406 0.567 ; 5:c,2 @519
-i "potato.3" 19 1 1 196.665 0.567 ; 1:g, @494
-i "potato.3" 20 1 1 213.374 0.567 ; a%, @499
-i "potato.3" 21 1 1 295.667 0.567 ; d @503
-i "potato.3" 22 1 1 334.138 0.567 ; e @505
-i "potato.3" 23 4 1 272.513 0.567 ; 4:c# @507
-i "potato.2" 23 4 1 60.284 0.567 ; 4:b%,3 @536
+i "potato.1" 0 6 1 65.406 0 0.567 ; 6:c,2 @376
+i "potato.2" 2 1 1 196.665 0 0.567 ; 1:g, @360
+i "potato.3" 3 3 1 393.33 0 0.567 ; 3:g @345
+i "potato.2" 3 3 1 261.626 0 0.567 ; 3:c @365
+i "potato.1" 6 6 1 65.406 0 0.567 ; 6:c,2 @436
+i "potato.2" 7 1 1 196.665 0 0.567 ; 1:g, @414
+i "potato.2" 8 1 1 213.374 0 0.567 ; a%, @419
+i "potato.3" 9 3 1 393.33 0 0.567 ; 3:g @399
+i "potato.2" 9 1 1 261.626 0 0.567 ; c @423
+i "potato.2" 10 2 1 295.667 0 0.567 ; 2:d @425
+i "potato.1" 12 6 1 65.406 0 0.567 ; 6:c,2 @476
+i "potato.2" 13 1 1 196.665 0 0.567 ; 1:g, @454
+i "potato.2" 14 1 1 213.374 0 0.567 ; a%, @459
+i "potato.2" 15 1 1 295.667 0 0.567 ; d @463
+i "potato.2" 16 1 1 334.138 0 0.567 ; e @465
+i "potato.2" 17 1 1 295.667 0 0.567 ; d @467
+i "potato.2" 18 5 1 65.406 0 0.567 ; 5:c,2 @519
+i "potato.3" 19 1 1 196.665 0 0.567 ; 1:g, @494
+i "potato.3" 20 1 1 213.374 0 0.567 ; a%, @499
+i "potato.3" 21 1 1 295.667 0 0.567 ; d @503
+i "potato.3" 22 1 1 334.138 0 0.567 ; e @505
+i "potato.3" 23 4 1 272.513 0 0.567 ; 4:c# @507
+i "potato.2" 23 4 1 60.284 0 0.567 ; 4:b%,3 @536
 ;; END SYNTONIQ
 
 e
