@@ -12,8 +12,14 @@
 //
 // For a quick way to check all spans, load the json and sqt files into emacs in two windows of the
 // same frame, position the point at the beginning of the JSON file, and repeatedly run the emacs
-// lisp function below. This highlights each span in turn.. This works equally well for errors and
+// lisp function below. This highlights each span in turn. This works equally well for errors and
 // correctly tokenized files.
+//
+// - Eval the two elisp blocks (highlight-next-span, and binding to F9)
+// - Divide the emacs frame into to windows with the stq on top and the json on the bottom
+// - Move to the bottom window, and put the cursor somewhere before the first span you care about
+// - Hit F9 to move to the next span. The spanned content is highlighted in the top window, and the
+//   window continue to advance through the spans.
 
 /*
 ```elisp
