@@ -95,7 +95,7 @@ Let's make this more concrete with a different discrepancy. If a perfect fifth i
 
 Let's hear what this sounds like. In this example, you'll see the use of the built-in "JI" scale with some unfamiliar note names like `I` and `II`. We will come back to that later! You'll also get a sneak preview of a few of Syntoniq's other features.
 
-<!-- generate include=major-thirds.stq checksum=d6f7cad666d76135998a7f70a313bc71acca404c37f690a3f30a4f9103540a2b -->
+<!-- generate include=major-thirds.stq checksum=4ddc7ce2f6168c9a43ba68a20399b820307f1110ce4c9e2f4604ec4a575e14a2 -->
 ```syntoniq
 syntoniq(version=1)
 ; Part p1 uses the default scale. Part p2 uses the built-in "JI"
@@ -116,10 +116,9 @@ use_scale(scale="JI" part="p2")
 ; stacking two whole tones.
 tempo(bpm=30)
 mark(label="a")
-[p1.0] 1:~ c ~  ~
+[p1.0] 1:c c c  ~
 [p1.1] 1:~ e ~  ~
-[p2.1] 1:A ~ A  ~
-[p2.2] 1:E ~ II ~
+[p2.1] 1:E ~ II ~
 mark(label="b")
 
 ; Repeat three more times

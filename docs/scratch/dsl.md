@@ -54,62 +54,6 @@ I think limiting the range to neighboring powers of 2 should be okay. So 81/80 w
 
 ----------
 
-FIX: this is outdated. The rules are spelled out in the doc comments. Explain this in terms of equivalence between lossless pitch and generated notes. It works because the product of rational numbers and rationals raised to rational powers can always be expressed as a single rational raised to a rational power.
-
-* define generated scale: add divided_interval, which defaults to cycle_ratio
-* allow tolerance without divisions since it can apply to overrides
-* Syntax extension: append `![a[/b[/c]]]`
-  * `!` - use exact pitch
-  * `!a` - snap to nearest power of `x^1|a` where `x` is `divided_interval`, which defaults to `cycle_ratio`, which defaults to 2.
-  * `!a/b` - snap to nearest power of `a^1|b`
-  * `!a/b/c` - snap to nearest power of `a/b^1|c`
-  * That means `An!a/b/c` multiplies the base pitch by `a/b^n|c`, which means you can represent any pitch multiplier, though doing so could be cumbersome. This works because Syntoniq pitches are products of positive rationals and primes raised to positive rational powers, and it is always possible to rewrite such a product as a single rational raised to a single rational power. This means any Syntoniq pitch could be reduced to a single `a/b^c|d` term, which can be directly mapped to a generated note.
-
-Generated Scales: semantic note notation for embedding JI in EDO
-
-* `an` = nth EDO step
-* `A` = `a0` = root
-* `Bn` = up by n/n-1, normalized to the octave
-* `bn` = down by n/n-1, normalized to the octave
-* `C`-`Z` = up by n/n-1 (normalized) where n is the ordinal position of the letter; e.g., C = 3/2, D = 4/3, etc.
-* `c`-`z` = down by n/n-1 (normalized)
-* `%`, `#` = specify direction for approximation, after letters, repeatable
-* `+`, `-` = increment or decrement by one EDO step, at end, repeatable
-
-You can define a scale using these rules in place of a scale definition block. It should probably be a separate directive for syntax simplicity since it won't require a scale block.
-```
-define_generated_scale(scale="17-EDO-gen" edo=17 tolerance_cents=...)
-```
-Examples: a major triad could be spelled `A E C` (root, 5/4, 3/2) in any tuning system.
-
-Notes:
-* In an EDO, when using JI notation, find the closest note by default. If `#` or `%` (valid after all the letters and numbers), always choose the next lower (`%`) or higher (`#`) step rather than closest step for an explicitly sharper or flatter interval than JI. This is applied if both choices are outside of the specified tolerance in cents. Ignored for pure JI.
-* Use `+` or `-` to adjust by a single step size. These can be repeated. Ignored for pure JI.
-* `Ch#+`: `Ch` indicates `3/2*7/8` = `21/16`; then `#` indicates to go the closest EDO step *above* rather than absolute closest, then `+` moves up one step from there.
-
-This complements the pitch notation system and allows for semantically-written chords that port across tuning systems. Notes like this translate directly into pitches, so converting a note into a base factor will be very easy.
-
-For EDO with JI approximation, this would work with very few code changes.
-
-For pure JI with dynamic scale creation, it gets more complicated. The following things require knowing all the pitches in advance:
-* Knowing whether this is scale degree 1 for interval color; could be postponed to the keyboard
-* Knowing the number of pitches for isomorphic layout, but we could get away from it if we only allowed it for equal division scales, which is the only place it actually makes sense
-* MTS, but it doesn't have to be known until generation, so it could be postponed. Would also be required to generate tuning files.
-* Computing the normalized base interval for manual mapping; but this could be stored in ScaleDegree since we already have it to compute the degree.
-
-Making the scale completely dynamic would make it impossible to add absolute scale degree information to note events during timeline generation. Working around this would damage the code by making a lot of logic more complex. If I want dynamic pure JI, the solution would be have a directive like
-```
-define_generated_just_scale(scale="...") <<
-; notes
->>
-```
-where the content of the data block was only note names without pitches. The user would have the burden of just listing all the note they think they want to use. This would be fairly easy to implement.
-
-In the meantime, it may generate better results to use generated scales with a higher EDO like 41, 53, or their multiples (82, 123, 106).
-
-----------
-
-
 Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep.
 
 nerds.de loopbe1 -- windows virtual midi port
@@ -136,14 +80,6 @@ timidity -x "bank 0\n 0 %font \"/home/ejb/tmp/local/z/a.sf2\" amp=127 pan=0" --o
 Note: not tested: > 127 tunings, > 16 channels, sound font banks, a few more minor cases; for MPE, more than 16 channels
 
 Notes about mark/repeat for architectural docs. They are based on the timeline, not the token stream. This has both advantages and disadvantages.
-
-* Disadvantages
-  * All logic around resolving pending ties and dynamic changes have already been completed, which means a tie in effect at the end mark would already have been resolved to something after the repeat. This is okay except it complicates things like having a tie right before a repeat and a matching tie at the first ending. This can be handled in other ways, but it might be possible to make the logic more sophisticated. It might be possible to do dynamic/tie resolution and overlapping tempo detection as a post-processing step, which could give us a middle-ground between what is there now and making repeats lexical. This would create the need for additional timeline events, so we would probably want to create a parallel set of events and have `into_timeline` only return events that are intended for the generators. This may not be worth ever doing.
-* Advantages
-  * A repeated section gets to stay in whatever tuning it has.
-  * There's never any question about whether something may be syntactically or semantically valid in a repeat. This is probably enough of an advantage to override the disadvantages.
-
-It has to be understood that repeats are temporal repeats, not lexical repeats. If you think about it this way, the constraints are logical.
 
 ----------
 
@@ -173,20 +109,11 @@ Current state:
     * Should be able to work from token stream but only after validation has passed
   * Generate music via timeline
 * Remaining syntax
-  * tempo, accel, decel
   * morph, strum
-  * define_instrument, use_instrument
-  * marks, regions, repeats
-
-Next, I would like create a timeline capable of expressing everything we have so far, perhaps taking it end to end through csound and midi. Then, as new features are added, they can be added end to end. This will make it easier to test new features and result in more incremental or less refactoring.
 
 See
 * ~/Downloads/MIDI Tuning Updated Specification.pdf
 * ~/source/examples/rust/midi
-
-Basic strategy: figure out total number of channels needed for 10 octaves of a scale, then track the number of simultaneous (instrument, scale, base_pitch) triples. This determines number of simultaneous channels, which in turn determines number of ports. Try to keep all channels for a part on the same port.
-
-XXX Document highlight-next-span in a dev/test README -- can refer to comment in code
 
 # Keyboards
 
@@ -806,7 +733,3 @@ Suggested reformatting rules:
 * If a directive that contains no parameter-level comments fits on one line in <= 100 columns, reformat as a single line. Never move a preceding comment to after a single-line directive.
 * Apply alignment to score blocks as above
 * Within scale definition blocks, right-justify pitches or indices with columns, then align and left-justify note names
-
-## Considerations
-
-A scale like 31-EDO will overflow 128 notes. It doesn't matter for csound. For MIDI, can we should automatically split the tracks.

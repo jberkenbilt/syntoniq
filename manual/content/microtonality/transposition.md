@@ -77,7 +77,7 @@ Notes from above:
 
 For a second example, let's take a little melody in one EDO, and then use some steps in a second EDO to change to a new, unrelated key. This melody will start in 17-EDO, one of my personal favorites. The single step in 17-EDO is almost exactly the ratio 25/24 (off by less than 0.1¢), which is what you get if you go up a major third and down a minor third in just intonation ($\frac{5}{4}\times\frac{5}{6} = \frac{25}{24}$). Two steps is almost exactly 13/12, flat by less than 3¢. That makes the notes `Y` and `M` particularly useful in 17-EDO. 17-EDO also has a very good fourth and fifth: 10 steps of 17-EDO is less than 4¢ sharp for 3/2. It lacks an interval close to the major third, but 5 steps is a close neutral third, quite close to 11/9. 11/9 can be written as `JK` in our system. This is a feature that falls out of normal arithmetic. Each single letter represents a single harmonic sequence step by design. That means each pair of adjacent letters represents two steps: `JK` = $\frac{10}{9}\times\frac{11}{10} = \frac{11}{9}$.
 
-<!-- generate include=transposition2.stq checksum=ee3cf3c4c22c6a4603a2f6c3b2ddf52ffa247c85ccff77da1e0ce69402a8b062 -->
+<!-- generate include=transposition2.stq checksum=a0e19521eaed67bbf24e9d1afce1e91ea5dc52d57940aee17a098d32fcea31fe -->
 ```syntoniq
 ; See Transposition section of manual for the "note x" parts.
 syntoniq(version=1)
@@ -104,7 +104,7 @@ transpose(written="A" pitch_from="Y")
 ; Sustain and pivot: note 3
 use_scale(scale="gen-13")
 transpose(written="A" pitch_from="CJK!17")
-[p1.3] 1:a:. a1 a2 a3
+[p1.3] 1:a a1 a2 a3
 
 use_scale(scale="gen-17")
 transpose(written="CJK" pitch_from="a4!13")
@@ -130,7 +130,7 @@ mark(label="a")
 Notes:
 1. This example introduces the `|` character as a "bar check". Syntoniq makes sure that each line in a score block has the same number of bar checks and that each bar check happens at the same beat offset. While Syntoniq doesn't have the concept of time signatures, these can be useful checks. Syntoniq also ensures beats are consistent at the end of each line. This first passage is some native 17-EDO harmonies involving use of the neutral third and the two-step 13/12 interval.
 2. Here we repeat the same passage up one step, but we go up a step using the note `Y`, which corresponds closely to a single 17-EDO step...but this would be portable to other scales and would sound similar but with the flavor of that tuning system.
-3. Here we switch to a new scale (13-EDO) and just use step sizes (`a` notes). 13-EDO doesn't map very well to the diatonic scale, and the intention here is to just demonstrate stepping. Notice that our transposition assigns the pitch to the note `A` from `CJK!17`. This prevents us from having to do the transposition in multiple steps. We can be in 13-EDO and still take a pitch from a note in 17-EDO. Then we just step a single note along in 13-EDO. The `:.` at the end of the first note is roughly a staccato. It briefly shortens the length of the note.
+3. Here we switch to a new scale (13-EDO) and just use step sizes (`a` notes). 13-EDO doesn't map very well to the diatonic scale, and the intention here is to just demonstrate stepping. Notice that our transposition assigns the pitch to the note `A` from `CJK!17`. This prevents us from having to do the transposition in multiple steps. We can be in 13-EDO and still take a pitch from a note in 17-EDO. Then we just step a single note along in 13-EDO.
 4. Now we're back to 17-EDO and repeat the same chord sequence in the new key, defined by stepping through 13-EDO. You can't really express this cleanly in another way. 221-EDO would exactly contain 13-EDO and 17-EDO (since $13\times 17=221$), but that's a bit silly. Maybe you would never want to do this...but Syntoniq gives you the ability to travel through alien landscapes like this if you feel like it.
 5. This wraps up with a chord sequence. The last note in `[p1.4]` is `CE#`. 17-EDO doesn't have a major third (`E`), and the closest note to 5/4 is the 5-step neutral third. By including the `#` character, we are telling Syntoniq to go to the *next higher step* instead of the *closest step*. This gives us a very sharp major third (almost a flat fourth)—an intentional musical choice in this case.
 

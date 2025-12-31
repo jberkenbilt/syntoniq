@@ -4,6 +4,35 @@ weight = 50
 sort_by = "weight"
 +++
 
+Include several very short/low-resolution videos that can be checked and included in the docs.
+
+Video format:
+* Keyboard on left
+* Web UI and text output on right
+
+Videos to record for each keyboard:
+* Startup, logo
+* Select 12-EDO layout
+* Play notes and chords
+* Enable sustain
+* Play sustained notes
+* Clear all notes
+* Use shift, modal and modifier including cancel
+* Use transpose, modal and modifier
+* Use octave transpose
+* Use octave transpose while holding notes in sustain and not
+* Change layouts
+* Reset
+* Use transpose across layouts
+* Use sustain across layouts
+* Show manual layout with tiling
+* Show two layouts together with "transposition bar"
+* Launchpad
+  * Show minor thirds
+  * Print notes
+* Hexboard
+  * Show 60 degree
+
 This is all various notes cut and pasted from other things. See also docs/scratch/keyboard-design.md
 
 Make sure to call out that this is optional and distinct from the language.

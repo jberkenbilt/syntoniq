@@ -23,7 +23,7 @@ transpose(written="A" pitch_from="Y")
 ; Sustain and pivot: note 3
 use_scale(scale="gen-13")
 transpose(written="A" pitch_from="CJK!17")
-[p1.3] 1:a:. a1 a2 a3
+[p1.3] 1:a a1 a2 a3
 
 use_scale(scale="gen-17")
 transpose(written="CJK" pitch_from="a4!13")

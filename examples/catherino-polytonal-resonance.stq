@@ -11,8 +11,6 @@ set_base_pitch(relative=1/2)
 [p1.05] 6:~ 4:Bj'
 [p1.06] 7:~ 3:Cm'
 
-[p1.01] 1:~
-
 mark(label="a")
 [p1.01] 10:A:~
 [p1.02] 1:~ 9:C:~

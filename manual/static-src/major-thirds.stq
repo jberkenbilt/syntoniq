@@ -17,10 +17,9 @@ use_scale(scale="JI" part="p2")
 ; stacking two whole tones.
 tempo(bpm=30)
 mark(label="a")
-[p1.0] 1:~ c ~  ~
+[p1.0] 1:c c c  ~
 [p1.1] 1:~ e ~  ~
-[p2.1] 1:A ~ A  ~
-[p2.2] 1:E ~ II ~
+[p2.1] 1:E ~ II ~
 mark(label="b")
 
 ; Repeat three more times
