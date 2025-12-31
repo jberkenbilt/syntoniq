@@ -302,13 +302,13 @@ impl Keyboard for Launchpad {
         // Draw the logo.
         for (color, positions) in [
             (
-                Color::FifthOn, // green
+                Color::LogoGreen,
                 vec![63u8, 64, 65, 66, 52, 57, 42, 47, 32, 37, 23, 24, 25],
             ),
-            (Color::FifthOff, vec![34, 35, 16, 17, 18]), // blue
-            (Color::MajorThirdOn, vec![26]),             // pink
-            (Color::MajorThirdOff, vec![72, 73, 83, 84, 85, 86, 76, 77]), // purple
-            (Color::TonicOff, vec![74, 75]),             // cyan
+            (Color::LogoBlue, vec![34, 35, 16, 17, 18]),
+            (Color::MajorThirdOn, vec![26]), // pink
+            (Color::MinorSixthOn, vec![72, 73, 83, 84, 85, 86, 76, 77]), // purple
+            (Color::SingleStepOn, vec![74, 75]), // cyan
         ] {
             for position in positions {
                 light_events.push(RawLightEvent {
@@ -471,12 +471,20 @@ mod colors {
     pub const PINK: u8 = 0x38;
     pub const RED: u8 = 0x06;
     pub const ORANGE: u8 = 0x09;
-    pub const CYAN: u8 = 0x27;
+    pub const CYAN: u8 = 0x25;
     pub const YELLOW: u8 = 0x0d;
     pub const DULL_GRAY: u8 = 0x47;
     pub const HIGHLIGHT_GRAY: u8 = 0x01;
     pub const MAGENTA: u8 = 0x5e;
     pub const LIGHT_PINK: u8 = 0x34;
+    pub const DIM_GREEN: u8 = 0x1b;
+    pub const DIM_BLUE: u8 = 0x2b;
+    pub const DIM_PINK: u8 = 0x37;
+    pub const DIM_PURPLE: u8 = 0x33;
+    pub const DIM_RED: u8 = 0x79;
+    pub const DIM_ORANGE: u8 = 0x0b;
+    pub const DIM_YELLOW: u8 = 0x0f;
+    pub const DIM_CYAN: u8 = 0x27;
 }
 
 pub fn launchpad_color(color: Color) -> u8 {
@@ -486,20 +494,29 @@ pub fn launchpad_color(color: Color) -> u8 {
         Color::Active => colors::WHITE,
         Color::ToggleOff => colors::RED,
         Color::ToggleOn => colors::GREEN,
-        Color::FifthOff => colors::BLUE,
-        Color::FifthOn => colors::GREEN,
-        Color::MajorThirdOff => colors::PURPLE,
+        Color::FourthOff => colors::DIM_GREEN,
+        Color::FourthOn => colors::GREEN,
+        Color::FifthOff => colors::DIM_BLUE,
+        Color::FifthOn => colors::BLUE,
+        Color::MajorThirdOff => colors::DIM_PINK,
         Color::MajorThirdOn => colors::PINK,
-        Color::MinorThirdOff => colors::RED,
-        Color::MinorThirdOn => colors::ORANGE,
-        Color::TonicOff => colors::CYAN,
+        Color::MinorSixthOff => colors::DIM_PURPLE,
+        Color::MinorSixthOn => colors::PURPLE,
+        Color::MinorThirdOff => colors::DIM_RED,
+        Color::MinorThirdOn => colors::RED,
+        Color::MajorSixthOff => colors::DIM_ORANGE,
+        Color::MajorSixthOn => colors::ORANGE,
+        Color::TonicOff => colors::DIM_YELLOW,
         Color::TonicOn => colors::YELLOW,
         Color::OtherOff => colors::DULL_GRAY,
-        Color::OtherOn => colors::WHITE,
-        Color::SingleStepOff => colors::HIGHLIGHT_GRAY,
-        Color::SingleStepOn => colors::WHITE,
+        Color::OtherOn => colors::HIGHLIGHT_GRAY,
+        Color::SingleStepOff => colors::DIM_CYAN,
+        Color::SingleStepOn => colors::CYAN,
         Color::NoteSelected => colors::MAGENTA,
-        Color::LogoBackground => colors::LIGHT_PINK,
+        Color::LogoPink => colors::LIGHT_PINK,
+        Color::LogoRed => colors::RED,
+        Color::LogoGreen => colors::GREEN,
+        Color::LogoBlue => colors::BLUE,
     }
 }
 

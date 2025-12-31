@@ -20,12 +20,18 @@ pub enum Color {
     Active,
     ToggleOff,
     ToggleOn,
+    FourthOff,
+    FourthOn,
     FifthOff,
     FifthOn,
     MajorThirdOff,
     MajorThirdOn,
+    MinorSixthOff,
+    MinorSixthOn,
     MinorThirdOff,
     MinorThirdOn,
+    MajorSixthOff,
+    MajorSixthOn,
     TonicOff,
     TonicOn,
     SingleStepOff,
@@ -33,7 +39,10 @@ pub enum Color {
     OtherOff,
     OtherOn,
     NoteSelected,
-    LogoBackground,
+    LogoPink,
+    LogoRed,
+    LogoGreen,
+    LogoBlue,
 }
 
 #[derive(Copy, Clone)]
@@ -46,7 +55,7 @@ pub fn interval_color(mut interval: f32) -> NoteColors {
     while interval <= 1.0 {
         interval *= 2.0;
     }
-    while interval > 2.0 {
+    while interval >= 2.0 {
         interval /= 2.0;
     }
     // If the color is very close to of the 5-limit Just Intonation ratios below or their
@@ -56,20 +65,21 @@ pub fn interval_color(mut interval: f32) -> NoteColors {
     for (ratio, (off, on)) in [
         (1.0, (Color::TonicOff, Color::TonicOn)),
         (3.0 / 2.0, (Color::FifthOff, Color::FifthOn)),
+        (4.0 / 3.0, (Color::FourthOff, Color::FourthOn)),
         (5.0 / 4.0, (Color::MajorThirdOff, Color::MajorThirdOn)),
         (6.0 / 5.0, (Color::MinorThirdOff, Color::MinorThirdOn)),
+        (8.0 / 5.0, (Color::MinorSixthOff, Color::MinorSixthOn)),
+        (5.0 / 3.0, (Color::MajorSixthOff, Color::MajorSixthOn)),
     ] {
         // Interval will never be zero unless someone put zeros in their scale files, and we
         // check against that when validating the config file.
-        for target in [ratio, 2.0 / ratio] {
-            let difference = if interval > target {
-                interval / target
-            } else {
-                target / interval
-            };
-            if difference < tolerance_cents {
-                return NoteColors { off, on };
-            }
+        let difference = if interval > ratio {
+            interval / ratio
+        } else {
+            ratio / interval
+        };
+        if difference < tolerance_cents {
+            return NoteColors { off, on };
         }
     }
     NoteColors {
@@ -411,12 +421,12 @@ mod tests {
             off
         }
         assert_eq!(get_color("3/2"), Color::FifthOff); // JI 5th
-        assert_eq!(get_color("^9|12"), Color::MinorThirdOff); // 12-EDO major sixth
+        assert_eq!(get_color("^9|12"), Color::MajorSixthOff); // 12-EDO major sixth
         assert_eq!(get_color("^10|31"), Color::MajorThirdOff); // 31-EDO major third
-        assert_eq!(get_color("^41|31"), Color::MajorThirdOff); // 31-EDO major third
-        assert_eq!(get_color("2*^10|31"), Color::MajorThirdOff); // 31-EDO major third
+        assert_eq!(get_color("^39|31"), Color::MinorThirdOff); // 31-EDO minor third
+        assert_eq!(get_color("2*^21|31"), Color::MinorSixthOff); // 31-EDO minor sixth
         assert_eq!(get_color("1/2*^10|31"), Color::MajorThirdOff); // 31-EDO major third
-        assert_eq!(get_color("^7|17"), Color::FifthOff); // 17-EDO fourth
+        assert_eq!(get_color("^7|17"), Color::FourthOff); // 17-EDO fourth
         assert_eq!(get_color("^5|17"), Color::OtherOff); // nope
     }
 }

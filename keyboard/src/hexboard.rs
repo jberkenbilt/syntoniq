@@ -360,24 +360,24 @@ impl Keyboard for HexBoard {
         // Draw the logo.
         for (color, keys) in [
             (
-                Color::FifthOn, // green
+                Color::LogoGreen,
                 vec![
                     3u8, 4, 5, 6, 7, 17, 28, 38, 49, 59, 69, 78, 88, 97, 107, 116, 126, 125, 124,
                     123, 122, 113, 104, 94, 85, 84, 83, 72, 62, 51, 41, 31, 22, 12,
                 ],
             ),
             (
-                Color::FifthOff, //blue
+                Color::LogoBlue,
                 vec![24, 25, 26, 36, 47, 56, 66, 65, 64, 53, 43, 33],
             ),
             (
-                Color::LogoBackground, // light pink
+                Color::LogoPink,
                 vec![
                     13, 14, 15, 16, 23, 27, 32, 34, 35, 37, 42, 44, 45, 46, 48, 52, 54, 57, 58, 63,
                     67, 68, 73, 74, 75, 77, 86, 87, 95, 96, 105, 106, 114, 115,
                 ],
             ),
-            (Color::MinorThirdOff, vec![55, 76]), // red
+            (Color::LogoRed, vec![55, 76]),
         ] {
             for key in keys {
                 light_events.push(RawLightEvent {
@@ -703,6 +703,8 @@ pub fn hexboard_color(color: Color) -> HSV {
         sat: s,
         val: v,
     };
+    let on_val = 127;
+    let off_val = 64;
     match color {
         // See misc/hexboard-scripts/colors
         Color::Off => hsv(0, 0, 40),
@@ -710,20 +712,30 @@ pub fn hexboard_color(color: Color) -> HSV {
         Color::Active => hsv(0, 0, 127),           // white
         Color::ToggleOff => hsv(0, 127, 127),      // red
         Color::ToggleOn => hsv(50, 127, 127),      // green
-        Color::FifthOff => hsv(85, 127, 127),      // blue
-        Color::FifthOn => hsv(50, 127, 127),       // green
-        Color::MajorThirdOff => hsv(98, 127, 127), // purple
-        Color::MajorThirdOn => hsv(116, 72, 127),  // pink
-        Color::MinorThirdOff => hsv(0, 127, 127),  // red
-        Color::MinorThirdOn => hsv(14, 127, 127),  // orange
-        Color::TonicOff => hsv(64, 127, 127),      // cyan
-        Color::TonicOn => hsv(28, 127, 127),       // yellow
-        Color::OtherOff => hsv(0, 0, 64),          // dull gray
-        Color::OtherOn => hsv(0, 0, 127),          // white
-        Color::SingleStepOff => hsv(64, 32, 92),   // grayish cyan
-        Color::SingleStepOn => hsv(0, 0, 127),     // white
         Color::NoteSelected => hsv(108, 127, 127), // magenta
-        Color::LogoBackground => hsv(116, 32, 80), // light pink
+        Color::LogoPink => hsv(116, 32, 80),
+        Color::LogoGreen => hsv(50, 127, 127),
+        Color::LogoBlue => hsv(85, 127, 127),
+        Color::LogoRed => hsv(0, 127, 127),
+        // Note colors
+        Color::FourthOff => hsv(50, 127, off_val), // green
+        Color::FourthOn => hsv(50, 127, on_val),   // green
+        Color::FifthOff => hsv(85, 127, off_val),  // blue
+        Color::FifthOn => hsv(85, 127, on_val),    // blue
+        Color::MajorThirdOff => hsv(116, 72, off_val), // pink
+        Color::MajorThirdOn => hsv(116, 72, on_val), // pink
+        Color::MinorSixthOff => hsv(98, 72, off_val), // purple
+        Color::MinorSixthOn => hsv(98, 72, on_val), // purple
+        Color::MinorThirdOff => hsv(0, 127, off_val), // red
+        Color::MinorThirdOn => hsv(0, 127, on_val), // red
+        Color::MajorSixthOff => hsv(10, 127, off_val), // orange
+        Color::MajorSixthOn => hsv(10, 127, on_val), // orange
+        Color::TonicOff => hsv(28, 127, off_val),  // yellow
+        Color::TonicOn => hsv(28, 127, on_val),    // yellow
+        Color::OtherOff => hsv(0, 0, off_val),     // dull gray
+        Color::OtherOn => hsv(0, 0, on_val),       // white
+        Color::SingleStepOff => hsv(64, 127, off_val), // cyan
+        Color::SingleStepOn => hsv(64, 127, on_val), // cyan
     }
 }
 

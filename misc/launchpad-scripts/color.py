@@ -67,7 +67,7 @@ def draw(page, colors):
                 print(' ', end='')
             print(color, end='')
             pos = f'{pos:02x}'
-            subprocess.run(["./scripts/setcolor", pos, color], check=True)
+            subprocess.run(["./setcolor", pos, color], check=True)
             i += 1
         print('')
 
