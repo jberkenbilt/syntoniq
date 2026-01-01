@@ -12,11 +12,6 @@ sort_by = "weight"
 
 **TODO: after the docs are written, include copious xref links to other sections of the doc.**
 
-**TODO: include video links and link to channel**
-
-{{ youtube(id="Oc_HkZVupjw?si=ObzOvNzB7gsY_KcD", caption="TODO Placeholder Video") }}
-
-
 <!-- This opening paragraph also appears in ../start/_index.md -->
 This is the manual for [Syntoniq](https://syntoniq.cc/). Syntoniq converts musical notation in text files to Csound or MIDI output. It was designed from the beginning to represent music in any tuning system, which makes it ideal for use with microtonal music. Syntoniq can generate MIDI using MTS (Midi Tuning System) with custom tunings and also MPE (MIDI Polyphonic Expression) with pitch-bend, specifically designed to be friendly to import into a Digital Audio Workstation for further refinement.
 

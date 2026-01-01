@@ -12,6 +12,14 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
 
 # Software
 
+* Create a default configuration for the keyboard
+  * 12-EDO
+  * 19-EDO
+  * 31-EDO
+  * 17-EDO
+  * 41-EDO
+  * 53-EDO
+  * 106-EDO
 * Create the interactive chord builder -- see below
 * Create a `demo` mode. Embed examples/microtonal-hello.stq. Generate the stq, csound, mpe MIDI, and mts MIDI files, and suggest ways to play them back.
 * Expand scripts in misc to support other than octave
@@ -19,6 +27,7 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
 
 # Documentation
 
+* Standardize on `-` over `_` in links
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
 * Find all occurrences of `TODO` in the docs.
 * Tweak theme for better colors
@@ -28,6 +37,14 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
 # Release
 
 * Use cargo-dist for creating distributions.
+
+# Reminders
+
+On Linux, you can watch Syntoniq's MIDI output with `aseqdump`, e.g.:
+```sh
+aconnect -l
+aseqdump -p 128:0
+```
 
 # Chord Builder
 
