@@ -10,7 +10,7 @@ Gemini:
 
 * **MIDI Port & Channel Allocation**
     * Technical details on how output is mapped
-* **CSound Polyphony Logic**
+* **Csound Polyphony Logic**
     * Voice stealing and allocation details
 * **Links to Technical Articles**
     * Pointers to "Under the Hood" blog posts / CONTRIBUTING.md
@@ -19,7 +19,7 @@ My notes:
 
 * Links to blog posts (mostly these will be rust-related)
 * MIDI port and channel allocation (MTS, MPE)
-* CSound Polyphony logic
+* Csound Polyphony logic
 * About the name and logo
 * Roadmap
   * Interactive chord builder (will work on this after I get the docs in shape)

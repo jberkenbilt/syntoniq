@@ -12,18 +12,18 @@ sort_by = "weight"
 
 # Directives
 
-<!-- generate include=directive_doc.md checksum=0599b70e52081fb24b05e7734f1dfb5e30f457ed2caeddbda2220eaf2d331198 -->
+<!-- generate include=directive_doc.md checksum=6f430836449aed3a6ae50bfe83b3a35b7b88b204de0240849d76bda5da2b42ab -->
 
 ## csound_instrument
 
-Set the CSound instrument number or name for zero or more parts. If no part
+Set the Csound instrument number or name for zero or more parts. If no part
 is specified, this becomes the default instrument for all parts without a
 specific instrument. It is an error to name a part that doesn't appear
 somewhere in the score. You must specify exactly one of number or name.
 
 **Parameters**:
-* **number (optional)** — CSound instrument number
-* **name (optional)** — CSound instrument name
+* **number (optional)** — Csound instrument number
+* **name (optional)** — Csound instrument name
 * **part (repeatable)** — Which parts use this instrument; if not specified, all unassigned parts
 use it
 
@@ -38,8 +38,8 @@ following rules:
 - `b` through `y` are n-1/n, the reciprocal of their upper-case
   counterparts (b=1/2, c=2/3, d=3/4, etc.)
 - `Z` followed by a number ≥ 2 represents n/n-1 (e.g. Z30 = 30/29)
-- `z` followed by a number ≥ 2 represents n-1/n (e.g. z30 = 29/30)
-- All factors are multiplied to create the base pitch; e.g., (Bh = 2×7/8 =
+- `z` followed by a number ≥ 2 represents n-n/n (e.g. z30 = 29/30)
+- All factors are multiplied to create the base pitch; e.g, (Bh = 2×7/8 =
   7/4, Cl = 3/2×11/12 = 11/8)
 
 When `divisions` is specified, the following additional rules apply, noting that the divided

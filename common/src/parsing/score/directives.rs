@@ -257,15 +257,15 @@ impl<'s> MidiInstrument<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Set the CSound instrument number or name for zero or more parts. If no part
+/// Set the Csound instrument number or name for zero or more parts. If no part
 /// is specified, this becomes the default instrument for all parts without a
 /// specific instrument. It is an error to name a part that doesn't appear
 /// somewhere in the score. You must specify exactly one of number or name.
 pub struct CsoundInstrument<'s> {
     pub span: Span,
-    /// CSound instrument number
+    /// Csound instrument number
     pub number: Option<Spanned<u32>>,
-    /// CSound instrument name
+    /// Csound instrument name
     pub name: Option<Spanned<Cow<'s, str>>>,
     /// Which parts use this instrument; if not specified, all unassigned parts
     /// use it

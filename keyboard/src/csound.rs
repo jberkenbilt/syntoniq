@@ -6,7 +6,7 @@ use syntoniq_common::pitch::Pitch;
 
 mod wrapper;
 
-struct CSound {
+struct Csound {
     api: CsoundApi,
     notes: HashMap<Pitch, u32>,
     note_to_number: HashMap<Pitch, u32>,
@@ -15,7 +15,7 @@ struct CSound {
 
 const CSOUND_FILE: &str = include_str!("sound.csd");
 
-impl CSound {
+impl Csound {
     pub async fn new(events_tx: events::WeakSender) -> anyhow::Result<Self> {
         let api = CsoundApi::new(CSOUND_FILE, events_tx).await?;
         Ok(Self {
@@ -91,7 +91,7 @@ pub async fn run_csound(
     mut events_rx: events::Receiver,
     events_tx: events::WeakSender,
 ) -> anyhow::Result<()> {
-    let mut csound = CSound::new(events_tx).await?;
+    let mut csound = Csound::new(events_tx).await?;
     csound
         .api
         .input_message("i \"SetChan\" 0 -1 0.7 \"amp\"")

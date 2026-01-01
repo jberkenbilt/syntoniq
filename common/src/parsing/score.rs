@@ -1311,7 +1311,7 @@ impl<'s> Score<'s> {
             .unwrap_or_else(|| CsoundInstrumentId::Number(directive.number.unwrap().value));
         score_helpers::check_duplicate_by_part(
             diags,
-            "CSound instrument",
+            "Csound instrument",
             directive.part.as_slice(),
             directive.span,
             &mut self.csound_instruments,

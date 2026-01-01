@@ -38,7 +38,7 @@ TODO:
 
 # Structure of a Syntoniq File
 
-A Syntoniq file represents a timeline of musical events. Its syntax takes some inspiration from both [CSound](https://csound.com) and [LilyPond](https://lilypond.org/), but it is unique to Syntoniq.
+A Syntoniq file represents a timeline of musical events. Its syntax takes some inspiration from both [Csound](https://csound.com) and [LilyPond](https://lilypond.org/), but it is unique to Syntoniq.
 
 In Syntoniq, musical notes and dynamics belong to *parts*. A part can be assigned to exactly one instrument and can play multiple notes at once. At any given time, a part has a specific *tuning*, which consists of a *scale* and a *base pitch*. A part's tuning can be changed at any time.
 
@@ -66,7 +66,7 @@ The note name always starts with a letter and may contain a wide range of charac
 
 The symbol `~` is a *hold*. It means "keep doing what you were doing." In this example, it indicates a rest, but it can also mean "keep sustaining a sustained note".
 
-This example doesn't include any note modifiers. Syntoniq supports a handful of modifiers to change articulation and note length and to sustain notes. There is no intention to add a wide range of modifiers to Syntoniq. Syntoniq's goal is not to be a complete musical production system. Its goal is to create music with fully specified pitch and dynamics. For experimentation, study, and working out melodic and harmonic ideas, this is often all you need. For complete musical production, you can take the output that Syntoniq generates and add further refinements in CSound or the Digital Audio Workstation of your choice.
+This example doesn't include any note modifiers. Syntoniq supports a handful of modifiers to change articulation and note length and to sustain notes. There is no intention to add a wide range of modifiers to Syntoniq. Syntoniq's goal is not to be a complete musical production system. Its goal is to create music with fully specified pitch and dynamics. For experimentation, study, and working out melodic and harmonic ideas, this is often all you need. For complete musical production, you can take the output that Syntoniq generates and add further refinements in Csound or the Digital Audio Workstation of your choice.
 
 # Playing the File
 
@@ -87,14 +87,14 @@ syntoniq score 'hello.stq' is valid
 JSON output written to hello.json
 MIDI output (MTS) written to hello-mts.midi
 MIDI output (MPE) written to hello-mpe.midi
-CSound output written to hello.csd
+Csound output written to hello.csd
 ```
 
 The `--score` option is required. If no other options are given, `syntoniq` will just validate the score and report any errors it finds. The other options all tell `syntoniq` to generate a certain type of output.
 
-The file `hello.csd` contains [CSound](https://csound.com) output. If you want to use CSound, you can install it from its website. Then just run `csound hello.csd` to hear the file. You can create your own CSound instruments to use with Syntoniq. By default, it includes a simple instrument with a simple wave form that's good for clearly hearing pitches and intervals...but you probably wouldn't want to listen to a piece of music with it! *Please note: you can create much better audio with csound. This is a limitation of Syntoniq's default instrument, not csound itself!*
+The file `hello.csd` contains [Csound](https://csound.com) output. If you want to use Csound, you can install it from its website. Then just run `csound hello.csd` to hear the file. You can create your own Csound instruments to use with Syntoniq. By default, it includes a simple instrument with a simple wave form that's good for clearly hearing pitches and intervals...but you probably wouldn't want to listen to a piece of music with it! *Please note: you can create much better audio with csound. This is a limitation of Syntoniq's default instrument, not csound itself!*
 
-{{ audio(src="introduction/hello-csound.mp3", caption="Audio Created with CSound") }}
+{{ audio(src="introduction/hello-csound.mp3", caption="Audio Created with Csound") }}
 
 The file `hello-mts.midi` is a standard MIDI file that embeds MTS (Midi Tuning System) SysEx (System Exclusive) messages and assigns a MIDI note number to each pitch. For most workflows, you will want the MPE version of MIDI, but the MTS version may be better with stand-alone MIDI to audio converters. If you're using the regular 12-tone scale, you can play this with any converter or player. Otherwise, you need software that understand these messages. If you have [TiMidity++](https://timidity.sourceforge.net/), you can run `timidity hello-mts.midi`. TiMidity++ is a very old but highly functional MIDI to WAVE converter. It is one of the few tools that natively understands MIDI with embedded MTS.
 
@@ -126,4 +126,4 @@ To generate
 TODO:
 * If we add glide and don't implement it for outputs, mention this.
 
-The file `hello.json` contains complete information about the timeline that `syntoniq` generated. You can use this for study, or it could be the basis for creating other ways to render the audio without modifying the Syntoniq software. All the information that the CSound and MIDI generators use is encoded in this JSON file.
+The file `hello.json` contains complete information about the timeline that `syntoniq` generated. You can use this for study, or it could be the basis for creating other ways to render the audio without modifying the Syntoniq software. All the information that the Csound and MIDI generators use is encoded in this JSON file.

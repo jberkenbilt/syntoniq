@@ -27,11 +27,11 @@ pub struct GenerateOptions {
     /// dta.
     #[arg(long)]
     midi_mpe: Option<PathBuf>,
-    /// Output CSound file. Use the `--csound-template` option to use a template other than the
+    /// Output Csound file. Use the `--csound-template` option to use a template other than the
     /// built-in one.
     #[arg(long)]
     csound: Option<PathBuf>,
-    /// Override the built-in CSound template. The template has to conform to a certain structure
+    /// Override the built-in Csound template. The template has to conform to a certain structure
     /// to be usable. Run `syntoniq csound-template` to print the contents of the built-in template.
     /// You can also use a previous output as a template to just replace the generated portion.
     #[arg(long)]
@@ -75,7 +75,7 @@ pub fn run(options: GenerateOptions) -> anyhow::Result<()> {
     if let Some(csound_file) = options.csound
         && let Err(e) = csound::generate(&timeline, csound_file, options.csound_template)
     {
-        errors.push(format!("{score_file} -> CSound: {e}"));
+        errors.push(format!("{score_file} -> Csound: {e}"));
     }
     if !errors.is_empty() {
         bail!("{}", errors.join("\n"))

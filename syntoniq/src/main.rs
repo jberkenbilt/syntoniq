@@ -32,7 +32,7 @@ enum Commands {
         /// shell
         shell: Shell,
     },
-    /// Write built-in CSound template to standard output
+    /// Write built-in Csound template to standard output
     CsoundTemplate,
     /// Write built-in scales in syntoniq format to standard output
     BuiltInScales,

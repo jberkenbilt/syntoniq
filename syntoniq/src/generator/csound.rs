@@ -14,7 +14,7 @@ struct PartData {
     note_numbers: BTreeMap<u32, usize>,
 }
 
-struct CSoundGenerator<'s> {
+struct CsoundGenerator<'s> {
     timeline: &'s Timeline<'s>,
     content: String,
     part_data: BTreeMap<&'s str, PartData>,
@@ -43,7 +43,7 @@ fn pad_number(n: impl Into<usize>, max_n: usize) -> String {
     format!("{:0width$}", n.into(), width = width)
 }
 
-impl<'s> CSoundGenerator<'s> {
+impl<'s> CsoundGenerator<'s> {
     fn new(timeline: &'s Timeline) -> anyhow::Result<Self> {
         Ok(Self {
             timeline,
@@ -283,7 +283,7 @@ pub(crate) fn generate(
     out: impl AsRef<Path>,
     template_override: Option<impl AsRef<Path>>,
 ) -> anyhow::Result<()> {
-    let g = CSoundGenerator::new(timeline)?;
+    let g = CsoundGenerator::new(timeline)?;
     let content = g.generate()?;
     let mut _loaded: Option<String> = None;
     let template = match template_override {
@@ -309,7 +309,7 @@ pub(crate) fn generate(
             &template[end_pos..]
         ),
     )?;
-    println!("CSound output written to {}", out.as_ref().display());
+    println!("Csound output written to {}", out.as_ref().display());
     Ok(())
 }
 

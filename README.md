@@ -2,7 +2,7 @@
 
 <img src="logo/syntoniq-logo.svg" alt="Syntoniq Logo" style="height: 10em; vertical-align: middle; padding: 2ex;">
 
-Welcome to *Syntoniq*. Syntoniq converts musical notation in text files to CSound or MIDI output. It was designed from the beginning to represent music in any tuning system, which makes it ideal for use with microtonal music. Syntoniq can generate MIDI using MTS (Midi Tuning System) with custom tunings and also MPE (MIDI Polyphonic Expression) with pitch-bend, specifically designed to be friendly to import into a Digital Audio Workstation for further refinement.
+Welcome to *Syntoniq*. Syntoniq converts musical notation in text files to Csound or MIDI output. It was designed from the beginning to represent music in any tuning system, which makes it ideal for use with microtonal music. Syntoniq can generate MIDI using MTS (Midi Tuning System) with custom tunings and also MPE (MIDI Polyphonic Expression) with pitch-bend, specifically designed to be friendly to import into a Digital Audio Workstation for further refinement.
 
 Major Features:
 * Score-like layout of musical text files

@@ -60,7 +60,7 @@ Built-in scales: 12-EDO (default), 19-EDO, 31-EDO, JI (generated)
 * Language Reference
 
 
-The Syntoniq Language, represents a musical score as a temporal sequence of notes and dynamics using user-defined scales and tuning. The output of the `syntoniq` command is either a CSound file or a MIDI file. You can create a MIDI file that includes embedded MTS SysEx codes or that uses MPE. The MTS MIDI can be interpreted by Timidity++. The MPE MIDI file is suitable for importing into a DAW (Digital Audio Workstation) for further editing. The CSound file can be played directly. When syntoniq creates a CSound file, it inserts the notes into a template containing instruments and any other logic. Its output is also a template, so you can continue to rerun `syntoniq` on its previous output to update the notes.
+The Syntoniq Language, represents a musical score as a temporal sequence of notes and dynamics using user-defined scales and tuning. The output of the `syntoniq` command is either a Csound file or a MIDI file. You can create a MIDI file that includes embedded MTS SysEx codes or that uses MPE. The MTS MIDI can be interpreted by Timidity++. The MPE MIDI file is suitable for importing into a DAW (Digital Audio Workstation) for further editing. The Csound file can be played directly. When syntoniq creates a Csound file, it inserts the notes into a template containing instruments and any other logic. Its output is also a template, so you can continue to rerun `syntoniq` on its previous output to update the notes.
 
 Note that `syntoniq` does not generate a printable score.
 

@@ -88,7 +88,7 @@ TODO:
 
 For CONTRIBUTING.md, not the manual:
 
-* Various sections on how Syntoniq is implemented including pub/sub architecture, MIDI port/channel allocation strategies, CSound polyphony logic, others
+* Various sections on how Syntoniq is implemented including pub/sub architecture, MIDI port/channel allocation strategies, Csound polyphony logic, others
 * Deeper dives on Syntoniq's architecture, written as blog-style articles; many will become blog posts (like my particular use of winnow, `ToStatic` pattern for keyboard layout reload, bindgen for csound library)
 * Testing -- how to run the automated tests, coverage analysis, how to listen to generated audio from the test suite, how to compare actual vs. expected MIDI files for both MTS and MPE
 * Managing the docs: including HTML keyboard dumps, generated content, etc.
@@ -116,13 +116,13 @@ For CONTRIBUTING.md, not the manual:
   - [Directives](directives.md)
   - [Data Blocks](data_blocks.md)
   - [Generators](generators.md)
-    - [CSound Generator](csound_generator.md)
+    - [Csound Generator](csound_generator.md)
     - [MIDI Generators](midi_generators.md)
 - Keyboard Architecture
    - Event System
    - [Keyboard Core Components](keyboard_core_components.md)
    - [Web UI](web_ui.md)
-   - [CSound Playback](csound_playback.md)
+   - [Csound Playback](csound_playback.md)
    - [MIDI Playback](midi_playback.md)
    - [Device Isolation](device_isolation.md)
    - [Lauchpad Specifics](launchpad.md)

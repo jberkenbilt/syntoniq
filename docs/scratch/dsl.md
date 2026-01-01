@@ -58,7 +58,7 @@ Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini
 
 nerds.de loopbe1 -- windows virtual midi port
 
-* CSound: interpret accents with envelope, then figure out what this does to articulation adjustment.
+* Csound: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation adjustment directives:
   * four factors: default of each plus modifier for each option
     * default velocity (72)
