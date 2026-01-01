@@ -1,0 +1,1 @@
+color.py is a Python script for manually iterating with colors. To use it, first put the device in programmer mode with `./progmode`. You can then use it to set the colors based on the values by number to match the image on page 10 (also in `./colors.png`), a manual table, or a failed attempt at HSV. See above for the choices.

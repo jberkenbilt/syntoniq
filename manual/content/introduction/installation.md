@@ -17,3 +17,10 @@ Cover:
 * Build from source including disabling csound feature and how build.rs works
 * Run `syntoniq demo` (see TODO) and play resulting files
 * If hardware is available, run the keyboard with a demo file. Do we want an embedded keyboard demo? If so, also provide a way to output the file.
+
+Remember: Windows:
+* Install https://www.tobias-erichsen.de/software/loopmidi.html
+* Create a loop port called `syntoniq-loop`
+```
+cargo build --config .cargo/windows-cross.toml --no-default-features
+```

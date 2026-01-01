@@ -19,10 +19,11 @@ The keyboard exposes several capabilities:
 
 # Hardware
 
+TODO: update after next HexBoard firmware after v1.2 is released
+
 The Syntoniq Keyboard works on the following devices:
 * [Novation Launchpad MK3 Pro](https://novationmusic.com/products/launchpad-pro-mk3)
-* [HexBoard MIDI Controller](https://shapingthesilence.com/tech/hexboard-midi-controller/)
-  * As of HexBoard firmware version 1.2, custom firmware is required. It is expected that the firmware mods will be incorporated into the main firmware. In the meantime, the changes are at <https://github.com/jberkenbilt/HexBoard/tree/delegated-control>; check status at https://github.com/shapingthesilence/HexBoard/pull/6
+* [HexBoard MIDI Controller](https://shapingthesilence.com/tech/hexboard-midi-controller/) with custom firmware (as of version 1.2)
 
 Adding support for additional devices may be possible as the device support parts of the keyboard are isolated. To support Syntoniq Keyboard, the device must support some kind of external control where external software can receive button events and send light events. It would also be possible to create a software-based keyboard application based on an existing software programmable controller or on a custom tool. I highly recommend one of the hardware solutions. Both of the options above are affordable in comparison to many microtonal keyboard options. The HexBoard gives you 133 notes vs. the LaunchPad's 64 and also works as a capable microtonal keyboard in its own right. The Launchpad is also an excellent device that has other uses, particularly as a controller for a digital audio workstation.
 
