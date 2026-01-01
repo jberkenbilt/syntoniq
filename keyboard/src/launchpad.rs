@@ -303,12 +303,14 @@ impl Keyboard for Launchpad {
         for (color, positions) in [
             (
                 Color::LogoGreen,
-                vec![63u8, 64, 65, 66, 52, 57, 42, 47, 32, 37, 23, 24, 25],
+                vec![
+                    82u8, 87, 71, 78, 61, 68, 51, 58, 41, 48, 32, 38, 23, 24, 27, 11, 12, 13, 14,
+                    15, 16,
+                ],
             ),
-            (Color::LogoBlue, vec![34, 35, 16, 17, 18]),
-            (Color::MajorThirdOn, vec![26]), // pink
-            (Color::MinorSixthOn, vec![72, 73, 83, 84, 85, 86, 76, 77]), // purple
-            (Color::SingleStepOn, vec![74, 75]), // cyan
+            (Color::LogoBlue, vec![74, 75, 63, 66, 53, 56, 44, 45]),
+            (Color::LogoRed, vec![55, 46]),
+            (Color::LogoPink, vec![64, 65, 54, 25, 26]),
         ] {
             for position in positions {
                 light_events.push(RawLightEvent {
@@ -476,7 +478,6 @@ mod colors {
     pub const DULL_GRAY: u8 = 0x47;
     pub const HIGHLIGHT_GRAY: u8 = 0x01;
     pub const MAGENTA: u8 = 0x5e;
-    pub const LIGHT_PINK: u8 = 0x34;
     pub const DIM_GREEN: u8 = 0x1b;
     pub const DIM_BLUE: u8 = 0x2b;
     pub const DIM_PINK: u8 = 0x37;
@@ -485,6 +486,9 @@ mod colors {
     pub const DIM_ORANGE: u8 = 0x0b;
     pub const DIM_YELLOW: u8 = 0x0f;
     pub const DIM_CYAN: u8 = 0x27;
+    pub const LOGO_PINK: u8 = 0x5d;
+    pub const LOGO_BLUE: u8 = 0x29;
+    pub const LOGO_GREEN: u8 = 0x1a;
 }
 
 pub fn launchpad_color(color: Color) -> u8 {
@@ -513,10 +517,10 @@ pub fn launchpad_color(color: Color) -> u8 {
         Color::SingleStepOff => colors::DIM_CYAN,
         Color::SingleStepOn => colors::CYAN,
         Color::NoteSelected => colors::MAGENTA,
-        Color::LogoPink => colors::LIGHT_PINK,
+        Color::LogoPink => colors::LOGO_PINK,
         Color::LogoRed => colors::RED,
-        Color::LogoGreen => colors::GREEN,
-        Color::LogoBlue => colors::BLUE,
+        Color::LogoGreen => colors::LOGO_GREEN,
+        Color::LogoBlue => colors::LOGO_BLUE,
     }
 }
 
