@@ -1779,6 +1779,7 @@ impl<'s> Score<'s> {
         if !options.skip_repeats
             && options.start_mark.is_none()
             && options.end_mark.is_none()
+            && options.skip_beats.unwrap_or_default() == 0
             && tempo_percent == 100
         {
             return;
@@ -1823,6 +1824,9 @@ impl<'s> Score<'s> {
                 return;
             }
         }
+        if let Some(skip_beats) = options.skip_beats {
+            delta += skip_beats;
+        }
         let mut found_end = options.end_mark.is_none();
         let mut last_event_time = Ratio::from_integer(0);
         // Set into effect any tempo that would have been effective at this point in the timeline.
@@ -1844,7 +1848,7 @@ impl<'s> Score<'s> {
             if options.skip_repeats
                 && (event.repeat_depth > 0 || matches!(event.data, TimelineData::RepeatEnd(_)))
             {
-                // Skip repeated passages and advanced delta so we don't have silence.
+                // Skip repeated passages and advance delta so we don't have silence.
                 delta += new_event.time - last_event_time;
                 // Re-compute time with new delta.
                 new_event = event.copy_with_time_delta(delta, true);

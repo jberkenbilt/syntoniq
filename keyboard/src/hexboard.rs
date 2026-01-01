@@ -12,9 +12,10 @@ use midir::MidiOutputConnection;
 use midly::MidiMessage;
 use midly::live::LiveEvent;
 use num_enum::{IntoPrimitive, TryFromPrimitive};
-use std::cmp;
 use std::collections::HashMap;
 use std::sync::{Arc, LazyLock, RwLock};
+use std::time::Duration;
+use std::{cmp, thread};
 use syntoniq_common::parsing::{Coordinate, Layout};
 
 macro_rules! make_message {
@@ -329,7 +330,12 @@ impl Device for HexBoardDevice {
     }
 
     fn init(&self, output_connection: &mut MidiOutputConnection) -> anyhow::Result<()> {
-        Ok(output_connection.send(ENTER_DELEGATED)?)
+        output_connection.send(ENTER_DELEGATED)?;
+        // Sleeps are inherently unstable, but we don't have a good way to know when the HexBoard
+        // has fully entered delegated mode. The hardware should be able to go around its full loop
+        // in a small fraction of a second, so this should be plenty of time.
+        thread::sleep(Duration::from_millis(200));
+        Ok(())
     }
 
     fn shutdown(&self, output_connection: &mut MidiOutputConnection) {

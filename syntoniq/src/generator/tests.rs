@@ -89,6 +89,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: false,
                 tempo_percent: Some(100),
+                skip_beats: None,
             },
         ),
         (
@@ -99,6 +100,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: false,
                 tempo_percent: Some(200),
+                skip_beats: None,
             },
         ),
         (
@@ -109,6 +111,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: true,
                 tempo_percent: Some(150),
+                skip_beats: None,
             },
         ),
         (
@@ -119,6 +122,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: Some("verse-end".to_string()),
                 skip_repeats: true,
                 tempo_percent: Some(75),
+                skip_beats: None,
             },
         ),
         (
@@ -129,6 +133,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: Some("verse-end".to_string()),
                 skip_repeats: false,
                 tempo_percent: None,
+                skip_beats: None,
             },
         ),
         (
@@ -139,6 +144,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: false,
                 tempo_percent: None,
+                skip_beats: None,
             },
         ),
         (
@@ -149,6 +155,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: Some("verse-end".to_string()),
                 skip_repeats: false,
                 tempo_percent: None,
+                skip_beats: None,
             },
         ),
         (
@@ -159,6 +166,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: false,
                 tempo_percent: None,
+                skip_beats: None,
             },
         ),
         (
@@ -169,6 +177,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: Some("verse-start".to_string()),
                 skip_repeats: false,
                 tempo_percent: None,
+                skip_beats: None,
             },
         ),
         (
@@ -179,6 +188,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: false,
                 tempo_percent: None,
+                skip_beats: None,
             },
         ),
         (
@@ -189,6 +199,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: false,
                 tempo_percent: None,
+                skip_beats: None,
             },
         ),
         (
@@ -199,6 +210,7 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: false,
                 tempo_percent: None,
+                skip_beats: None,
             },
         ),
         (
@@ -209,6 +221,18 @@ fn test_options() -> anyhow::Result<()> {
                 end_mark: None,
                 skip_repeats: true,
                 tempo_percent: None,
+                skip_beats: None,
+            },
+        ),
+        (
+            "test07-tempo",
+            "skip-beats",
+            Options {
+                start_mark: None,
+                end_mark: None,
+                skip_repeats: true,
+                tempo_percent: None,
+                skip_beats: Some(8),
             },
         ),
     ];

@@ -1,0 +1,10 @@
+syntoniq(version=1)
+
+[p1.0] 2:c
+
+mark(label="a")
+[p1.0] 2:d
+[p1.1] 1:~ 1:e
+
+
+[p1.0] 1:f

@@ -31,7 +31,11 @@ pub struct TimelineEvent<'s> {
 impl<'s> TimelineEvent<'s> {
     fn add_or_subtract(v: &mut Ratio<u32>, delta: &Ratio<u32>, subtract: bool) {
         if subtract {
-            *v -= delta;
+            if delta > v {
+                *v = Ratio::from_integer(0);
+            } else {
+                *v -= delta;
+            }
         } else {
             *v += delta;
         }
