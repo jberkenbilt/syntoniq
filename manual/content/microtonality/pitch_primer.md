@@ -16,7 +16,7 @@ There are various ways people have tried to do this. Syntoniq has its own, disti
 
 * A *pitch* is the product of *factors*.
 * A *factor* is either a *ratio* or a *ratio raised to a rational power*.
-* A *ratio* is written as `a` or `a/b`, which just represent the values $a$ or $\frac{a}{b}$.
+* A *ratio* is written as `a` or `a/b`, which just represent the values $a$ or $\frac{a}{b}$. You can also write a ratio as a decimal with a maximum of three decimal places. (This works everywhere rationals are allowed, including note durations.)
 * A *ratio raised to a rational power* is written as `a/b^c|d`. This represents $\frac{a}{b}^{\(\frac{c}{d}\)}$.
   * If you omit both `a` and `b` and write `^c|d`, it means $2^{\(\frac{c}{d}\)}$.
   * If you omit `b` and write `a^c|d`, it means $a^{\(\frac{c}{d}\)}$.
