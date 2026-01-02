@@ -21,6 +21,7 @@ tasks:
       - stq-csound-mp3:transposition1
       - stq-csound-mp3:transposition2
       - built-in-scales
+      - built-in-keyboard
       - directives
     cmds:
       - ../autogen
@@ -43,6 +44,14 @@ tasks:
       - ../../common/src/parsing/built-in-scales.stq
     generates:
       - built-in-scales.stq
+
+  built-in-keyboard:
+    cmds:
+      - "cp ../../keyboard/src/keyboard.stq ."
+    sources:
+      - ../../keyboard/src/keyboard.stq
+    generates:
+      - keyboard.stq
 
   directives:
     cmds:

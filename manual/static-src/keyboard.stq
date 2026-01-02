@@ -1,15 +1,3 @@
-+++
-title = "Layout Engine"
-weight = 60
-sort_by = "weight"
-+++
-
-* This section probably doesn't get an accompanying video as it is very technically dense and more coding oriented.
-* Go over syntoniq language features for creating custom isomorphic and manual mappings and combining mappings to create layouts, including row and column layout for rectangular and hexagonal grids (with rationale for hexagonal)
-* Mention that, while the software doesn't prevent you from using isomorphic mappings with uneven tunings, it might create a confusing situation, but there are use cases if you "know what you're doing", such as dealing with regular but uneven tunings or intentionally experimenting with out-of-tune keys in JI
-
-<!-- generate include=keyboard.stq checksum=7356a0f0dd7a4587678402644c43ca1330726b34d7c22a3457ec6a88e2bafb03 -->
-```syntoniq
 syntoniq(version=1)
 
 define_isomorphic_mapping(mapping="12-EDO-h2v5" steps_h=2 steps_v=5)
@@ -154,5 +142,3 @@ place_mapping(layout="13-ED3-h2v3" mapping="13-ED3-h2v3" keyboard="hexboard" anc
 define_generated_scale(scale="27-ED3" cycle_ratio=3 divisions=27)
 define_isomorphic_mapping(mapping="27-ED3-h3v5" scale="27-ED3" steps_h=3 steps_v=5)
 place_mapping(layout="27-ED3-h3v5" mapping="27-ED3-h3v5" keyboard="hexboard" anchor_row=7 anchor_col=8)
-```
-<!-- generate-end -->

@@ -14,15 +14,13 @@ As of version 1.2 of the HexBoard firmware (released October 23, 2025), the feat
 
 Once you have the device connected, you can run the keyboard application using the `syntoniq-kbd` command. Run `syntoniq-kbd --help` for help.
 
-TODO: finalize demo.stq and fix commands below
-
 When you run `syntoniq-kbd`, it scans the list of available MIDI devices and picks the first one whose name contains the string you pass as the option to `--port`. If it doesn't find one, it will tell you which ports it found. You can run one of the following
 
 ```sh
 # for Launchpad
-syntoniq-kbd run --port=MK3 --score=keyboard/configs/demo.stq
+syntoniq-kbd run --port=MK3
 # for HexBoard
-syntoniq-kbd run --port=RP2040 --score=keyboard/configs/demo.stq
+syntoniq-kbd run --port=RP2040
 ```
 
 ## Using Syntoniq Keyboard with MIDI
@@ -34,14 +32,4 @@ If you use the Syntoniq keyboard as a MIDI device, there are several things to k
 * The `syntoniq-kbd` application creates a MIDI port called "Syntoniq Keyboard". In your synthesizer, you will see that input device, and you will also see the input device for the hardware. At the time of this writing, the Launchpad presents itself as "Launchpad Pro MK3", and the HexBoard presents as "RP2040". The hardware is sending MIDI commands, which `syntoniq-kbd` receives. In MIDI mode, `syntoniq-kbd` sends out its own MIDI note events. *You must unselect the hardware device in your synthesizer and select "Syntoniq Keyboard", or else you will hear two notes: one sent by the hardware and one sent by `syntoniq-kbd`.
 * On Linux and macOS, you shouldn't have to do anything special to use `syntoniq-kbd` as a MIDI device. On Windows, you need to install [loopMIDI](https://www.tobias-erichsen.de/software/loopmidi.html) and create a port called `syntoniq-loop`. The "Syntoniq Keyboard" device writes its output to that port since Windows doesn't support dynamic creation of virtual MIDI devices the way macOS and Linux do.
 
-# Video Demonstration
-
-This video shows
-* Starting the keyboard using the built-in demo configuration with Csound
-* Selecting the first layout
-* Playing a few notes
-* Starting the keyboard using the built-in demo configuration with MIDI
-* Selecting the first layout
-* Playing a few notes
-
-{{ youtube(id="Oc_HkZVupjw?si=ObzOvNzB7gsY_KcD", caption="TODO Placeholder Video", script="TODO") }}
+In the next section, we'll go over starting `syntoniq-kbd` and making sure the device works.

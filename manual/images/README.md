@@ -1,0 +1,1 @@
+This is a work area for images in the manual. To create the images in ../static/images, the odg files were exported to PDF, converted to images with `convert -density 120 x.pdf x.png`, loaded into gimp, manually cropped, and then overwritten. It's a very manual process, but there are very few images.
