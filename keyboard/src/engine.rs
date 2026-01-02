@@ -37,7 +37,7 @@ struct Engine {
     transient_state: EngineState,
 }
 
-const DEFAULT_SCORE: &str = include_str!("keyboard.stq");
+pub const DEFAULT_SCORE: &str = include_str!("keyboard.stq");
 
 fn load_layouts(score_file: Option<&str>) -> anyhow::Result<Layouts<'static>> {
     let as_vec: Option<Vec<u8>>;

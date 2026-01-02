@@ -43,6 +43,8 @@ enum Commands {
         #[arg(long)]
         midi: bool,
     },
+    /// Output the built-in keyboard configuration
+    ShowDefaultConfig,
     /// Generate shell completion
     Completion {
         /// shell
@@ -53,11 +55,19 @@ enum Commands {
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
     let cli = Cli::parse();
-    if let Commands::Completion { shell } = cli.command {
-        let mut cmd = Cli::command();
-        syntoniq_common::cli_completions(shell, &mut cmd);
-        return Ok(());
+    match cli.command {
+        Commands::Completion { shell } => {
+            let mut cmd = Cli::command();
+            syntoniq_common::cli_completions(shell, &mut cmd);
+            return Ok(());
+        }
+        Commands::ShowDefaultConfig => {
+            print!("{}", engine::DEFAULT_SCORE);
+            return Ok(());
+        }
+        Commands::Run { .. } => {}
     }
+
     let mut log_builder = env_logger::builder();
     if env::var("RUST_LOG").is_err() {
         log_builder.filter_level(LevelFilter::Info);

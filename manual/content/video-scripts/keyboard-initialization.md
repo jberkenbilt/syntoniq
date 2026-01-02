@@ -20,7 +20,7 @@ Here, you can see that I have typed a port name that doesn't correspond to any o
 
 [Type `syntoniq-kbd run --port=MK3`]
 
-Notice the output tells you to exit with control C, gives you the location of the "view HTTP server", and tells you that the keyboard is initialized. Depending on the version of the software, you may see something slightly different.
+Notice the output tells you to exit with control C, gives you the location of the "view HTTP server", and tells you that the keyboard is initialized. Depending on the version of the software, you may see something slightly different. I'll also point out that I'm running the application with its built-in default configuration. A major feature of the Syntoniq keyboard is its flexible scale and layout system. These will be covered in a later video.
 
 Here in my browser, I will connect to localhost port 8440. You can see a drawing of the keyboard with some extra labels and information. Here on the right, you can see an indication of the selected layout, currently empty, and a list of 9 possible layouts. Notice along the bottom that there are 8 numbered buttons. Pressing a button from 1 to 8 selects the corresponding layout. To get to layout 9, press the button labeled "Scroll layouts". [Press the button.] After you do this, you will notice that only the first LED is lit up in the layout selection row and that it is now labeled with the number 9. Pressing the scroll button again [Press the button] returns to the previous configuration.
 
