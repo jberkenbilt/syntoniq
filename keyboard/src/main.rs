@@ -36,9 +36,9 @@ enum Commands {
         /// Substring to match for midi port; run amidi -l
         #[arg(long)]
         port: String,
-        /// Syntoniq score file containing layouts
+        /// Syntoniq score file containing layouts; if omitted, a built-in default is used.
         #[arg(long)]
-        score: String,
+        score: Option<String>,
         /// Send notes to a virtual output port named Syntoniq
         #[arg(long)]
         midi: bool,
@@ -109,7 +109,7 @@ async fn main() -> anyhow::Result<()> {
         bail!("MIDI not requested and csound not available");
     };
     engine::run(
-        &score,
+        score,
         sound_type,
         keyboard,
         events_tx.clone(),

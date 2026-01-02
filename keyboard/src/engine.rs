@@ -31,16 +31,28 @@ pub enum SoundType {
 }
 
 struct Engine {
-    score_file: String,
+    score_file: Option<String>,
     keyboard: Arc<dyn Keyboard>,
     events_tx: events::WeakSender,
     transient_state: EngineState,
 }
 
-fn load_layouts(score_file: &str) -> anyhow::Result<Layouts<'static>> {
-    let data = fs::read(score_file)?;
-    let src = str::from_utf8(&data)?;
-    parsing::layouts(score_file, src, &parsing::Options::default())
+const DEFAULT_SCORE: &str = include_str!("keyboard.stq");
+
+fn load_layouts(score_file: Option<&str>) -> anyhow::Result<Layouts<'static>> {
+    let as_vec: Option<Vec<u8>>;
+    let src = match score_file {
+        None => DEFAULT_SCORE,
+        Some(f) => {
+            as_vec = Some(fs::read(f)?);
+            str::from_utf8(as_vec.as_ref().unwrap())?
+        }
+    };
+    parsing::layouts(
+        score_file.unwrap_or("<built-in>"),
+        src,
+        &parsing::Options::default(),
+    )
 }
 
 pub trait Keyboard: Sync + Send {
@@ -71,7 +83,7 @@ impl Engine {
             return Ok(());
         };
         self.keyboard.reset()?;
-        let mut layouts = load_layouts(&self.score_file)?;
+        let mut layouts = load_layouts(self.score_file.as_deref())?;
         layouts
             .layouts
             .retain(|layout| self.keyboard.layout_supported(layout));
@@ -502,7 +514,7 @@ impl Engine {
                     .transient_state
                     .notes
                     .get(&position)
-                    .expect("pitch_positions is inconsistent wiht notes");
+                    .expect("pitch_positions is inconsistent with notes");
                 self.keyboard
                     .note_light_event(note.as_deref(), position, velocity)
             })
@@ -710,14 +722,14 @@ pub async fn start_keyboard(
 }
 
 pub async fn run(
-    score_file: &str,
+    score_file: Option<String>,
     sound_type: SoundType,
     keyboard: Arc<dyn Keyboard>,
     events_tx: events::WeakSender,
     mut events_rx: events::Receiver,
 ) -> anyhow::Result<()> {
     let mut engine = Engine {
-        score_file: score_file.to_string(),
+        score_file,
         keyboard,
         events_tx: events_tx.clone(),
         transient_state: Default::default(),
