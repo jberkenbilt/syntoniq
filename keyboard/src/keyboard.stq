@@ -5,10 +5,10 @@ place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="launchpad" an
 place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="hexboard" anchor_row=8 anchor_col=8)
 place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="hexboard-60" anchor_row=9 anchor_col=8)
 
-define_isomorphic_mapping(mapping="19-EDO-h3v8" scale="19-EDO" steps_h=3 steps_v=8)
-place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" keyboard="launchpad" anchor_row=4 anchor_col=3)
-place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" keyboard="hexboard" anchor_row=8 anchor_col=8)
-place_mapping(layout="19-EDO-h3v8" mapping="19-EDO-h3v8" keyboard="hexboard-60" anchor_row=9 anchor_col=8)
+define_isomorphic_mapping(mapping="19-EDO-h3v2" scale="19-EDO" steps_h=3 steps_v=2)
+place_mapping(layout="19-EDO-h3v2" mapping="19-EDO-h3v2" keyboard="launchpad" anchor_row=4 anchor_col=3)
+place_mapping(layout="19-EDO-h3v2" mapping="19-EDO-h3v2" keyboard="hexboard" anchor_row=8 anchor_col=7)
+place_mapping(layout="19-EDO-h3v2" mapping="19-EDO-h3v2" keyboard="hexboard-60" anchor_row=9 anchor_col=8)
 
 define_isomorphic_mapping(mapping="31-EDO-h5v3" scale="31-EDO" steps_h=5 steps_v=3)
 place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="launchpad" anchor_row=4 anchor_col=3)
@@ -16,10 +16,10 @@ place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="hexboard" anc
 place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
 
 define_generated_scale(scale="17-EDO" divisions=17)
-define_isomorphic_mapping(mapping="17-EDO-h3v7" scale="17-EDO" steps_h=3 steps_v=7)
-place_mapping(layout="17-EDO-h3v7" mapping="17-EDO-h3v7" keyboard="launchpad" anchor_row=4 anchor_col=3)
-place_mapping(layout="17-EDO-h3v7" mapping="17-EDO-h3v7" keyboard="hexboard" anchor_row=7 anchor_col=8)
-place_mapping(layout="17-EDO-h3v7" mapping="17-EDO-h3v7" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
+define_isomorphic_mapping(mapping="17-EDO-h3v2" scale="17-EDO" steps_h=3 steps_v=2)
+place_mapping(layout="17-EDO-h3v2" mapping="17-EDO-h3v2" keyboard="launchpad" anchor_row=4 anchor_col=3)
+place_mapping(layout="17-EDO-h3v2" mapping="17-EDO-h3v2" keyboard="hexboard" anchor_row=8 anchor_col=7)
+place_mapping(layout="17-EDO-h3v2" mapping="17-EDO-h3v2" keyboard="hexboard-60" anchor_row=9 anchor_col=8)
 
 define_generated_scale(scale="41-EDO" divisions=41)
 define_isomorphic_mapping(mapping="41-EDO-h7v3" scale="41-EDO" steps_h=7 steps_v=3)
@@ -31,7 +31,7 @@ define_generated_scale(scale="53-EDO" divisions=53)
 define_isomorphic_mapping(mapping="53-EDO-h9v4" scale="53-EDO" steps_h=9 steps_v=4)
 place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="launchpad" anchor_row=4 anchor_col=3)
 place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard" anchor_row=7 anchor_col=8)
-place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
+place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard-60" anchor_row=9 anchor_col=7)
 
 define_manual_mapping(
     mapping="JI"
@@ -51,6 +51,14 @@ place_mapping(
     anchor_col=5
 )
 place_mapping(
+    layout="JI"
+    base_pitch=264
+    keyboard="launchpad"
+    mapping="JI"
+    anchor_row=3
+    anchor_col=2
+)
+place_mapping(
     layout="JI-11-19-EDO"
     keyboard="launchpad"
     mapping="JI"
@@ -62,7 +70,7 @@ place_mapping(
 place_mapping(
     layout="JI-11-19-EDO"
     keyboard="launchpad"
-    mapping="19-EDO-h3v8"
+    mapping="19-EDO-h3v2"
     anchor_row=6
     anchor_col=3
 )
@@ -80,7 +88,7 @@ place_mapping(
 place_mapping(
     layout="JI-11-19-EDO"
     keyboard="hexboard"
-    mapping="19-EDO-h3v8"
+    mapping="19-EDO-h3v2"
     anchor_row=9
     anchor_col=9
 )
@@ -113,6 +121,18 @@ place_mapping(
     keyboard="launchpad"
     anchor_row=1
     anchor_col=1
+)
+place_mapping(
+    layout="harmonics"
+    mapping="harmonics"
+    base_pitch=50
+    keyboard="hexboard"
+    anchor_row=4
+    anchor_col=4
+    rows_above=7
+    rows_below=0
+    cols_right=7
+    cols_left=0
 )
 
 define_generated_scale(scale="13-ED3" cycle_ratio=3 divisions=13)
