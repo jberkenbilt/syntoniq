@@ -69,19 +69,9 @@ impl Csound {
         } else {
             self.note_to_number.remove(pitch);
             self.number_to_note.remove(&number);
-            format!("i 1.{number} 0 0")
+            format!("i -1.{number} 0 0")
         };
 
-        let num_notes = self.note_to_number.len();
-        let amp = if num_notes == 0 {
-            0.0
-        } else {
-            // TODO: figure out a good formula for this. This is a good start.
-            0.25 / (num_notes as f32).sqrt()
-        };
-        self.api
-            .input_message(format!(r#"i "SetChan" 0 -1 {amp:4} "amp""#))
-            .await?;
         self.api.input_message(message).await?;
         Ok(())
     }
@@ -92,10 +82,6 @@ pub async fn run_csound(
     events_tx: events::WeakSender,
 ) -> anyhow::Result<()> {
     let mut csound = Csound::new(events_tx).await?;
-    csound
-        .api
-        .input_message("i \"SetChan\" 0 -1 0.7 \"amp\"")
-        .await?;
     while let Some(event) = events::receive_check_lag(&mut events_rx, Some("csound player")).await {
         let Event::PlayNote(e) = event else {
             continue;

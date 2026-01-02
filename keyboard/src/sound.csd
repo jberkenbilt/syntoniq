@@ -16,14 +16,35 @@ instr SetChan  ; contoller instrument: sets a channel's value
   chnset iValue, SChannelName
 endin
 
+instr AmpControl
+  iBaseVoices = 5
+
+  ; number of currently-active instances of instr 1
+  kN active 1
+  ; peak-hold voice count while any notes are active
+  kPeak init iBaseVoices
+  if (kN <= 0) then
+    kPeak = iBaseVoices
+  else
+    kPeak max kN, kPeak
+  endif
+  kAmpTarget = 0.6 / sqrt(kPeak)
+
+  ; Glide to the new amplitude
+  kAmp portk kAmpTarget, 0.05
+  chnset kAmp, "amp"
+endin
+
 instr 1
   iFreq = p4
   kAmp chnget "amp"
 
-  aEnv madsr 0.05, 0.05, 0.9, 0.15
+  iRel = 0.15
+  xtratim iRel
+  aEnv madsr 0.05, 0, 1, iRel
   aMain poscil3 1, iFreq, 1
-  aSine poscil3 0.8, iFreq
-  aTriangle vco2 0.8, iFreq, 12
+  aSine poscil3 1, iFreq
+  aTriangle vco2 1, iFreq, 12
   aHigh = (aSine * 0.5) + (aTriangle * 0.5)
 
   iLowThresh = 2000
@@ -32,7 +53,7 @@ instr 1
   iMainMix limit iInterp, 0, 1
 
   iHighMix = 1 - iMainMix
-  aSignal = (aHigh * iHighMix) + (aMain * iMainMix) * aEnv * kAmp
+  aSignal = ((aHigh * iHighMix) + (aMain * iMainMix)) * aEnv * kAmp
   aOut moogladder aSignal, 2000, 0.1
   outs aOut
 endin
@@ -43,8 +64,8 @@ endin
 f 0 31536000 ; keep csound running until stopped or this number of seconds elapses
 f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 
-; Set the initial amplitude.
-i "SetChan" 0 -1 .4 "amp"
+; Start the amp control instrument.
+i "AmpControl" 0 -1
 
 ; Remaining score events come from the API.
 
