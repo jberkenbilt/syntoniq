@@ -91,16 +91,16 @@ Before leaving this topic, I'll point out one other interesting thing that comes
 Here are some ways to spell pitches using generated notes that map to 12-EDO. This chart uses all 5-limit ratios, meaning ratios whose numerators and denominators contain no prime factors above 5. (This is a topic in just intonation. If you don't know about it, don't worry; you don't need to know for Syntoniq.)
 
 | 12-EDO | Generated | Ratio |
-| --- | --- | --- |
-C     | A  | 1     |
-C♯/D♭ | P  | 16/15 |
-D     | I  | 9/8   |
-D♯/E♭ | F  | 6/5   |
-E     | E  | 5/4   |
-F     | D  | 4/3   |
-F♯/G♭ | Cp | 45/32 |
-G     | C  | 3/2   |
-G♯/A♭ | Be | 8/5   |
-A     | Bf | 5/3   |
-A♯/B♭ | Bi | 16/9  |
-B     | Bp | 15/8  |
+|--------|-----------|-------|
+| C      | A         | 1     |
+| C♯/D♭  | P         | 16/15 |
+| D      | I         | 9/8   |
+| D♯/E♭  | F         | 6/5   |
+| E      | E         | 5/4   |
+| F      | D         | 4/3   |
+| F♯/G♭  | Cp        | 45/32 |
+| G      | C         | 3/2   |
+| G♯/A♭  | Be        | 8/5   |
+| A      | Bf        | 5/3   |
+| A♯/B♭  | Bi        | 16/9  |
+| B      | Bp        | 15/8  |

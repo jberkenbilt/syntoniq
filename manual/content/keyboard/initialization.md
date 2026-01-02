@@ -68,4 +68,6 @@ The web UI should resemble this:
 
 If all is well, you should be able to press keys and hear sounds. If you can't hear sounds, it's probably a system-level audio configuration. Try getting Csound to work from its command-line tool. Once that works, `syntoniq-kbd` should work as well, or you can use the MIDI option.
 
+When you're done, you can hit the `reset` button. This is the `Clear` button on the Launchpad and the topmost command key on the HexBoard. That will bring you back to the logo screen. If you had specified a keyboard configuration score file on the command-line, the `reset` operation also reloads that file, allowing you to iterate on layouts and scales without having to continually restart the application.
+
 Subsequent sections will explain how to interpret what you see on the web display and how to use the keyboard's features.

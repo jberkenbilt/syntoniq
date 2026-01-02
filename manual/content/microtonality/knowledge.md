@@ -78,14 +78,14 @@ You can create musical scales based on ratios. The first musical scales were lik
 
 We've already seen that the octave is 2/1 and the perfect fifth is 3/2. Here are some more:
 
-| ratio | interval |
-| --- | --- |
-| 2/1 | octave |
-| 3/2 | perfect fifth |
-| 4/3 | perfect fourth |
-| 5/4 | major third |
-| 6/5 | minor third |
-| 9/8 | whole tone |
+| ratio | interval       |
+|-------|----------------|
+| 2/1   | octave         |
+| 3/2   | perfect fifth  |
+| 4/3   | perfect fourth |
+| 5/4   | major third    |
+| 6/5   | minor third    |
+| 9/8   | whole tone     |
 
 If you know about the circle of fifths, you know you can cycle around all the notes of the scale by fifths. On a piano, you can play C → G → D → A → E → B → F♯ → C♯ → G♯ = A♭ → E♭ → B♭ → F → C. This is 12 steps of a perfect fifth, and it covers 7 octaves. (Notice the symmetry: a fifth is 7 chromatic steps in the 12-tone scale.) What would be the frequency multiplier if you took 12 fifths? It would be $(\frac{3}{2})^{12}$. How close is this to what you would expect with seven octaves? Seven octaves would be $2^7$. Do these two numbers match? Not quite: $\frac{3}{2}^{12} \approx 129.74633$, but $2^7 = 128$, so it doesn't quite line up.
 

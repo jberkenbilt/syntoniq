@@ -11,3 +11,4 @@ sort_by = "weight"
 * Show octave transpose
 * Use octave transpose while holding notes in sustain and not
 * Do transpose across layouts
+* Work in a view of 17-EDO with the lack of thirds and sixths.
