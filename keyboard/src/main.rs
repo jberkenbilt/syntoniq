@@ -103,7 +103,7 @@ async fn main() -> anyhow::Result<()> {
 
     // Make sure everything is cleaned up on exit.
     tokio::spawn(async move {
-        log::info!("Hit CTRL-C to exit");
+        println!("Hit CTRL-C to exit");
         let _ = tokio::signal::ctrl_c().await;
         events.shutdown().await;
     });

@@ -106,7 +106,7 @@ impl Engine {
 
         #[cfg(test)]
         events::send_test_event(&self.events_tx, TestEvent::ResetComplete);
-        log::info!("Syntoniq Keyboard is initialized");
+        println!("** Syntoniq Keyboard is initialized **");
         Ok(())
     }
 
@@ -367,7 +367,7 @@ impl Engine {
 
     fn handle_shift(&mut self, note1: SpecificNote, note2: SpecificNote) -> anyhow::Result<()> {
         if note1.layout_idx != note2.layout_idx {
-            log::info!("shift: note1 and note2 are from different layouts, so not shifting");
+            println!("shift: note1 and note2 are from different layouts, so not shifting");
             #[cfg(test)]
             events::send_test_event(&self.events_tx, TestEvent::MoveCanceled);
             return Ok(());
@@ -380,7 +380,7 @@ impl Engine {
                 layout: layout.clone(),
             }))?;
         } else {
-            log::info!("shift: start and end keys must be in the same mapping");
+            println!("shift: start and end keys must be in the same mapping");
             #[cfg(test)]
             events::send_test_event(&self.events_tx, TestEvent::MoveCanceled);
         }
@@ -396,10 +396,9 @@ impl Engine {
             note2.position,
         );
         if update_layout {
-            log::info!(
-                "reset pitch of {} to {}",
-                note2.note.placed.name,
-                note1.note.placed.pitch
+            println!(
+                "Transpose: reset pitch of {} to {}",
+                note2.note.placed.name, note1.note.placed.pitch
             );
             if let Some(tx) = self.events_tx.upgrade() {
                 tx.send(Event::SelectLayout(SelectLayoutEvent {
@@ -408,7 +407,7 @@ impl Engine {
                 }))?;
             }
         } else {
-            log::info!("transpose operation failed");
+            println!("transpose operation failed");
         }
         Ok(())
     }
@@ -628,7 +627,7 @@ impl Engine {
         self.transient_state.pitch_positions.clear();
         self.transient_state.notes.clear();
         self.draw_layout(&event.layout)?;
-        log::info!("selected layout: {}", event.layout.name,);
+        println!("Selected layout: {}", event.layout.name,);
         tx.send(self.sustain_light_event())?;
         self.send_transpose_light_event(&tx)?;
         self.send_shift_light_event(&tx)?;

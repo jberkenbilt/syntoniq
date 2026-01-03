@@ -107,7 +107,7 @@ pub async fn http_view(
     let app = app.with_state(state.clone());
 
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
-    log::info!("View HTTP server listening on {addr}");
+    println!("Web View running at http://{addr}");
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     let (tx, rx) = oneshot::channel();
     *SHUTDOWN.lock().await = Some(tx);
@@ -151,6 +151,6 @@ async fn main_loop(state: LockedState, mut events_rx: events::Receiver) {
 
 async fn graceful_shutdown(rx: oneshot::Receiver<()>, state: LockedState) {
     _ = rx.await;
+    println!("received shutdown signal");
     state.write().await.shutdown();
-    log::info!("received shutdown signal");
 }
