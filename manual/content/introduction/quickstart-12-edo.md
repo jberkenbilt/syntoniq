@@ -33,7 +33,6 @@ In this example:
 The rest of this section will explain in more detail.
 
 TODO:
-* Make code blocks copyable
 * Update this section when the reformatter is done.
 
 # Structure of a Syntoniq File
