@@ -714,7 +714,7 @@ async fn print_notes() -> anyhow::Result<()> {
         "Scale: 31-EDO, base=264",
         "  Note: d (base × ^5|31 = 264*^5|31)",
         "Scale: JI-11, base=220*^1|4",
-        "  Note: c#↓2 (base × 17/4 × 1/4 = 935/16*^1|4)",
+        "  Note: c#↓2 (base × 17/16 × 1/4 = 935/16*^1|4)",
         "  Note: c (base × 1 = 220*^1|4)",
         "  Note: e (base × 5/4 = 275*^1|4)",
         "  Note: g (base × 3/2 = 330*^1|4)",

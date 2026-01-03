@@ -189,7 +189,7 @@ impl Note {
     fn format_note(&self) -> String {
         let name = self.placed.name.as_ref();
         let tile_factor = &self.placed.tile_factor;
-        let base_factor = &self.placed.untiled_base_relative / tile_factor;
+        let base_factor = &self.placed.untiled_base_relative;
         let tile = if tile_factor == &Pitch::unit() {
             String::new()
         } else {
