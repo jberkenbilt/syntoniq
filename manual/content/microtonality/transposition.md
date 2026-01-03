@@ -4,7 +4,7 @@ weight = 50
 sort_by = "weight"
 +++
 
-Now that you've learned about defining scales and using generated scales, it's time to talk about transposition. Please see [Language Reference](../../syntoniq_language/language-reference/) for a list of all the directives and their parameters, or run `syntoniq doc` from the command line. This section will cover the two directives you will use for transposition.
+Now that you've learned about defining scales and using generated scales, it's time to talk about transposition. Please see [Language Reference](../../syntoniq-language/language-reference/) for a list of all the directives and their parameters, or run `syntoniq doc` from the command line. This section will cover the two directives you will use for transposition.
 
 A side note on syntax: the transposition directives all take optional `part` parameters that specifies part names. We've been using `p1` as the part name, but you can call it anything that uses alphanumeric characters or the underscore, like `trumpet_2` or `Alto` or `potato`. Syntoniq directives can have repeatable options, so if we wanted to change the base pitch of the tuning for parts `p1` and `p2`, we could call `set_base_pitch(... part="p1" part="p2")`. If no `part` parameters are specified, the directives apply to all parts.
 

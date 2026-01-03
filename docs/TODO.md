@@ -27,7 +27,6 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
 
 # Documentation
 
-* Standardize on `-` over `_` in links
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
 * Find all occurrences of `TODO` in the docs.
 * Tweak theme for better colors

@@ -1,5 +1,5 @@
 +++
-title = "syntoniq_logo.md"
+title = "syntoniq-logo.md"
 weight = 10
 sort_by = "weight"
 +++

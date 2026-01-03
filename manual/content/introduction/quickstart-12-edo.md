@@ -58,7 +58,7 @@ A Syntoniq file consists of the following things:
 * Layout definitions: if you are using the [Syntoniq keyboard](TODO), you can create layouts to place the notes of your scales on the keyboard.
 * Score blocks: the heart of the language. Score blocks contain *note lines*, which include the notes and rhythms, and *dynamic lines*, which specify dynamics.
 
-For a complete description of the Syntoniq language, see [SYNTONIQ LANGUAGE](../../syntoniq_language/). Here are a few basics so you know what you're looking at.
+For a complete description of the Syntoniq language, see [SYNTONIQ LANGUAGE](../../syntoniq-language/). Here are a few basics so you know what you're looking at.
 
 A note consists of up to three parts: `duration:name:modifiers`. The duration is a *number of beats*. If you use csound, this will be familiar. If you are used to LilyPond, it is different. In LilyPond, `4` is a quarter note, `2` is a half note, etc. In Syntoniq, `1` is a beat, `2` is two beats, etc. Syntoniq doesn't have any concept of quarter notes, etc., as it breaks free from the usual notational conventions of Western music. Durations in Syntoniq can be fractions of a beat, but we'll come back to that later.
 

@@ -1,5 +1,5 @@
 +++
-title = "syntoniq_name.md"
+title = "syntoniq-name.md"
 weight = 20
 sort_by = "weight"
 +++
