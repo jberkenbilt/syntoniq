@@ -62,7 +62,7 @@ The cyan color for one step is used with *isomorphic layouts*, which we will cov
 
 Using meaningful colors for intervals helps you find notes and chords on an unfamiliar layout. It can also give you immediate insight about the features of a scale. For example, when we get to other layouts, you'll see that 17-EDO has yellow, cyan, blue, and green, but doesn't have red, orange, pink, or purple. That's because that scale doesn't have any notes that are close enough to thirds and sixths.
 
-If you press notes on the keyboard, you should see LEDs get brighter on the physical keyboard and colors get brighter on the web UI. The colors won't match up perfectly because of differences in color representations. It's possible that what you see may be better or worse than what's in the manual depending on your own hardware and on possible future improvements to the on-screen color matching with the device LEDs.
+If you press notes on the keyboard, you should see LEDs get brighter on the physical keyboard and colors get brighter on the web UI.
 
 Let's unpack the labels on the keys. Each button has two rows in its label. The top row is the *note name*, and the bottom note is the *base-relative pitch* of the note in the scale. The rest of this gets more technical&mdash;but this is a microtonal keyboard application, so some complexity is expected! You may want to review the section on [syntoniq pitch notation](../../microtonality/pitch-primer/) if you aren't following. Start with the note labeled `c`. On the Launchpad, this is row 4 (numbered from the *bottom*) and column 3 (numbered from the *left*). On the hexboard, count up from the bottom to the 8th row, then count from the left to the 4th column.
 

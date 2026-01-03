@@ -38,11 +38,51 @@ pub struct HSV {
     pub val: u8,
 }
 impl HSV {
+    fn remap_hue_piecewise(h: u8) -> u8 {
+        // This function was AI generated with a very specific prompt.
+
+        // 7 points to close the loop back to red at the end.
+        const HW: [u8; 7] = [0, 26, 40, 64, 85, 106, 127]; // hardware: R,Y,G,C,B,M,R
+        const STD: [u8; 7] = [0, 21, 42, 63, 84, 105, 127]; // "standard-ish" equal sectors
+
+        // Find segment i such that HW[i] <= h <= HW[i+1]
+        let mut i = 0usize;
+        while i + 1 < HW.len() && h > HW[i + 1] {
+            i += 1;
+        }
+        if i + 1 >= HW.len() {
+            return 127;
+        }
+
+        let h0 = HW[i] as u16;
+        let h1 = HW[i + 1] as u16;
+        let s0 = STD[i] as u16;
+        let s1 = STD[i + 1] as u16;
+
+        if h1 == h0 {
+            return s0 as u8;
+        }
+
+        let x = h as u16;
+
+        // Linear interpolation:
+        // t = (x - h0) / (h1 - h0)
+        // y = s0 + t*(s1 - s0)
+        let num = (x - h0) * (s1 - s0);
+        let den = h1 - h0;
+        let y = s0 + num / den;
+
+        y.min(127) as u8
+    }
+
     fn to_rgb(self) -> String {
         // This function was AI-generated.
-        let h = self.hue;
+        let h = Self::remap_hue_piecewise(self.hue);
         let s = self.sat;
         let v = self.val;
+
+        // Fudge to lighten darker colors a bit. Interpolate 0..127 to 32..127
+        let v = (v as u16 * 95 / 127 + 32) as u8;
 
         // 1. Handle grayscale (Saturation = 0)
         if s == 0 {
@@ -734,10 +774,10 @@ pub fn hexboard_color(color: Color) -> HSV {
         Color::MinorSixthOn => hsv(98, 72, on_val), // purple
         Color::MinorThirdOff => hsv(0, 127, off_val), // red
         Color::MinorThirdOn => hsv(0, 127, on_val), // red
-        Color::MajorSixthOff => hsv(10, 127, off_val), // orange
-        Color::MajorSixthOn => hsv(10, 127, on_val), // orange
-        Color::TonicOff => hsv(28, 127, off_val),  // yellow
-        Color::TonicOn => hsv(28, 127, on_val),    // yellow
+        Color::MajorSixthOff => hsv(13, 127, off_val), // orange
+        Color::MajorSixthOn => hsv(13, 127, on_val), // orange
+        Color::TonicOff => hsv(25, 127, off_val),  // yellow
+        Color::TonicOn => hsv(25, 127, on_val),    // yellow
         Color::OtherOff => hsv(0, 0, off_val),     // dull gray
         Color::OtherOn => hsv(0, 0, on_val),       // white
         Color::SingleStepOff => hsv(64, 127, off_val), // cyan

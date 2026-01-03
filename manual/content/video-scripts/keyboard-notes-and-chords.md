@@ -18,11 +18,11 @@ Here you can see the HexBoard in its initial state, displaying the logo, and you
 
 I'll select the first layout, 12-EDO, and then I'll give you the guided tour. [Select the first layout.]
 
-Take a look at the physical keyboard and at the web display. While the color matching is not perfect, you can basically see the same color layout on the physical keyboard and the web display. You may see slightly different colors depending on your monitor and on whether a future version of the keyboard application improves upon the color matching between the keyboard and the web UI, but it should be possible to follow along.
+Take a look at the physical keyboard and at the web display.
 
 Before I dive in, I'll review a little terminology. The Syntoniq keyboard has two kinds of layouts: manual and isomorphic. The word "isomorphic" literally means "same shape." We will cover layouts in more depth later on. This video will focus only on isomorphic layouts. In an isomorphic layout, the interval between two keys is based solely on the relative physical orientations of the keys. This means you can play any chord or melodic passage in any key by simply adjusting your starting position. I'll show you how this works as I explain.
 
-Let's talk about colors. I'm going to press this yellow key. [Press `c`]. As I press the key, notice that two things happen: the key lights up on the keyboard, and the corresponding hexagon lights up on the web display. Sorry that the yellows look pretty green on the web display for this video. That's something I hope to address.
+Let's talk about colors. I'm going to press this yellow key. [Press `c`]. As I press the key, notice that two things happen: the key lights up on the keyboard, and the corresponding hexagon lights up on the web display.
 
 On the Syntoniq keyboard, the color of a note tells you something about its position in the octave, or technically, I should say, "in the cycle" since we allow scales whose repeating cycle is other than an octave. For now, we'll stick with octave-based scales. We use the following color scheme:
 
