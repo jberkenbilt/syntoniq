@@ -1,6 +1,6 @@
 +++
 title = "VIDEO SCRIPTS"
-weight = 70
+weight = 60
 sort_by = "weight"
 +++
 

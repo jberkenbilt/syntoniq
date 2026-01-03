@@ -1,6 +1,6 @@
 +++
 title = "SYNTONIQ KEYBOARD"
-weight = 50
+weight = 40
 sort_by = "weight"
 +++
 
