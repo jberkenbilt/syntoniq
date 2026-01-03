@@ -18,3 +18,4 @@ TODO:
 * Articulation
 * Gradual tempo change
 * Multiple parts
+* Mention layout creation and link to the keyboard section

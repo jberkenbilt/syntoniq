@@ -7,8 +7,9 @@ sort_by = "weight"
 * This section probably doesn't get an accompanying video as it is very technically dense and more coding oriented.
 * Go over syntoniq language features for creating custom isomorphic and manual mappings and combining mappings to create layouts, including row and column layout for rectangular and hexagonal grids (with rationale for hexagonal)
 * Mention that, while the software doesn't prevent you from using isomorphic mappings with uneven tunings, it might create a confusing situation, but there are use cases if you "know what you're doing", such as dealing with regular but uneven tunings or intentionally experimenting with out-of-tune keys in JI
+* Work in the 17-EDO layout somewhere and point out the lack of third/sixth colors
 
-<!-- generate include=keyboard.stq checksum=7356a0f0dd7a4587678402644c43ca1330726b34d7c22a3457ec6a88e2bafb03 -->
+<!-- generate include=keyboard.stq checksum=e82304e9ba1a938b08606997373534c7b2ef4c8f49b3fb2f35b03d4d10999d21 -->
 ```syntoniq
 syntoniq(version=1)
 
@@ -71,7 +72,7 @@ place_mapping(
     anchor_col=2
 )
 place_mapping(
-    layout="JI-11-19-EDO"
+    layout="JI-19-EDO"
     keyboard="launchpad"
     mapping="JI"
     anchor_row=1
@@ -80,25 +81,23 @@ place_mapping(
     rows_below=0
 )
 place_mapping(
-    layout="JI-11-19-EDO"
+    layout="JI-19-EDO"
     keyboard="launchpad"
     mapping="19-EDO-h3v2"
     anchor_row=6
     anchor_col=3
 )
 place_mapping(
-    layout="JI-11-19-EDO"
+    layout="JI-19-EDO"
     keyboard="hexboard"
     mapping="JI"
     anchor_row=1
     anchor_col=2
     rows_above=3
     rows_below=0
-    cols_left=0
-    cols_right=7
 )
 place_mapping(
-    layout="JI-11-19-EDO"
+    layout="JI-19-EDO"
     keyboard="hexboard"
     mapping="19-EDO-h3v2"
     anchor_row=9

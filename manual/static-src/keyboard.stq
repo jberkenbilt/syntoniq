@@ -59,7 +59,7 @@ place_mapping(
     anchor_col=2
 )
 place_mapping(
-    layout="JI-11-19-EDO"
+    layout="JI-19-EDO"
     keyboard="launchpad"
     mapping="JI"
     anchor_row=1
@@ -68,25 +68,23 @@ place_mapping(
     rows_below=0
 )
 place_mapping(
-    layout="JI-11-19-EDO"
+    layout="JI-19-EDO"
     keyboard="launchpad"
     mapping="19-EDO-h3v2"
     anchor_row=6
     anchor_col=3
 )
 place_mapping(
-    layout="JI-11-19-EDO"
+    layout="JI-19-EDO"
     keyboard="hexboard"
     mapping="JI"
     anchor_row=1
     anchor_col=2
     rows_above=3
     rows_below=0
-    cols_left=0
-    cols_right=7
 )
 place_mapping(
-    layout="JI-11-19-EDO"
+    layout="JI-19-EDO"
     keyboard="hexboard"
     mapping="19-EDO-h3v2"
     anchor_row=9
