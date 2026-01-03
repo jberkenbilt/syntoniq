@@ -1,5 +1,5 @@
 +++
-title = "Keyboard Initialization"
+title = "Keyboard: Initialization"
 weight = 10
 sort_by = "weight"
 +++
