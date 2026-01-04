@@ -8,6 +8,7 @@ sort_by = "weight"
 * Go over syntoniq language features for creating custom isomorphic and manual mappings and combining mappings to create layouts, including row and column layout for rectangular and hexagonal grids (with rationale for hexagonal)
 * Mention that, while the software doesn't prevent you from using isomorphic mappings with uneven tunings, it might create a confusing situation, but there are use cases if you "know what you're doing", such as dealing with regular but uneven tunings or intentionally experimenting with out-of-tune keys in JI
 * Work in the 17-EDO layout somewhere and point out the lack of third/sixth colors
+* Mention that isomorphic mappings don't always cover all notes and explain how to make that happen or how to work around it with transposition if it can't fit.
 
 <!-- generate include=keyboard.stq checksum=e82304e9ba1a938b08606997373534c7b2ef4c8f49b3fb2f35b03d4d10999d21 -->
 ```syntoniq

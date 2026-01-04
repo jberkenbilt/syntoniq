@@ -2,6 +2,21 @@
 
 This is general TODO across internal docs, manual, and software.
 
+# Videos
+
+* Current state: the screencasts and phone videos are synchronized and cleaned up, but the timing hasn't been settled, and no cropping or transformation has been done on the camera videos. Audio has not been integrated.
+* The raw directory contains `*-face*.mov` and `*clean*.flac`. Each video has an introductory face video and some have a concluding one. These have intact sections but need to be trimmed at the beginning and end. One has a comment about the trimming at the end of the video. The file `notes-and-chords-intro-minus-definitions-face.mov` can be discarded if we use `notes-and-chords-intro-face.mov`. I recorded it before moving some introductory text into the video.
+* Do this in this order:
+  * Bring in the face videos and audio
+  * Get the timing finalized
+  * Deal with cropping and positioning the keyboard camera videos, which may need color correction in some cases.
+    * Consider a stack of edge crop -> corners -> edge crop -> transform
+    * For face, consider "alpha shapes"
+
+* REMEMBER: if face mov files are good, delete the files in orig-mp4
+
+After completing videos, there are a few sections of the manual left. Search for TODO in the manual.
+
 # Known Issues
 
 ## Keyboard
