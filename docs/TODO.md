@@ -5,13 +5,16 @@ This is general TODO across internal docs, manual, and software.
 # Videos
 
 * Current state: the screencasts and phone videos are synchronized and cleaned up, but the timing hasn't been settled, and no cropping or transformation has been done on the camera videos. Audio has not been integrated.
+  * For the first video, the faces and audio have been dropped in but not adjusted, and the faces have been cropped and placed pending audio adjustments. No fades, etc., have been done. Make sure that, if alpha shapes is adjusted, adjust transform in the opposite direction -- see first two face clips.
 * The raw directory contains `*-face*.mov` and `*clean*.flac`. Each video has an introductory face video and some have a concluding one. These have intact sections but need to be trimmed at the beginning and end. One has a comment about the trimming at the end of the video. The file `notes-and-chords-intro-minus-definitions-face.mov` can be discarded if we use `notes-and-chords-intro-face.mov`. I recorded it before moving some introductory text into the video.
 * Do this in this order:
   * Bring in the face videos and audio
+ * Balance audio amplitudes
   * Get the timing finalized
   * Deal with cropping and positioning the keyboard camera videos, which may need color correction in some cases.
     * Consider a stack of edge crop -> corners -> edge crop -> transform
     * For face, consider "alpha shapes"
+  * Add version overlay and intro/end titles
 
 * REMEMBER: if face mov files are good, delete the files in orig-mp4
 
