@@ -10,7 +10,7 @@ sort_by = "weight"
 * Work in the 17-EDO layout somewhere and point out the lack of third/sixth colors
 * Mention that isomorphic mappings don't always cover all notes and explain how to make that happen or how to work around it with transposition if it can't fit.
 
-<!-- generate include=keyboard.stq checksum=e82304e9ba1a938b08606997373534c7b2ef4c8f49b3fb2f35b03d4d10999d21 -->
+<!-- generate include=keyboard.stq checksum=62659ce15652b62c16932352a429887cccb0bcce50694e22ef358356f6111363 -->
 ```syntoniq
 syntoniq(version=1)
 
@@ -106,14 +106,14 @@ place_mapping(
 )
 
 define_scale(scale="harmonics") <<
-1 h1   2 h2   3 h3   4 h4   5 h5   6 h6   7 h7   8 h8
-9 h9   10 h10   11 h11   12 h12   13 h13   14 h14   15 h15   16 h16
-17 h17   18 h18   19 h19   20 h20   21 h21   22 h22   23 h23   24 h24
-25 h25   26 h26   27 h27   28 h28   29 h29   30 h30   31 h31   32 h32
-33 h33   34 h34   35 h35   36 h36   37 h37   38 h38   39 h39   40 h40
-41 h41   42 h42   43 h43   44 h44   45 h45   46 h46   47 h47   48 h48
-49 h49   50 h50   51 h51   52 h52   53 h53   54 h54   55 h55   56 h56
-57 h57   58 h58   59 h59   60 h60   61 h61   62 h62   63 h63   64 h64
+ 1 h1    2 h2    3 h3    4 h4    5 h5    6 h6    7 h7    8 h8
+ 9 h9   10 h10  11 h11  12 h12  13 h13  14 h14  15 h15  16 h16
+17 h17  18 h18  19 h19  20 h20  21 h21  22 h22  23 h23  24 h24
+25 h25  26 h26  27 h27  28 h28  29 h29  30 h30  31 h31  32 h32
+33 h33  34 h34  35 h35  36 h36  37 h37  38 h38  39 h39  40 h40
+41 h41  42 h42  43 h43  44 h44  45 h45  46 h46  47 h47  48 h48
+49 h49  50 h50  51 h51  52 h52  53 h53  54 h54  55 h55  56 h56
+57 h57  58 h58  59 h59  60 h60  61 h61  62 h62  63 h63  64 h64
 >>
 
 define_manual_mapping(mapping="harmonics" scale="harmonics") <<
@@ -123,8 +123,8 @@ h41 h42 h43 h44 h45 h46 h47 h48
 h33 h34 h35 h36 h37 h38 h39 h40
 h25 h26 h27 h28 h29 h30 h31 h32
 h17 h18 h19 h20 h21 h22 h23 h24
-h9 h10 h11 h12 h13 h14 h15 h16
-@h1 h2 h3 h4 h5 h6 h7 h8
+h9  h10 h11 h12 h13 h14 h15 h16
+@h1 h2  h3  h4  h5  h6  h7  h8
 >>
 place_mapping(
     layout="harmonics"
