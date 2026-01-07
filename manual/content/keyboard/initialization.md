@@ -28,7 +28,7 @@ syntoniq-kbd run --port=RP2040
 
 To use MIDI output instead of Csound, pass the `--midi` flag to `syntoniq-kbd`, but note that additional setup is required as briefly discussed in the previous section. You can see an example in the video. The manual doesn't discuss using the Syntoniq keyboard very much because, other than disabling the hardware device in your MIDI software, it's no different from using any other MIDI keyboard.
 
-A major feature of the Syntoniq keyboard is the ability to define your own layouts and scales. This is covered later in the manual. For now, the above command runs the keyboard with the built-in default layout. You can inspect the default configuration using `syntoniq-kbd show-default-config`.
+A major feature of the Syntoniq keyboard is the ability to define your own layouts and scales. This is covered later in the manual. For now, the above command runs the keyboard with the built-in default layout. You can inspect the default configuration using `syntoniq-kbd default-config`.
 
 To exit from the keyboard program, just hit `CTRL-c` on the computer keyboard.
 

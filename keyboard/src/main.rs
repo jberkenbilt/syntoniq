@@ -44,7 +44,7 @@ enum Commands {
         midi: bool,
     },
     /// Output the built-in keyboard configuration
-    ShowDefaultConfig,
+    DefaultConfig,
     /// Generate shell completion
     Completion {
         /// shell
@@ -61,7 +61,7 @@ async fn main() -> anyhow::Result<()> {
             syntoniq_common::cli_completions(shell, &mut cmd);
             return Ok(());
         }
-        Commands::ShowDefaultConfig => {
+        Commands::DefaultConfig => {
             print!("{}", engine::DEFAULT_SCORE);
             return Ok(());
         }
