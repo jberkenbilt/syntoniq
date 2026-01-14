@@ -1,10 +1,10 @@
 +++
-title = "Keyboard: Initialization"
+title = "Keyboard: Getting Started"
 weight = 10
 sort_by = "weight"
 +++
 
-[This video accompanies [SYNTONIQ KEYBOARD -> Initialization](../../keyboard/initialization/).]
+[This video accompanies [SYNTONIQ KEYBOARD -> Getting Started](../../keyboard/initialization/).]
 
 [Present on the screen: a video of one of the controllers when in use, the web UI, and a terminal window.]
 
@@ -36,7 +36,7 @@ Next, I'll show you the same thing with the HexBoard. I'm hitting Control C at t
 
 [Type `syntoniq-kbd run --port=RP`]
 
-I'll refresh my browser [refresh browser], and now you can see the Syntoniq logo drawn on the HexBoard. It's quite a bit more recognizable here with the 133-button hexagonal grid than with the 8x8 rectangular grid of the Launchpad! For the HexBoard, the command keys are not shown in the web UI, but you can see here at the top right that there is a list of command key functions from top to bottom. The second key is labeled "Select Layout." When I press that, all the lights turn off except the top row and part of the second row. This is reflected on the web UI as well, where the buttons are labeled with numbers. These numbers indicate which layout will be selected. I'll press the upper-left button [press the button] to select the first layout. Now I'm ready to play some notes. Play [C, G E C', adding notes to the chord.] There. While the Launchpad is a great device, the HexBoard gives you a lot more keys and a more compact and convenient layout. I highly recommend the HexBoard. You can get yours at shaping the silence dot com. You can find links in the Syntoniq manual at syntoniq (that's s-y-n-t-o-n-i-q) dot cc.
+I'll refresh my browser [refresh browser], and now you can see the Syntoniq logo drawn on the HexBoard. It's quite a bit more recognizable here with the 133-button hexagonal grid than with the 8x8 rectangular grid of the Launchpad! For the HexBoard, the command keys are not shown in the web UI, but you can see here at the top right that there is a list of command key functions from top to bottom. The second key is labeled "Select Layout." When I press that, all the lights turn off except the top row and part of the second row. This is reflected on the web UI as well, where the buttons are labeled with numbers. These numbers indicate which layout will be selected. I'll press the upper-left button [press the button] to select the first layout. Now I'm ready to play some notes. Play [C, G E C', adding notes to the chord.] There. While the Launchpad is a great device, the HexBoard gives you a lot more keys and a more compact and convenient layout. I highly recommend the HexBoard. You can get yours at shaping the silence dot com. You can find links in the Syntoniq manual at syntoniq dot cc.
 
 Next I'll press the reset button, bound to the topmost command key [press reset], which you can see brings us back to the logo screen.
 

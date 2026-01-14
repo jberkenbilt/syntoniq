@@ -1,5 +1,5 @@
 +++
-title = "Initialization"
+title = "Getting Started"
 weight = 20
 sort_by = "weight"
 +++
@@ -13,7 +13,7 @@ This section will cover the following items:
 
 All the material in this section is demonstrated in the video linked below.
 
-{{ youtube(id="Oc_HkZVupjw?si=ObzOvNzB7gsY_KcD", caption="TODO Placeholder Video", script="keyboard-initialization") }}
+{{ youtube(id="x_ssOP1DCqE?si=8CHanU5RRRgbiuMG", caption="Keyboard: Getting Started", script="keyboard-initialization") }}
 
 # Starting the Keyboard
 
@@ -42,7 +42,7 @@ At this point, the Syntoniq keyboard read-only web UI is running. Using your bro
 
 For the Launchpad, you should see a web view of the keyboard with labeled buttons. It should look something like this:
 
-{{ include(path="launchpad-startup.html") }}
+{{ include(path="launchpad-startup.html", caption="Launchpad Pro MK3 with Syntoniq Logo) }}
 
 To the right of the board, there will be an indication of the available layouts and how they map to the keys. Touch the lower-left layout button, which should be lit up white.
 
@@ -52,11 +52,11 @@ This photograph shows what the keyboard looks like after you select the first la
 
 The web UI should look something like this:
 
-{{ include(path="launchpad-layout-1.html") }}
+{{ include(path="launchpad-layout-1.html", caption="Launchpad with 12-EDO Layout") }}
 
 For the HexBoard, the initial web view looks like this:
 
-{{ include(path="hexboard-startup.html") }}
+{{ include(path="hexboard-startup.html", caption="HexBoard MIDI Controller with Syntoniq Logo") }}
 
 The command keys are not illustrated in the web view for the HexBoard, but the textual information on the display tells you the functions of the command keys from top to bottom. To select a layout, press the second-to-top command key (the command keys are the seven buttons below the knob). You will see rows of white buttons at the top. Press the upper-left button to select the first layout. After you have done this, you should see something that looks like this photo, also annotated with key functions.
 
@@ -64,7 +64,7 @@ The command keys are not illustrated in the web view for the HexBoard, but the t
 
 The web UI should resemble this:
 
-{{ include(path="hexboard-layout-1.html") }}
+{{ include(path="hexboard-layout-1.html", caption="HexBoard with 12-EDO Layout") }}
 
 If all is well, you should be able to press keys and hear sounds. If you can't hear sounds, it's probably a system-level audio configuration. Try getting Csound to work from its command-line tool. Once that works, `syntoniq-kbd` should work as well, or you can use the MIDI option.
 

@@ -13,7 +13,7 @@ Here are a few important takeaways:
 
 All the material in this section is demonstrated in the video linked below.
 
-{{ youtube(id="Oc_HkZVupjw?si=ObzOvNzB7gsY_KcD", caption="TODO Placeholder Video", script="keyboard-notes-and-chords") }}
+{{ youtube(id="ycjt7Zdnr70?si=PERkiXEf9pwUbZws", caption="TODO Placeholder Video", script="keyboard-notes-and-chords") }}
 
 Please review the information in the [previous section](../initialization/) for starting the keyboard application and selecting layouts. We'll start off by selecting the `12-EDO-h2v5` layout. This layout is located on the lower-left layout key on the Launchpad. It is assigned to the upper-left layout button on the hexboard.
 
@@ -21,11 +21,11 @@ This is what you see on the web UI for each keyboard.
 
 Launchpad:
 
-{{ include(path="launchpad-layout-1.html") }}
+{{ include(path="launchpad-layout-1.html", caption="Launchpad with 12-EDO Layout") }}
 
 HexBoard:
 
-{{ include(path="hexboard-layout-1.html") }}
+{{ include(path="hexboard-layout-1.html", caption="HexBoard with 12-EDO Layout") }}
 
 Additionally, on the HexBoard, the third, sixth, and seventh (counting from 1, top to bottom) are lit up red, which is not shown on the web UI. Here's what everything means.
 

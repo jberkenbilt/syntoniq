@@ -6,7 +6,7 @@ sort_by = "weight"
 
 All the material in this section is demonstrated in the video linked below.
 
-{{ youtube(id="Oc_HkZVupjw?si=ObzOvNzB7gsY_KcD", caption="TODO Placeholder Video", script="keyboard-manual-mappings") }}
+{{ youtube(id="IzjyinrwGnM?si=StIP6uHvQ9G7NayK", caption="TODO Placeholder Video", script="keyboard-manual-mappings") }}
 
 In this section, I will introduce the concept of manual layouts. The next section on the [layout engine](../layout-engine/) includes a more technical and rigorous description and tells you how to create your own layouts.
 
@@ -16,11 +16,11 @@ Before we dive in, I need to improve the precision of the terms I've been using.
 
 Below, you will see a view of the web UI for the JI layout. Here is the HexBoard:
 
-{{ include(path="hexboard-ji.html") }}
+{{ include(path="hexboard-ji.html", caption="HexBoard with JI Layout") }}
 
 Here is the Launchpad:
 
-{{ include(path="launchpad-ji.html") }}
+{{ include(path="launchpad-ji.html", caption="Launchpad with JI Layout") }}
 
 There is a lot of new stuff here, so let's explain. As I explain, you can find what I'm talking about in both diagrams.
 
@@ -68,21 +68,21 @@ For all these reasons, we've introduced this additional notation. While dense, o
 
 I'll wrap up this section by showing you a few more layouts. Here's one that contains more than one mapping. The layout entitled "JI-19-EDO" is shown below. For HexBoard:
 
-{{ include(path="hexboard-ji-19-edo.html") }}
+{{ include(path="hexboard-ji-19-edo.html", caption="HexBoard with JI-19-EDO Layout") }}
 
 For Launchpad:
 
-{{ include(path="launchpad-ji-19-edo.html") }}
+{{ include(path="launchpad-ji-19-edo.html", caption="Launchpad with JI-19-EDO Layout") }}
 
 In these mappings, notice that the bottom four rows have generated names using the same mapping as our "JI" layout, and the rows above that contain notes from 19-EDO.
 
 Here's one that uses a completely custom scale that defines 64 notes: one for each of the first 64 steps of the harmonic sequence. The notes are named `h1` through `h64`. On the HexBoard, it leaves part of the layout unmapped. Here it is for HexBoard:
 
-{{ include(path="hexboard-harmonics.html") }}
+{{ include(path="hexboard-harmonics.html", caption="HexBoard with Harmonics Layout") }}
 
 And here it is for Launchpad:
 
-{{ include(path="launchpad-harmonics.html") }}
+{{ include(path="launchpad-harmonics.html", caption="Launchpad with Harmonics Layout") }}
 
 The accompanying video will demonstrate both of those layouts.
 
