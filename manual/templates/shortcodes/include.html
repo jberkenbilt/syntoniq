@@ -1,2 +1,9 @@
 {% set data = load_data(path=path) %}
-{{ data | safe }}
+<figure>
+  {{ data | safe }}
+  {% if caption %}
+  <figcaption style="font-size: 0.9em; color: #666; text-align: center; margin-top: 0.5em;">
+    {{ caption }}
+  </figcaption>
+  {% endif %}
+</figure>
