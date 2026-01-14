@@ -29,6 +29,8 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
 
 # Software
 
+* Morphing
+  * The note modifier `>`, mutually exclusive with `~` means to glide exponentially (perceptually linearly) from the pitch of this note to the pitch of the next note over the specified duration. The Csound instrument syntax has room for this, and it should be easy with Csound. For MIDI, we'll need to ramp with pitch bend. It won't be supported for MTS because we would have to use both MTS and MPE together, which would require more refactoring than is worth the effort given the limited utility of MTS MIDI. (Timidity doesn't understand pitch bend anyway, and any DAW workflow will use pitch bend.)
 * Create a default configuration for the keyboard
   * 12-EDO
   * 19-EDO
@@ -37,10 +39,28 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
   * 41-EDO
   * 53-EDO
   * 106-EDO
+* Create 53-EDO and 106-EDO generated scales in demo.stq with offsets like h1v9 so we can get all the notes of an octave onto the keyboard for finding pitches.
 * Create the interactive chord builder -- see below
 * Create a `demo` mode. Embed examples/microtonal-hello.stq. Generate the stq, csound, mpe MIDI, and mts MIDI files, and suggest ways to play them back.
 * Expand scripts in misc to support other than octave
 * Consider bringing misc/exponent-to-ratio and misc/scale-semitones into the main CLI as a separate subcommand like `syntoniq calc`. If so, mention in the microtonal section of the manual.
+* Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
+* Articulation adjustment directives:
+  * four factors: default of each plus modifier for each option
+    * default velocity (72)
+    * accent velocity (96)
+    * marcato velocity (108)
+    * staccato shorten amount (1/4 beat)
+  * Can be applied globally or at the part level
+* MIDI:
+  * generate tuning files for midi by port and channel
+  * generate summaries of part -> track/port/channel, etc.
+* Note: not tested (generator):
+  * MTS: > 127 tunings, > 16 channels, sound font banks, a few more minor cases
+  * MPE: more than 16 channels
+* Editing experience
+  * Write LSP
+  * Reformatting -- see below
 
 # Documentation
 
@@ -49,6 +69,12 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
 * Tweak theme for better colors
 * Remember not to use "DSL" in the docs.
 * Figure out where to document the stuff in misc. Somewhere in the docs directory
+* Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep. Main thrust is justification for 100% code coverage
+* Recommended timidity:
+  ```
+  timidity -A100,100a
+  timidity -x "bank 0\n 0 %font \"/home/ejb/tmp/local/z/a.sf2\" amp=127 pan=0" --output-mono -A100,100a /tmp/a.midi
+  ```
 
 # Release
 
@@ -61,6 +87,77 @@ On Linux, you can watch Syntoniq's MIDI output with `aseqdump`, e.g.:
 aconnect -l
 aseqdump -p 128:0
 ```
+
+# Reformatter
+
+These notes predate parser implementation.
+
+* Use a lossless token stream for the reformatter.
+* Reformatter: Two-pass (Parse-to-AST, then Token-Walk + AST-Peek).
+
+The reformatter will first fully validate an input file. Then it will drive the formatting from pass1 tokens, peeking at later parsing results for semantic information as needed.
+
+Suggested reformatting rules:
+* Collapse multiple blank lines to single blank lines, and remove leading and trailing blank lines
+* Remove trailing white space
+* In a multi-line structure (score block, scale definition block, multiline directive), keep comments aligned and offset by two spaces from the longest line
+* Remove spaces from around `=` in directive parameters
+* If a directive with any trailing comment exceeds 100 columns, move the trailing comment to the preceding line. If still over 100 columns, break the directive to one parameter per line.
+* If a directive that contains no parameter-level comments fits on one line in <= 100 columns, reformat as a single line. Never move a preceding comment to after a single-line directive.
+* Apply alignment to score blocks as above
+* Within scale definition blocks, right-justify pitches or indices with columns, then align and left-justify note names
+
+It would be nice to have tool support for alignment. Within a score block, align notes so the beginning of the pitch part of notes or the location part of dynamics are aligned rhythmically after any beat markers as in the above examples. See below for an algorithm.
+
+The DSL interpreter should have some commands to check and align. I could run C-c C-f on a score line, and it could either reformat or generate output with embedded comments containing any error messages. No reason to integrate with flycheck, etc.
+
+Other notes:
+* If there are bar checks, this algorithm can be applied to each "bar" and spaces can be added before the bar checks to force the bar checks to align.
+* To align, calculate total number of discrete ticks (GCD of duration denominators * total beats)
+* For each note, get number of characters before and after alignment point; `:`, `@` count as before since some notes won't have an explicit mark
+* prepend/append space so all notes are the same width and have the alignment point in the same spot
+* prepend each note with one extra space
+* place notes based on numerator of n/GCD
+* shrink vertical columns of spaces to width of 1
+* align `]` of part names, prepending leading space
+
+Example:
+
+```
+[treble] 1:e a 2/3:g f d
+[bass] 2:c, 1:f, g,
+```
+* max characters before alignment marker = 4 (`2/3:`)
+* max after alignment marker = 2 (`c,`)
+* combined width = 4 + 2 = 6
+* total beats = 4
+* gcd of denominators = 3
+* discrete ticks = 12. Each beat is 3 ticks.
+* each note width, including leading space, is 7 (1+2+6)
+* beat marker goes at position 4 (from 0)
+* spaces except separator space shown below as `_`
+
+Step 1: place each padded note based on its start position
+
+```
+|0     |1     |2     |3     |4     |5     |6     |7     |8     |9     |10    |11
+ __1:e_               ____a_               2/3:g_        ____f_        ____d_
+ __2:c,                                    __1:f_               ____g,
+```
+
+Step 2: shrink space columns
+```
+ 1:e  a 2/3:g f   d
+ 2:c,     1:f  g,
+```
+
+Step 3: prepend `]`-aligned part names:
+```
+[treble] 1:e  a 2/3:g f   d
+  [bass] 2:c,     1:f  g,
+```
+
+For dynamics, like the `@` up with the beat but only add spaces as necessary to keep dynamics from colliding so they don't make things too wide. See examples/hello.stq.
 
 # Chord Builder
 

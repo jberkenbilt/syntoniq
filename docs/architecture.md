@@ -28,6 +28,8 @@ TODO:
 * Tree-sitter
 * Printed scores (maybe)
 
+Notes about mark/repeat for architectural docs. They are based on the timeline, not the token stream. This has both advantages and disadvantages.
+
 # Maybe Someday
 
 * Tuned MIDI output (MTS) mode: we could generate a tuning file (Scala or Tun) based on Syntoniq scale.

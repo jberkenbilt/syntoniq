@@ -8,7 +8,14 @@ sort_by = "weight"
 
 * remember decimals
 * cover all the syntactic bits
+* Use of `~` in a manual mapping. Do we want an example in the layout engine section? Probably not.
 
+# Broad Terminology
+
+* *Part*: something akin to a score line, e.g., an instrument, one staff of a piano score, etc. At a any given time, a part may be assigned a single tuning, instrument, and dynamic, and there are other part-specific properties like strum rate. These can be inherited from global properties but may not be overridden at the note level.
+* *Note*: a single rendered pitch. Chords are represented as multiple notes within a part. You can think of a note as a single, monophonic sound within a part.
+
+A note about the word *voice*: I previously used *voice* to refer to what I now call *part*, but I abandoned this terminology because a part may be polyphonic, and it is useful to be able to use the word "voice" to refer to a single monophonic voice within a part. The word "voice" no longer refers to a semantic or syntactic element within the DSL.
 
 # Directives
 
