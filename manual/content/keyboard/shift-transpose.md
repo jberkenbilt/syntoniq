@@ -6,7 +6,7 @@ sort_by = "weight"
 
 All the material in this section is demonstrated in the video linked below.
 
-{{ youtube(id="hQWnnIIHgWM?si=4DIhmbuE9djknIUN", caption="TODO Placeholder Video", script="keyboard-shift-transpose") }}
+{{ youtube(id="hQWnnIIHgWM?si=4DIhmbuE9djknIUN", caption="Shift and Transpose", script="keyboard-shift-transpose") }}
 
 Now that we've covered the basics of using the keyboard to play notes and chords, it's time to talk about the Syntoniq keyboard's shift and transpose features. These are designed to complement the flexible transposition system of the Syntoniq language.
 

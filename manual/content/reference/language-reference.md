@@ -133,7 +133,7 @@ Layout definitions are described in detail with examples in [Layout Engine](../.
 
 Score blocks consist of groups of contiguous *note lines* and *dynamic lines*. A score block is terminated by a blank line or a line containing a directive.
 
-You can find examples of score blocks throughout the manual including in the [Examples](TODO) section. Here's a simple example, repeated from the [Quick Start](../../introduction/quickstart-12-edo/) section.
+You can find examples of score blocks throughout the manual including in the [Examples](../../microtonality/remaining-features/) section. Here's a simple example, repeated from the [Quick Start](../../introduction/quickstart-12-edo/) section.
 
 <!-- generate include=hello.stq checksum=f7c2a15b5a54491b3b9f9e1c471b01ed442e3f2f5d1f75691ebc9e8c9bd4631e -->
 ```syntoniq

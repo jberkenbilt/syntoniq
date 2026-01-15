@@ -40,7 +40,7 @@ In 12-tone notation, notes get letter names from `A` to `G` with accidentals lik
 * This system ties you to 12-tone thinking. If you are trying to superimpose 12-tone music on a scale that also has good approximations for the notes in a diatonic scale, like 19-EDO or 31-EDO (EDO = Equal Divisions of the Octave), these note names are okay, but what if you are playing around in 23-EDO or 7-EDO? These scales don't map to our regular note names very well.
 * If you are working in just intonation, when you say `D`, do you mean a ratio of 9/8 over C? A ratio of 10/9 over C, which is 9/8 *below* 5/4 *above* C and is also perceived as a whole tone? If you want a B♭, do you want the one that is a 6/5 minor third above G (ratio 9/5), or do you want the one that's a fourth above F (ratio 16/9)? Or maybe something entirely different? It's very hard to specify which one you want.
 
-Syntoniq introduces the concept of *generated scales*. We will come back to these in [a separate section](TODO), but for now, here's what you need to know:
+Syntoniq introduces the concept of [generated scales](../generated-scales/), discussed later, but for now, here's what you need to know:
 * Generated scales contain notes that are *constructed from pure ratios*.
 * A generate note can either exist as a pure interval or be *superimposed* on an equal-step tuning system, which can divide an octave or *any other interval*.
 

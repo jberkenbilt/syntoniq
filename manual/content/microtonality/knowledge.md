@@ -130,4 +130,4 @@ repeat(start="a" end="b")
 
 {{ audio(src="major-thirds-csound.mp3", caption="5/4, $\sqrt[3]{2}$, 81/64") }}
 
-Syntoniq has its own notation for [representing pitches](TODO). We'll discuss that later in the manual. For now, this has been a review of the basics of just intonation and equal-step tuning. We'll continue to build upon that in the remainder of the manual.
+Syntoniq has its own notation for [representing pitches](../pitch-primer/), which is covered in the next section. For now, this has been a review of the basics of just intonation and equal-step tuning. We'll continue to build upon that in the remainder of the manual.

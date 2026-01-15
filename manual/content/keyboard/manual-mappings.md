@@ -6,7 +6,7 @@ sort_by = "weight"
 
 All the material in this section is demonstrated in the video linked below.
 
-{{ youtube(id="IzjyinrwGnM?si=StIP6uHvQ9G7NayK", caption="TODO Placeholder Video", script="keyboard-manual-mappings") }}
+{{ youtube(id="IzjyinrwGnM?si=StIP6uHvQ9G7NayK", caption="Manual Layout Mappings", script="keyboard-manual-mappings") }}
 
 In this section, I will introduce the concept of manual layouts. The next section on the [layout engine](../layout-engine/) includes a more technical and rigorous description and tells you how to create your own layouts.
 

@@ -1,12 +1,12 @@
 +++
-title = "Remaining Features"
+title = "Remaining Features/Examples"
 weight = 60
 sort_by = "weight"
 +++
 
 TODO:
 
-* Mention about decimal syntax in note durations and pitches
+* Give CLI examples
 * Dynamics
 * Mark, repeat, start/end mark, skip-beats; mention about timeline, not token stream. It has to be understood that repeats are temporal repeats, not lexical repeats. If you think about it this way, the constraints are logical.
   * Disadvantages
@@ -14,6 +14,7 @@ TODO:
   * Advantages
     * A repeated section gets to stay in whatever tuning it has.
     * There's never any question about whether something may be syntactically or semantically valid in a repeat. This is probably enough of an advantage to override the disadvantages.
+* `generate` command-line options
 * Sustain note across tuning changes
 * Articulation
 * Gradual tempo change

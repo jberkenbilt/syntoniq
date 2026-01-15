@@ -55,8 +55,8 @@ A Syntoniq file consists of the following things:
 
 * Comments: the `;` introduces a comment. Comments last until the end of the line.
 * Directives: these look kind of like function calls and provide general instructions to Syntoniq.
-* Scale definitions: these allow you to define custom scales. You can either use Syntoniq's [generated scale](TODO) feature, or you can create your own completely custom scale where you give the pitches and note names.
-* Layout definitions: if you are using the [Syntoniq keyboard](TODO), you can create layouts to place the notes of your scales on the keyboard.
+* Scale definitions: these allow you to define custom scales. You can either use Syntoniq's [generated scale](../../microtonality/generated-scales/) feature, or you can create your own completely custom scale where you give the pitches and note names.
+* Layout definitions: if you are using the [Syntoniq keyboard](../../keyboard/), you can create layouts to place the notes of your scales on the keyboard.
 * Score blocks: the heart of the language. Score blocks contain *note lines*, which include the notes and rhythms, and *dynamic lines*, which specify dynamics.
 
 For a complete description of the Syntoniq language, see the [Language Reference](../../reference/language-reference/). Here are a few basics so you know what you're looking at.

@@ -2,10 +2,9 @@
 
 This is general TODO across internal docs, manual, and software.
 
-# Video Links
+# Video
 
-[channel](https://www.youtube.com/channel/UCxLdne2sP1iOPxpq8j49YIw)
-
+* Update thumbnails, etc.
 * Write a description and TOC. Each description should include
   * Link to syntoniq.cc and the GitHub repository
   * Link to top-level manual

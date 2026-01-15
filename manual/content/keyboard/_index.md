@@ -12,4 +12,4 @@ TODO: update when the chord builder is completed.
 
 At this time, the syntoniq keyboard application only works with a narrow range of hardware, as discussed in subsequent sections. An item early on the roadmap is to create a text-based application for building chords interactively. This would leverage the Csound/MIDI output capabilities of the keyboard without requiring an input device.
 
-The manual is interspersed with videos, which are hosted in the [Syntoniq YouTube Channel](TODO). All contain narrative that was read verbatim from a script. You can find the [video scripts](../video-scripts/) at the end of the manual.
+The manual is interspersed with videos, which are hosted in the [Syntoniq YouTube Channel](https://www.youtube.com/channel/UCxLdne2sP1iOPxpq8j49YIw). All contain narrative that was read verbatim from a script. You can find the [video scripts](../video-scripts/) at the end of the manual.

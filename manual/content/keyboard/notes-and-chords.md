@@ -13,7 +13,7 @@ Here are a few important takeaways:
 
 All the material in this section is demonstrated in the video linked below.
 
-{{ youtube(id="ycjt7Zdnr70?si=PERkiXEf9pwUbZws", caption="TODO Placeholder Video", script="keyboard-notes-and-chords") }}
+{{ youtube(id="ycjt7Zdnr70?si=PERkiXEf9pwUbZws", caption="Notes and Chords", script="keyboard-notes-and-chords") }}
 
 Please review the information in the [previous section](../initialization/) for starting the keyboard application and selecting layouts. We'll start off by selecting the `12-EDO-h2v5` layout. This layout is located on the lower-left layout key on the Launchpad. It is assigned to the upper-left layout button on the hexboard.
 
