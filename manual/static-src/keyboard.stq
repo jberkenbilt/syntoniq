@@ -36,8 +36,8 @@ place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard-60" 
 define_manual_mapping(
     mapping="JI"
     scale="JI"
-    v_factor = 3/2
-    h_factor = 2
+    v_factor=3/2
+    h_factor=2
 ) <<
 p    F   EK    e'   Bh
   @A   I    E    D    C

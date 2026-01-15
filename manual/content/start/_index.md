@@ -16,3 +16,7 @@ This is the manual for [Syntoniq](https://syntoniq.cc/). Syntoniq converts music
 # How to Read This Manual
 
 The manual is divided into multiple parts. Parts are denoted by *part chapters* whose titles are ALL UPPERCASE. Later sections of the manual build upon earlier sections. Not all parts of the manual will matter to all people. When browsing the docs, be sure to read the part chapter for that part.
+
+The manual contains some text marked with `TODO`. This serves the dual purpose of being a reminder in the manual of things to update as we add new features and a signal to the reader that a potential change may be coming.
+
+TODO: remove the part about TODO if we finish all the TODO items!

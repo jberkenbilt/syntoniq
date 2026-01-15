@@ -28,7 +28,7 @@ tasks:
 
   stq-csound-mp3:*:
     cmds:
-      - "../../target/debug/syntoniq generate --score={{index .MATCH 0}}.stq --csound={{index .MATCH 0}}.csd"
+      - "cargo run --bin syntoniq generate --score={{index .MATCH 0}}.stq --csound={{index .MATCH 0}}.csd"
       - "csound --wave -o {{index .MATCH 0}}.wav {{index .MATCH 0}}.csd"
       - "lame -V 0 -h {{index .MATCH 0}}.wav ../static/{{index .MATCH 0}}-csound.mp3"
       - "rm {{index .MATCH 0}}.wav {{index .MATCH 0}}.csd"
@@ -55,7 +55,7 @@ tasks:
 
   directives:
     cmds:
-      - "../../target/debug/syntoniq doc > directive_doc.md"
+      - "cargo run --bin syntoniq doc > directive_doc.md"
     sources:
       - ../../common/src/parsing/score/directives.rs
       - ../../common/directive_derive/src/lib.rs

@@ -22,6 +22,8 @@ syntoniq(version=1)
 ```
 <!-- generate-end -->
 
+{{ audio(src="hello-csound.mp3", caption="Audio Created with Csound") }}
+
 In this example:
 * `syntoniq(version=1)` is a *directive*. The `syntoniq` directive has to appear before any other content (except comments, spaces, and blank lines).
 * The line starting with `;` is a comment.
@@ -57,7 +59,7 @@ A Syntoniq file consists of the following things:
 * Layout definitions: if you are using the [Syntoniq keyboard](TODO), you can create layouts to place the notes of your scales on the keyboard.
 * Score blocks: the heart of the language. Score blocks contain *note lines*, which include the notes and rhythms, and *dynamic lines*, which specify dynamics.
 
-For a complete description of the Syntoniq language, see [SYNTONIQ LANGUAGE](../../reference/). Here are a few basics so you know what you're looking at.
+For a complete description of the Syntoniq language, see the [Language Reference](../../reference/language-reference/). Here are a few basics so you know what you're looking at.
 
 A note consists of up to three parts: `duration:name:modifiers`. The duration is a *number of beats*. If you use csound, this will be familiar. If you are used to LilyPond, it is different. In LilyPond, `4` is a quarter note, `2` is a half note, etc. In Syntoniq, `1` is a beat, `2` is two beats, etc. Syntoniq doesn't have any concept of quarter notes, etc., as it breaks free from the usual notational conventions of Western music. Durations in Syntoniq can be fractions of a beat, but we'll come back to that later.
 
@@ -93,7 +95,7 @@ The `--score` option is required. If no other options are given, `syntoniq` will
 
 The file `hello.csd` contains [Csound](https://csound.com) output. If you want to use Csound, you can install it from its website. Then just run `csound hello.csd` to hear the file. You can create your own Csound instruments to use with Syntoniq. By default, it includes a simple instrument with a simple wave form that's good for clearly hearing pitches and intervals...but you probably wouldn't want to listen to a piece of music with it! *Please note: you can create much better audio with csound. This is a limitation of Syntoniq's default instrument, not csound itself!*
 
-{{ audio(src="introduction/hello-csound.mp3", caption="Audio Created with Csound") }}
+{{ audio(src="hello-csound.mp3", caption="Audio Created with Csound") }}
 
 The file `hello-mts.midi` is a standard MIDI file that embeds MTS (Midi Tuning System) SysEx (System Exclusive) messages and assigns a MIDI note number to each pitch. For most workflows, you will want the MPE version of MIDI, but the MTS version may be better with stand-alone MIDI to audio converters. If you're using the regular 12-tone scale, you can play this with any converter or player. Otherwise, you need software that understand these messages. If you have [TiMidity++](https://timidity.sourceforge.net/), you can run `timidity hello-mts.midi`. TiMidity++ is a very old but highly functional MIDI to WAVE converter. It is one of the few tools that natively understands MIDI with embedded MTS.
 

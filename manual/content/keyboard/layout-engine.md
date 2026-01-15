@@ -11,157 +11,31 @@ This section describes the Syntoniq keyboard's layout engine. The primary object
 * How to place mappings on layouts
 * The built-in default keyboard configuration file
 
-<!-- generate include=keyboard.stq checksum=62659ce15652b62c16932352a429887cccb0bcce50694e22ef358356f6111363 -->
+# Defining Manual Mappings
+
+Manual mappings are defined with the `define_manual_mapping` directive. This directive must be followed by a valid layout definition block. A layout definition block contains rows of note names, optionally followed by cycle markers (`'` or `,` optionally followed by a number). These represent a rectangular region of keys. You may use the value `~` to leave a specific key unmapped. Exactly one note (or `~`) must be preceded by `@`. This marks it as the *anchor note*, which is placed in a layout using `place_mapping`. In the example below, the anchor note is the lower-left note, but it can be any note.
+
+When you place keys with manual mapping, you are free to use whitespace in whatever way works best. In the `example` mapping shown below, we stagger the keys so they are easier to visualize on a hexagonal grid. This has no syntactic significance, and it has no effect on a rectangular grid, but it can help you to lay things out visually so it looks more like it will actually appear on a hexagonal keyboard. This is entirely optional. The Syntoniq parser does not consider spaces other than to separate notes from each other. A future version of Syntoniq may include a reformatter that can help with aligning layout definitions. (TODO: update this section if we write the formatter.)
+
 ```syntoniq
-syntoniq(version=1)
-
-define_isomorphic_mapping(mapping="12-EDO-h2v5" steps_h=2 steps_v=5)
-place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="launchpad" anchor_row=4 anchor_col=3)
-place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="hexboard" anchor_row=8 anchor_col=8)
-place_mapping(layout="12-EDO-h2v5" mapping="12-EDO-h2v5" keyboard="hexboard-60" anchor_row=9 anchor_col=8)
-
-define_isomorphic_mapping(mapping="19-EDO-h3v2" scale="19-EDO" steps_h=3 steps_v=2)
-place_mapping(layout="19-EDO-h3v2" mapping="19-EDO-h3v2" keyboard="launchpad" anchor_row=4 anchor_col=3)
-place_mapping(layout="19-EDO-h3v2" mapping="19-EDO-h3v2" keyboard="hexboard" anchor_row=8 anchor_col=7)
-place_mapping(layout="19-EDO-h3v2" mapping="19-EDO-h3v2" keyboard="hexboard-60" anchor_row=9 anchor_col=8)
-
-define_isomorphic_mapping(mapping="31-EDO-h5v3" scale="31-EDO" steps_h=5 steps_v=3)
-place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="launchpad" anchor_row=4 anchor_col=3)
-place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="hexboard" anchor_row=7 anchor_col=8)
-place_mapping(layout="31-EDO-h5v3" mapping="31-EDO-h5v3" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
-
-define_generated_scale(scale="17-EDO" divisions=17)
-define_isomorphic_mapping(mapping="17-EDO-h3v2" scale="17-EDO" steps_h=3 steps_v=2)
-place_mapping(layout="17-EDO-h3v2" mapping="17-EDO-h3v2" keyboard="launchpad" anchor_row=4 anchor_col=3)
-place_mapping(layout="17-EDO-h3v2" mapping="17-EDO-h3v2" keyboard="hexboard" anchor_row=8 anchor_col=7)
-place_mapping(layout="17-EDO-h3v2" mapping="17-EDO-h3v2" keyboard="hexboard-60" anchor_row=9 anchor_col=8)
-
-define_generated_scale(scale="41-EDO" divisions=41)
-define_isomorphic_mapping(mapping="41-EDO-h7v3" scale="41-EDO" steps_h=7 steps_v=3)
-place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="launchpad" anchor_row=4 anchor_col=3)
-place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="hexboard" anchor_row=7 anchor_col=8)
-place_mapping(layout="41-EDO-h7v3" mapping="41-EDO-h7v3" keyboard="hexboard-60" anchor_row=8 anchor_col=7)
-
-define_generated_scale(scale="53-EDO" divisions=53)
-define_isomorphic_mapping(mapping="53-EDO-h9v4" scale="53-EDO" steps_h=9 steps_v=4)
-place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="launchpad" anchor_row=4 anchor_col=3)
-place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard" anchor_row=7 anchor_col=8)
-place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard-60" anchor_row=9 anchor_col=7)
-
 define_manual_mapping(
-    mapping="JI"
+    mapping="example"
     scale="JI"
-    v_factor = 3/2
-    h_factor = 2
+    v_factor=3/2
+    h_factor=2
 ) <<
-p    F   EK    e'   Bh
-  @A   I    E    D    C
+EK  e'  Bh
+  p   JK   F
+D   C   ~
+  @A  I   E
 >>
-place_mapping(
-    layout="JI"
-    base_pitch=264
-    keyboard="hexboard"
-    mapping="JI"
-    anchor_row=7
-    anchor_col=5
-)
-place_mapping(
-    layout="JI"
-    base_pitch=264
-    keyboard="launchpad"
-    mapping="JI"
-    anchor_row=3
-    anchor_col=2
-)
-place_mapping(
-    layout="JI-19-EDO"
-    keyboard="launchpad"
-    mapping="JI"
-    anchor_row=1
-    anchor_col=1
-    rows_above=3
-    rows_below=0
-)
-place_mapping(
-    layout="JI-19-EDO"
-    keyboard="launchpad"
-    mapping="19-EDO-h3v2"
-    anchor_row=6
-    anchor_col=3
-)
-place_mapping(
-    layout="JI-19-EDO"
-    keyboard="hexboard"
-    mapping="JI"
-    anchor_row=1
-    anchor_col=2
-    rows_above=3
-    rows_below=0
-)
-place_mapping(
-    layout="JI-19-EDO"
-    keyboard="hexboard"
-    mapping="19-EDO-h3v2"
-    anchor_row=9
-    anchor_col=9
-)
-
-define_scale(scale="harmonics") <<
- 1 h1    2 h2    3 h3    4 h4    5 h5    6 h6    7 h7    8 h8
- 9 h9   10 h10  11 h11  12 h12  13 h13  14 h14  15 h15  16 h16
-17 h17  18 h18  19 h19  20 h20  21 h21  22 h22  23 h23  24 h24
-25 h25  26 h26  27 h27  28 h28  29 h29  30 h30  31 h31  32 h32
-33 h33  34 h34  35 h35  36 h36  37 h37  38 h38  39 h39  40 h40
-41 h41  42 h42  43 h43  44 h44  45 h45  46 h46  47 h47  48 h48
-49 h49  50 h50  51 h51  52 h52  53 h53  54 h54  55 h55  56 h56
-57 h57  58 h58  59 h59  60 h60  61 h61  62 h62  63 h63  64 h64
->>
-
-define_manual_mapping(mapping="harmonics" scale="harmonics") <<
-h57 h58 h59 h60 h61 h62 h63 h64
-h49 h50 h51 h52 h53 h54 h55 h56
-h41 h42 h43 h44 h45 h46 h47 h48
-h33 h34 h35 h36 h37 h38 h39 h40
-h25 h26 h27 h28 h29 h30 h31 h32
-h17 h18 h19 h20 h21 h22 h23 h24
-h9  h10 h11 h12 h13 h14 h15 h16
-@h1 h2  h3  h4  h5  h6  h7  h8
->>
-place_mapping(
-    layout="harmonics"
-    mapping="harmonics"
-    base_pitch=50
-    keyboard="launchpad"
-    anchor_row=1
-    anchor_col=1
-)
-place_mapping(
-    layout="harmonics"
-    mapping="harmonics"
-    base_pitch=50
-    keyboard="hexboard"
-    anchor_row=4
-    anchor_col=4
-    rows_above=7
-    rows_below=0
-    cols_right=7
-    cols_left=0
-)
-
-define_generated_scale(scale="13-ED3" cycle_ratio=3 divisions=13)
-define_isomorphic_mapping(mapping="13-ED3-h2v3" scale="13-ED3" steps_h=2 steps_v=3)
-place_mapping(layout="13-ED3-h2v3" mapping="13-ED3-h2v3" keyboard="hexboard" anchor_row=7 anchor_col=8)
-
-define_generated_scale(scale="27-ED3" cycle_ratio=3 divisions=27)
-define_isomorphic_mapping(mapping="27-ED3-h3v5" scale="27-ED3" steps_h=3 steps_v=5)
-place_mapping(layout="27-ED3-h3v5" mapping="27-ED3-h3v5" keyboard="hexboard" anchor_row=7 anchor_col=8)
 ```
-<!-- generate-end -->
+
+# Built-in Configuration
 
 This is the built-in keyboard configuration. You can retrieve this by running `syntoniq-kbd default-config`. After the code, we will describe what's going on with some examples.
 
-<!-- generate include=keyboard.stq checksum=62659ce15652b62c16932352a429887cccb0bcce50694e22ef358356f6111363 -->
->>>>>>> 18538ff (Write Layout Engine section)
+<!-- generate include=keyboard.stq checksum=aca8046550445a440a13940977350c06750f809142e852d8844454b20c53b0d1 -->
 ```syntoniq
 syntoniq(version=1)
 
@@ -201,8 +75,8 @@ place_mapping(layout="53-EDO-h9v4" mapping="53-EDO-h9v4" keyboard="hexboard-60" 
 define_manual_mapping(
     mapping="JI"
     scale="JI"
-    v_factor = 3/2
-    h_factor = 2
+    v_factor=3/2
+    h_factor=2
 ) <<
 p    F   EK    e'   Bh
   @A   I    E    D    C
@@ -308,7 +182,7 @@ place_mapping(layout="27-ED3-h3v5" mapping="27-ED3-h3v5" keyboard="hexboard" anc
 ```
 <!-- generate-end -->
 
-## Note Computation Examples
+# Note Computation Examples
 
 This section is technically dense. Understanding it is not essential to using the keyboard. Feel free to skim or skip, picking up below with [Other Considerations](#other-considerations). When using the Syntoniq keyboard, the calculations are done manually. The main thing you have to understand is that manual layouts map notes in a *physically rectangular region* even on a hexagonal keyboard. You can develop a feel for this by playing around with defining manual layouts to see what they look like on a keyboard. This section explains it fully. We discuss
 * Determining which of multiple mappings in a layout is responsible for mapping a particular key
@@ -328,7 +202,7 @@ Some general notes, which you can verify from the keyboard configuration shown a
 
 Below are some walk-throughs of computing notes on the various keyboards. You can verify these using the diagrams.
 
-### Launchpad Computations
+## Launchpad Computations
 
 Here is a diagram of the JI-19-EDO layout on the Launchpad:
 
@@ -351,13 +225,13 @@ On the Launchpad:
   * Since `I` is `9/8`, the horizontal tile factor is `2`, and the vertical tile factor is `3/2`, this notes relative pitch is `27/8`.
   * Normalizing `27/8` to within the cycle (which is 2, an octave) brings us to `27/16`, so this is note `I↑→` with pitch `27/18`.
 
-### HexBoard Computations
+## HexBoard Computations
 
 Here is a diagram of the JI-19-EDO layout on the HexBoard:
 
 {{ include(path="hexboard-ji-19-edo.html", caption="HexBoard with JI-19-EDO Layout") }}
 
-Before we can work with this using the HexBoard, we have to introduce the concept of *stagger*. As discussed above, the *up* direction on a hexagonal keyboard is *up and to the left*. This is fine with isomorphic layouts, but with manual layouts, we always define a group of keys in a rectangular layout and tile them rectangularly. We effectively have a rectangular grid of groups of hexagonal keys. For this reason, we *stagger* columns for purposes of finding notes in a manual layout. Specifically, we take the *Euclidean quotient* of the *number of rows above the anchor row* and 2 and subtract that from the column. The Euclidean quotient is the integer part of the result of Euclidean division, which takes a quotient and a remainder that is always between 0 and the denominator. For positive numbers, it's the same as integer division. For negative numbers, you move toward negative infinity rather than toward 0. This is usually written as $\lfloor \frac{a}{b}$\rfloor$. This "corrects" for the columns drifting to the right. Because of stagger, you will have the best results for manual layouts if you ensure they are *an even number of rows high*. Note that you can leave some keys in a manual mapping blank by using the note `~` in a given spot. This is discussed in the [Syntoniq Language Reference](../../reference/language-reference/).
+Before we can work with this using the HexBoard, we have to introduce the concept of *stagger*. As discussed above, the *up* direction on a hexagonal keyboard is *up and to the left*. This is fine with isomorphic layouts, but with manual layouts, we always define a group of keys in a rectangular layout and tile them rectangularly. We effectively have a rectangular grid of groups of hexagonal keys. For this reason, we *stagger* columns for purposes of finding notes in a manual layout. Specifically, we take the *Euclidean quotient* of the *number of rows above the anchor row* and 2 and subtract that from the column. The Euclidean quotient is the integer part of the result of Euclidean division, which takes a quotient and a remainder that is always between 0 and the denominator. For positive numbers, it's the same as integer division. For negative numbers, you move toward negative infinity rather than toward 0. This is usually written as $\lfloor \frac{a}{b}$\rfloor$. This "corrects" for the columns drifting to the right. Because of stagger, you will have the best results for manual layouts if you ensure they are *an even number of rows high*. Note that you can leave some keys in a manual mapping blank by using the note `~` in a given spot.
 
 To make it concrete, observe that the note `A` appears in the above diagram on row 1, column 2. Two physical, rectangular rows above that, meaning two rows above in the 90° *vertical* direction, not the *up and left* direction, we would want to find the note `A↑` because we want manual layout tiling to be vertical, not skewed to the left. You can see `A↑` in that spot on the keyboard. It would be easier if the vertical neighbor two rows above row 1, column 2 were row 3, column 2, but it's not: it's row 1, *column 3* because of the up/left direction of column numbering. To account for this, we introduce the concept of stagger. The stagger here is 1 ($\lfloor \frac{3-1}{2} \rfloor = 1$), which means we want to place all notes one column to the right over where they would land if we just added to the row. In other words, if we look at row 3, column 3, we should find the note that is two rows above row 1, *column 2*, which is $3 - 1$. That means we need to *subtract* the stagger amount from the column on the keyboard to get the column to search in the mapping. It's a bit much, but you can convince yourself by counting it out. If we didn't have stagger, manual mappings taller than two rows would be shaped like parallelograms, and we would tile that way as well. This doesn't work very well when you have a physically rectangular keyboard with hexagonal keys! This scheme works perfectly with the [HexBoard](../../images/hexboard.jpg), but it would work with larger, more complex hexagonal keyboards (like the [Lumatone](../../images/lumatone.png)) as well.
 
@@ -388,21 +262,6 @@ This is just modular arithmetic, so I won't "prove" that this is true here, but 
 ## Isomorphic Mappings and Uneven Divisions
 
 An isomorphic mapping works best with even divisions of an interval. This is the only way you get the exact same interval with the same relative position. Syntoniq does not enforce this: you are free to create scales with uneven divisions (such as any just intonation scale) and use an isomorphic layout with it. Notes are assigned to keys based on *scale degree*, not based on pitch. This might be useful in some cases, such as if you are intentionally playing with out-of-tune intervals in just intonation or if you are using some other uneven arrangement and want the convenience of not manually laying out the notes and are willing to tolerate that chord shapes will not be truly isomorphic.
-
-## Manual Mapping Syntax
-
-When you place keys with manual mapping, you are free to use whitespace in whatever way works best. In the `JI` mapping shown above, we stagger the keys so they are easier to visualize on a hexagonal grid. This has no syntactic significance, and you can see that it has no effect on a rectangular grid, but it can help you to lay things out visually.
-
-On a hexagonal grid, because of stagger (described above), it may be easier to draw the layout with odd rows (starting with 1 on the bottom) offset to the right as we did in the built-in keyboard configuration. You can use `~` for any key you want to leave blank. For example, if we had something with four rows, we might write it like this:
-
-```syntoniq
-~   x    x    x    x
-   x   x    x    x    x
-p    F   EK    e'   Bh
-  @A   I    E    D    C
-```
-
-This makes it look more like it will actually appear on the keyboard. This is entirely optional. The Syntoniq parser does not consider the space other than to separate notes from each other.
 
 # Example: 27-ED3
 

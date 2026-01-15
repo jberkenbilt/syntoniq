@@ -25,3 +25,4 @@ My notes:
   * Interactive chord builder (will work on this after I get the docs in shape)
   * LSP
   * Reformatter
+* Canonicalization of pitches

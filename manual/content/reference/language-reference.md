@@ -1,23 +1,244 @@
 +++
 title = "Language Reference"
-weight = 10
+weight = 20
 sort_by = "weight"
 +++
 
-# TODO
+This section provides precise descriptions of all the features of the Syntoniq Language.
 
-* remember decimals
-* cover all the syntactic bits
-* Use of `~` in a manual mapping. Do we want an example in the layout engine section? Probably not.
+# Syntax
 
-# Broad Terminology
+## Spaces and Comments
 
-* *Part*: something akin to a score line, e.g., an instrument, one staff of a piano score, etc. At a any given time, a part may be assigned a single tuning, instrument, and dynamic, and there are other part-specific properties like strum rate. These can be inherited from global properties but may not be overridden at the note level.
-* *Note*: a single rendered pitch. Chords are represented as multiple notes within a part. You can think of a note as a single, monophonic sound within a part.
+A comment is started by `;` and proceeds until the end of the line.
 
-A note about the word *voice*: I previously used *voice* to refer to what I now call *part*, but I abandoned this terminology because a part may be polyphonic, and it is useful to be able to use the word "voice" to refer to a single monophonic voice within a part. The word "voice" no longer refers to a semantic or syntactic element within the DSL.
+White space and newlines are ignored and are allowed in all contexts with the following exceptions:
+* Comments are terminated by newlines
+* Blank lines terminate score blocks
 
-# Directives
+## Strings
+
+A Syntoniq string is delimited by double quotes (`"`) and may contain any valid UTF-8 text. To include `\` or `"` in a string, precede with `'`. Strings may not contain embedded newlines.
+
+Examples (preceded by directive parameters to be syntactically valid):
+```syntoniq
+f(
+   s1="piano"
+   s2="a \" and a \\"
+   s3="π♯"
+)
+```
+
+## Numbers
+
+A number may be
+* Any integer value
+* A rational number whose numerator is a positive decimal of up to three decimal places and whose denominator is a positive integer
+
+Examples (preceded by directive parameters to be syntactically valid):
+```syntoniq
+f(
+   n1=0
+   n2=261.626
+   n3=1.5/12
+   n4=3/2
+   n5=31
+)
+```
+
+## Pitches
+
+A pitch is one or more *factors* separated and optionally preceded by `*`.
+
+In the description below, `[x]` indicates that `x` is optional. Letters represent numerical values. All other characters, including `^`, `/`, and `|` are literal.
+
+A factor represents either a rational number or a rational number raised to a rational power. It must be non-empty and adhere to the following pattern:
+```
+[a[/b]][^c|d]
+```
+where
+* `a` is a positive integer or decimal of up to three decimal places
+* `b` is a positive integer
+* `c` is any integer, including negative numbers or zero
+* `d` is a positive integer
+
+Since a pitch must be non-empty, at least one of `a/[b]` or `^c|d` must be present.
+
+If `a[/b]` is omitted, it takes the value of `2`.
+
+If `a` is present and `[/b]` is omitted, `b` has the value of `1`.
+
+See [Pitch Primer](../../microtonality/pitch-primer/) for a detailed semantic description of pitches.
+
+Examples (preceded by directive parameters to be syntactically valid):
+```syntoniq
+f(
+    p1=2
+    p2=*3/2
+    p4=^7|17
+    p5=220*3^2|13
+    p6=3/2^-6|15
+    p7=261.3/2*2^1|2*3^1|3
+)
+
+## Directives
+
+Directives take the form
+```syntoniq
+identifier(param="value" repeatable="value1" repeatable="value2")
+```
+
+Directive syntax details:
+* There is no separator between parameters. Think of them as being like XML attributes rather than function arguments.
+* All parameters are named. Parameters can be repeated, as in `repeatable` above. Repeating a parameter makes its value a list.
+* Parameter values may be numbers, pitches, or strings.
+* Newlines may appear anywhere in a directive definition except between a parameter name and value.
+* Spaces may optionally surround `=`
+* Comments may appear inside a directive.
+
+Example (syntactically valid but not valid Syntoniq):
+```syntoniq
+identifier ( ; opening comment
+   one   = 1
+   two   = 22/7
+   three = "🥔♭"
+   three = "π♯"  ; repeated parameter
+   four  = *3^-2|31*3/2
+)
+```
+
+See [Directive Reference](#directive-reference) below for the list of valid directives and their parameters. You can also run `syntoniq doc`.
+
+## Note Names
+
+Note names must start with an ASCII alphabetic character and may contain the following characters:
+* alphanumeric characters
+* any of `_*^/.|+-!\#%&`
+
+## Scale Definitions
+
+The directive `define_scale` must be followed by a scale definition. A scale definition is delimited by `<<` and `>>` and consists of sequence of pitches followed by note names.
+
+You may define more than one note on a line. You may assign multiple names to a pitch. It is an error to have a duplicated pitch. Instead, add all the notes to the single definition of the pitch. This is based on the *value* of the pitch, not the representation. If you tried to add both `^2|12` and `^1|6`, you would get an error message.
+
+Scale definitions are described in detail with examples in [Defining Scales](../../microtonality/scales/).
+
+## Layout Definitions
+
+The directive `define_manual_mapping` must be followed by a layout definition. A layout definition is delimited by `<<` and `>>` and consists of a rectangular grid of note names optionally followed by cycle (e.g. octave) markers. A note name may be replaced by `~` to indicate an unmapped key. Exactly one item (either a note or `~`) must be preceded by `@` to indicate that it is the anchor note.
+
+Layout definitions are described in detail with examples in [Layout Engine](../../keyboard/layout-engine/).
+
+## Score Blocks
+
+Score blocks consist of groups of contiguous *note lines* and *dynamic lines*. A score block is terminated by a blank line or a line containing a directive.
+
+You can find examples of score blocks throughout the manual including in the [Examples](TODO) section. Here's a simple example, repeated from the [Quick Start](../../introduction/quickstart-12-edo/) section.
+
+<!-- generate include=hello.stq checksum=f7c2a15b5a54491b3b9f9e1c471b01ed442e3f2f5d1f75691ebc9e8c9bd4631e -->
+```syntoniq
+syntoniq(version=1)
+
+; Here is some music
+[p1.0]  1:g a    b  c'
+[p1.1]  1:e f    g  g
+[p1.2]  2:c    1:f  e
+[p1.3]  2:~    1:d  d
+[p1.4]  1:~ a,   g, c,
+  [p1] 64@0<    127@4
+```
+<!-- generate-end -->
+
+{{ audio(src="hello-csound.mp3", caption="Audio Created with Csound") }}
+
+### Parts
+
+A Syntoniq *part* corresponds approximately to a part in a score. It is a container for notes and dynamics. A part may contain any number of simultaneous notes (subject to limitations of the instrument). In Syntoniq, certain properties apply at the part level, such as the following:
+* dynamics
+* tuning
+* Csound or MIDI instrument assignment
+
+In the [Directive Reference](#directive-reference) section, some directives take a `part` parameter to set part-specific parameters.
+
+A *part name* must start with an alphabetic character and may contain only alphanumeric characters or underscore (`_`).
+
+### Note Lines
+
+TODO: update this section if we support glide. Search for glide.
+
+Note lines begin with `[part_name.n]`, where, in this case *the `[` and `]` characters are literal* (not indicating an optional value) and `n` is a non-negative integer value (0 or positive) indicating a note number. Note that the note number is interpreted as a numerical value, ignoring leading zeroes. This is probably the least surprising behavior unless you are used to Csound. If you are accustomed to Csound, keep in mind that, since Syntoniq treats note numbers as *numeric values*, `part.1` and `part.01` refer to the *same note*. This is different from Csound, which treats these like floating point fractional parts. In Csound, `part.1` and `part.10` would be the same. We believe that, for anyone except a Csound user, it is less surprising to view the note line leader as a `.`-separated part name and numerical value.
+
+After the line leader (`[part_name.n]`), a line consists of any of a sequence of
+* notes
+* holds
+* bar checks
+
+#### Notes
+
+In this description of a note, the `[` and `]` characters represent optional values. The general syntax of a note is `[duration:]name[cycle-markers][:modifiers]`. Note pitches are absolute in Syntoniq. If you are coming from LilyPond, you might be accustomed to LilyPond's relative pitch mode. Syntoniq intentionally does not support relative pitch mode as this creates a lot of confusion when rearranging notes in a score. It is also impractical to define it in a meaningful way with arbitrary note names and pitches. We believe absolute pitch notation is the only sensible approach with Syntoniq, but it can be a source of momentary confusion if you are accustomed to using relative pitch notation in LilyPond.
+
+Duration is mandatory for the first note in each note line. If omitted in subsequent notes, the value is repeated from the previous note. Default duration values do not carry across lines. This reduces surprises when splitting, joining, or otherwise rearranging lines in a score.
+
+Duration is a rational number or decimal with up to three decimal places. It is measured in beats. This is similar to Csound. If you are used to LilyPond, notice the difference. In Syntoniq, `4:a` means to play `a` for four beats. In LilyPond, `a4` indicates the note `a` as a quarter note. In this case, Syntoniq's use of beat counts aligns it more with Csound. Note that, since Syntoniq durations are rational numbers, you can represent tuplets with perfect precision. For example: `1/3:c d e` would be similar to eighth note triplets.
+
+`name` is the note name, whose syntax is discussed above.
+
+`cycle-markers` may be one of `'` (one cycle up), `,` (one cycle down), `'n` ($n$ cycles up) or `,n` ($n$ cycles down). A cycle is usually an octave, but it may be defined to be any other interval using any of the scale definition directives. (See [Directive Reference](#directive-reference) and [Defining Scales](../../microtonality/scales/).)
+
+* Modifiers are characters that modify some aspect of a note's behavior. The default behavior of a note is that it sounds for the full duration. The following modifiers are available:
+  * `>` — slightly increases the velocity (MIDI) or amplitude (Csound) of the note; corresponds to an accent.
+  * `^` — like `>` but more; corresponds to marcato.
+  * `.` - may be repeated; shortens the note by one quarter of a beat as long as duration remains at least one quarter of a beat. This roughly corresponds to staccato. It is a shortcut and behaves the same regardless of the note length. For more precise control, you can use full-length notes with specific durations, such as 7/8.
+  * `~` — sustains the note. This is most useful with hold (discussed below) or to tie notes across lines. It means to go straight from the note to the next note with the same part and note number.
+
+TODO: A future version of Syntoniq is expected to support *glide*, probably using the modifier `&`, but this is subject to change. The current design for glide means that the pitch changes in a perceptually linear fashion (which is exponentially for frequency) from the computed pitch to the computed pitch of the next note over the specified duration.
+
+#### Holds
+
+You can indicate *hold* with `~`. The `~` character can be preceded by a duration and must be preceded by a duration if it is the first item in the line. A *hold* means "keep doing what you're doing." That means that, following a sustained note, a *hold* means to keep sustaining, and following a non-sustained note, or as the first thing, it is a rest.
+
+TODO: glide: It is expected that a hold would then mean "keep gliding". For example, `1:a:& ~ b` would glide smoothly from `a` to `b` over two beats.
+
+#### Bar Checks
+
+The `|` character may occur in any position in a note line except the beginning or end. When a bar check appears, Syntoniq performs the following validations:
+* Each line in the score block must contain the same number of bar checks.
+* The duration between a bar check and its neighbors (another bar check, the beginning of the line, of the end of the line) must be consistent across lines.
+
+If you are coming from LilyPond, this is similar to LilyPond bar checks, but since Syntoniq (intentionally) doesn't have the concept of time signatures, they are just alignment checks and visual separators.
+
+#### Other Things to Know
+
+Syntoniq ensures that every note line in a score block is the same length. If you make a mistake, the compiler will give you enough information to fix the mistake by telling you the computed duration of each line so you can easily find the error. Bar checks can help.
+
+When generating MIDI output with MPE, every note with a given note number is always assigned to the same channel. This makes it easier to perform edits. When generating Csound output, there is a fixed mapping between Syntoniq note numbers and Csound note numbers that takes into consideration the differences between how each system uses note numbers.
+
+Note numbers do not have to be sequential or contiguous.
+
+Note numbers do not have to be in any particular order, but you may have only a single line per score block with a given part and note number.
+
+If a score block doesn't sound any notes for a note number, you don't need a line for it. If the last occurrence of the note was sustained, the sustain eventually has to be resolved, but you can skip one or more score blocks.
+
+It is likely that glide mode will not be supported for MTS MIDI.
+
+The Syntoniq compiler is very thorough and gives clear errors with copious context. If you get it wrong, the compiler will help you fix it.
+
+### Dynamic Lines
+
+Dynamic lines start with `[part_name]` where, as with the note leader, `[` and `]` *appear literally*. Dynamic lines consist of a sequence of dynamics and bar checks.
+
+A dynamic has the form (where `[` and `]` mean "optional") `level@offset[change]`.
+* `level` is a value from 0 to 127 inclusive
+* `offset` is a number of beats as an offset from the beginning of the line or the most recent bar check
+* `change`, if present, may be `<` to indicate a crescendo. or `>` to indicate a diminuendo.
+
+When bar checks appear in note lines, Syntoniq validates that there are the same number as in the note blocks and that all offsets fall within the duration of the corresponding region of notes. Here again, if you get it wrong, the compiler will give you copious information to help you fix it.
+
+If you use `<` or `>`, Syntoniq will enforce that there is a subsequent dynamic and that it is greater than (for crescendo) or less than (for diminuendo) the previous volume. This serves as an extra check. Volumes of `0` are allowed.
+
+# Directive Reference
+
+Below is an alphabetical list of directives. You can get this by running `syntoniq doc`.
 
 <!-- generate include=directive_doc.md checksum=6f430836449aed3a6ae50bfe83b3a35b7b88b204de0240849d76bda5da2b42ab -->
 

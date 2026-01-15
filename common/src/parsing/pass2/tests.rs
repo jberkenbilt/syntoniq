@@ -193,6 +193,12 @@ fn test_pitch() -> anyhow::Result<()> {
     assert_eq!(p.value.try_as_ratio().unwrap(), Ratio::new(12, 1));
     assert_eq!(p.value.as_pitch().to_string(), "12");
 
+    let (p, rest) = parse_pitch("12.5/2*^-1|5z").map_err(to_anyhow)?;
+    assert_eq!(rest, "z");
+    assert!(p.value.try_as_int().is_none());
+    assert!(p.value.try_as_ratio().is_none());
+    assert_eq!(p.value.as_pitch().to_string(), "25/8*^4|5");
+
     Ok(())
 }
 

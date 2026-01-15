@@ -12,7 +12,7 @@ variables:
   # `pitch` matches pitches, ratios, and integers. Match them all
   # together so that syntactically correct pitches "gel" into a
   # unified color, making it easier to spot mistakes.
-  number: '\d+(/\d+)?'
+  number: '\d+(?:\.\d+)?(/\d+)?'
   factor: '((\b{{number}}\b)|((\b{{number}})?\^-?\d+\|\d+\b))'
   pitch: '\*?{{factor}}(\*{{factor}})*'
   note_leader: '(\[)({{ident}})(\.)(\d+)(\])'
@@ -63,7 +63,7 @@ contexts:
       scope: punctuation.definition.string.begin.syntoniq
       push:
         - meta_scope: string.quoted.double.syntoniq
-        - match: '\\"'
+        - match: '\\[\\"]'
           scope: constant.character.escape.syntoniq
         - match: '"'
           scope: punctuation.definition.string.end.syntoniq
