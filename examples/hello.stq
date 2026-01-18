@@ -1,8 +1,0 @@
-syntoniq(version=1)
-
-[p1.0]  1:g a    b  c'
-[p1.1]  1:e f    g  g
-[p1.2]  2:c    1:f  e
-[p1.3]  2:~    1:d  d
-[p1.4]  1:~ a,   g, c,
-  [p1] 64@0<    127@4

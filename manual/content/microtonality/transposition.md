@@ -77,7 +77,7 @@ Notes from above:
 
 For a second example, let's take a little melody in one EDO, and then use some steps in a second EDO to change to a new, unrelated key. This melody will start in 17-EDO, one of my personal favorites. The single step in 17-EDO is almost exactly the ratio 25/24 (off by less than 0.1¢), which is what you get if you go up a major third and down a minor third in just intonation ($\frac{5}{4}\times\frac{5}{6} = \frac{25}{24}$). Two steps is almost exactly 13/12, flat by less than 3¢. That makes the notes `Y` and `M` particularly useful in 17-EDO. 17-EDO also has a very good fourth and fifth: 10 steps of 17-EDO is less than 4¢ sharp for 3/2. It lacks an interval close to the major third, but 5 steps is a close neutral third, quite close to 11/9. 11/9 can be written as `JK` in our system. This is a feature that falls out of normal arithmetic. Each single letter represents a single harmonic sequence step by design. That means each pair of adjacent letters represents two steps: `JK` = $\frac{10}{9}\times\frac{11}{10} = \frac{11}{9}$.
 
-<!-- generate include=transposition2.stq checksum=a0e19521eaed67bbf24e9d1afce1e91ea5dc52d57940aee17a098d32fcea31fe -->
+<!-- generate include=transposition2.stq checksum=622ad2f6ad709e6c0f6e3150da8d0bf1cd4f37e5a2fff5d4ebde7f3ba03f99fa -->
 ```syntoniq
 ; See Transposition section of manual for the "note x" parts.
 syntoniq(version=1)
@@ -115,7 +115,6 @@ transpose(written="CJK" pitch_from="a4!13")
 [p1.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK
 [p1.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
 
-mark(label="a")
 ; Closing sequence: note 5
 [p1.0] 6:A,
 [p1.1] 6:C,

@@ -34,7 +34,6 @@ transpose(written="CJK" pitch_from="a4!13")
 [p1.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK
 [p1.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
 
-mark(label="a")
 ; Closing sequence: note 5
 [p1.0] 6:A,
 [p1.1] 6:C,
