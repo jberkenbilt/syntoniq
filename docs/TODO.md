@@ -2,6 +2,35 @@
 
 This is general TODO across internal docs, manual, and software.
 
+# CI
+
+* Zola - removed Syntect. I have to pin to 0.21 until I have a workaround, or I have to dump zola.
+
+# Mac
+
+Run executable
+Get "syntoniq" Not Opened dialog
+Click question mark
+Click Open Privacy & Security settings for me
+scroll down to security where it says "syntoniq" was blocked to protect your Mac.
+Click Allow Anyway.
+Run the executable again. This time, you will have "Open Anyway" as a choice.
+
+# Windows
+
+Install csound.
+Add "/c/Program Files/Csound6_x64" to path
+Build with
+```
+cargo build --config .cargo/windows-native.toml
+```
+Add to csound options:
+```
+-odac1
+-b128
+-B2048
+```
+
 # Video
 
 * Update thumbnails, etc.
@@ -77,6 +106,12 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
   ```
 
 # Release
+
+```
+cargo build --workspace --all-targets --release
+cargo build --target-dir target.x86 --target x86_64-apple-darwin --workspace --all-targets --release
+lipo -create -output syntoniq-kbd target/release/syntoniq-kbd target.x86/x86_64-apple-darwin/release/syntoniq-kbd
+```
 
 * Use cargo-dist for creating distributions.
 

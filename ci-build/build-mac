@@ -1,0 +1,28 @@
+#!/bin/bash
+set -xeo pipefail
+cd $(dirname $0)/..
+(cd /Library/Frameworks; curl https://syntoniq.cc/ci-resources/csound-6.18.1.mac.tar.gz | sudo tar xvf -)
+
+args="--workspace --all-targets --release"
+
+cargo build --target-dir target.darwin-aarch64 --target aarch64-apple-darwin $args
+cargo test --target-dir target.darwin-aarch64 --target aarch64-apple-darwin $args
+cargo build --target-dir target.darwin-x86_64 --target x86_64-apple-darwin $args
+mkdir -p distribution/syntoniq-mac-universal-csound
+for i in syntoniq syntoniq-kbd; do
+    lipo -create -output distribution/syntoniq-mac-universal-csound/$i target.*/*/release/$i
+done
+
+cargo build --target-dir target.darwin-aarch64 --target aarch64-apple-darwin $args --no-default-features
+cargo test --target-dir target.darwin-aarch64 --target aarch64-apple-darwin $args --no-default-features
+cargo build --target-dir target.darwin-x86_64 --target x86_64-apple-darwin $args --no-default-features
+mkdir -p distribution/syntoniq-mac-universal-no-csound
+for i in syntoniq syntoniq-kbd; do
+    lipo -create -output distribution/syntoniq-mac-universal-no-csound/$i target.*/*/release/$i
+done
+
+cd distribution
+for i in *; do
+    tar czvf $i.tar.gz $i
+    rm -rf $i
+done

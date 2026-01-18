@@ -1,6 +1,4 @@
 use anyhow::bail;
-#[cfg(not(feature = "csound"))]
-use anyhow::bail;
 use clap::CommandFactory;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;

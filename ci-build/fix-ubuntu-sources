@@ -1,0 +1,28 @@
+#!/bin/bash
+set -xeo pipefail
+
+# Ubuntu 24.04 (and older and probably newer) has a separate archive for ports.
+source /etc/lsb-release
+cp /etc/apt/sources.list.d/ubuntu.sources /tmp/ubuntu.sources.orig
+sudo tee /etc/apt/sources.list.d/ubuntu.sources <<EOF
+Types: deb deb-src
+URIs: http://us.archive.ubuntu.com/ubuntu/
+Suites: $DISTRIB_CODENAME $DISTRIB_CODENAME-updates $DISTRIB_CODENAME-backports
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+Architectures: amd64
+
+Types: deb deb-src
+URIs: http://security.ubuntu.com/ubuntu/
+Suites: $DISTRIB_CODENAME-security
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+Architectures: amd64
+
+Types: deb
+URIs: http://ports.ubuntu.com/ubuntu-ports
+Suites: $DISTRIB_CODENAME $DISTRIB_CODENAME-updates $DISTRIB_CODENAME-backports $DISTRIB_CODENAME-security
+Components: main restricted universe multiverse
+Signed-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg
+Architectures: arm64
+EOF

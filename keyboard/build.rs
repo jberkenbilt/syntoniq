@@ -9,42 +9,61 @@ fn csound() {
     use std::path::PathBuf;
     use std::process::Command;
 
+    let lib: String;
+    let lib_dir: String;
+    let include_dir: String;
+
     let out_path = PathBuf::from(env::var("OUT_DIR").unwrap());
-    // The cmake file outputs lines prefixed with `!` in a specific order --
-    // see `csound-helper/CMakeLists.txt`.
-    let output = Command::new("cmake")
-        .arg("-S")
-        .arg("csound-helper")
-        .arg("-B")
-        .arg(out_path.join("cmake").as_os_str())
-        .output()
-        .expect("cmake failed");
-    let lines: Vec<_> = String::from_utf8_lossy(&output.stderr)
-        .split("\n")
-        .filter_map(|x| x.strip_prefix("!"))
-        .map(str::to_string)
-        .collect();
-    if lines.len() != 3 {
-        panic!("cmake generated unexpected output: {lines:?}");
-    }
-    if lines[0] != "TRUE" {
-        panic!("cmake did not found csound");
-    }
-    let include_dir = PathBuf::from(&lines[1]).to_str().unwrap().to_string();
-    let full_lib = PathBuf::from(&lines[2]);
-    let lib_dir = full_lib
-        .parent()
-        .expect("lib not in a directory")
-        .to_str()
-        .unwrap();
-    let lib = full_lib.file_name().unwrap().to_str().unwrap();
-    let lib = if lib_dir.starts_with("framework=") {
-        lib.to_string()
+    let csound_libdir = env::var("CSOUND_LIBDIR").ok();
+    let csound_include = env::var("CSOUND_INCLUDE").ok();
+    let csound_lib = env::var("CSOUND_LIB").ok();
+    if let Some(csound_lib_dir) = csound_libdir
+        && let Some(csound_include) = csound_include
+        && let Some(csound_lib) = csound_lib
+    {
+        lib = csound_lib;
+        lib_dir = csound_lib_dir;
+        include_dir = csound_include;
     } else {
-        lib.strip_prefix("lib")
-            .expect("library didn't start with lib")
-            .replace(".so", "")
-    };
+        // The cmake file outputs lines prefixed with `!` in a specific order --
+        // see `csound-helper/CMakeLists.txt`.
+        let output = Command::new("cmake")
+            .arg("-S")
+            .arg("csound-helper")
+            .arg("-B")
+            .arg(out_path.join("cmake").as_os_str())
+            .output()
+            .expect("cmake failed");
+        let lines: Vec<_> = String::from_utf8_lossy(&output.stderr)
+            .split("\n")
+            .filter_map(|x| x.strip_prefix("!"))
+            .map(str::to_string)
+            .collect();
+        if lines.len() != 3 {
+            panic!("cmake generated unexpected output: {lines:?}");
+        }
+        if lines[0] != "TRUE" {
+            panic!("cmake did not found csound");
+        }
+        include_dir = PathBuf::from(&lines[1]).to_str().unwrap().to_string();
+        let full_lib = PathBuf::from(&lines[2]);
+        lib_dir = full_lib
+            .parent()
+            .expect("lib not in a directory")
+            .to_str()
+            .unwrap()
+            .to_string();
+        let lib_candidate = full_lib.file_name().unwrap().to_str().unwrap();
+        lib = if lib_dir.starts_with("framework=") {
+            lib_candidate.to_string()
+        } else {
+            lib_candidate
+                .strip_prefix("lib")
+                .expect("library didn't start with lib")
+                .replace(".so", "")
+                .replace(".lib", "")
+        };
+    }
     println!("cargo:rustc-link-search={lib_dir}");
     println!("cargo:rustc-link-lib={lib}");
     let bindings = bindgen::Builder::default()

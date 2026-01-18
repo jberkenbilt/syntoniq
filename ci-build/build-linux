@@ -1,0 +1,48 @@
+#!/bin/bash
+set -xeo pipefail
+cd $(dirname $0)/..
+
+./ci-build/fix-ubuntu-sources
+
+sudo dpkg --add-architecture arm64
+sudo apt-get update
+sudo apt -y install --no-install-recommends csound \
+     libasound2-dev libcsound64-dev \
+     libasound2-dev:arm64 libcsound64-dev:arm64 \
+     gcc-aarch64-linux-gnu libc6-dev-arm64-cross
+sudo snap install --classic task
+# TODO: sudo snap install --edge zola
+# TODO: remove: cargo install --locked --git https://github.com/getzola/zola
+
+./build.sh --release
+mkdir -p distribution/syntoniq-linux-amd64-csound
+cp -p target/release/syntoniq{,-kbd} distribution/syntoniq-linux-amd64-csound
+./build.sh --release --no-default-features
+mkdir -p distribution/syntoniq-linux-amd64-no-csound
+cp -p target/release/syntoniq{,-kbd} distribution/syntoniq-linux-amd64-no-csound
+
+args="--workspace --all-targets --release"
+
+export PKG_CONFIG_PATH=/usr/lib/aarch64-linux-gnu/pkgconfig
+export PKG_CONFIG_ALLOW_CROSS=1
+export PKG_CONFIG_SYSROOT_DIR=/
+export CSOUND_LIBDIR=/usr/lib/aarch64-linux-gnu
+export CSOUND_LIB=csound64
+export CSOUND_INCLUDE=/usr/include/csound
+export BINDGEN_EXTRA_CLANG_ARGS="--sysroot=/usr/aarch64-linux-gnu"
+
+cargo build --target-dir target.linux-aarch64 --target aarch64-unknown-linux-gnu $args
+mkdir -p distribution/syntoniq-linux-arm64-csound
+cp -p target/release/syntoniq{,-kbd} distribution/syntoniq-linux-arm64-csound
+
+cargo build --target-dir target.linux-aarch64 --target aarch64-unknown-linux-gnu $args --no-default-features
+mkdir -p distribution/syntoniq-linux-arm64-no-csound
+cp -p target/release/syntoniq{,-kbd} distribution/syntoniq-linux-arm64-no-csound
+
+strip distribution/*/syntoniq*
+
+cd distribution
+for i in *; do
+    tar czvf $i.tar.gz $i
+    rm -rf $i
+done

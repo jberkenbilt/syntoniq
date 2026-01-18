@@ -1,0 +1,67 @@
+name: Syntoniq Build
+on:
+  push:
+    branches:
+      - main
+      - ci-test
+  pull_request:
+env:
+  CARGO_TERM_COLOR: always
+jobs:
+  Linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt, clippy
+          target: x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu
+      - name: 'Linux build'
+        run: ci-build/build-linux
+      - name: 'Upload distributions'
+        uses: actions/upload-artifact@v6
+        with:
+          name: distribution-linux
+          path: distribution
+  Windows:
+    runs-on: windows-latest
+    steps:
+      - name: 'Disable git autocrlf'
+        shell: bash
+        run: git config --global core.autocrlf input
+      - uses: actions/checkout@v6
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - name: 'Windows build'
+        shell: bash
+        run: ci-build/build-windows
+      - name: 'Upload distributions'
+        uses: actions/upload-artifact@v6
+        with:
+          name: distribution-windows
+          path: distribution
+  Mac:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          target: x86_64-apple-darwin, aarch64-apple-darwin
+      - name: 'Mac build and test'
+        run: ci-build/build-mac
+      - name: 'Upload distributions'
+        uses: actions/upload-artifact@v6
+        with:
+          name: distribution-mac
+          path: distribution
+  MergeArtifacts:
+     runs-on: ubuntu-latest
+     needs:
+       - Linux
+       - Windows
+       - Mac
+     steps:
+       - name: Merge Artifacts
+         uses: actions/upload-artifact/merge@v6
+         with:
+           name: distribution
+           pattern: distribution-*

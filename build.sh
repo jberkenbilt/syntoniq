@@ -10,7 +10,10 @@ cargo clippy --no-deps
 cargo clippy --tests --no-deps
 # Avoid --document-private-items -- generates warnings with csound docs
 cargo doc --no-deps
-cargo build --workspace --all-targets
-./manual/build
+cargo build --workspace --all-targets "$@"
+if [ -z "$GITHUB_RUN_ID" ]; then
+    # TODO: build in CI once the zola issue is resolved
+    ./manual/build
+fi
 export RUST_BACKTRACE=1
-cargo test --workspace
+cargo test --workspace "$@"

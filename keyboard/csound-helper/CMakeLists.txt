@@ -6,7 +6,7 @@ set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1)
 find_package(Csound)
 
 if(NOT(CSOUND_FOUND STREQUAL "TRUE"))
-  # Special cases for csound on mac
+  # Special cases for Csound on mac
   if(EXISTS "/Library/Frameworks/CsoundLib64.framework/Headers")
     set(CSOUND_FOUND "TRUE")
     set(CSOUND_INCLUDE_DIRS "/Library/Frameworks/CsoundLib64.framework/Headers")
@@ -15,6 +15,11 @@ if(NOT(CSOUND_FOUND STREQUAL "TRUE"))
     set(CSOUND_FOUND "TRUE")
     set(CSOUND_INCLUDE_DIRS "/opt/homebrew/Frameworks/CsoundLib64.framework/Headers")
     set(CSOUND_LIBRARIES "framework=/opt/homebrew/Frameworks/framework=CsoundLib64")
+  # Special cases for Csound on Windows
+  elseif(EXISTS "c:/Program Files/Csound6_x64")
+    set(CSOUND_FOUND "TRUE")
+    set(CSOUND_INCLUDE_DIRS "c:/Program Files/Csound6_x64/include/csound")
+    set(CSOUND_LIBRARIES "c:/Program Files/Csound6_x64/lib/libcsound64.lib")
   endif()
 endif()
 

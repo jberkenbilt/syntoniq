@@ -1,0 +1,24 @@
+#!/bin/bash
+set -xeo pipefail
+cd $(dirname $0)/..
+# TODO
+curl -O https://syntoniq.cc/ci-resources/csound-6.18.1.windows.zip
+unzip csound-6.18.1.windows.zip
+export CSOUND_LIBDIR=$PWD/Csound6_x64/lib
+export CSOUND_INCLUDE=$PWD/Csound6_x64/include/csound
+export CSOUND_LIB=csound64
+export PATH="$PWD/Csound6_x64/bin:$PATH"
+cargo build --workspace --all-targets --release
+cargo test --workspace --all-targets --release
+mkdir -p distribution/syntoniq-windows-x86_64-csound
+cp -p target/release/syntoniq{,-kbd}.exe distribution/syntoniq-windows-x86_64-csound
+cargo build --workspace --all-targets --release --no-default-features
+cargo test --workspace --all-targets --release --no-default-features
+mkdir -p distribution/syntoniq-windows-x86_64-no-csound
+cp -p target/release/syntoniq{,-kbd}.exe distribution/syntoniq-windows-x86_64-no-csound
+
+cd distribution
+for i in *; do
+    7z a -tzip $i.zip $i
+    rm -rf $i
+done
