@@ -3,5 +3,7 @@
   "end_mark": null,
   "skip_repeats": false,
   "tempo_factor": null,
-  "skip_beats": null
+  "skip_beats": null,
+  "part": [],
+  "omit_parts": false
 }

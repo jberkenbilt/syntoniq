@@ -30,20 +30,7 @@ struct Cli {
 #[derive(Subcommand)]
 enum Commands {
     /// Main command -- handle events and send music commands
-    Run {
-        /// Substring to match for midi port; run amidi -l
-        #[arg(long)]
-        port: String,
-        /// Syntoniq score file containing layouts; if omitted, a built-in default is used.
-        #[arg(long)]
-        score: Option<String>,
-        /// Send notes to a virtual output port named Syntoniq
-        #[arg(long)]
-        midi: bool,
-        /// Additional option to pass to csound, e.g. --csound-arg=-odac1; repeatable
-        #[arg(long)]
-        csound_arg: Vec<String>,
-    },
+    Run(Run),
     /// Output the built-in keyboard configuration
     DefaultConfig,
     /// Generate shell completion
@@ -51,6 +38,22 @@ enum Commands {
         /// shell
         shell: Shell,
     },
+}
+
+#[derive(Parser)]
+struct Run {
+    /// Substring to match for midi port; run amidi -l
+    #[arg(long)]
+    port: String,
+    /// Syntoniq score file containing layouts; if omitted, a built-in default is used.
+    #[arg(long)]
+    score: Option<String>,
+    /// Send notes to a virtual output port named Syntoniq
+    #[arg(long)]
+    midi: bool,
+    /// Additional option to pass to csound, e.g. --csound-arg=-odac1; repeatable
+    #[arg(long)]
+    csound_arg: Vec<String>,
 }
 
 #[tokio::main]
@@ -80,22 +83,16 @@ async fn main() -> anyhow::Result<()> {
     let events_rx = events.receiver();
 
     // Create midi controller.
-    let Commands::Run {
-        port,
-        score,
-        midi,
-        csound_arg,
-    } = cli.command
-    else {
+    let Commands::Run(run) = cli.command else {
         unreachable!("already handled");
     };
     let tx2 = events_tx.clone();
     let (id_tx, id_rx) = oneshot::channel();
-    let controller = Controller::new(&port, id_tx)?;
+    let controller = Controller::new(&run.port, id_tx)?;
     let device_type = id_rx.await?;
     let keyboard = match device_type {
         DeviceType::Empty => {
-            bail!("unable to identify device on port {}", port);
+            bail!("unable to identify device on port {}", run.port);
         }
         DeviceType::Launchpad => Arc::new(Launchpad::new(tx2)) as Arc<dyn Keyboard>,
         DeviceType::HexBoard => Arc::new(HexBoard::new(tx2)) as Arc<dyn Keyboard>,
@@ -115,21 +112,21 @@ async fn main() -> anyhow::Result<()> {
         events.shutdown().await;
     });
 
-    let sound_type = if midi {
+    let sound_type = if run.midi {
         SoundType::Midi
     } else {
         #[cfg(feature = "csound")]
         {
-            SoundType::Csound(csound_arg)
+            SoundType::Csound(run.csound_arg)
         }
         #[cfg(not(feature = "csound"))]
         {
-            let _ = csound_arg;
+            let _ = run.csound_arg;
             bail!("MIDI not requested and csound not available");
         }
     };
     engine::run(
-        score,
+        run.score,
         sound_type,
         keyboard,
         events_tx.clone(),

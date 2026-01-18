@@ -1,0 +1,118 @@
+<CsoundSynthesizer>
+
+<CsOptions>
+-odac
+</CsOptions>
+
+<CsInstruments>
+
+sr = 44100
+ksmps = 32
+nchnls = 2
+0dbfs = 1
+
+; Each part has associated channels:
+; - p<n>_amp -- a volume level from 0 to 1 inclusive
+; - p<n>_notes -- the maximum number of notes ever "on" for the part's instrument
+; These are set using the "SetPartParam" and "SetPartParamRamp" control
+; instruments.
+
+instr SetPartParam
+  iPartNum = p4
+  SParam = p5
+  iValue = p6
+  SChan sprintf "p%d_%s", iPartNum, SParam
+  chnset iValue, SChan
+endin
+
+instr SetPartParamRamp
+  iDuration = p3
+  iPartNum = p4
+  SParam = p5
+  iStart = p6
+  iEnd = p7
+  SChan sprintf "p%d_%s", iPartNum, SParam
+  kValue expseg iStart, iDuration, iEnd
+  chnset kValue, SChan
+endin
+
+; A single instrument may be used for multiple parts. Any additional
+; instrument must accept the same parameters to be a target for
+; syntoniq notes.
+instr 1
+  ; p1..p3 are always instrument, start time, duration
+  iPartNum = p4
+  iFreq = p5
+  iEndFreq = p6  // place-holder
+  iVelocity = p7 // 0 to 1
+
+  SAmpChan sprintf "p%d_amp", iPartNum
+  SNotesChan sprintf "p%d_notes", iPartNum
+  kBaseVol chnget SAmpChan
+  kNoteCount chnget SNotesChan
+
+  kNoteCount = (kNoteCount == 0 ? 1 : kNoteCount)
+  kAmp = kBaseVol * iVelocity
+  ; Attenuate based on polyphony
+  kFinalAmp = kAmp / sqrt(kNoteCount)
+  aEnv madsr 0.05, 0.05, 0.9, 0.15
+
+  ; For most of the frequency range, we use a custom sound mixed with
+  ; specific harmonics. At higher frequency ranges, we fall back to a
+  ; sine/triangle mix for fewer artifacts.
+  aMain poscil3 1, iFreq, 1
+
+  ; blend sine and triangle
+  aSine poscil3 0.9, iFreq
+  aTriangle vco2 0.9, iFreq, 12
+  aHigh = (aSine * 0.5) + (aTriangle * 0.5)
+
+  ; For frequencies in the range of iLowThresh to iHighThresh,
+  ; interpolate how much of the main mix we want. It drops to 0
+  ; through that range.
+  iLowThresh = 2000
+  iHighThresh = 4000
+  ; map iLowThresh, iHighThresh -> 1, 0 and clamp
+  iInterp linlin iFreq, 1, 0, iLowThresh, iHighThresh
+  iMainMix limit iInterp, 0, 1
+
+  ; blend
+  iHighMix = 1 - iMainMix
+  aSignal = (aHigh * iHighMix) + (aMain * iMainMix) * aEnv * kFinalAmp
+  aOut moogladder aSignal, 2000, 0.1
+  outs aOut, aOut
+endin
+
+</CsInstruments>
+<CsScore>
+
+; function table for oscilator
+f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
+
+; i instr start duration [params...]
+
+;; NOTE: for comments that end with @nnn, nnn is the byte offset of
+;; the item in the original file.
+
+;; BEGIN SYNTONIQ
+; [part] => csound part
+; [p2] => 1
+; [part.note] => instr.note
+; [p2.0] => 1.1
+; [p2.1] => 1.2
+
+i "SetPartParam" 0 0.01 1 "amp" 0.5
+i "SetPartParam" 0 0.01 1 "notes" 2
+t 0 72
+i 1.1 0 4 1 783.991 0 0.567 ; 4:g' @677
+i 1.2 0 4 1 1046.502 0 0.567 ; 4:c'2 @689
+i "SetPartParam" 0 0.01 1 "amp" 0.756 ; 96@0 @700
+i 1.1 4 4 1 1174.659 0 0.567 ; 4:d'2 @782
+i 1.2 4 4 1 1479.978 0 0.567 ; 4:f#'2 @795
+i "SetPartParam" 4 0.01 1 "amp" 0.252 ; 32@0 @807
+;; END SYNTONIQ
+
+e
+
+</CsScore>
+</CsoundSynthesizer>

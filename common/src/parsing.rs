@@ -86,12 +86,20 @@ pub struct Options {
     /// Skip all repeats
     #[arg(long)]
     pub skip_repeats: bool,
-    /// Skip specified number of whole beats from beginning or specified start mark
+    /// Skip specified number of whole beats from beginning or specified start
+    /// mark
     #[arg(long)]
     pub skip_beats: Option<u32>,
     /// Generate output at the given percentage of the specified tempos
     #[arg(long)]
     pub tempo_percent: Option<u32>,
+    /// Limit to only specified parts. Repeatable. To negate the meaning so that specified
+    /// parts are omitted, use `--omit-parts`
+    #[arg(long)]
+    pub part: Vec<String>,
+    /// If specified with `--part`, omit the specified parts rather than including them.
+    #[arg(long)]
+    pub omit_parts: bool,
 }
 
 fn parse<'s>(filename: &str, src: &'s str, options: &Options) -> anyhow::Result<ScoreOutput<'s>> {

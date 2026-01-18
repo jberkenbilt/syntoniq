@@ -2,5 +2,7 @@
   "start_mark": null,
   "end_mark": "salad",
   "skip_repeats": false,
-  "tempo_factor": null
+  "tempo_factor": null,
+  "part": [],
+  "omit_parts": false
 }

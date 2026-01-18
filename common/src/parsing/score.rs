@@ -11,6 +11,7 @@ use std::cell::RefCell;
 use std::collections::Bound::Excluded;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use std::fmt::{Debug, Formatter};
+use std::ops::Deref;
 use std::sync::atomic::AtomicI32;
 use std::sync::{Arc, LazyLock, RwLock};
 use std::{cmp, mem};
@@ -1775,18 +1776,48 @@ impl<'s> Score<'s> {
     }
 
     pub fn post_process(&mut self, diags: &Diagnostics, options: &Options) {
-        let tempo_percent = options.tempo_percent.unwrap_or(100);
-        if !options.skip_repeats
-            && options.start_mark.is_none()
-            && options.end_mark.is_none()
-            && options.skip_beats.unwrap_or_default() == 0
-            && tempo_percent == 100
-        {
+        for p in options.part.iter().map(Deref::deref) {
+            if !self.known_parts.contains(&Cow::Borrowed(p)) {
+                diags.err(
+                    code::USAGE,
+                    0..1,
+                    format!("part '{p}', specified on the command line, is not known"),
+                );
+            }
+        }
+        if diags.has_errors() {
             return;
         }
+        let tempo_percent = options.tempo_percent.unwrap_or(100);
         let tempo_factor = Ratio::new(tempo_percent, 100);
         // Filter timeline events
         let events = mem::take(&mut self.timeline.events);
+        let events = if options.part.is_empty() {
+            events
+        } else {
+            let parts: Vec<&str> = options.part.iter().map(Deref::deref).collect();
+            events
+                .into_iter()
+                .filter(|event| {
+                    let part = match &event.data {
+                        TimelineData::Dynamic(e) => e.part,
+                        TimelineData::Note(e) => e.part_note.part,
+                        TimelineData::Tempo(_)
+                        | TimelineData::Mark(_)
+                        | TimelineData::RepeatStart(_)
+                        | TimelineData::RepeatEnd(_) => {
+                            return true;
+                        }
+                    };
+                    let matches = parts.contains(&part);
+                    if options.omit_parts {
+                        !matches
+                    } else {
+                        matches
+                    }
+                })
+                .collect()
+        };
         let mut pending_tempo = None;
         let mut iter = events.into_iter();
         // Scan until we find the start mark. Keep track of the tempo. When scanning for marks,
