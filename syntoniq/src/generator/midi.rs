@@ -70,10 +70,13 @@ use syntoniq_common::pitch::Pitch;
 //
 // *** For MPE ***
 //
-//   - Each port can have at most 15 separate note channels. Channel 9 is not special. Channel 0
-//     is the control channel. Pitch bend there is global. Channels 1 through 15 (or whatever is
-//     specified in the MPE init message) are all note channels.
+//   - Each port can have at most 15 separate note channels. Channel 9 is not special. (In non-MPE
+//     MIDI, channel 9, 0-based, is usually reserved from drums.) Channel 0 is the control channel.
+//     Pitch bend there is global. Channels 1 through 15 (or whatever is specified in the MPE init
+//     message) are all note channels.
 //   - Each part has exactly one instrument.
+//   - When possible, we want to avoid splitting a part across ports.
+//   - We want a dedicated track for each group of (part, port) for optimal DAW convenience.
 //
 // Therefore:
 //   - There is one MIDI port for every 15 channels (since we don't put notes on channel 0, the
@@ -84,6 +87,8 @@ use syntoniq_common::pitch::Pitch;
 //   - To avoid needlessly splitting parts up across ports, if a part has 15 or fewer notes numbers,
 //     we keep all its channels on the same port. If we have multiple parts, we can "bin-pack"
 //     and combine parts on ports if they have 15 or fewer distinct note numbers.
+//   - We assign ports and channels to tracks such that a given track consists entirely of notes
+//     from a single *part* and notes from a single *port*.
 //
 // We do the following up front
 //   - Count the distinct note numbers for each part
@@ -92,9 +97,11 @@ use syntoniq_common::pitch::Pitch;
 //   - See if we can bin-pack using a naive algorithm (the general problem is NP-complete) to
 //     combine some parts (or remainders) into a single port if they have a combined total of 15 or
 //     fewer note numbers
+//   - Allocate tracks based on (part, port)
 //
 // Then, when we have a note:
-//   - Use the part and note number to find a note's dedicated channel/track
+//   - Use the part and note number to find a note's dedicated channel/port
+//   - Use the part and port to find the track
 //   - Use the syntoniq tuning and specific note to get the pitch bend for the note, and apply that
 //     pitch bend to the note's channel in that track.
 //   - Play the note in the track using the given channel.
@@ -601,7 +608,7 @@ impl<'s> MpeData<'s> {
         for (k, port_channel) in &self.channel_data {
             let track_key = MpeTrackKey {
                 score_part: k.score_part,
-                channel: port_channel.channel,
+                midi_port: port_channel.midi_port,
             };
             if let Entry::Vacant(v) = self.track_data.entry(track_key) {
                 add_track(v, tracks, &mut cur_track, port_channel.midi_port);
@@ -634,7 +641,7 @@ impl<'s> MpeData<'s> {
         for (channel_key, port_channel) in &self.channel_data {
             let track_key = MpeTrackKey {
                 score_part: channel_key.score_part,
-                channel: port_channel.channel,
+                midi_port: port_channel.midi_port,
             };
             let &track = self.track_data.get(&track_key).ok_or_else(|| {
                 anyhow!("get_part_channels: unable to get track for score_part/midi_port")
@@ -672,7 +679,7 @@ impl<'s> MpeData<'s> {
             .ok_or_else(|| anyhow!("error getting MIDI pitch information for pitch"))?;
         let track_key = MpeTrackKey {
             score_part,
-            channel: port_channel.channel,
+            midi_port: port_channel.midi_port,
         };
         let track = self
             .track_data
@@ -753,7 +760,7 @@ struct MtsTrackKey<'a> {
 #[derive(Debug, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct MpeTrackKey<'a> {
     score_part: &'a str,
-    channel: u4,
+    midi_port: u7,
 }
 
 #[derive(Debug, Clone, Copy, PartialOrd, PartialEq, Eq, Ord)]
