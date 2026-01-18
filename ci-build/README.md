@@ -2,6 +2,8 @@
 
 The CI build uses some artifacts that were created manually and uploaded to unlinked locations in syntoniq.cc.
 
+We use Csound 6.18.1. If that changes, remember to update `manual/content/introduction/installation.md` and the top-level README.md.
+
 # Mac Csound
 
 Install Csound from the mac installer from csound.com

@@ -2,35 +2,6 @@
 
 This is general TODO across internal docs, manual, and software.
 
-# CI
-
-* Zola - removed Syntect. I have to pin to 0.21 until I have a workaround, or I have to dump zola.
-
-# Mac
-
-Run executable
-Get "syntoniq" Not Opened dialog
-Click question mark
-Click Open Privacy & Security settings for me
-scroll down to security where it says "syntoniq" was blocked to protect your Mac.
-Click Allow Anyway.
-Run the executable again. This time, you will have "Open Anyway" as a choice.
-
-# Windows
-
-Install csound.
-Add "/c/Program Files/Csound6_x64" to path
-Build with
-```
-cargo build --config .cargo/windows-native.toml
-```
-Add to csound options:
-```
--odac1
--b128
--B2048
-```
-
 # Video
 
 * Update thumbnails, etc.
@@ -53,23 +24,13 @@ Add to csound options:
 
 When transposition is in effect, it is not indicated on the web UI. There should be some indication of transposition, perhaps in the area, which can show the mappings in effect with their transposition. Trying to work it into the note name makes the note name too long and busy.
 
-Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mode since it matches the hardware.
+Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dark mode since it matches the hardware.
 
 # Software
 
 * Morphing
   * The note modifier `&` (?), mutually exclusive with `~` means to glide exponentially (perceptually linearly) from the pitch of this note to the pitch of the next note over the specified duration. The Csound instrument syntax has room for this, and it should be easy with Csound. For MIDI, we'll need to ramp with pitch bend. It won't be supported for MTS because we would have to use both MTS and MPE together, which would require more refactoring than is worth the effort given the limited utility of MTS MIDI. (Timidity doesn't understand pitch bend anyway, and any DAW workflow will use pitch bend.)
-* Create a default configuration for the keyboard
-  * 12-EDO
-  * 19-EDO
-  * 31-EDO
-  * 17-EDO
-  * 41-EDO
-  * 53-EDO
-  * 106-EDO
-* Create 53-EDO and 106-EDO generated scales in demo.stq with offsets like h1v9 so we can get all the notes of an octave onto the keyboard for finding pitches.
 * Create the interactive chord builder -- see below
-* Create a `demo` mode. Embed examples/microtonal-hello.stq. Generate the stq, csound, mpe MIDI, and mts MIDI files, and suggest ways to play them back.
 * Expand scripts in misc to support other than octave
 * Consider bringing misc/exponent-to-ratio and misc/scale-semitones into the main CLI as a separate subcommand like `syntoniq calc`. If so, mention in the microtonal section of the manual.
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
@@ -92,6 +53,7 @@ Bug: hexboard doesn't look good in light mode. Maybe I should hard-code dark mod
 
 # Documentation
 
+* Zola - removed Syntect. I have to pin to 0.21 until I can update the syntax files. See also TODO in build.sh.
 * Check all internal links
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
 * Find all occurrences of `TODO` in the docs.
