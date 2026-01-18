@@ -375,9 +375,13 @@ fn string<'s>(
 
 fn zero<'s>() -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<u32>> {
     move |input| {
-        one_of(|x: Token1| matches!(x.value.t, Pass1::Number { n } if n.value == 0))
+        let r = one_of(|x: Token1| matches!(x.value.t, Pass1::Number { n } if n.value == 0))
             .parse_next(input)
-            .map(|tok| Spanned::new(tok.span, Pass1::get_number(&tok).unwrap()))
+            .map(|tok| Spanned::new(tok.span, Pass1::get_number(&tok).unwrap()));
+        if r.is_ok() && peek(character('.')).parse_next(input).is_ok() {
+            return fail(input);
+        }
+        r
     }
 }
 

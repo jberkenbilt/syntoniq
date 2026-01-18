@@ -199,6 +199,12 @@ fn test_pitch() -> anyhow::Result<()> {
     assert!(p.value.try_as_ratio().is_none());
     assert_eq!(p.value.as_pitch().to_string(), "25/8*^4|5");
 
+    let (p, rest) = parse_pitch("0.5z").map_err(to_anyhow)?;
+    assert_eq!(rest, "z");
+    assert!(p.value.try_as_int().is_none());
+    assert_eq!(p.value.try_as_ratio().unwrap(), Ratio::new(1, 2));
+    assert_eq!(p.value.as_pitch().to_string(), "1/2");
+
     Ok(())
 }
 
@@ -212,6 +218,16 @@ fn test_string() -> anyhow::Result<()> {
 
 #[test]
 fn test_param() -> anyhow::Result<()> {
+    let (s, rest) = parse_param("a=0").map_err(to_anyhow)?;
+    assert_eq!(
+        s,
+        Param {
+            key: Spanned::new(0..1, "a"),
+            value: Spanned::new(2..3, ParamValue::Zero,),
+        }
+    );
+    assert!(rest.is_empty());
+
     let (s, rest) = parse_param("a=^2|19").map_err(to_anyhow)?;
     assert_eq!(
         s,
@@ -259,6 +275,26 @@ fn test_directive() -> anyhow::Result<()> {
                     value: Spanned::new(28..36, ParamValue::String(Cow::Borrowed("17-EDO"))),
                 }
             ],
+            block: None,
+        }
+    );
+    assert!(rest.is_empty());
+
+    let (d, rest) = parse_directive("f(a=0.5)").map_err(to_anyhow)?;
+    assert_eq!(
+        d.value,
+        RawDirective {
+            name: Spanned::new(0..1, "f"),
+            params: vec![Param {
+                key: Spanned::new(2..3, "a"),
+                value: Spanned::new(
+                    4..7,
+                    ParamValue::PitchOrNumber(PitchOrNumber::Ratio((
+                        Ratio::new(1, 2),
+                        Pitch::must_parse("1/2")
+                    )))
+                ),
+            },],
             block: None,
         }
     );
