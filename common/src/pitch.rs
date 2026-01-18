@@ -1,7 +1,7 @@
 use crate::parsing::pass2;
 use anyhow::bail;
 use num_rational::Ratio;
-use num_traits::{CheckedDiv, CheckedMul};
+use num_traits::{CheckedDiv, CheckedMul, ToPrimitive};
 use serde::de::Visitor;
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 use std::cmp::Ordering;
@@ -114,12 +114,12 @@ impl Factor {
         })
     }
 
-    pub fn as_float(&self) -> f32 {
+    pub fn as_float(&self) -> f64 {
         if self.exp == Ratio::from_integer(1) {
-            *self.base.numer() as f32 / *self.base.denom() as f32
+            self.base.to_f64().unwrap()
         } else {
-            let base = *self.base.numer() as f32 / *self.base.denom() as f32;
-            let exp = *self.exp.numer() as f32 / *self.exp.denom() as f32;
+            let base = self.base.to_f64().unwrap();
+            let exp = self.exp.to_f64().unwrap();
             base.powf(exp)
         }
     }
@@ -156,7 +156,7 @@ impl Pitch {
         // No attempt is made to reconstruct a semantically meaningful representation. If you
         // want that, you can divide by the factor you want to call out. Something aware of the
         // chain of transpositions could easily construct the trail, but otherwise, when
-        // non-integer, rational bases are involved, trying to reconstruct them is guesswork.
+        // noninteger, rational bases are involved, trying to reconstruct them is guesswork.
 
         // When this is called, it is known that the base numerator and denominator are positive and
         // the exponent denominator is non-negative. Since these are rationals, that just means
@@ -324,13 +324,13 @@ impl Pitch {
         s.parse::<Self>().unwrap()
     }
 
-    pub fn as_float(&self) -> f32 {
+    pub fn as_float(&self) -> f64 {
         self.factors
             .iter()
-            .fold(1.0f32, |accum, factor| accum * factor.as_float())
+            .fold(1.0f64, |accum, factor| accum * factor.as_float())
     }
 
-    fn fractional_midi_note(&self) -> Option<f32> {
+    fn fractional_midi_note(&self) -> Option<f64> {
         // Calculate ratio over 440.0 Hz.
         let r1 = self.as_float() / 440.0;
         // Calculate semitones above 440, then add 69, the MIDI note number for 440.
@@ -361,7 +361,7 @@ impl Pitch {
     pub fn midi(&self) -> Option<(u8, u16)> {
         let n1 = self.fractional_midi_note()?;
         let note = n1.round() as u8;
-        let delta = n1 - note as f32;
+        let delta = n1 - note as f64;
         // - pitch bend is 8192 + 8192 * (semitones/bend range)
         // - bend range is typically 48 semitones
         let bend = (8192.0 + (8192.0 / 48.0 * delta).round()) as u16;

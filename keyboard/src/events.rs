@@ -51,7 +51,7 @@ pub struct NoteColors {
     pub on: Color,
 }
 
-pub fn interval_color(mut interval: f32) -> NoteColors {
+pub fn interval_color(mut interval: f64) -> NoteColors {
     while interval < 1.0 {
         interval *= 2.0;
     }
@@ -61,7 +61,7 @@ pub fn interval_color(mut interval: f32) -> NoteColors {
     // If the color is very close to of the 5-limit just intonation ratios below, assign a color.
     // Otherwise, assign a default. Note: we use a large enough margin of error to catch the 12-EDO
     // minor third, which is off by 15.64 cents.
-    let tolerance_cents = 2.0f32.powf(16.0 / 1200.0);
+    let tolerance_cents = 2.0f64.powf(16.0 / 1200.0);
     for (ratio, (off, on)) in [
         (1.0, (Color::TonicOff, Color::TonicOn)),
         (2.0, (Color::TonicOff, Color::TonicOn)),

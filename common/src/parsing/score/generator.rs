@@ -321,15 +321,15 @@ impl<'a> NoteParser<'a> {
             if let Some(divisions) = divisions {
                 // Find the closest scale degree.
                 let factors = mem::take(&mut self.factors);
-                let divided_interval_f32 = divided_interval.to_f32().unwrap();
+                let divided_interval_f64 = divided_interval.to_f64().unwrap();
                 let step =
-                    Pitch::new(factors).as_float().log(divided_interval_f32) * divisions as f32;
+                    Pitch::new(factors).as_float().log(divided_interval_f64) * divisions as f64;
                 let tolerance_steps = self
                     .generator
                     .tolerance
                     .as_float()
-                    .log(divided_interval_f32)
-                    * divisions as f32;
+                    .log(divided_interval_f64)
+                    * divisions as f64;
                 let rounded = step.round();
                 let degree = if let Some(d) = self.direction
                     && (rounded - step).abs() > tolerance_steps
