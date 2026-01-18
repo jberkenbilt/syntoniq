@@ -16,8 +16,8 @@ struct Csound {
 const CSOUND_FILE: &str = include_str!("sound.csd");
 
 impl Csound {
-    pub async fn new(events_tx: events::WeakSender) -> anyhow::Result<Self> {
-        let api = CsoundApi::new(CSOUND_FILE, events_tx).await?;
+    pub async fn new(events_tx: events::WeakSender, args: Vec<String>) -> anyhow::Result<Self> {
+        let api = CsoundApi::new(CSOUND_FILE, events_tx, args).await?;
         Ok(Self {
             api,
             notes: Default::default(),
@@ -80,8 +80,9 @@ impl Csound {
 pub async fn run_csound(
     mut events_rx: events::Receiver,
     events_tx: events::WeakSender,
+    args: Vec<String>,
 ) -> anyhow::Result<()> {
-    let mut csound = Csound::new(events_tx).await?;
+    let mut csound = Csound::new(events_tx, args).await?;
     while let Some(event) = events::receive_check_lag(&mut events_rx, Some("csound player")).await {
         let Event::PlayNote(e) = event else {
             continue;

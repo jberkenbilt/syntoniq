@@ -42,6 +42,9 @@ enum Commands {
         /// Send notes to a virtual output port named Syntoniq
         #[arg(long)]
         midi: bool,
+        /// Additional option to pass to csound, e.g. --csound-arg=-odac1; repeatable
+        #[arg(long)]
+        csound_arg: Vec<String>,
     },
     /// Output the built-in keyboard configuration
     DefaultConfig,
@@ -79,7 +82,13 @@ async fn main() -> anyhow::Result<()> {
     let events_rx = events.receiver();
 
     // Create midi controller.
-    let Commands::Run { port, score, midi } = cli.command else {
+    let Commands::Run {
+        port,
+        score,
+        midi,
+        csound_arg,
+    } = cli.command
+    else {
         unreachable!("already handled");
     };
     let tx2 = events_tx.clone();
@@ -113,10 +122,13 @@ async fn main() -> anyhow::Result<()> {
     } else {
         #[cfg(feature = "csound")]
         {
-            SoundType::Csound
+            SoundType::Csound(csound_arg)
         }
         #[cfg(not(feature = "csound"))]
-        bail!("MIDI not requested and csound not available");
+        {
+            let _ = csound_arg;
+            bail!("MIDI not requested and csound not available");
+        }
     };
     engine::run(
         score,

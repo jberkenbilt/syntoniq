@@ -27,7 +27,7 @@ pub enum SoundType {
     None,
     Midi,
     #[cfg(feature = "csound")]
-    Csound,
+    Csound(Vec<String>),
 }
 
 struct Engine {
@@ -744,10 +744,10 @@ pub async fn run(
             });
         }
         #[cfg(feature = "csound")]
-        SoundType::Csound => {
+        SoundType::Csound(args) => {
             let tx2 = events_tx.clone();
             tokio::spawn(async move {
-                if let Err(e) = csound::run_csound(rx2, tx2).await {
+                if let Err(e) = csound::run_csound(rx2, tx2, args).await {
                     log::error!("csound player error: {e}");
                 };
             });

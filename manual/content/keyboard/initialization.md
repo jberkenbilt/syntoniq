@@ -26,6 +26,8 @@ syntoniq-kbd run --port=MK3
 syntoniq-kbd run --port=RP2040
 ```
 
+The default options for Csound will work in many cases, but you may need to add additional flags. If you are a Csound user and you have to pass additional flags to the `csound` command-line tool to get sound, you can use the `--csound-arg`, which is repeatable, to pass those options to the Csound backend of the keyboard. For example, on Windows, there are multiple `dac` outputs. You can run `csound -odac99 something.csd` to force it to give you a list so you can find out which one you should use. Then you might run something like `syntoniq-kbd run --port=Hex --csound-arg=-odac1` to send output to a specific port. Check the [Csound website](https://csound.com) for additional documentation on platform-specific startup options.
+
 To use MIDI output instead of Csound, pass the `--midi` flag to `syntoniq-kbd`, but note that additional setup is required as briefly discussed in the previous section. You can see an example in the video. The manual doesn't discuss using the Syntoniq keyboard very much because, other than disabling the hardware device in your MIDI software, it's no different from using any other MIDI keyboard.
 
 A major feature of the Syntoniq keyboard is the ability to define your own layouts and scales. This is covered later in the manual. For now, the above command runs the keyboard with the built-in default layout. You can inspect the default configuration using `syntoniq-kbd default-config`.

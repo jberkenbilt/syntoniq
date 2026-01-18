@@ -46,9 +46,13 @@ extern "C" fn csound_message_callback(_: *mut cs::CSOUND, attr: c_int, msg: *con
 }
 
 impl CsoundApi {
-    pub async fn new(csound_file: &str, events_tx: events::WeakSender) -> anyhow::Result<Self> {
+    pub async fn new(
+        csound_file: &str,
+        events_tx: events::WeakSender,
+        args: Vec<String>,
+    ) -> anyhow::Result<Self> {
         let (tx, rx) = flume::unbounded();
-        let csound = Self::start(csound_file)?;
+        let csound = Self::start(csound_file, args)?;
         let h = task::spawn_blocking(|| {
             Self::main_loop(csound, rx, events_tx);
         });
@@ -72,7 +76,7 @@ impl CsoundApi {
             .map_err(to_anyhow)
     }
 
-    fn start(csound_file: &str) -> anyhow::Result<CsoundPtr> {
+    fn start(csound_file: &str, args: Vec<String>) -> anyhow::Result<CsoundPtr> {
         unsafe {
             cs::csoundInitialize(
                 (cs::CSOUNDINIT_NO_ATEXIT | cs::CSOUNDINIT_NO_SIGNAL_HANDLER) as c_int,
@@ -81,6 +85,16 @@ impl CsoundApi {
             cs::csoundSetMessageStringCallback(csound, Some(csound_message_callback));
             #[cfg(target_os = "linux")]
             cs::csoundSetOption(csound, c"-+rtaudio=pulse".as_ptr());
+            #[cfg(target_os = "windows")]
+            {
+                cs::csoundSetOption(csound, c"-b128".as_ptr());
+                cs::csoundSetOption(csound, c"-B2048".as_ptr());
+            }
+            cs::csoundSetOption(csound, c"-odac".as_ptr());
+            // Later options override earlier ones. Process user-specified arguments last.
+            for arg in args {
+                cs::csoundSetOption(csound, CString::new(arg)?.as_ptr());
+            }
 
             let result = with_c_str(csound_file, |s| cs::csoundCompileCsdText(csound, s));
             if result != 0 {
