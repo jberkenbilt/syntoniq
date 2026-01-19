@@ -71,7 +71,7 @@ Here are the last few rules of generated note names:
 
 Examples of using `!`:
 * If you want a quarter tone below a 12-EDO fifth, you could write `C-!24`, which means "go one 24th of an octave below the note closest to a fifth in 24-EDO."
-* For example, `C!3/19` would be the closest pitch to a degree in a scale made up of 19 divisions of the ratio 3, which is on octave and a fifth. Since there are 19 regular 12-tone half steps in an octave and a fifth, a step in 19 divisions of 3 is about the same size as a half step, and this would correspond to the pitch factor `3^7|19`.
+* For example, `C!3/19` would be the closest pitch to a degree in a scale made up of 19 divisions of the ratio 3, which is an octave and a fifth. Since there are 19 regular 12-tone half steps in an octave and a fifth, a step in 19 divisions of 3 is about the same size as a half step, and this would correspond to the pitch factor `3^7|19`.
 * The note `C!9/4/14` would treat the scale as having 14 divisions of the ratio $\frac{9}{4}$, which also has a step size of about a half step. This corresponds to `^9/4^7|14` = `^9/4^1|2`, or exactly half of the 9/4 ratio.
 
 # Defining Generated Scales
