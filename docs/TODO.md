@@ -59,7 +59,7 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
 # Documentation
 
 * Have something that checks link integrity (internal and external)
-* Zola - removed Syntect. I have to pin to 0.21 until I can update the syntax files. See also TODO in build_all.
+* Zola - removed Syntect. I have to pin to 0.21 until I can update the syntax files. See also TODO in build_all. When this is fixed, remove the note in .github/copilot-instructions.md as well.
 * Embed KeTeX rather than getting from a CDN
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
 * Find all occurrences of `TODO` in the docs.
