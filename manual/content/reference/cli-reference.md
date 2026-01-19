@@ -20,4 +20,4 @@ syntoniq generate \
    --json=score-timeline.json
 ```
 
-There are several command-line examples in the [Examples](../../microtonality/remaining-features/) section. The [Keyboard](../../keyboard/) chapters include examples of running the keyboard.
+There are several command-line examples in the [Complete Example](../../microtonality/example/) section. The [Keyboard](../../keyboard/) chapters include examples of running the keyboard.

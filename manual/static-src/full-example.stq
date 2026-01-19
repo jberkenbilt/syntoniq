@@ -1,0 +1,59 @@
+syntoniq(version=1)
+; Define scales with different octave divisions
+define_generated_scale(scale="gen-17" divisions=17)
+define_generated_scale(scale="gen-5" divisions=5)
+; Use gen-17 for both chords and bass
+use_scale(scale="gen-17" part="chords" part="bass")
+; Use gen-5 for the melody
+use_scale(scale="gen-5" part="melody")
+; Transpose melody up an octave
+set_base_pitch(relative=2 part="melody")
+; Transpose bass down an octave
+set_base_pitch(relative=0.5 part="bass")
+; Set a global tempo
+tempo(bpm=80)
+
+mark(label="opening")
+[chords.0] 1:A    A   2:A    | 1:A    MA   2:A
+[chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
+[chords.2] 1:C    D   2:C    | 1:C    MC   2:C
+[chords.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK
+[chords.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
+[chords] 127@0 |
+[bass.0] 2/3:A Bi, C, 2:A,:~ | 4:A,
+[bass] 127@0 |
+
+mark(label="transition")
+transpose(part="chords" part="bass" written="A" pitch_from="A1")
+[chords.0] 1:A    A   2:A    | 1:A    MA   2:A
+[chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
+[chords.2] 1:C    D   2:C    | 1:C    MC   2:C
+[chords.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK
+[chords.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
+[chords]   127@0> | 64@2
+[bass.0] 2/3:A Bi, C, 2:A,:~ | 4:A,
+[bass]   127@0> | 64@2
+
+mark(label="a")
+reset_tuning(part="chords")
+use_scale(scale="gen-17" part="chords")
+transpose(part="bass" written="A1" pitch_from="A0")
+[chords.0] 1:A    A   2:A    | 1:A    MA   2:A
+[chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
+[chords.2] 1:C    D   2:C    | 1:C    MC   2:C
+[chords.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK
+[chords.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
+[melody.0] 1/2:~ A' A4 A3 A4:. A3 A2 A1 | A a1 1/2:A A1 A2 A1 A2:^ A3:>
+[melody] 127@0 |
+[bass.0] 2:A, Cy, | 4:A,
+mark(label="b")
+repeat(start="a" end="b")
+
+mark(label="out")
+tempo(bpm=80 start_time=1 end_bpm=60 duration=3)
+[chords.0] 8:A,
+[chords.1] 8:C,
+[chords.2] 1:I IM I Im 4:I
+[chords.3] 1:C CM C Cm 4:C
+[chords] 64@4< 127@8
+[melody.0] 4/5:A A1 A2 A3 A4 1/2:A' A1' A' a1' 2:C!17

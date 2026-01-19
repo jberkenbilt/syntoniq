@@ -75,13 +75,8 @@ Audio files can be automatically generated from stq files for the manual. You ha
 ----------
 
 TODO:
-* Include LOGO using an img tag. Will need build logic to populate the src/assets directory.
 * To get a keyboard HTML file, get the keyboard in the right state, then run `curl http://localhost:8440/board` and save to a file. Make sure this is in manual/README.md along with populating assets.
-* Feature Summary; mention videos with internal link
-* Build and installation
 * Link to other parts of the manual
-* Show a sample input file with audio
-* go through docs/scratch/ and make sure it's all here
 * Embed KeTeX rather than getting from a CDN
 
 # Doc outline

@@ -2,6 +2,10 @@
 
 This is general TODO across internal docs, manual, and software.
 
+# CI
+
+Strip binaries
+
 # Video
 
 * Update thumbnails, etc.
