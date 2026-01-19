@@ -36,7 +36,7 @@ For detailed instructions, check the [manual section](https://syntoniq.cc/manual
 
 # Building from Source
 
-Building Syntoniq from source is mainly just running `cargo build`, but there are some things you have to do around Csound. The manual is built using `zola`. You can look at [build.sh](./build.sh) or the CI scripts invoked from [GitHub Actions](.github/workflows/main.yml) for the full story on building everything.
+Building Syntoniq from source is mainly just running `cargo build`, but there are some things you have to do around Csound. The manual is built using `zola`. You can look at [build_all](./build_all) or the CI scripts invoked from [GitHub Actions](.github/workflows/main.yml) for the full story on building everything.
 
 If you have Csound installed and clang installed to support [bindgen](https://github.com/rust-lang/rust-bindgen), `cargo build` should usually "just work", but there may be extra steps you need to take.
 

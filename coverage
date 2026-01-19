@@ -21,9 +21,9 @@ set -xeo pipefail
 rm -rf .grcov
 export RUSTFLAGS="-Cinstrument-coverage"
 export LLVM_PROFILE_FILE="$PWD/.grcov/%p-%m.profraw"
-# Running ./build.sh ensures that rust code exercised through external
+# Running ./build_all ensures that rust code exercised through external
 # tests or doc tests are also included in coverage output.
-$(dirname $0)/build.sh
+$(dirname $0)/build_all
 
 # For coverage, exercise tracing. It requires an environment variable
 # to set, which can't be set with safe code in rust. This allows us to

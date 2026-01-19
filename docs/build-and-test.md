@@ -7,12 +7,12 @@ There is a top-level Taskfile.yml that contains tasks for most of these things. 
 You can build and test for routine development with
 
 ```sh
-./build.sh
+./build_all
 ```
 
 # Coverage
 ```sh
-./coverage.sh
+./coverage
 open target/debug/coverage/index.html
 ```
 
@@ -49,7 +49,7 @@ The engine and some other parts of the keyboard have unit tests. Most of the com
 
 # Test Workflow
 
-Run `./build.sh`. Most tests are dealt with in the normal way. There are two cases where large files are generated and can't usually be generated manually:
+Run `./build_all`. Most tests are dealt with in the normal way. There are two cases where large files are generated and can't usually be generated manually:
 
 ## Parsing Tests
 

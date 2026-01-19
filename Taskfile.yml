@@ -9,13 +9,13 @@ tasks:
   build:
     desc: "Run development build"
     cmds:
-      - ./build.sh
+      - ./build_all
     silent: true
 
   coverage:
     desc: "Run coverage build and coverage testing"
     cmds:
-      - ./coverage.sh
+      - ./coverage
     silent: true
 
   manual-autogen:

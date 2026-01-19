@@ -14,10 +14,10 @@ sudo snap install --classic task
 # TODO: sudo snap install --edge zola
 # TODO: remove: cargo install --locked --git https://github.com/getzola/zola
 
-./build.sh --release
+./build_all --release
 mkdir -p distribution/syntoniq-linux-amd64-csound
 cp -p target/release/syntoniq{,-kbd} distribution/syntoniq-linux-amd64-csound
-./build.sh --release --no-default-features
+./build_all --release --no-default-features
 mkdir -p distribution/syntoniq-linux-amd64-no-csound
 cp -p target/release/syntoniq{,-kbd} distribution/syntoniq-linux-amd64-no-csound
 
