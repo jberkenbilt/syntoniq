@@ -34,8 +34,7 @@ In this example:
 
 The rest of this section will explain in more detail.
 
-TODO:
-* Update this section when the reformatter is done.
+FUTURE: Update this section when the reformatter is done.
 
 # Structure of a Syntoniq File
 
@@ -97,7 +96,7 @@ The file `hello.csd` contains [Csound](https://csound.com) output. If you want t
 
 {{ audio(src="hello-csound.mp3", caption="Audio Created with Csound") }}
 
-The file `hello-mts.midi` is a standard MIDI file that embeds MTS (Midi Tuning System) SysEx (System Exclusive) messages and assigns a MIDI note number to each pitch. For most workflows, you will want the MPE version of MIDI, but the MTS version may be better with stand-alone MIDI to audio converters. If you're using the regular 12-tone scale, you can play this with any converter or player. Otherwise, you need software that understand these messages. If you have [TiMidity++](https://timidity.sourceforge.net/), you can run `timidity hello-mts.midi`. TiMidity++ is a very old but highly functional MIDI to WAVE converter. It is one of the few tools that natively understands MIDI with embedded MTS.
+The file `hello-mts.midi` is a standard MIDI file that embeds MTS (Midi Tuning System) SysEx (System Exclusive) messages and assigns a MIDI note number to each pitch. For most workflows, you will want the MPE version of MIDI, but the MTS version may be better with stand-alone MIDI to audio converters. If you're using the regular 12-tone scale, you can play this with any converter or player. Otherwise, you need software that understand these messages. If you have [TiMidity++](https://timidity.sourceforge.net/), you can run `timidity hello-mts.midi`. TiMidity++ is a very old but highly functional MIDI to WAVE converter. It is one of the few tools that natively understands MIDI with embedded MTS. When using TiMidity++, you may want to experiment with command-line arguments for best amplitude control and crackle-free audio. The audio sample here was created with `timidity -A100,100a`.
 
 <!--
 To generate
@@ -124,7 +123,6 @@ To generate
 -->
 {{ audio(src="introduction/hello-mpe.mp3", caption="Audio Created by Surge XT with Luna/Analog Brass") }}
 
-TODO:
-* If we add glide and don't implement it for outputs, mention this.
+FUTURE: If we add glide and don't implement it for some outputs, mention this. It's likely that glide will not work for MTS MIDI, but it will most likely work for MPE MIDI and will definitely work for Csound.
 
 The file `hello.json` contains complete information about the timeline that `syntoniq` generated. You can use this for study, or it could be the basis for creating other ways to render the audio without modifying the Syntoniq software. All the information that the Csound and MIDI generators use is encoded in this JSON file.

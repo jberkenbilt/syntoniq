@@ -2,9 +2,10 @@
 
 This is general TODO across internal docs, manual, and software.
 
-# CI
+# Build/CI
 
-Strip binaries
+* Resolve manual generation in CI
+* Do the lychee check in build.sh
 
 # Video
 
@@ -57,19 +58,14 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
 
 # Documentation
 
+* Have something that checks link integrity (internal and external)
 * Zola - removed Syntect. I have to pin to 0.21 until I can update the syntax files. See also TODO in build.sh.
-* Check all internal links
+* Embed KeTeX rather than getting from a CDN
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
 * Find all occurrences of `TODO` in the docs.
 * Tweak theme for better colors
-* Remember not to use "DSL" in the docs.
 * Figure out where to document the stuff in misc. Somewhere in the docs directory
 * Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep. Main thrust is justification for 100% code coverage
-* Recommended timidity:
-  ```
-  timidity -A100,100a
-  timidity -x "bank 0\n 0 %font \"/home/ejb/tmp/local/z/a.sf2\" amp=127 pan=0" --output-mono -A100,100a /tmp/a.midi
-  ```
 
 # Release
 
