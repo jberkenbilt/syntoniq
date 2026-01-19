@@ -26,6 +26,7 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
 
 # Software
 
+* See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
 * Morphing
   * The note modifier `&` (?), mutually exclusive with `~` means to glide exponentially (perceptually linearly) from the pitch of this note to the pitch of the next note over the specified duration. The Csound instrument syntax has room for this, and it should be easy with Csound. For MIDI, we'll need to ramp with pitch bend. It won't be supported for MTS because we would have to use both MTS and MPE together, which would require more refactoring than is worth the effort given the limited utility of MTS MIDI. (Timidity doesn't understand pitch bend anyway, and any DAW workflow will use pitch bend.)
 * Create the interactive chord builder -- see below
