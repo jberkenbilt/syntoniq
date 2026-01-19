@@ -9,15 +9,8 @@ This is general TODO across internal docs, manual, and software.
 
 # Video
 
-* Update thumbnails, etc.
-* Write a description and TOC. Each description should include
-  * Link to syntoniq.cc and the GitHub repository
-  * Link to top-level manual
-  * Link to its section of the manual
-  * List of the other videos with links
-  * TOC
-  * General context and description
 * Delete ~/Q/video/syntoniq/rendered/old/ when sure
+* Could add TOC. Example format:
 
 ```
 00:00 Introduction

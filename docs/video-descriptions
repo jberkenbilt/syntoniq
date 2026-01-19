@@ -1,0 +1,14 @@
+
+The text below is a template for the video descriptions. Move "(this video)" to the correct line for each description.
+
+----------------------------------------------------------------------
+
+This video introduces some features of the Syntoniq Keyboard. Syntoniq: https://syntoniq.cc
+
+This is one of four videos to accompany the manual for Syntoniq: https://syntoniq.cc/manual/
+1. Getting Started: https://syntoniq.cc/manual/keyboard/initialization/ (this video)
+2. Notes and Chords: https://syntoniq.cc/manual/keyboard/notes-and-chords/
+3. Shift and Transpose: https://syntoniq.cc/manual/keyboard/shift-transpose/
+4. Manual Layout Mappings: https://syntoniq.cc/manual/keyboard/manual-mappings/
+
+Syntoniq converts musical notation in text files to Csound or MIDI output. It was designed from the beginning to represent music in any tuning system, which makes it ideal for use with microtonal music. Syntoniq can generate MIDI using MTS (Midi Tuning System) with custom tunings and also MPE (MIDI Polyphonic Expression) with pitch-bend, specifically designed to be friendly to import into a Digital Audio Workstation for further refinement.
