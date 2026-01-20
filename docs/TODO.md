@@ -2,6 +2,17 @@
 
 This is general TODO across internal docs, manual, and software.
 
+# Pre-1.0
+
+These are proposed pre-1.0 items. Details are below for many.
+
+* Create a tmLanguage.json file and drop the sublime-syntax file. Consider testing with VSCode. See doc/claude-syntax.md
+* Create a minimal emacs mode
+* Glide
+* Fix edge cases -- see copilot-initial-review.md
+* calc -- from scripts in misc
+* Maybe: interactive chord builder
+
 # Build/CI
 
 * Resolve manual generation in CI
