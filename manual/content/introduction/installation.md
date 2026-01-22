@@ -12,6 +12,8 @@ Download a release from the [GitHub Releases page](https://github.com/jberkenbil
 * MacOS universal binaries (supporting both Intel and Apple Silicon) with and without Csound
 * Windows x86_64 (64-bit only) with and without Csound
 
+See also [Verifying Releases](#verifying-releases).
+
 You must download and install [Csound](https://csound.com) to use the Csound versions. The binary distributions are built with Csound version 6.18.1 but will likely switch to Csound 7 sometime after it is out of beta. The non-Csound versions include a `syntoniq-kbd` application that only works as a MIDI device. On Linux and Mac, it does not require additional software beyond something that can play MIDI.
 
 On Windows, to use `syntoniq-kbd` as a MIDI device, you need loopmidi:
@@ -39,3 +41,12 @@ You can also follow the process with the UI:
 # Building from Source
 
 Please see the [top-level README.md](https://github.com/jberkenbilt/syntoniq/blob/main/README.md) in the source repository for instructions.
+
+# Verifying Releases
+
+The `syntoniq-<version>.sha256` file contains sha256 checksums of all release assets. That file is also clear-signed with GPG using [this key](https://q.ql.org/pubkey.asc), with fingerprint `C2C96B10011FE009E6D1DF828A75D10998012C7E`. They are also signed with Cosign. You can verify with
+```
+cosign verify-blob syntoniq-x.y.z.sha256 --bundle syntoniq-x.y.z.sha256.sigstore \
+   --certificate-identity=ejb@ql.org \
+   --certificate-oidc-issuer=https://github.com/login/oauth
+```

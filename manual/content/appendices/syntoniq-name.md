@@ -1,6 +1,6 @@
 +++
 title = "The Syntoniq Name"
-weight = 10
+weight = 20
 sort_by = "weight"
 +++
 

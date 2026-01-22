@@ -6,6 +6,43 @@ sort_by = "weight"
 
 This section provides precise descriptions of all the features of the Syntoniq Language.
 
+# Compatibility Contract
+
+This section describes Syntoniq's forward and backward compatibility contract.
+
+**Pre-1.0 Note:** The compatibility contract is not enforced until version 1.0.0.
+
+The first directive in a Syntoniq file must be
+```syntoniq
+syntoniq(version=1)
+```
+
+Here are the specific guarantees. Each is followed by a few examples, but not an exhaustive list.
+
+Within a specific version, we provide the following guarantees
+* No previously valid syntax will become invalid unless the old behavior was a bug.
+  * We won't remove characters from valid note names.
+  * We might create an error message for code that used to create incorrect musical output because of a bug.
+* No previously valid score will be valid but mean something semantically different.
+  * We will not re-interpret dynamics or pitches.
+  * We will not change the meanings of notes in generated scales.
+  * We won't change the meanings or default values of directive parameters.
+
+Within a version, we may do any of the following:
+* Add new features so that a valid file won't work with an *older release* of Syntoniq.
+  * We might add a new directive.
+  * We might add new optional parameters to directives.
+* Make improvements to the MIDI or Csound generation.
+  * We might change how notes whose frequencies are out of range are rendered.
+  * We might make improvements to channel allocation or use of specific MIDI instructions to improve the experience of DAW users based on feedback.
+* Change the implementation of the Csound instrument.
+  * We might pass more granular information about the timeline to the instrument.
+  * We might improve how the instrument handles polyphony.
+
+If we change anything about the MIDI or Csound generation, release notes will describe the changes in detail, including what you need to do if you are migrating. If a change to MIDI or Csound output is too invasive, we may allow the old behavior to be selected.
+
+Rationale for allowing some MIDI/Csound changes: while Syntoniq intentionally creates Csound and MIDI that are designed for additional manual enhancement, it is assumed that, people will not adopt a workflow where they are actively composing in Syntoniq and iterating by regenerating output and replacing it in a DAW or Csound file, and that people who *are* doing this would be able to handle the changes. We optimize for the case of having the unmodified output of Syntoniq being as good as possible.
+
 # Syntax
 
 ## Spaces and Comments

@@ -42,7 +42,7 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
   * The note modifier `&` (?), mutually exclusive with `~` means to glide exponentially (perceptually linearly) from the pitch of this note to the pitch of the next note over the specified duration. The Csound instrument syntax has room for this, and it should be easy with Csound. For MIDI, we'll need to ramp with pitch bend. It won't be supported for MTS because we would have to use both MTS and MPE together, which would require more refactoring than is worth the effort given the limited utility of MTS MIDI. (Timidity doesn't understand pitch bend anyway, and any DAW workflow will use pitch bend.)
 * Create the interactive chord builder -- see below
 * Expand scripts in misc to support other than octave
-* Consider bringing misc/exponent-to-ratio and misc/scale-semitones into the main CLI as a separate subcommand like `syntoniq calc`. If so, mention in the microtonal section of the manual.
+* Consider bringing misc/exponent-to-ratio and misc/scale-semitones into the main CLI as a separate subcommand like `syntoniq calc`. If so, mention in the microtonal section of the manual. Also add something to show the base pitch of a generated note, e.g. `JK!17` should show `^5|17` or `jI` should show `81/80`.
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation adjustment directives:
   * four factors: default of each plus modifier for each option
