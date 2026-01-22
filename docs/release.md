@@ -48,5 +48,6 @@ chmod 444 *
 Create the actual release.
 
 ```sh
-gh release create v$version --title "Syntoniq version $version" -F $repo/docs/github-releases/v$version.md
+cd $repo
+gh release create v$version --title "Syntoniq version $version" -F docs/github-releases/v$version.md $release/*
 ```
