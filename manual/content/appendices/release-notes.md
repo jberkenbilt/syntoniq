@@ -6,6 +6,12 @@ sort_by = "weight"
 
 This section includes release notes for the Syntoniq software. See also [docs/TODO.md](https://github.com/jberkenbilt/syntoniq/blob/main/docs/TODO.md) for the latest roadmap.
 
+# v0.1.1 - not released
+
+## Improvements
+
+* Upgrade manual to Zola version 0.22. The syntax highlighting was simple enough for a successful AI conversion.
+
 # v0.1.0 - January 22, 2026
 
 This is the initial release of Syntoniq.

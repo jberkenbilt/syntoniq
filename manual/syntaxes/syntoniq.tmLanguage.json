@@ -1,0 +1,164 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Syntoniq",
+  "scopeName": "source.syntoniq",
+  "fileTypes": ["stq"],
+  "patterns": [
+    {
+      "comment": "Note line starting with [ident.digit]",
+      "begin": "^\\s*(?=(\\[)([a-zA-Z][a-zA-Z0-9_]*)(\\.)([0-9]+)(\\]))",
+      "end": "(?=\\n)|$",
+      "patterns": [
+        { "include": "#note_leader" },
+        { "include": "#score_note" },
+        { "include": "#bar_separator" },
+        { "include": "#comment" },
+        { "include": "#invalid_catch" }
+      ]
+    },
+    {
+      "comment": "Dynamic line starting with [ident]",
+      "begin": "^\\s*(?=(\\[)([a-zA-Z][a-zA-Z0-9_]*)(\\]))",
+      "end": "(?=\\n)|$",
+      "patterns": [
+        { "include": "#dynamic_leader" },
+        { "include": "#dynamic" },
+        { "include": "#bar_separator" },
+        { "include": "#comment" },
+        { "include": "#invalid_catch" }
+      ]
+    },
+    {
+      "comment": "Data block << ... >>",
+      "begin": "<<",
+      "beginCaptures": {
+        "0": { "name": "punctuation.section.group.begin.syntoniq" }
+      },
+      "end": ">>",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.group.end.syntoniq" }
+      },
+      "name": "meta.group.syntoniq",
+      "patterns": [
+        { "include": "#pitch" },
+        { "include": "#layout_note" },
+        { "include": "#bar_separator" },
+        { "include": "#comment" },
+        { "include": "#invalid_catch" }
+      ]
+    },
+    { "include": "#comment" },
+    { "include": "#string" },
+    { "include": "#directive" },
+    {
+      "comment": "Catch-all for main context",
+      "match": ".",
+      "name": "text.syntoniq"
+    }
+  ],
+  "repository": {
+    "comment": {
+      "begin": ";",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.comment.syntoniq" }
+      },
+      "end": "$\\n?",
+      "name": "comment.line.semicolon.syntoniq"
+    },
+    "string": {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": { "name": "punctuation.definition.string.begin.syntoniq" }
+      },
+      "end": "\"",
+      "endCaptures": {
+        "0": { "name": "punctuation.definition.string.end.syntoniq" }
+      },
+      "name": "string.quoted.double.syntoniq",
+      "patterns": [
+        {
+          "match": "\\\\[\\\\\"]",
+          "name": "constant.character.escape.syntoniq"
+        }
+      ]
+    },
+    "directive": {
+      "begin": "([a-zA-Z][a-zA-Z0-9_]*)\\s*(\\()",
+      "beginCaptures": {
+        "1": { "name": "entity.name.function.syntoniq" },
+        "2": { "name": "punctuation.section.group.begin.syntoniq" }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": { "name": "punctuation.section.group.end.syntoniq" }
+      },
+      "name": "meta.group.syntoniq",
+      "patterns": [
+        {
+          "match": "[a-zA-Z][a-zA-Z0-9_]*",
+          "name": "variable.parameter.syntoniq"
+        },
+        {
+          "match": "=",
+          "name": "keyword.operator.assignment.syntoniq"
+        },
+        { "include": "#string" },
+        { "include": "#pitch" },
+        { "include": "#comment" }
+      ]
+    },
+    "note_leader": {
+      "match": "(\\[)([a-zA-Z][a-zA-Z0-9_]*)(\\.)([0-9]+)(\\])",
+      "captures": {
+        "1": { "name": "punctuation.section.group.begin.syntoniq" },
+        "2": { "name": "entity.name.function.syntoniq" },
+        "3": { "name": "punctuation.separator.syntoniq" },
+        "4": { "name": "constant.numeric.integer.syntoniq" },
+        "5": { "name": "punctuation.section.group.end.syntoniq" }
+      }
+    },
+    "dynamic_leader": {
+      "match": "(\\[)([a-zA-Z][a-zA-Z0-9_]*)(\\])",
+      "captures": {
+        "1": { "name": "punctuation.section.group.begin.syntoniq" },
+        "2": { "name": "entity.name.function.syntoniq" },
+        "3": { "name": "punctuation.section.group.end.syntoniq" }
+      }
+    },
+    "score_note": {
+      "comment": "Duration + note + optional cycle/modifiers",
+      "match": "(\\d+(?:\\.\\d+)?(?:/\\d+)?:)?((~)|\\b[a-zA-Z][a-zA-Z0-9_*^/.|+\\-!\\\\#%&]*)([,']\\d*)?(:[\">^~.]+)?",
+      "captures": {
+        "1": { "name": "constant.numeric.integer.syntoniq" },
+        "2": { "name": "string.quoted.double.syntoniq" },
+        "4": { "name": "variable.parameter.syntoniq" },
+        "5": { "name": "variable.parameter.syntoniq" }
+      }
+    },
+    "dynamic": {
+      "match": "(\\d+)@(\\d+(?:\\.\\d+)?(?:/\\d+)?)[<>]?",
+      "captures": {
+        "1": { "name": "constant.numeric.integer.syntoniq" },
+        "2": { "name": "constant.numeric.integer.syntoniq" }
+      }
+    },
+    "pitch": {
+      "comment": "Pitches, ratios, and exponential notation",
+      "match": "\\*?((\\b\\d+(?:\\.\\d+)?(?:/\\d+)?\\b)|((\\b\\d+(?:\\.\\d+)?(?:/\\d+)?)?\\^-?\\d+\\|\\d+\\b))(\\*((\\b\\d+(?:\\.\\d+)?(?:/\\d+)?\\b)|((\\b\\d+(?:\\.\\d+)?(?:/\\d+)?)?\\^-?\\d+\\|\\d+\\b)))*",
+      "name": "constant.numeric.pitch.syntoniq"
+    },
+    "layout_note": {
+      "comment": "Note in scale definition (data block)",
+      "match": "@?((~)|\\b[a-zA-Z][a-zA-Z0-9_*^/.|+\\-!\\\\#%&]*)([,']\\d*)?",
+      "name": "string.quoted.double.syntoniq"
+    },
+    "bar_separator": {
+      "match": "\\|",
+      "name": "punctuation.separator.syntoniq"
+    },
+    "invalid_catch": {
+      "match": "\\S",
+      "name": "invalid.illegal.syntoniq"
+    }
+  }
+}

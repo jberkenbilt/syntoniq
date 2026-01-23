@@ -1,5 +1,12 @@
 %YAML 1.2
 ---
+#
+# This file is no longer used. Zola version 0.21 used Syntect, which
+# supported sublime-syntax files (v3, which was already outdated).
+# This file is being retained in case it is useful and because the
+# tmLanguage.json file was generated from this with AI.
+#
+
 # Reference:
 # - https://www.sublimetext.com/docs/3/syntax.html
 # - https://www.sublimetext.com/docs/scope_naming.html
