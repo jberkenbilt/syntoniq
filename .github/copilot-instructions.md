@@ -31,8 +31,6 @@ You can use
 ```
 to build everything.
 
-2026-01-19: Building the manual in CI is momentarily disabled. The release of zola 0.22 dropped Sytect, which breaks the custom highlighting. I will replace with Giallo and remove this disclaimer.
-
 ## Build and CI
 
 Given the technical audience and the fact that this is a command-line tool written in rust, I have opted for zip/tar-based distributions. Given the small audience and infrequent release schedule, I plan to create releases manually. CI creates a distributions.zip file, which I can then archive and upload to create a GitHub release. I don't intend to further automate this for the time being.
