@@ -38,18 +38,23 @@ endin
 
 ; A single instrument may be used for multiple parts. Any additional
 ; instrument must accept the same parameters to be a target for
-; syntoniq notes.
+; syntoniq notes. By design, the instrument's parameters only include
+; required parameters (instrument, start time, duration) and
+; identification of part and note numbers. This allows arbitrary new
+; parameters or changes in behavior, such as ramping previously
+; constant values, without breaking backward compatibility.
 instr 1
   ; p1..p3 are always instrument, start time, duration
   iPartNum = p4
-  iFreq = p5
-  iEndFreq = p6  // place-holder
-  iVelocity = p7 // 0 to 1
+  iNoteNum = p5
+  iVelocity = p6 // 0 to 1
 
+  SFreqChan sprintf "p%d_freq_%d", iPartNum, iNoteNum
   SAmpChan sprintf "p%d_amp", iPartNum
   SNotesChan sprintf "p%d_notes", iPartNum
   kBaseVol chnget SAmpChan
   kNoteCount chnget SNotesChan
+  kFreq chnget SFreqChan
 
   kNoteCount = (kNoteCount == 0 ? 1 : kNoteCount)
   kAmp = kBaseVol * iVelocity
@@ -60,11 +65,11 @@ instr 1
   ; For most of the frequency range, we use a custom sound mixed with
   ; specific harmonics. At higher frequency ranges, we fall back to a
   ; sine/triangle mix for fewer artifacts.
-  aMain poscil3 1, iFreq, 1
+  aMain poscil3 1, kFreq, 1
 
   ; blend sine and triangle
-  aSine poscil3 0.9, iFreq
-  aTriangle vco2 0.9, iFreq, 12
+  aSine poscil3 0.9, kFreq
+  aTriangle vco2 0.9, kFreq, 12
   aHigh = (aSine * 0.5) + (aTriangle * 0.5)
 
   ; For frequencies in the range of iLowThresh to iHighThresh,
@@ -73,12 +78,12 @@ instr 1
   iLowThresh = 2000
   iHighThresh = 4000
   ; map iLowThresh, iHighThresh -> 1, 0 and clamp
-  iInterp linlin iFreq, 1, 0, iLowThresh, iHighThresh
-  iMainMix limit iInterp, 0, 1
+  kInterp linlin kFreq, 1, 0, iLowThresh, iHighThresh
+  kMainMix limit kInterp, 0, 1
 
   ; blend
-  iHighMix = 1 - iMainMix
-  aSignal = (aHigh * iHighMix) + (aMain * iMainMix) * aEnv * kFinalAmp
+  kHighMix = 1 - kMainMix
+  aSignal = (aHigh * kHighMix) + (aMain * kMainMix) * aEnv * kFinalAmp
   aOut moogladder aSignal, 2000, 0.1
   outs aOut, aOut
 endin
@@ -109,48 +114,112 @@ i "SetPartParam" 0 0.01 1 "notes" 3
 i "SetPartParam" 0 0.01 2 "amp" 0.5
 i "SetPartParam" 0 0.01 2 "notes" 3
 t 0 45
-i 1.1 0 1 1 293.665 0 0.567 ; 1:d @106
-i 1.2 0 1 1 369.994 0 0.567 ; 1:f# @120
-i 1.3 0 1 1 440 0 0.567 ; 1:a @134
+; 1:d @106
+i "SetPartParam" 0 1 1 "freq_1" 293.665
+i 1.1 0 1 1 1 0.567
+; 1:f# @120
+i "SetPartParam" 0 1 1 "freq_2" 369.994
+i 1.2 0 1 1 2 0.567
+; 1:a @134
+i "SetPartParam" 0 1 1 "freq_3" 440
+i 1.3 0 1 1 3 0.567
 ; mark 'a' @'[219,222)
-i 1.1 2 1 1 130.813 0 0.567 ; 1:p, @282
-i 1.4 2 1 2 261.626 0 0.567 ; 1:c @294
-i 1.1 3 1 1 329.628 0 0.567 ; 1:e @331
-i 1.2 3 1 1 391.995 0 0.567 ; 1:g @342
-i 1.3 3 1 1 493.883 0 0.567 ; 1:b @353
-i 1.1 4 1 1 195.998 0 0.567 ; 1:q, @406
-i 1.4 4 1 2 391.995 0 0.567 ; 1:q @418
+; 1:p, @282
+i "SetPartParam" 2 1 1 "freq_1" 130.813
+i 1.1 2 1 1 1 0.567
+; 1:c @294
+i "SetPartParam" 2 1 2 "freq_4" 261.626
+i 1.4 2 1 2 4 0.567
+; 1:e @331
+i "SetPartParam" 3 1 1 "freq_1" 329.628
+i 1.1 3 1 1 1 0.567
+; 1:g @342
+i "SetPartParam" 3 1 1 "freq_2" 391.995
+i 1.2 3 1 1 2 0.567
+; 1:b @353
+i "SetPartParam" 3 1 1 "freq_3" 493.883
+i 1.3 3 1 1 3 0.567
+; 1:q, @406
+i "SetPartParam" 4 1 1 "freq_1" 195.998
+i 1.1 4 1 1 1 0.567
+; 1:q @418
+i "SetPartParam" 4 1 2 "freq_4" 391.995
+i 1.4 4 1 2 4 0.567
 ; mark 'b' @'[433,436)
-i 1.1 6 1 1 391.995 0 0.567 ; q @505
-i 1.4 6 1 2 783.991 0 0.567 ; g' @521
+; q @505
+i "SetPartParam" 6 1 1 "freq_1" 391.995
+i 1.1 6 1 1 1 0.567
+; g' @521
+i "SetPartParam" 6 1 2 "freq_4" 783.991
+i 1.4 6 1 2 4 0.567
 ; mark 'c' @'[619,622)
 ; repeat start 'a' @'[637,640)
-i 1.1 8 1 1 130.813 0 0.567 ; 1:p, @282
-i 1.4 8 1 2 261.626 0 0.567 ; 1:c @294
-i 1.1 9 1 1 329.628 0 0.567 ; 1:e @331
-i 1.2 9 1 1 391.995 0 0.567 ; 1:g @342
-i 1.3 9 1 1 493.883 0 0.567 ; 1:b @353
-i 1.1 10 1 1 195.998 0 0.567 ; 1:q, @406
-i 1.4 10 1 2 391.995 0 0.567 ; 1:q @418
+; 1:p, @282
+i "SetPartParam" 8 1 1 "freq_1" 130.813
+i 1.1 8 1 1 1 0.567
+; 1:c @294
+i "SetPartParam" 8 1 2 "freq_4" 261.626
+i 1.4 8 1 2 4 0.567
+; 1:e @331
+i "SetPartParam" 9 1 1 "freq_1" 329.628
+i 1.1 9 1 1 1 0.567
+; 1:g @342
+i "SetPartParam" 9 1 1 "freq_2" 391.995
+i 1.2 9 1 1 2 0.567
+; 1:b @353
+i "SetPartParam" 9 1 1 "freq_3" 493.883
+i 1.3 9 1 1 3 0.567
+; 1:q, @406
+i "SetPartParam" 10 1 1 "freq_1" 195.998
+i 1.1 10 1 1 1 0.567
+; 1:q @418
+i "SetPartParam" 10 1 2 "freq_4" 391.995
+i 1.4 10 1 2 4 0.567
 ; repeat end 'b' @'[645,648)
-i 1.1 12 1 1 261.626 0 0.567 ; p @681
-i 1.4 12 1 2 523.251 0 0.567 ; c' @697
+; p @681
+i "SetPartParam" 12 1 1 "freq_1" 261.626
+i 1.1 12 1 1 1 0.567
+; c' @697
+i "SetPartParam" 12 1 2 "freq_4" 523.251
+i 1.4 12 1 2 4 0.567
 ; mark 'd' @'[713,716)
 ; repeat start 'c' @'[793,796)
 ; repeat start 'a' @'[637,640)
-i 1.1 14 1 1 130.813 0 0.567 ; 1:p, @282
-i 1.4 14 1 2 261.626 0 0.567 ; 1:c @294
-i 1.1 15 1 1 329.628 0 0.567 ; 1:e @331
-i 1.2 15 1 1 391.995 0 0.567 ; 1:g @342
-i 1.3 15 1 1 493.883 0 0.567 ; 1:b @353
-i 1.1 16 1 1 195.998 0 0.567 ; 1:q, @406
-i 1.4 16 1 2 391.995 0 0.567 ; 1:q @418
+; 1:p, @282
+i "SetPartParam" 14 1 1 "freq_1" 130.813
+i 1.1 14 1 1 1 0.567
+; 1:c @294
+i "SetPartParam" 14 1 2 "freq_4" 261.626
+i 1.4 14 1 2 4 0.567
+; 1:e @331
+i "SetPartParam" 15 1 1 "freq_1" 329.628
+i 1.1 15 1 1 1 0.567
+; 1:g @342
+i "SetPartParam" 15 1 1 "freq_2" 391.995
+i 1.2 15 1 1 2 0.567
+; 1:b @353
+i "SetPartParam" 15 1 1 "freq_3" 493.883
+i 1.3 15 1 1 3 0.567
+; 1:q, @406
+i "SetPartParam" 16 1 1 "freq_1" 195.998
+i 1.1 16 1 1 1 0.567
+; 1:q @418
+i "SetPartParam" 16 1 2 "freq_4" 391.995
+i 1.4 16 1 2 4 0.567
 ; repeat end 'b' @'[645,648)
-i 1.1 18 1 1 261.626 0 0.567 ; p @681
-i 1.4 18 1 2 523.251 0 0.567 ; c' @697
+; p @681
+i "SetPartParam" 18 1 1 "freq_1" 261.626
+i 1.1 18 1 1 1 0.567
+; c' @697
+i "SetPartParam" 18 1 2 "freq_4" 523.251
+i 1.4 18 1 2 4 0.567
 ; repeat end 'd' @'[801,804)
-i 1.1 20 1 1 130.813 0 0.567 ; 1:p, @876
-i 1.4 20 1 2 261.626 0 0.567 ; 1:c @888
+; 1:p, @876
+i "SetPartParam" 20 1 1 "freq_1" 130.813
+i 1.1 20 1 1 1 0.567
+; 1:c @888
+i "SetPartParam" 20 1 2 "freq_4" 261.626
+i 1.4 20 1 2 4 0.567
 ;; END SYNTONIQ
 
 e

@@ -11,6 +11,7 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 ## Improvements
 
 * Upgrade manual to Zola version 0.22. The syntax highlighting was simple enough for a successful AI conversion.
+* Refactor Csound instrument to be more future proof. New parameters are varied through channels intead of arguments to the instrument.
 
 # v0.1.0 - January 22, 2026
 

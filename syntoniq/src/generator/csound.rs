@@ -252,12 +252,17 @@ impl<'s> CsoundGenerator<'s> {
                         }));
                         // instrument.note is a decimal number, so we need to use leading zeroes based
                         // on the number of note numbers.
-                        let note_number = pad_number(*note_number, part_data.note_numbers.len());
-                        let instr = instrument.output(Some(note_number));
-                        let end_freq = "0"; // TODO: implement glide
-                        self.content.push_str(
-                            &format!("i {instr} {time} {duration} {part_number} {freq} {end_freq} {velocity} ; {note_text} @{offset}\n"),
-                        );
+                        let instr_note_number =
+                            pad_number(*note_number, part_data.note_numbers.len());
+                        let instr = instrument.output(Some(instr_note_number));
+                        // TODO: implement glide
+                        self.content.push_str(&format!("; {note_text} @{offset}\n"));
+                        self.content.push_str(&format!(
+                            "i \"SetPartParam\" {time} {duration} {part_number} \"freq_{note_number}\" {freq}\n"
+                        ));
+                        self.content.push_str(&format!(
+                            "i {instr} {time} {duration} {part_number} {note_number} {velocity}\n"
+                        ));
                     }
                 }
                 TimelineData::Mark(e) => {

@@ -35,7 +35,7 @@ Within a version, we may do any of the following:
 * Make improvements to the MIDI or Csound generation.
   * We might change how notes whose frequencies are out of range are rendered.
   * We might make improvements to channel allocation or use of specific MIDI instructions to improve the experience of DAW users based on feedback.
-* Change the implementation of the Csound instrument.
+* Change the implementation of the Csound instrument, though we would try to make it backward compatible.
   * We might pass more granular information about the timeline to the instrument.
   * We might improve how the instrument handles polyphony.
 

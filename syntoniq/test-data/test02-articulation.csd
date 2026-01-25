@@ -38,18 +38,23 @@ endin
 
 ; A single instrument may be used for multiple parts. Any additional
 ; instrument must accept the same parameters to be a target for
-; syntoniq notes.
+; syntoniq notes. By design, the instrument's parameters only include
+; required parameters (instrument, start time, duration) and
+; identification of part and note numbers. This allows arbitrary new
+; parameters or changes in behavior, such as ramping previously
+; constant values, without breaking backward compatibility.
 instr 1
   ; p1..p3 are always instrument, start time, duration
   iPartNum = p4
-  iFreq = p5
-  iEndFreq = p6  // place-holder
-  iVelocity = p7 // 0 to 1
+  iNoteNum = p5
+  iVelocity = p6 // 0 to 1
 
+  SFreqChan sprintf "p%d_freq_%d", iPartNum, iNoteNum
   SAmpChan sprintf "p%d_amp", iPartNum
   SNotesChan sprintf "p%d_notes", iPartNum
   kBaseVol chnget SAmpChan
   kNoteCount chnget SNotesChan
+  kFreq chnget SFreqChan
 
   kNoteCount = (kNoteCount == 0 ? 1 : kNoteCount)
   kAmp = kBaseVol * iVelocity
@@ -60,11 +65,11 @@ instr 1
   ; For most of the frequency range, we use a custom sound mixed with
   ; specific harmonics. At higher frequency ranges, we fall back to a
   ; sine/triangle mix for fewer artifacts.
-  aMain poscil3 1, iFreq, 1
+  aMain poscil3 1, kFreq, 1
 
   ; blend sine and triangle
-  aSine poscil3 0.9, iFreq
-  aTriangle vco2 0.9, iFreq, 12
+  aSine poscil3 0.9, kFreq
+  aTriangle vco2 0.9, kFreq, 12
   aHigh = (aSine * 0.5) + (aTriangle * 0.5)
 
   ; For frequencies in the range of iLowThresh to iHighThresh,
@@ -73,12 +78,12 @@ instr 1
   iLowThresh = 2000
   iHighThresh = 4000
   ; map iLowThresh, iHighThresh -> 1, 0 and clamp
-  iInterp linlin iFreq, 1, 0, iLowThresh, iHighThresh
-  iMainMix limit iInterp, 0, 1
+  kInterp linlin kFreq, 1, 0, iLowThresh, iHighThresh
+  kMainMix limit kInterp, 0, 1
 
   ; blend
-  iHighMix = 1 - iMainMix
-  aSignal = (aHigh * iHighMix) + (aMain * iMainMix) * aEnv * kFinalAmp
+  kHighMix = 1 - kMainMix
+  aSignal = (aHigh * kHighMix) + (aMain * kMainMix) * aEnv * kFinalAmp
   aOut moogladder aSignal, 2000, 0.1
   outs aOut, aOut
 endin
@@ -104,17 +109,39 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 2
 t 0 72
-i 1.1 0 1.75 1 523.251 0 0.567 ; 1:c':~ @279
-i 1.2 0 1 1 261.626 0 0.567 ; 1:c @328
-i 1.2 1 1 1 261.626 0 0.567 ; c @335
-i 1.1 2 0.5 1 523.251 0 0.567 ; c':.. @291
-i 1.2 2 1 1 261.626 0 0.567 ; c @340
-i 1.1 3 0.25 1 523.251 0 0.567 ; c':... @297
-i 1.2 3 1 1 261.626 0 0.567 ; c @346
-i 1.1 4 0.25 1 523.251 0 0.567 ; c':.... @304
-i 1.2 4 1 1 261.626 0 0.567 ; c @353
-i 1.1 5 0.25 1 523.251 0 0.567 ; c':..... @312
-i 1.2 5 1 1 261.626 0 0.567 ; c @361
+; 1:c':~ @279
+i "SetPartParam" 0 1.75 1 "freq_1" 523.251
+i 1.1 0 1.75 1 1 0.567
+; 1:c @328
+i "SetPartParam" 0 1 1 "freq_2" 261.626
+i 1.2 0 1 1 2 0.567
+; c @335
+i "SetPartParam" 1 1 1 "freq_2" 261.626
+i 1.2 1 1 1 2 0.567
+; c':.. @291
+i "SetPartParam" 2 0.5 1 "freq_1" 523.251
+i 1.1 2 0.5 1 1 0.567
+; c @340
+i "SetPartParam" 2 1 1 "freq_2" 261.626
+i 1.2 2 1 1 2 0.567
+; c':... @297
+i "SetPartParam" 3 0.25 1 "freq_1" 523.251
+i 1.1 3 0.25 1 1 0.567
+; c @346
+i "SetPartParam" 3 1 1 "freq_2" 261.626
+i 1.2 3 1 1 2 0.567
+; c':.... @304
+i "SetPartParam" 4 0.25 1 "freq_1" 523.251
+i 1.1 4 0.25 1 1 0.567
+; c @353
+i "SetPartParam" 4 1 1 "freq_2" 261.626
+i 1.2 4 1 1 2 0.567
+; c':..... @312
+i "SetPartParam" 5 0.25 1 "freq_1" 523.251
+i 1.1 5 0.25 1 1 0.567
+; c @361
+i "SetPartParam" 5 1 1 "freq_2" 261.626
+i 1.2 5 1 1 2 0.567
 ;; END SYNTONIQ
 
 e

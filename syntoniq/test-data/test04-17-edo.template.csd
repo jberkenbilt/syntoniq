@@ -1,3 +1,7 @@
+;; This file is a copy of csound-template.csd with the instrument name
+;; changed to "potato" and the function table changed so the wave form
+;; is audibly distinct.
+
 <CsoundSynthesizer>
 
 <CsOptions>
@@ -38,36 +42,61 @@ endin
 
 ; A single instrument may be used for multiple parts. Any additional
 ; instrument must accept the same parameters to be a target for
-; syntoniq notes.
+; syntoniq notes. By design, the instrument's parameters only include
+; required parameters (instrument, start time, duration) and
+; identification of part and note numbers. This allows arbitrary new
+; parameters or changes in behavior, such as ramping previously
+; constant values, without breaking backward compatibility.
 instr potato
   ; p1..p3 are always instrument, start time, duration
   iPartNum = p4
-  iFreq = p5
-  iEndFreq = p6  // place-holder
-  iVelocity = p7 // 0 to 1
+  iNoteNum = p5
+  iVelocity = p6 // 0 to 1
 
+  SFreqChan sprintf "p%d_freq_%d", iPartNum, iNoteNum
   SAmpChan sprintf "p%d_amp", iPartNum
   SNotesChan sprintf "p%d_notes", iPartNum
   kBaseVol chnget SAmpChan
   kNoteCount chnget SNotesChan
+  kFreq chnget SFreqChan
 
   kNoteCount = (kNoteCount == 0 ? 1 : kNoteCount)
   kAmp = kBaseVol * iVelocity
   ; Attenuate based on polyphony
   kFinalAmp = kAmp / sqrt(kNoteCount)
-  kEnv madsr 0.05, 0, 0.8, 0.2
+  aEnv madsr 0.05, 0.05, 0.9, 0.15
 
-  aTone oscil3 kFinalAmp * kEnv, iFreq, 1
-  aFilt moogladder aTone, 2000 + (kEnv * 3000), 0.2
+  ; For most of the frequency range, we use a custom sound mixed with
+  ; specific harmonics. At higher frequency ranges, we fall back to a
+  ; sine/triangle mix for fewer artifacts.
+  aMain poscil3 1, kFreq, 1
 
-  outs aFilt, aFilt
+  ; blend sine and triangle
+  aSine poscil3 0.9, kFreq
+  aTriangle vco2 0.9, kFreq, 12
+  aHigh = (aSine * 0.5) + (aTriangle * 0.5)
+
+  ; For frequencies in the range of iLowThresh to iHighThresh,
+  ; interpolate how much of the main mix we want. It drops to 0
+  ; through that range.
+  iLowThresh = 2000
+  iHighThresh = 4000
+  ; map iLowThresh, iHighThresh -> 1, 0 and clamp
+  kInterp linlin kFreq, 1, 0, iLowThresh, iHighThresh
+  kMainMix limit kInterp, 0, 1
+
+  ; blend
+  kHighMix = 1 - kMainMix
+  aSignal = (aHigh * kHighMix) + (aMain * kMainMix) * aEnv * kFinalAmp
+  aOut moogladder aSignal, 2000, 0.1
+  outs aOut, aOut
 endin
 
 </CsInstruments>
 <CsScore>
 
 ; function table for oscilator
-f 1 0 32768 10 1 .6 .6 .4 .2 .2 .1
+f 1 0 32768 10 1 1 1 1 1 1 1
 
 ; i instr start duration [params...]
 
