@@ -36,13 +36,11 @@
           "note_number": 0,
           "value": {
             "text": "8:c",
-            "note_name": "c",
             "tuning": {
               "scale_name": "12-EDO",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               8,
@@ -122,13 +120,11 @@
           "note_number": 0,
           "value": {
             "text": "1:d",
-            "note_name": "d",
             "tuning": {
               "scale_name": "12-EDO",
               "base_pitch": "220*^1|4"
             },
             "absolute_pitch": "220*^5|12",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               9,

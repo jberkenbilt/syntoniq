@@ -11,7 +11,7 @@ sort_by = "weight"
 </div>
 
 <!-- This opening paragraph also appears in ../start/_index.md -->
-This is the manual for [Syntoniq](https://syntoniq.cc/). Syntoniq converts musical notation in text files to [Csound](https://csound.com) or MIDI output. It was designed from the beginning to represent music in any tuning system, which makes it ideal for use with microtonal music. Syntoniq can generate MIDI using MTS (Midi Tuning System) with custom tunings and also MPE (MIDI Polyphonic Expression) with pitch-bend, specifically designed to be friendly to import into a Digital Audio Workstation for further refinement.
+This is the manual for [Syntoniq](https://syntoniq.cc/). Syntoniq converts musical notation in text files to [Csound](https://csound.com) or MIDI output. It was designed from the beginning to represent music in any tuning system, which makes it ideal for use with microtonal music. Syntoniq can generate MIDI using MPE (MIDI Polyphonic Expression) with pitch-bend, specifically designed to be friendly to import into a Digital Audio Workstation for further refinement.
 
 # Components
 
@@ -40,7 +40,7 @@ Syntoniq consists of two components:
 # Target User
 
 **You might like using Syntoniq if...**
-* You like creating music in [LilyPond](https://lilypond.org/). Like LilyPond, Syntoniq scores are plain text files. The `syntoniq` command-line tool uses Syntoniq files to generate a [Csound](https://csound.com) file, a standard MIDI file (either using MPE or MTS -- more details later in the docs), or a JSON file containing details about the timeline of musical events.
+* You like creating music in [LilyPond](https://lilypond.org/). Like LilyPond, Syntoniq scores are plain text files. The `syntoniq` command-line tool uses Syntoniq files to generate a [Csound](https://csound.com) file, a standard MIDI file with MPE pitch bend, or a JSON file containing details about the timeline of musical events.
 * You like creating music with [Csound](https://csound.com). Some ideas from Syntoniq are similar to Csound, and Syntoniq can generate Csound files or add timeline events to existing Csound files.
 * You are interested in microtonal music. Syntoniq represents pitches using a *lossless notation* that represents pitches *exactly* and with *semantic meaning*. It does not use cents. Syntoniq allows you to create arbitrary scales and name the notes however you want. It also has its own native note naming convention that constructs pitches from *just intonation ratios* and/or *even interval division steps*. It breaks free of the baggage of traditional 12-tone constructs.
 * You are primarily interested in arranging, composition, transcription, or study and are willing to use other tools to create a finished product. By design, Syntoniq doesn't have all the things you need to create finished musical works. It is concerned with pitch, rhythm, and dynamics. Syntoniq can create a MIDI file that's ready to import into any microtonal-capable DAW (Digital Audio Workstation), and it can create Csound events that you can use with the provided (minimal) orchestra file or combine with your own.

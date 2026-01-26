@@ -14818,12 +14818,10 @@
                     1,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     1,
                     1
                   ],
-                  "note_name": "c",
                   "text": "1:c",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -14854,12 +14852,10 @@
                     2,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     2,
                     1
                   ],
-                  "note_name": "d",
                   "text": "d",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -14890,12 +14886,10 @@
                     3,
                     1
                   ],
-                  "cycle": 1,
                   "end_time": [
                     3,
                     1
                   ],
-                  "note_name": "e",
                   "text": "e'",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -14926,12 +14920,10 @@
                     4,
                     1
                   ],
-                  "cycle": -1,
                   "end_time": [
                     4,
                     1
                   ],
-                  "note_name": "f",
                   "text": "f,",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -14962,12 +14954,10 @@
                     5,
                     1
                   ],
-                  "cycle": 2,
                   "end_time": [
                     5,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p'2",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -14998,12 +14988,10 @@
                     5,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     5,
                     1
                   ],
-                  "note_name": "c",
                   "text": "1:c",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15034,12 +15022,10 @@
                     6,
                     1
                   ],
-                  "cycle": -2,
                   "end_time": [
                     6,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q,2:>",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15070,12 +15056,10 @@
                     23,
                     4
                   ],
-                  "cycle": 0,
                   "end_time": [
                     6,
                     1
                   ],
-                  "note_name": "d",
                   "text": "d:.",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15106,12 +15090,10 @@
                     7,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     7,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r:^",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15142,12 +15124,10 @@
                     7,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     7,
                     1
                   ],
-                  "note_name": "e",
                   "text": "e:>",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15178,12 +15158,10 @@
                     8,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     8,
                     1
                   ],
-                  "note_name": "s",
                   "text": "s:~",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15214,12 +15192,10 @@
                     31,
                     4
                   ],
-                  "cycle": 0,
                   "end_time": [
                     8,
                     1
                   ],
-                  "note_name": "f",
                   "text": "f:.^",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15266,12 +15242,10 @@
                     9,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     9,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15302,12 +15276,10 @@
                     9,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     9,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p",
                   "tuning": {
                     "base_pitch": "220*^5|12",
@@ -15338,12 +15310,10 @@
                     9,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     9,
                     1
                   ],
-                  "note_name": "a",
                   "text": "1:a",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15403,12 +15373,10 @@
                     10,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     10,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15439,12 +15407,10 @@
                     10,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     10,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q",
                   "tuning": {
                     "base_pitch": "220*^5|12",
@@ -15475,12 +15441,10 @@
                     10,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     10,
                     1
                   ],
-                  "note_name": "e",
                   "text": "e",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15511,12 +15475,10 @@
                     11,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     11,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15547,12 +15509,10 @@
                     11,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     11,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r",
                   "tuning": {
                     "base_pitch": "220*^5|12",
@@ -15608,12 +15568,10 @@
                     12,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     12,
                     1
                   ],
-                  "note_name": "s",
                   "text": "s",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15644,12 +15602,10 @@
                     12,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     12,
                     1
                   ],
-                  "note_name": "u",
                   "text": "u",
                   "tuning": {
                     "base_pitch": "220*^5|12",
@@ -15680,12 +15636,10 @@
                     23,
                     2
                   ],
-                  "cycle": 0,
                   "end_time": [
                     23,
                     2
                   ],
-                  "note_name": "b%",
                   "text": "1/2:b%",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15735,12 +15689,10 @@
                     12,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     12,
                     1
                   ],
-                  "note_name": "b#",
                   "text": "b#",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -15787,12 +15739,10 @@
                     62,
                     5
                   ],
-                  "cycle": 0,
                   "end_time": [
                     62,
                     5
                   ],
-                  "note_name": "c",
                   "text": "2/5:c",
                   "tuning": {
                     "base_pitch": "264",
@@ -15823,12 +15773,10 @@
                     62,
                     5
                   ],
-                  "cycle": 1,
                   "end_time": [
                     62,
                     5
                   ],
-                  "note_name": "c!",
                   "text": "2/5:c!'",
                   "tuning": {
                     "base_pitch": "264",
@@ -15859,12 +15807,10 @@
                     64,
                     5
                   ],
-                  "cycle": -1,
                   "end_time": [
                     64,
                     5
                   ],
-                  "note_name": "d",
                   "text": "d,",
                   "tuning": {
                     "base_pitch": "264",
@@ -15895,12 +15841,10 @@
                     64,
                     5
                   ],
-                  "cycle": 0,
                   "end_time": [
                     64,
                     5
                   ],
-                  "note_name": "a!",
                   "text": "a!",
                   "tuning": {
                     "base_pitch": "264",
@@ -15931,12 +15875,10 @@
                     66,
                     5
                   ],
-                  "cycle": -2,
                   "end_time": [
                     66,
                     5
                   ],
-                  "note_name": "e",
                   "text": "e,2",
                   "tuning": {
                     "base_pitch": "264",
@@ -15967,12 +15909,10 @@
                     66,
                     5
                   ],
-                  "cycle": 2,
                   "end_time": [
                     66,
                     5
                   ],
-                  "note_name": "g!",
                   "text": "g!'2",
                   "tuning": {
                     "base_pitch": "264",
@@ -16003,12 +15943,10 @@
                     68,
                     5
                   ],
-                  "cycle": 0,
                   "end_time": [
                     68,
                     5
                   ],
-                  "note_name": "g",
                   "text": "1/5:g:~",
                   "tuning": {
                     "base_pitch": "264",
@@ -16039,12 +15977,10 @@
                     68,
                     5
                   ],
-                  "cycle": 0,
                   "end_time": [
                     68,
                     5
                   ],
-                  "note_name": "e!",
                   "text": "e!",
                   "tuning": {
                     "base_pitch": "264",
@@ -16075,12 +16011,10 @@
                     14,
                     1
                   ],
-                  "cycle": -1,
                   "end_time": [
                     14,
                     1
                   ],
-                  "note_name": "a",
                   "text": "2/5:a,",
                   "tuning": {
                     "base_pitch": "264",
@@ -16111,12 +16045,10 @@
                     14,
                     1
                   ],
-                  "cycle": 1,
                   "end_time": [
                     14,
                     1
                   ],
-                  "note_name": "d!",
                   "text": "d!'",
                   "tuning": {
                     "base_pitch": "264",
@@ -16163,12 +16095,10 @@
                     15,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     15,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -16199,12 +16129,10 @@
                     15,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     15,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p",
                   "tuning": {
                     "base_pitch": "220*^5|12",
@@ -16235,12 +16163,10 @@
                     15,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     15,
                     1
                   ],
-                  "note_name": "a",
                   "text": "1:a",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -16300,12 +16226,10 @@
                     16,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     16,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -16336,12 +16260,10 @@
                     16,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     16,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q",
                   "tuning": {
                     "base_pitch": "220*^5|12",
@@ -16372,12 +16294,10 @@
                     16,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     16,
                     1
                   ],
-                  "note_name": "e",
                   "text": "e",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -16408,12 +16328,10 @@
                     17,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     17,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -16444,12 +16362,10 @@
                     17,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     17,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r",
                   "tuning": {
                     "base_pitch": "220*^5|12",
@@ -16505,12 +16421,10 @@
                     18,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     18,
                     1
                   ],
-                  "note_name": "s",
                   "text": "s",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -16541,12 +16455,10 @@
                     18,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     18,
                     1
                   ],
-                  "note_name": "u",
                   "text": "u",
                   "tuning": {
                     "base_pitch": "220*^5|12",
@@ -16577,12 +16489,10 @@
                     35,
                     2
                   ],
-                  "cycle": 0,
                   "end_time": [
                     35,
                     2
                   ],
-                  "note_name": "b%",
                   "text": "1/2:b%",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -16632,12 +16542,10 @@
                     18,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     18,
                     1
                   ],
-                  "note_name": "b#",
                   "text": "b#",
                   "tuning": {
                     "base_pitch": "220*^1|4",

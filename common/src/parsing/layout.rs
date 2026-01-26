@@ -134,8 +134,8 @@ pub struct PlacedNote<'s> {
     /// Normalized interval over the base pitch; used on keyboard web display. This includes tile
     /// offsets.
     pub base_interval: Pitch,
-    /// Normalized scale degree (from 0 to degrees-1); used to compute MIDI note numbers in MTS mode
-    /// and to determine if this is degree 1 on an isomorphic layout
+    /// Normalized scale degree (from 0 to degrees-1); used to determine if this is degree 1 on an
+    /// isomorphic layout
     pub degree: u32,
     /// Whether this comes from an isomorphic layout
     pub isomorphic: bool,

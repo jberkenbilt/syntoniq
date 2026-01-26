@@ -256,8 +256,6 @@ Note numbers do not have to be in any particular order, but you may have only a 
 
 If a score block doesn't sound any notes for a note number, you don't need a line for it. If the last occurrence of the note was sustained, the sustain eventually has to be resolved, but you can skip one or more score blocks.
 
-It is likely that glide mode will not be supported for MTS MIDI.
-
 The Syntoniq compiler is very thorough and gives clear errors with copious context. If you get it wrong, the compiler will help you fix it.
 
 ### Dynamic Lines

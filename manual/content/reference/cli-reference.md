@@ -15,8 +15,7 @@ The following command converts a score to all available outputs.
 syntoniq generate \
    --score=score.stq \
    --csound=score.csd \
-   --midi-mpe=score-mpe.midi \
-   --midi-mts=score-mts.midi \
+   --midi=score.midi \
    --json=score-timeline.json
 ```
 

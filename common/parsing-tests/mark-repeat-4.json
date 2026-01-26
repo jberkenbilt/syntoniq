@@ -1762,12 +1762,10 @@
                     1,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     1,
                     1
                   ],
-                  "note_name": "d",
                   "text": "2:d",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -1798,12 +1796,10 @@
                     1,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     1,
                     1
                   ],
-                  "note_name": "e",
                   "text": "1:e",
                   "tuning": {
                     "base_pitch": "220*^1|4",
@@ -1834,12 +1830,10 @@
                     2,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     2,
                     1
                   ],
-                  "note_name": "f",
                   "text": "1:f",
                   "tuning": {
                     "base_pitch": "220*^1|4",
