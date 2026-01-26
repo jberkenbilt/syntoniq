@@ -59,8 +59,9 @@ pub type Token1<'s> = Spanned<Token<'s, Pass1>>;
 pub(crate) trait Parser1<'s>: Parser1Intermediate<'s, Token1<'s>> {}
 impl<'s, P: Parser1Intermediate<'s, Token1<'s>>> Parser1<'s> for P {}
 
-/// Characters that have special meaning in note syntax and may appear separately from note names
-static NOTE_PUNCTUATION: &str = "|/.:>~^,'";
+/// Characters that have special meaning in note syntax and may appear separately from note names.
+/// This includes modifiers.
+static NOTE_PUNCTUATION: &str = "|/.:>~&^,'";
 /// Characters allowed note names in addition to alphanumeric. This includes many punctuation
 /// characters so pitches can be used in note names as well as making several characters available
 /// for accidentals. We explicitly avoid characters that are syntactically ambiguous, like brackets
@@ -69,7 +70,7 @@ static NOTE_PUNCTUATION: &str = "|/.:>~^,'";
 /// ambiguous. Avoid $ in case we introduce macros. Removing characters from this list breaks
 /// backward compatibility, so we want to be cautious about over-doing it. Avoid @ because of its
 /// use in layouts and dynamics.
-static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!\\#%&"; // keep consistent with syntoniq.sublime-syntax
+static NOTE_NAME_CHARACTERS: &str = "_*^/.|+-!\\#%&"; // keep consistent with syntoniq.tmLanguage.json
 /// Characters allowed in dynamics
 static DYNAMIC_PUNCTUATION: &str = "|<>@/.";
 /// Characters allowed in definitions outside note names and numbers, including pitch characters,

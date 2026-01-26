@@ -403,9 +403,9 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                     self.diags
                         .err(code::SCORE, m.span, "accent marks may not be duplicated");
                 }
-                if matches!(m.value, NoteModifier::Sustain) {
+                if matches!(m.value, NoteModifier::Tie | NoteModifier::Glide) {
                     self.diags
-                        .err(code::SCORE, m.span, "tie may not be duplicated");
+                        .err(code::SCORE, m.span, "tie and glide may not be duplicated");
                 }
             }
             match m.value {
@@ -434,7 +434,18 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                         );
                     }
                 }
-                NoteModifier::Sustain => {}
+                NoteModifier::Tie => {
+                    if seen.contains(&NoteModifier::Glide) {
+                        self.diags
+                            .err(code::SCORE, m.span, "tie may not appear with glide");
+                    }
+                }
+                NoteModifier::Glide => {
+                    if seen.contains(&NoteModifier::Tie) {
+                        self.diags
+                            .err(code::SCORE, m.span, "glide may not appear with tie");
+                    }
+                }
             }
         }
         value.velocity = velocity;
@@ -459,11 +470,13 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
         r_note: &RegularNote<'s>,
         absolute_pitch: &Pitch,
     ) -> Option<WithTime<Spanned<NoteEvent<'s>>>> {
-        // If there is a pending note and the current note is not explicitly articulated and has
-        // the same absolute pitch, then the current note is tied to the previous note. Otherwise,
-        // any pending note must be completed with its adjusted duration set to the full note
-        // duration (a slur). We don't care if the tuning changed as long as the pitch is the same.
-        // This way, we can pivot tunings in the middle of a tied pivot note.
+        // Determine whether the pending note, if any, should be completed or may still need to be
+        // extended. If the subsequent note is explicitly articulated, end the pending note
+        // regardless of the pitch change. Otherwise, for tied notes, we extend the note if the
+        // pitch is the same, and for glide, we extend the note unconditionally. For tied notes, we
+        // don't care if the tuning changed as long as the pitch is the same. This way, we can pivot
+        // tunings in the middle of a tied pivot note.
+        // TODO: QXXXQ -- detect glide
         let mut pending = self.score.pending_notes.remove(part_note)?;
         let prev = &mut pending.item.value.value;
         if &prev.absolute_pitch == absolute_pitch
@@ -553,6 +566,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                         .get_or_complete_pending_note(&part_note, r_note, &absolute_pitch)
                         .map(|mut p| {
                             // Extend the note's end time to cover this note.
+                            // TODO: QXXXQ -- glide: amend note
                             p.item.value.value.end_time = end_time;
                             p
                         })
@@ -567,6 +581,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                                 velocity: 0,
                                 end_time,
                                 adjusted_end_time: Ratio::from_integer(0),
+                                pitch_changes: Default::default(),
                             };
                             WithTime::new(
                                 time,

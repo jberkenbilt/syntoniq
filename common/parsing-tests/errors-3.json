@@ -13946,14 +13946,14 @@
                             611,
                             612
                           ],
-                          "value": "Sustain"
+                          "value": "Tie"
                         },
                         {
                           "span": [
                             612,
                             613
                           ],
-                          "value": "Sustain"
+                          "value": "Tie"
                         }
                       ],
                       "name": {
@@ -14239,7 +14239,7 @@
                             715,
                             716
                           ],
-                          "value": "Sustain"
+                          "value": "Tie"
                         }
                       ],
                       "name": {
@@ -20398,7 +20398,7 @@
               612,
               613
             ],
-            "value": "tie may not be duplicated"
+            "value": "tie and glide may not be duplicated"
           }
         },
         {

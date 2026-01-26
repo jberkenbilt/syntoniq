@@ -123,6 +123,14 @@ pub struct NoteValue<'s> {
     pub velocity: u8,
     pub end_time: Ratio<u32>,
     pub adjusted_end_time: Ratio<u32>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub pitch_changes: Vec<PitchChange>,
+}
+
+#[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
+pub struct PitchChange {
+    pub when: Ratio<u32>,
+    pub pitch: Pitch,
 }
 
 #[derive(Serialize, Debug, Clone, PartialOrd, PartialEq, Ord, Eq)]

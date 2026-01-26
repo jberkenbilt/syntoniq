@@ -314,7 +314,8 @@ pub enum NoteModifier {
     Accent,
     Marcato,
     Shorten,
-    Sustain,
+    Tie,
+    Glide,
 }
 impl Display for NoteModifier {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -322,7 +323,8 @@ impl Display for NoteModifier {
             NoteModifier::Accent => write!(f, ">"),
             NoteModifier::Marcato => write!(f, "^"),
             NoteModifier::Shorten => write!(f, "."),
-            NoteModifier::Sustain => write!(f, "~"),
+            NoteModifier::Tie => write!(f, "~"),
+            NoteModifier::Glide => write!(f, "&"),
         }
     }
 }
@@ -354,7 +356,7 @@ impl<'s> RegularNote<'s> {
     pub fn sustained(&self) -> bool {
         self.modifiers
             .iter()
-            .any(|x| matches!(x.value, NoteModifier::Sustain))
+            .any(|x| matches!(x.value, NoteModifier::Tie | NoteModifier::Glide))
     }
 }
 

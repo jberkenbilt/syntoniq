@@ -494,9 +494,10 @@ fn note_modifiers(
         let span: Span = ch.span;
         let modifier = match ch.value {
             '>' => NoteModifier::Accent,
+            '&' => NoteModifier::Glide,
             '^' => NoteModifier::Marcato,
             '.' => NoteModifier::Shorten,
-            '~' => NoteModifier::Sustain,
+            '~' => NoteModifier::Tie,
             _ => {
                 diags.err(
                     code::NOTE_SYNTAX,
