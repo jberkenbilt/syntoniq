@@ -2,6 +2,10 @@
 
 This is general TODO across internal docs, manual, and software.
 
+# Glide
+
+Modify NoteEvent to contain an array of pitches with time offsets from the beginning of the note.
+
 # Pre-1.0
 
 These are proposed pre-1.0 items. Details are below for many.
