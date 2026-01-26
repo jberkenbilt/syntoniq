@@ -375,8 +375,9 @@ impl<'s> MtsData<'s> {
 
     fn get_track_assignments(
         &mut self,
+        arena: &'s Arena,
         midi_instruments: &BTreeMap<Cow<str>, MidiInstrumentNumber>,
-        tracks: &mut Vec<Vec<TrackEvent>>,
+        tracks: &mut Vec<Vec<TrackEvent<'s>>>,
     ) -> anyhow::Result<()> {
         let mut cur_track = 1usize;
         let mut channels_seen = BTreeSet::new();
@@ -387,7 +388,7 @@ impl<'s> MtsData<'s> {
                 midi_port: port_channel.midi_port,
             };
             if let Entry::Vacant(v) = self.track_data.entry(track_key) {
-                add_track(v, tracks, &mut cur_track, port_channel.midi_port);
+                add_track(v, tracks, &mut cur_track, arena, port_channel.midi_port);
             }
             if channels_seen.insert(port_channel) {
                 // This is the first time this channel has been seen. Initialize its instrument and
@@ -599,8 +600,9 @@ impl<'s> MpeData<'s> {
 
     fn get_track_assignments(
         &mut self,
+        arena: &'s Arena,
         midi_instruments: &BTreeMap<Cow<str>, MidiInstrumentNumber>,
-        tracks: &mut Vec<Vec<TrackEvent>>,
+        tracks: &mut Vec<Vec<TrackEvent<'s>>>,
     ) -> anyhow::Result<()> {
         let mut cur_track = 1usize;
         let mut channels_seen = BTreeSet::new();
@@ -611,7 +613,7 @@ impl<'s> MpeData<'s> {
                 midi_port: port_channel.midi_port,
             };
             if let Entry::Vacant(v) = self.track_data.entry(track_key) {
-                add_track(v, tracks, &mut cur_track, port_channel.midi_port);
+                add_track(v, tracks, &mut cur_track, arena, port_channel.midi_port);
             }
             if channels_seen.insert(port_channel) {
                 let track = tracks.last_mut().unwrap();
@@ -1031,12 +1033,20 @@ impl<'s> MidiGenerator<'s> {
         match &mut self.pitch_data {
             PitchData::Mts(mts) => {
                 mts.get_channel_mappings(&self.timeline.events)?;
-                mts.get_track_assignments(&self.timeline.midi_instruments, &mut tracks)?;
+                mts.get_track_assignments(
+                    self.arena,
+                    &self.timeline.midi_instruments,
+                    &mut tracks,
+                )?;
                 mts.get_part_channels(&mut self.part_channels)?;
             }
             PitchData::Mpe(mpe) => {
                 mpe.get_channel_mappings(&self.timeline.events)?;
-                mpe.get_track_assignments(&self.timeline.midi_instruments, &mut tracks)?;
+                mpe.get_track_assignments(
+                    self.arena,
+                    &self.timeline.midi_instruments,
+                    &mut tracks,
+                )?;
                 mpe.get_part_channels(&mut self.part_channels)?;
             }
         };
@@ -1248,18 +1258,27 @@ impl<'s> MidiGenerator<'s> {
     }
 }
 
-fn add_track<T: Ord>(
+fn add_track<'s, T: Ord>(
     v: VacantEntry<T, usize>,
-    tracks: &mut Vec<Vec<TrackEvent>>,
+    tracks: &mut Vec<Vec<TrackEvent<'s>>>,
     cur_track: &mut usize,
+    arena: &'s Arena,
     midi_port: u7,
 ) {
     v.insert(*cur_track);
     *cur_track += 1;
-    tracks.push(vec![TrackEvent {
-        delta: 0.into(),
-        kind: TrackEventKind::Meta(MetaMessage::MidiPort(midi_port)),
-    }]);
+    let device_name = format!("d{midi_port}");
+    let device_name = arena.add(device_name.as_bytes());
+    tracks.push(vec![
+        TrackEvent {
+            delta: 0.into(),
+            kind: TrackEventKind::Meta(MetaMessage::MidiPort(midi_port)),
+        },
+        TrackEvent {
+            delta: 0.into(),
+            kind: TrackEventKind::Meta(MetaMessage::DeviceName(device_name)),
+        },
+    ]);
 }
 
 fn end_rpn(track: &mut Vec<TrackEvent>, channel: u4) {
