@@ -14818,17 +14818,11 @@
                     1,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     1,
                     1
                   ],
-                  "note_name": "c",
                   "text": "1:c",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -14854,17 +14848,11 @@
                     2,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     2,
                     1
                   ],
-                  "note_name": "d",
                   "text": "d",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -14890,17 +14878,11 @@
                     3,
                     1
                   ],
-                  "cycle": 1,
                   "end_time": [
                     3,
                     1
                   ],
-                  "note_name": "e",
                   "text": "e'",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -14926,17 +14908,11 @@
                     4,
                     1
                   ],
-                  "cycle": -1,
                   "end_time": [
                     4,
                     1
                   ],
-                  "note_name": "f",
                   "text": "f,",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -14962,17 +14938,11 @@
                     5,
                     1
                   ],
-                  "cycle": 2,
                   "end_time": [
                     5,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p'2",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -14998,17 +14968,11 @@
                     5,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     5,
                     1
                   ],
-                  "note_name": "c",
                   "text": "1:c",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15034,17 +14998,11 @@
                     6,
                     1
                   ],
-                  "cycle": -2,
                   "end_time": [
                     6,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q,2:>",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 96
                 }
               }
@@ -15070,17 +15028,11 @@
                     23,
                     4
                   ],
-                  "cycle": 0,
                   "end_time": [
                     6,
                     1
                   ],
-                  "note_name": "d",
                   "text": "d:.",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15106,17 +15058,11 @@
                     7,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     7,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r:^",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 108
                 }
               }
@@ -15142,17 +15088,11 @@
                     7,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     7,
                     1
                   ],
-                  "note_name": "e",
                   "text": "e:>",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 96
                 }
               }
@@ -15178,17 +15118,11 @@
                     8,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     8,
                     1
                   ],
-                  "note_name": "s",
                   "text": "s:~",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15214,17 +15148,11 @@
                     31,
                     4
                   ],
-                  "cycle": 0,
                   "end_time": [
                     8,
                     1
                   ],
-                  "note_name": "f",
                   "text": "f:.^",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 108
                 }
               }
@@ -15266,17 +15194,11 @@
                     9,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     9,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15302,17 +15224,11 @@
                     9,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     9,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p",
-                  "tuning": {
-                    "base_pitch": "220*^5|12",
-                    "scale_name": "5-JI"
-                  },
                   "velocity": 72
                 }
               }
@@ -15338,17 +15254,11 @@
                     9,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     9,
                     1
                   ],
-                  "note_name": "a",
                   "text": "1:a",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15403,17 +15313,11 @@
                     10,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     10,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15439,17 +15343,11 @@
                     10,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     10,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q",
-                  "tuning": {
-                    "base_pitch": "220*^5|12",
-                    "scale_name": "5-JI"
-                  },
                   "velocity": 72
                 }
               }
@@ -15475,17 +15373,11 @@
                     10,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     10,
                     1
                   ],
-                  "note_name": "e",
                   "text": "e",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15511,17 +15403,11 @@
                     11,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     11,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15547,17 +15433,11 @@
                     11,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     11,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r",
-                  "tuning": {
-                    "base_pitch": "220*^5|12",
-                    "scale_name": "5-JI"
-                  },
                   "velocity": 72
                 }
               }
@@ -15608,17 +15488,11 @@
                     12,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     12,
                     1
                   ],
-                  "note_name": "s",
                   "text": "s",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15644,17 +15518,11 @@
                     12,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     12,
                     1
                   ],
-                  "note_name": "u",
                   "text": "u",
-                  "tuning": {
-                    "base_pitch": "220*^5|12",
-                    "scale_name": "5-JI"
-                  },
                   "velocity": 72
                 }
               }
@@ -15680,17 +15548,11 @@
                     23,
                     2
                   ],
-                  "cycle": 0,
                   "end_time": [
                     23,
                     2
                   ],
-                  "note_name": "b%",
                   "text": "1/2:b%",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15735,17 +15597,11 @@
                     12,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     12,
                     1
                   ],
-                  "note_name": "b#",
                   "text": "b#",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -15787,17 +15643,11 @@
                     62,
                     5
                   ],
-                  "cycle": 0,
                   "end_time": [
                     62,
                     5
                   ],
-                  "note_name": "c",
                   "text": "2/5:c",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths"
-                  },
                   "velocity": 72
                 }
               }
@@ -15823,17 +15673,11 @@
                     62,
                     5
                   ],
-                  "cycle": 1,
                   "end_time": [
                     62,
                     5
                   ],
-                  "note_name": "c!",
                   "text": "2/5:c!'",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths-3"
-                  },
                   "velocity": 72
                 }
               }
@@ -15859,17 +15703,11 @@
                     64,
                     5
                   ],
-                  "cycle": -1,
                   "end_time": [
                     64,
                     5
                   ],
-                  "note_name": "d",
                   "text": "d,",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths"
-                  },
                   "velocity": 72
                 }
               }
@@ -15895,17 +15733,11 @@
                     64,
                     5
                   ],
-                  "cycle": 0,
                   "end_time": [
                     64,
                     5
                   ],
-                  "note_name": "a!",
                   "text": "a!",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths-3"
-                  },
                   "velocity": 72
                 }
               }
@@ -15931,17 +15763,11 @@
                     66,
                     5
                   ],
-                  "cycle": -2,
                   "end_time": [
                     66,
                     5
                   ],
-                  "note_name": "e",
                   "text": "e,2",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths"
-                  },
                   "velocity": 72
                 }
               }
@@ -15967,17 +15793,11 @@
                     66,
                     5
                   ],
-                  "cycle": 2,
                   "end_time": [
                     66,
                     5
                   ],
-                  "note_name": "g!",
                   "text": "g!'2",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths-3"
-                  },
                   "velocity": 72
                 }
               }
@@ -16003,17 +15823,11 @@
                     68,
                     5
                   ],
-                  "cycle": 0,
                   "end_time": [
                     68,
                     5
                   ],
-                  "note_name": "g",
                   "text": "1/5:g:~",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths"
-                  },
                   "velocity": 72
                 }
               }
@@ -16039,17 +15853,11 @@
                     68,
                     5
                   ],
-                  "cycle": 0,
                   "end_time": [
                     68,
                     5
                   ],
-                  "note_name": "e!",
                   "text": "e!",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths-3"
-                  },
                   "velocity": 72
                 }
               }
@@ -16075,17 +15883,11 @@
                     14,
                     1
                   ],
-                  "cycle": -1,
                   "end_time": [
                     14,
                     1
                   ],
-                  "note_name": "a",
                   "text": "2/5:a,",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths"
-                  },
                   "velocity": 72
                 }
               }
@@ -16111,17 +15913,11 @@
                     14,
                     1
                   ],
-                  "cycle": 1,
                   "end_time": [
                     14,
                     1
                   ],
-                  "note_name": "d!",
                   "text": "d!'",
-                  "tuning": {
-                    "base_pitch": "264",
-                    "scale_name": "fifths-3"
-                  },
                   "velocity": 72
                 }
               }
@@ -16163,17 +15959,11 @@
                     15,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     15,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -16199,17 +15989,11 @@
                     15,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     15,
                     1
                   ],
-                  "note_name": "p",
                   "text": "1:p",
-                  "tuning": {
-                    "base_pitch": "220*^5|12",
-                    "scale_name": "5-JI"
-                  },
                   "velocity": 72
                 }
               }
@@ -16235,17 +16019,11 @@
                     15,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     15,
                     1
                   ],
-                  "note_name": "a",
                   "text": "1:a",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -16300,17 +16078,11 @@
                     16,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     16,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -16336,17 +16108,11 @@
                     16,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     16,
                     1
                   ],
-                  "note_name": "q",
                   "text": "q",
-                  "tuning": {
-                    "base_pitch": "220*^5|12",
-                    "scale_name": "5-JI"
-                  },
                   "velocity": 72
                 }
               }
@@ -16372,17 +16138,11 @@
                     16,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     16,
                     1
                   ],
-                  "note_name": "e",
                   "text": "e",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -16408,17 +16168,11 @@
                     17,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     17,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -16444,17 +16198,11 @@
                     17,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     17,
                     1
                   ],
-                  "note_name": "r",
                   "text": "r",
-                  "tuning": {
-                    "base_pitch": "220*^5|12",
-                    "scale_name": "5-JI"
-                  },
                   "velocity": 72
                 }
               }
@@ -16505,17 +16253,11 @@
                     18,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     18,
                     1
                   ],
-                  "note_name": "s",
                   "text": "s",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "5-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -16541,17 +16283,11 @@
                     18,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     18,
                     1
                   ],
-                  "note_name": "u",
                   "text": "u",
-                  "tuning": {
-                    "base_pitch": "220*^5|12",
-                    "scale_name": "5-JI"
-                  },
                   "velocity": 72
                 }
               }
@@ -16577,17 +16313,11 @@
                     35,
                     2
                   ],
-                  "cycle": 0,
                   "end_time": [
                     35,
                     2
                   ],
-                  "note_name": "b%",
                   "text": "1/2:b%",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }
@@ -16632,17 +16362,11 @@
                     18,
                     1
                   ],
-                  "cycle": 0,
                   "end_time": [
                     18,
                     1
                   ],
-                  "note_name": "b#",
                   "text": "b#",
-                  "tuning": {
-                    "base_pitch": "220*^1|4",
-                    "scale_name": "12-EDO"
-                  },
                   "velocity": 72
                 }
               }

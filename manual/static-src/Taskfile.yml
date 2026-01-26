@@ -5,7 +5,7 @@ tasks:
     deps:
       # Every *-csound.mp3 file included in the docs can be generated
       # from a *.stq file in this directory. They have to be
-      # explicitly added here. Currently, *-mpe.mp3 and *-mts.mp3 are
+      # explicitly added here. Currently, *-fluid.mp3 and *-surge.mp3 are
       # manually generated.
       - stq-csound-mp3:110-to-880hz
       - stq-csound-mp3:440-to-660hz

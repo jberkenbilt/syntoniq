@@ -76,8 +76,7 @@ Save the above example to a file called `hello.stq`. Then you can run
 ```sh
 syntoniq generate --score=hello.stq \
    --csound=hello.csd \
-   --midi-mpe=hello-mpe.midi \
-   --midi-mts=hello-mts.midi \
+   --midi=hello.midi \
    --json=hello.json
 ```
 
@@ -85,8 +84,7 @@ You should see
 ```
 syntoniq score 'hello.stq' is valid
 JSON output written to hello.json
-MIDI output (MTS) written to hello-mts.midi
-MIDI output (MPE) written to hello-mpe.midi
+MIDI output written to hello.midi
 Csound output written to hello.csd
 ```
 
@@ -96,19 +94,19 @@ The file `hello.csd` contains [Csound](https://csound.com) output. If you want t
 
 {{ audio(src="hello-csound.mp3", caption="Audio Created with Csound") }}
 
-The file `hello-mts.midi` is a standard MIDI file that embeds MTS (Midi Tuning System) SysEx (System Exclusive) messages and assigns a MIDI note number to each pitch. For most workflows, you will want the MPE version of MIDI, but the MTS version may be better with stand-alone MIDI to audio converters. If you're using the regular 12-tone scale, you can play this with any converter or player. Otherwise, you need software that understand these messages. If you have [TiMidity++](https://timidity.sourceforge.net/), you can run `timidity hello-mts.midi`. TiMidity++ is a very old but highly functional MIDI to WAVE converter. It is one of the few tools that natively understands MIDI with embedded MTS. When using TiMidity++, you may want to experiment with command-line arguments for best amplitude control and crackle-free audio. The audio sample here was created with `timidity -A100,100a`.
+The file `hello.midi` is a standard MIDI file with MPE (Midi Polyphonic Expression) compatible pitch bend statements. In this example, which uses regular 12-tone pitches, there won't be any, but for microtonal music, these are essential. A file like this can be loaded into a Digital Audio Workstation (DAW) or consumed by other MIDI tools. You can play this with a MIDI player of your choice. You can also render it with [FluidSynth](https://www.fluidsynth.org). The command `fluidsynth -iq -F a.wav a.midi` converts `a.midi` to `a.wav`.
 
 <!--
 To generate
-* timidity -A100,100a -OwM /tmp/a.midi /tmp/a.wav
+* fluidsynth -iq -F /tmp/a.wav /tmp/a.midi
 * convert to mp3 using same lame as in static-src/Taskfile.yml
 -->
-{{ audio(src="introduction/hello-mts.mp3", caption="Audio Created by TiMidity++ with Fluid sound font") }}
+{{ audio(src="introduction/hello-fluid.mp3", caption="Audio Created by FluidSynth") }}
 
-The file `hello-mpe.midi` is a standard MIDI file with MPE (Midi Polyphonic Expression) compatible pitch bend statements. In this example, which uses regular 12-tone pitches, there won't be any, but for microtonal music, these are essential. A file like this can be loaded into a Digital Audio Workstation (DAW) or consumed by other MIDI tools. You can play this with a MIDI player of your choice. One way to hear this on Linux is to install a synth tool, such as Surge XT, and to send the file to it using a tool such as `aplaymidi`. For example:
+Another way to hear this on Linux is to install a synth tool, such as Surge XT, and to send the file to it using a tool such as `aplaymidi`. For example:
 ```sh
 # start Surge XT and set up audio
-aplaymidi --port='Midi Through' hello-mpe.midi
+aplaymidi --port='Midi Through' hello.midi
 ```
 On other platforms, you can just load this into your favorite DAW or MIDI player.
 
@@ -121,8 +119,6 @@ To generate
 * Stop `rec`
 * Trim the with with audacity and convert to mp3 using same lame as in static-src/Taskfile.yml
 -->
-{{ audio(src="introduction/hello-mpe.mp3", caption="Audio Created by Surge XT with Luna/Analog Brass") }}
-
-FUTURE: If we add glide and don't implement it for some outputs, mention this. It's likely that glide will not work for MTS MIDI, but it will most likely work for MPE MIDI and will definitely work for Csound.
+{{ audio(src="introduction/hello-surge.mp3", caption="Audio Created by Surge XT with Luna/Analog Brass") }}
 
 The file `hello.json` contains complete information about the timeline that `syntoniq` generated. You can use this for study, or it could be the basis for creating other ways to render the audio without modifying the Syntoniq software. All the information that the Csound and MIDI generators use is encoded in this JSON file.

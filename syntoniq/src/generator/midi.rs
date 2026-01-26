@@ -5,23 +5,17 @@ use midly::num::{u4, u7, u14, u15, u24, u28};
 use midly::{
     Arena, Format, Header, MetaMessage, MidiMessage, Smf, Timing, TrackEvent, TrackEventKind,
 };
-use num_integer::Integer;
 use num_rational::Ratio;
 use std::borrow::Cow;
 use std::cell::RefCell;
-use std::cmp;
 use std::collections::btree_map::{Entry, VacantEntry};
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
-use std::fmt::{Display, Formatter};
-use std::ops::Range;
 use std::path::Path;
 use std::sync::Arc;
-use syntoniq_common::parsing::score::{ScalesByName, Tuning};
 use syntoniq_common::parsing::{
     DynamicEvent, MidiInstrumentNumber, NoteEvent, TempoEvent, Timeline, TimelineData,
     TimelineEvent,
 };
-use syntoniq_common::pitch::Pitch;
 
 // Key concepts:
 //   - A "part" is a syntoniq part, corresponding to a part in the score. A "port" is a MIDI port.
@@ -32,43 +26,15 @@ use syntoniq_common::pitch::Pitch;
 //     - Midi Tuning Specification (MTS) -- creates "tuning programs," which assign a pitch to each
 //       MIDI note. This is primary intended for live performance settings where an MTS master
 //       use MTS-ESP to tune all connected instruments the same way. Some software MIDI renderers,
-//       such as Timidity++, can read MTS data.
+//       such as Timidity++, can read MTS data. Syntoniq version 0.1.0 had support for this, but it
+//       is not the right approach for generating MIDI files, and it's not practical implement pitch
+//       bend with it, so it was removed for the first release after 0.1.0.
 //     - MIDI Polyphonic Expression (MPE) -- a set of conventions that assign one note per channel,
 //       this allowing certain parameters, such as pitch bend and after-touch, to apply at the note
 //       level. This is more suited to batch editing in a Digital Audio Workstation and is what most
 //       systems that create Microtonal MIDI files create.
 //
-// *** For MTS ***
-//
-//   - A tuning program consists of at most 128 notes. For the range of notes used in a current
-//     scale, there is one tuning program for each 128 notes. A syntoniq tuning is a scale and
-//     base pitch. A midi tuning is a subset of a syntoniq tuning.
-//   - For simplicity and to allow sustaining notes from one tuning while playing notes from a
-//     different tuning, we assign each channel a tuning.
-//
-// Therefore:
-//   - There is one MIDI port for every 15 channels (since we avoid channel 9 -- see comments)
-//   - There is one (channel, MIDI port) pair for each (score part, tuning)
-//   - There is one track for each (score part, MIDI port)
-//
-// We do the following up front:
-//   - Assign a tuning program and, if needed, bank for each tuning.
-//   - Dump all tunings to track 0 (midi track 1)
-//   - Create a track for each (score part, MIDI port). At the beginning of the track,
-//     set the track's instrument and MIDI port.
-//   - For each (channel, MIDI port), get the (score part, tuning). In the first track for that
-//     (score part, MIDI port), set the instrument and  tuning for that channel to the specific
-//     tuning.
-//
-// Then, when we have a note:
-//   - Use the syntoniq tuning and specific note to map to a tuning program.
-//   - Use the tuning and score part to map to a channel and MIDI port.
-//   - Use the score part and MIDI port to map to a track.
-//   - Play the note in the track using the given channel.
-//   - The note will have the correct instrument and MIDI port because of the track and the correct
-//     tuning because of the channel.
-//
-// *** For MPE ***
+// MIDI details:
 //
 //   - Each port can have at most 15 separate note channels. Channel 9 is not special. (In non-MPE
 //     MIDI, channel 9, 0-based, is usually reserved from drums.) Channel 0 is the control channel.
@@ -108,20 +74,6 @@ use syntoniq_common::pitch::Pitch;
 //   - The note will have the correct instrument and MIDI port because of the track and the correct
 //     pitch because of the channel.
 
-#[derive(Copy, Clone)]
-pub enum MidiStyle {
-    Mts,
-    Mpe,
-}
-impl Display for MidiStyle {
-    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        match self {
-            MidiStyle::Mts => write!(f, "MTS"),
-            MidiStyle::Mpe => write!(f, "MPE"),
-        }
-    }
-}
-
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct PortChannel {
     midi_port: u7,
@@ -153,12 +105,8 @@ struct MidiGenerator<'s> {
     micros_per_beat: u24,
     part_channels: BTreeMap<&'s str, BTreeSet<TrackPortChannel>>,
     tracks: Vec<Vec<TrackEvent<'s>>>,
-    pitch_data: PitchData<'s>,
+    pitch_data: MpeData<'s>,
     smf: Option<Smf<'s>>,
-}
-enum PitchData<'s> {
-    Mts(MtsData<'s>),
-    Mpe(MpeData<'s>),
 }
 
 fn set_channel_instrument(
@@ -206,353 +154,6 @@ fn set_channel_instrument(
         },
     });
     Ok(())
-}
-
-struct MtsData<'s> {
-    scales: &'s ScalesByName<'s>,
-    tuning_data: BTreeMap<&'s Tuning<'s>, Vec<TuningData>>,
-    channel_data: BTreeMap<MtsChannelKey<'s>, PortChannel>,
-    track_data: BTreeMap<MtsTrackKey<'s>, usize>,
-}
-impl<'s> MtsData<'s> {
-    fn note_offset(&self, note_event: &NoteEvent) -> i32 {
-        let scale_name = &note_event.value.tuning.scale_name;
-        let note_name = &note_event.value.note_name;
-        let cycle = note_event.value.cycle;
-        let scale = self.scales.get(scale_name).unwrap();
-        let scale_degree = scale.notes.get(note_name).unwrap();
-        scale_degree.degree + (cycle as i32 * scale.pitches.len() as i32)
-    }
-
-    fn tuning_for_note(&'s self, key: &'s Tuning<'s>, note: i32) -> anyhow::Result<&'s TuningData> {
-        let data = self
-            .tuning_data
-            .get(key)
-            .ok_or_else(|| anyhow!("no tuning data for known tuning"))?;
-        data.iter()
-            .find(|&i| i.range.contains(&note))
-            .ok_or_else(|| anyhow!("internal error unable to get tuning data for note"))
-    }
-
-    fn track_port_channel_key(
-        &self,
-        score_part: &str,
-        note_event: &NoteEvent,
-    ) -> anyhow::Result<MidiNoteData> {
-        let absolute_scale_degree: i32 = self.note_offset(note_event);
-        let tuning_data = self.tuning_for_note(&note_event.value.tuning, absolute_scale_degree)?;
-        let port_channel = self
-            .channel_data
-            .get(&MtsChannelKey {
-                score_part,
-                raw_tuning: tuning_data.raw_program,
-            })
-            .cloned()
-            .ok_or_else(|| anyhow!("unknown channel for note"))?;
-        let key = u8::try_from(absolute_scale_degree + tuning_data.midi_offset)
-            .ok()
-            .and_then(u7::try_from)
-            .ok_or_else(|| anyhow!("internal error: note out of range"))?;
-        let track_key = MtsTrackKey {
-            score_part,
-            midi_port: port_channel.midi_port,
-        };
-        let track = self
-            .track_data
-            .get(&track_key)
-            .cloned()
-            .ok_or_else(|| anyhow!("unable to get track for note"))?;
-        Ok(MidiNoteData {
-            track,
-            midi_port: port_channel.midi_port,
-            channel: port_channel.channel,
-            key,
-            bend: None,
-        })
-    }
-
-    fn get_channel_mappings(
-        &mut self,
-        events: &'s BTreeSet<Arc<TimelineEvent<'s>>>,
-    ) -> anyhow::Result<()> {
-        // Assign a separate channel to each (score_part, tuning) combination. Stay away from
-        // channel 9 (from 0) since this is usually used for percussion. Here, we assign a "raw
-        // channel", which is converted to a (midi_port, channel) pair.
-        self.get_all_tunings(events)?;
-        let mut channel_users: BTreeSet<MtsChannelKey> = BTreeSet::new();
-        for event in events {
-            let TimelineData::Note(note_event) = &event.data else {
-                continue;
-            };
-            let absolute_scale_degree = self.note_offset(note_event);
-            let tuning = self.tuning_for_note(&note_event.value.tuning, absolute_scale_degree)?;
-            let score_part = note_event.part_note.part;
-            channel_users.insert(MtsChannelKey {
-                score_part,
-                raw_tuning: tuning.raw_program,
-            });
-        }
-        let mut midi_port: u7 = 0.into();
-        let mut channel: u4 = 0.into();
-        let mut too_many = false;
-        for channel_key in channel_users {
-            if too_many {
-                bail!("too many score part/tuning pairs");
-            }
-            self.channel_data
-                .insert(channel_key, PortChannel { midi_port, channel });
-            if channel == 8 {
-                // Skip channel 9, percussion
-                channel += 2.into();
-            } else if channel == 15 {
-                channel = 0.into();
-                if midi_port == 127 {
-                    too_many = true;
-                } else {
-                    midi_port += 1.into();
-                }
-            } else {
-                channel += 1.into();
-            }
-        }
-        Ok(())
-    }
-
-    fn get_all_tunings(
-        &mut self,
-        events: &'s BTreeSet<Arc<TimelineEvent<'s>>>,
-    ) -> anyhow::Result<()> {
-        // A given tuning may have up to 128 notes (midi note numbers 0 through 127). For each
-        // scale, figure the range of notes used, and divide into tunings.
-        let mut tunings: BTreeMap<&Tuning<'s>, NoteRange> = BTreeMap::new();
-        for event in events {
-            let TimelineData::Note(note_event) = &event.data else {
-                continue;
-            };
-            let scale_degree = self.note_offset(note_event);
-            let entry = tunings
-                .entry(&note_event.value.tuning)
-                .or_insert(NoteRange {
-                    min_incl: scale_degree,
-                    max_excl: scale_degree + 1,
-                });
-            entry.widen(scale_degree);
-        }
-        // Divide tunings up so they contain no more than 128 notes. Then assign offsets and
-        // channels to each tuning.
-        let mut tunings: Vec<(&Tuning<'s>, NoteRange)> = tunings
-            .into_iter()
-            .filter(|(tuning, range)| {
-                // Filter out the default MIDI tuning
-                if tuning.scale_name == "12-EDO" && range.min_incl >= -60 && range.max_excl < 68 {
-                    self.tuning_data
-                        .insert(tuning, vec![TuningData::new(-60..68, 0)]);
-                    false
-                } else {
-                    true
-                }
-            })
-            .collect();
-        tunings.sort();
-        let mut program = 0;
-        for (key, range) in tunings {
-            let ranges = split_range(range.min_incl..range.max_excl, 128);
-            let data = ranges
-                .into_iter()
-                .map(|range| {
-                    program += 1;
-                    TuningData::new(range, program)
-                })
-                .collect();
-            self.tuning_data.insert(key, data);
-        }
-        Ok(())
-    }
-
-    fn use_banks(&self) -> bool {
-        self.tuning_data.len() > 126
-    }
-
-    fn get_track_assignments(
-        &mut self,
-        arena: &'s Arena,
-        midi_instruments: &BTreeMap<Cow<str>, MidiInstrumentNumber>,
-        tracks: &mut Vec<Vec<TrackEvent<'s>>>,
-    ) -> anyhow::Result<()> {
-        let mut cur_track = 1usize;
-        let mut channels_seen = BTreeSet::new();
-        let use_banks = self.use_banks();
-        for (k, port_channel) in &self.channel_data {
-            let track_key = MtsTrackKey {
-                score_part: k.score_part,
-                midi_port: port_channel.midi_port,
-            };
-            if let Entry::Vacant(v) = self.track_data.entry(track_key) {
-                add_track(v, tracks, &mut cur_track, arena, port_channel.midi_port);
-            }
-            if channels_seen.insert(port_channel) {
-                // This is the first time this channel has been seen. Initialize its instrument and
-                // tuning program.
-                let track = tracks.last_mut().unwrap();
-                select_tuning_program(track, port_channel.channel, k.raw_tuning, use_banks)?;
-                set_channel_instrument(
-                    midi_instruments,
-                    track,
-                    k.score_part,
-                    port_channel.channel,
-                )?;
-            }
-        }
-        Ok(())
-    }
-
-    fn dump_tuning(
-        arena: &'s Arena,
-        scales_by_name: &ScalesByName,
-        track: &mut Vec<TrackEvent<'s>>,
-        tuning: &Tuning,
-        data: &TuningData,
-        use_banks: bool,
-    ) -> anyhow::Result<()> {
-        if data.raw_program == 0 {
-            // We ensure program 0 is only assigned to the default 12-TET tuning. We don't need
-            // to dump that.
-            return Ok(());
-        }
-        let (bank, program) = TuningData::tuning_program(data.raw_program, use_banks)?;
-        let mut dump: Vec<u8> = vec![
-            0x7E, 0x7F, // all devices
-        ];
-        if let Some(bank) = bank {
-            dump.append(&mut vec![
-                0x08,
-                0x04, // bulk bank dump reply
-                bank.into(),
-                program.into(),
-            ]);
-        } else {
-            dump.append(&mut vec![
-                0x08,
-                0x01, // bulk dump reply
-                program.into(),
-            ]);
-        }
-        // Name: 16 bytes
-        dump.append(&mut string_exact_bytes(&tuning.scale_name, 16));
-
-        // This is the actual pitch calculation logic.
-        let scale = scales_by_name
-            .get(&tuning.scale_name)
-            .ok_or_else(|| anyhow!("unknown scale in dump_tuning"))?;
-        // Get basic information about the scale.
-        let degrees = scale.pitches.len() as i32;
-        let cycle_ratio = scale.definition.cycle;
-        let base_pitch = &tuning.base_pitch;
-        // Get the syntoniq degree for midi note 0.
-        let first = -data.midi_offset;
-        let (mut cycle, mut degree) = first.div_mod_floor(&degrees);
-        let mut pitch0 = base_pitch.clone();
-        let cycle_factor = Pitch::from(cycle_ratio);
-        if cycle < 0 {
-            let invert = cycle_factor.invert();
-            while cycle < 0 {
-                pitch0 *= &invert;
-                cycle += 1;
-            }
-        }
-        while cycle > 0 {
-            pitch0 *= &cycle_factor;
-            cycle -= 1;
-        }
-        //TODO: overflow detection is a little shaky. There are likely conditions that will
-        // cause pitch overflow/underflow conditions or very sparse scales are crazy base pitches.
-        let mut hit_max = false;
-        for i in 0..128 {
-            let pitch = &pitch0 * &scale.pitches[degree as usize];
-            let mut v = pitch.midi_tuning().unwrap_or_else(|| {
-                if i < data.midi_offset {
-                    vec![0; 3]
-                } else {
-                    // No more cycle advances will happen -- from here, we'll keep repeating
-                    // pitch classes in the top octave.
-                    hit_max = true;
-                    vec![127; 3]
-                }
-            });
-            dump.append(&mut v);
-            degree = (degree + 1) % degrees;
-            if degree == 0 && !hit_max {
-                pitch0 *= &cycle_factor;
-            }
-        }
-        // Compute checksum per MTS spec. The MTS spec recommends that readers ignore the checksum.
-        let mut checksum: u8 = 0;
-        for b in &dump {
-            checksum ^= b;
-        }
-        dump.push(checksum & 0x7F);
-        // End SysEx
-        dump.push(0x7F);
-        let dump = arena.add(&dump);
-        track.push(TrackEvent {
-            delta: 0.into(),
-            kind: TrackEventKind::SysEx(dump),
-        });
-        Ok(())
-    }
-
-    fn dump_tunings(
-        &mut self,
-        arena: &'s Arena,
-        scales_by_name: &ScalesByName,
-        track: &mut Vec<TrackEvent<'s>>,
-    ) -> anyhow::Result<()> {
-        let use_banks = self.use_banks();
-        let mut tunings: Vec<_> = self.tuning_data.iter().collect();
-        tunings.sort_by_key(|x| x.0);
-        let mut events = Vec::new();
-        for (&tuning, tuning_data_vec) in tunings {
-            for tuning_data in tuning_data_vec {
-                Self::dump_tuning(
-                    arena,
-                    scales_by_name,
-                    &mut events,
-                    tuning,
-                    tuning_data,
-                    use_banks,
-                )?;
-            }
-        }
-        track.append(&mut events);
-        Ok(())
-    }
-
-    fn get_part_channels(
-        &mut self,
-        part_channels: &mut BTreeMap<&'s str, BTreeSet<TrackPortChannel>>,
-    ) -> anyhow::Result<()> {
-        // For each distinct part, make a list of all the tracks it uses. This is needed for
-        // dynamics.
-        for (channel_key, port_channel) in &self.channel_data {
-            let track_key = MtsTrackKey {
-                score_part: channel_key.score_part,
-                midi_port: port_channel.midi_port,
-            };
-            let &track = self.track_data.get(&track_key).ok_or_else(|| {
-                anyhow!("get_part_channels: unable to get track for score_part/midi_port")
-            })?;
-            let tpc = TrackPortChannel {
-                track,
-                midi_port: port_channel.midi_port,
-                channel: port_channel.channel,
-            };
-            part_channels
-                .entry(channel_key.score_part)
-                .or_default()
-                .insert(tpc);
-        }
-        Ok(())
-    }
 }
 
 struct MpeData<'s> {
@@ -698,55 +299,6 @@ impl<'s> MpeData<'s> {
     }
 }
 
-#[derive(Debug)]
-struct TuningData {
-    range: Range<i32>,
-    raw_program: i32,
-    /// midi_offset + syntoniq note = midi note
-    midi_offset: i32,
-}
-impl TuningData {
-    fn new(range: Range<i32>, raw_program: i32) -> Self {
-        // Opportunistically try to map in the normal MIDI way. Syntoniq 0 is MIDI note 60, so
-        // MIDI range 0..128 corresponds to Syntoniq range -60..48.
-        let midi_offset = if range.start >= -60 && range.end <= 68 {
-            60
-        } else {
-            // Center these within 0..128.
-            let first = ((128 - range.len()) / 2) as i32;
-            first - range.start
-        };
-        Self {
-            range,
-            raw_program,
-            midi_offset,
-        }
-    }
-
-    /// Return tuning bank (if any) and program.
-    fn tuning_program(raw_program: i32, use_banks: bool) -> anyhow::Result<(Option<u7>, u7)> {
-        let bank = raw_program / 128;
-        let prog = u7::try_from((raw_program % 128) as u8).unwrap();
-        if use_banks {
-            let bank = u8::try_from(bank + 1)
-                .ok()
-                .and_then(u7::try_from)
-                .ok_or_else(|| anyhow!("maximum number of tunings exceeded"))?;
-            Ok((Some(bank), prog))
-        } else if bank > 0 {
-            bail!("tuning_program called with use_banks = false and prog > 127");
-        } else {
-            Ok((None, prog))
-        }
-    }
-}
-
-#[derive(Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
-struct MtsChannelKey<'a> {
-    score_part: &'a str,
-    raw_tuning: i32,
-}
-
 #[derive(Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct MpeChannelKey<'a> {
     score_part: &'a str,
@@ -754,42 +306,9 @@ struct MpeChannelKey<'a> {
 }
 
 #[derive(Debug, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
-struct MtsTrackKey<'a> {
-    score_part: &'a str,
-    midi_port: u7,
-}
-
-#[derive(Debug, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct MpeTrackKey<'a> {
     score_part: &'a str,
     midi_port: u7,
-}
-
-#[derive(Debug, Clone, Copy, PartialOrd, PartialEq, Eq, Ord)]
-struct NoteRange {
-    min_incl: i32,
-    max_excl: i32,
-}
-impl NoteRange {
-    fn widen(&mut self, scale_degree: i32) {
-        self.min_incl = cmp::min(self.min_incl, scale_degree);
-        self.max_excl = cmp::max(self.max_excl, scale_degree + 1);
-    }
-}
-
-/// Given a string, return a byte vec that is exactly `size` bytes. This is done by truncating, if
-/// necessary, at a character bounding, and then padding with space.
-fn string_exact_bytes(s: &str, size: usize) -> Vec<u8> {
-    // AI Generated.
-    // Start from the desired cutoff, but not past the string.
-    let mut end = size.min(s.len());
-    // Move back to the previous UTF-8 boundary (at most 3 steps).
-    while !s.is_char_boundary(end) {
-        end -= 1;
-    }
-    let mut out = vec![b' '; size];
-    out[..end].copy_from_slice(&s.as_bytes()[..end]);
-    out
 }
 
 /// Given a larger integer value, return (msb, lsb)
@@ -803,35 +322,6 @@ fn split_u14<T: TryInto<u16>>(val: T) -> anyhow::Result<(u7, u7)> {
         .ok_or_else(|| anyhow!("range error getting msb of 14-bit value"))?;
     let lsb = u7::try_from((as_u16 % 128) as u8).unwrap();
     Ok((msb, lsb))
-}
-
-fn split_range(r: Range<i32>, n: usize) -> Vec<Range<i32>> {
-    assert!(n > 0, "n must be > 0");
-    let start = r.start as i64;
-    let end = r.end as i64;
-    if start >= end {
-        return Vec::new();
-    }
-    let len = (end - start) as usize;
-    let bins = len.div_ceil(n);
-    let items_per_bin = len / bins;
-    let mut rem = len % bins;
-
-    let mut out = Vec::with_capacity(bins);
-    let mut s = start;
-    for _ in 0..bins {
-        let size = items_per_bin
-            + if rem > 0 {
-                rem -= 1;
-                1
-            } else {
-                0
-            };
-        let e = s + size as i64;
-        out.push((s as i32)..(e as i32));
-        s = e;
-    }
-    out
 }
 
 /// Ramp linearly from a start to an end level over the given number of ticks in at most `steps`
@@ -947,24 +437,16 @@ fn bpm_to_micros_per_beat(bpm: Ratio<u32>) -> anyhow::Result<u24> {
 }
 
 impl<'s> MidiGenerator<'s> {
-    fn new(timeline: &'s Timeline, arena: &'s Arena, style: MidiStyle) -> anyhow::Result<Self> {
+    fn new(timeline: &'s Timeline, arena: &'s Arena) -> anyhow::Result<Self> {
         // Pick a timing that accommodates 2, 3, 5, and 7 as well as anything used by the score.
         let ticks_per_beat = u16::try_from(num_integer::lcm(timeline.time_lcm, 210))
             .ok()
             .and_then(u15::try_from)
             .ok_or_else(|| anyhow!("overflow calculating ticks per beat"))?;
         let micros_per_beat: u24 = 833333.into(); // 72 BPM -- changed by tempo events
-        let pitch_data = match style {
-            MidiStyle::Mts => PitchData::Mts(MtsData {
-                scales: &timeline.scales,
-                tuning_data: Default::default(),
-                channel_data: Default::default(),
-                track_data: Default::default(),
-            }),
-            MidiStyle::Mpe => PitchData::Mpe(MpeData {
-                channel_data: Default::default(),
-                track_data: Default::default(),
-            }),
+        let pitch_data = MpeData {
+            channel_data: Default::default(),
+            track_data: Default::default(),
         };
         Ok(Self {
             arena,
@@ -1030,26 +512,14 @@ impl<'s> MidiGenerator<'s> {
 
     fn analyze(&mut self) -> anyhow::Result<()> {
         let mut tracks = self.init_tracks();
-        match &mut self.pitch_data {
-            PitchData::Mts(mts) => {
-                mts.get_channel_mappings(&self.timeline.events)?;
-                mts.get_track_assignments(
-                    self.arena,
-                    &self.timeline.midi_instruments,
-                    &mut tracks,
-                )?;
-                mts.get_part_channels(&mut self.part_channels)?;
-            }
-            PitchData::Mpe(mpe) => {
-                mpe.get_channel_mappings(&self.timeline.events)?;
-                mpe.get_track_assignments(
-                    self.arena,
-                    &self.timeline.midi_instruments,
-                    &mut tracks,
-                )?;
-                mpe.get_part_channels(&mut self.part_channels)?;
-            }
-        };
+        self.pitch_data
+            .get_channel_mappings(&self.timeline.events)?;
+        self.pitch_data.get_track_assignments(
+            self.arena,
+            &self.timeline.midi_instruments,
+            &mut tracks,
+        )?;
+        self.pitch_data.get_part_channels(&mut self.part_channels)?;
         self.tracks = tracks;
         Ok(())
     }
@@ -1154,10 +624,9 @@ impl<'s> MidiGenerator<'s> {
         note_event: &NoteEvent<'s>,
     ) -> anyhow::Result<()> {
         let score_part = note_event.part_note.part;
-        let midi_note = match &self.pitch_data {
-            PitchData::Mts(mts) => mts.track_port_channel_key(score_part, note_event)?,
-            PitchData::Mpe(mpe) => mpe.track_port_channel_key(score_part, note_event)?,
-        };
+        let midi_note = self
+            .pitch_data
+            .track_port_channel_key(score_part, note_event)?;
         let velocity = u7::try_from(note_event.value.velocity)
             .ok_or_else(|| anyhow!("overflow getting velocity"))?;
         let mut delta = self.get_delta(midi_note.track, event.time)?;
@@ -1229,13 +698,6 @@ impl<'s> MidiGenerator<'s> {
     fn generate(mut self) -> anyhow::Result<Smf<'s>> {
         self.analyze()?;
         self.init_output()?;
-        match &mut self.pitch_data {
-            PitchData::Mts(mts) => {
-                mts.dump_tunings(self.arena, &self.timeline.scales, &mut self.tracks[0])?
-            }
-            PitchData::Mpe(_) => {}
-        }
-
         let mut events: BTreeSet<_> = self.timeline.events.iter().cloned().collect();
         while let Some(event) = events.pop_first() {
             if let Err(e) = self.handle_event(&mut events, &event) {
@@ -1345,25 +807,6 @@ fn set_midi_parameter(
     }
 }
 
-fn select_tuning_program(
-    track: &mut Vec<TrackEvent>,
-    channel: u4,
-    raw_tuning: i32,
-    use_banks: bool,
-) -> anyhow::Result<()> {
-    let (bank, program) = TuningData::tuning_program(raw_tuning, use_banks)?;
-    // Select RPN (registered parameter number) MSB, then LSB for the code. Parameter 3
-    // selects the tuning program. Parameter 4 sets the bank.
-    for (param, value) in [(4, bank), (3, Some(program))] {
-        let Some(value) = value else {
-            continue;
-        };
-        set_midi_parameter(track, 0.into(), channel, param.into(), Some(value), None);
-    }
-    end_rpn(track, channel);
-    Ok(())
-}
-
 fn init_mpe(track: &mut Vec<TrackEvent>) {
     // Initialize MPE for a single "low" zone with 15 channels.
     set_midi_parameter(track, 0.into(), 0.into(), 6.into(), Some(15.into()), None);
@@ -1385,19 +828,12 @@ fn init_mpe(track: &mut Vec<TrackEvent>) {
     }
 }
 
-pub(crate) fn generate(
-    timeline: &Timeline,
-    out: impl AsRef<Path>,
-    style: MidiStyle,
-) -> anyhow::Result<()> {
+pub(crate) fn generate(timeline: &Timeline, out: impl AsRef<Path>) -> anyhow::Result<()> {
     let arena = Arena::new();
-    let g = MidiGenerator::new(timeline, &arena, style)?;
+    let g = MidiGenerator::new(timeline, &arena)?;
     let smf = g.generate()?;
     smf.save(&out)?;
-    println!(
-        "MIDI output ({style}) written to {}",
-        out.as_ref().display()
-    );
+    println!("MIDI output written to {}", out.as_ref().display());
     Ok(())
 }
 
@@ -1405,82 +841,6 @@ pub(crate) fn generate(
 mod tests {
     #![allow(clippy::single_range_in_vec_init)]
     use super::*;
-
-    #[test]
-    fn test_split_range() {
-        assert_eq!(split_range(0..128, 128), [0..128]);
-        assert_eq!(split_range(0..129, 128), [0..65, 65..129]);
-        assert_eq!(split_range(0..130, 128), [0..65, 65..130]);
-        assert_eq!(split_range(-100..51, 128), [-100..-24, -24..51]);
-        assert_eq!(split_range(12..12, 128), []);
-    }
-
-    #[test]
-    fn test_tuning_data() {
-        assert_eq!(TuningData::new(-60..68, 0).midi_offset, 60);
-        assert_eq!(TuningData::new(-50..50, 0).midi_offset, 60);
-        assert_eq!(TuningData::new(-100..20, 0).midi_offset, 104);
-        assert_eq!(TuningData::new(-100..28, 0).midi_offset, 100);
-        assert_eq!(TuningData::new(36..164, 0).midi_offset, -36);
-    }
-
-    #[test]
-    fn test_tuning_program() {
-        assert_eq!(
-            TuningData::tuning_program(0, false).unwrap(),
-            (None, 0.into())
-        );
-        assert_eq!(
-            TuningData::tuning_program(127, false).unwrap(),
-            (None, 127.into())
-        );
-        assert!(TuningData::tuning_program(128, false).is_err());
-        assert_eq!(
-            TuningData::tuning_program(1, true).unwrap(),
-            (Some(1.into()), 1.into())
-        );
-        assert_eq!(
-            TuningData::tuning_program(127, true).unwrap(),
-            (Some(1.into()), 127.into())
-        );
-        assert_eq!(
-            TuningData::tuning_program(128, true).unwrap(),
-            (Some(2.into()), 0.into())
-        );
-        assert_eq!(
-            TuningData::tuning_program(255, true).unwrap(),
-            (Some(2.into()), 127.into())
-        );
-        assert_eq!(
-            TuningData::tuning_program(256, true).unwrap(),
-            (Some(3.into()), 0.into())
-        );
-        assert_eq!(
-            TuningData::tuning_program(16255, true).unwrap(),
-            (Some(127.into()), 127.into())
-        );
-        assert!(TuningData::tuning_program(16256, true).is_err());
-    }
-
-    #[test]
-    fn test_string_exact_bytes() {
-        assert_eq!(string_exact_bytes("potato", 10), b"potato    ");
-        assert_eq!(
-            string_exact_bytes("01𝄞6πα", 10),
-            b"01\xf0\x9d\x84\x9e6\xcf\x80 "
-        );
-    }
-
-    #[test]
-    fn test_div_mod_floor() {
-        // div_mod_floor is provided by num-integer. This test is just to verify my understanding
-        // of it.
-        assert_eq!((-13).div_mod_floor(&10), (-2, 7));
-        assert_eq!((-7).div_mod_floor(&10), (-1, 3));
-        assert_eq!(0.div_mod_floor(&10), (0, 0));
-        assert_eq!(2.div_mod_floor(&10), (0, 2));
-        assert_eq!(16.div_mod_floor(&10), (1, 6));
-    }
 
     #[test]
     fn test_ramp() {

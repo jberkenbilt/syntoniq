@@ -342,22 +342,7 @@ impl Pitch {
         }
     }
 
-    /// Return as a 3-byte vector that represents this pitch in a MTS (Midi Tuning System) tuning
-    /// dump. See <https://midi.org/midi-tuning-updated-specification>
-    pub fn midi_tuning(&self) -> Option<Vec<u8>> {
-        // Calculate the tuning per the MTS specification:
-        // - xx is the highest semitone <= the frequency
-        // - yy and zz are the high 7 and low 7 bits of a 14-bit fraction of a semitone above that
-        let note_number = self.fractional_midi_note()?;
-        let xx: u8 = note_number.floor() as u8;
-        let over: u16 = (note_number.fract() * 16384.0).floor() as u16;
-        let yy: u8 = (over >> 7) as u8;
-        let zz = (over & 0x7F) as u8;
-        Some(vec![xx, yy, zz])
-    }
-
     /// Compute a frequency to a midi note number and a pitch bend value using ±48 semitones.
-    /// See also [Self::midi_tuning].
     pub fn midi(&self) -> Option<(u8, u16)> {
         let n1 = self.fractional_midi_note()?;
         let note = n1.round() as u8;
@@ -588,19 +573,5 @@ mod tests {
         let p = Pitch::must_parse("^1|2");
         assert_eq!(p.invert().to_string(), "1/2*^1|2");
         assert_eq!(p.invert().invert().to_string(), "^1|2");
-    }
-
-    #[test]
-    fn test_midi_tuning() {
-        fn midi_tuning(p: &str) -> Option<Vec<u8>> {
-            Pitch::must_parse(p).midi_tuning()
-        }
-        assert_eq!(midi_tuning("440").unwrap(), [69, 0, 0]);
-        assert_eq!(midi_tuning("220*^1|4").unwrap(), [60, 0, 0]);
-        assert_eq!(midi_tuning("440*^58|12").unwrap(), [127, 0, 0]);
-        assert_eq!(midi_tuning("440*^-69|12").unwrap(), [0, 0, 0]);
-        assert_eq!(midi_tuning("440*^1|17").unwrap(), [69, 90, 45]);
-        assert!(midi_tuning("7").is_none());
-        assert!(midi_tuning("134000").is_none());
     }
 }

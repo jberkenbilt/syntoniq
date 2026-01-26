@@ -36,13 +36,7 @@
           "note_number": 0,
           "value": {
             "text": "1:p",
-            "note_name": "p",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               1,
@@ -72,13 +66,7 @@
           "note_number": 1,
           "value": {
             "text": "1:r",
-            "note_name": "r",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^13|20",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               1,
@@ -108,13 +96,7 @@
           "note_number": 2,
           "value": {
             "text": "1:t",
-            "note_name": "t",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^1|20",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               1,
@@ -144,13 +126,7 @@
           "note_number": 0,
           "value": {
             "text": "q",
-            "note_name": "q",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^9|20",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               2,
@@ -180,13 +156,7 @@
           "note_number": 1,
           "value": {
             "text": "s",
-            "note_name": "s",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^17|20",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               2,
@@ -216,13 +186,7 @@
           "note_number": 2,
           "value": {
             "text": "p'",
-            "note_name": "p",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^1|4",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               2,
@@ -252,13 +216,7 @@
           "note_number": 0,
           "value": {
             "text": "r",
-            "note_name": "r",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^13|20",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               3,
@@ -288,13 +246,7 @@
           "note_number": 1,
           "value": {
             "text": "t",
-            "note_name": "t",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^1|20",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               3,
@@ -324,13 +276,7 @@
           "note_number": 2,
           "value": {
             "text": "q'",
-            "note_name": "q",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^9|20",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               3,
@@ -360,13 +306,7 @@
           "note_number": 0,
           "value": {
             "text": "s",
-            "note_name": "s",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^17|20",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               4,
@@ -396,13 +336,7 @@
           "note_number": 1,
           "value": {
             "text": "p'",
-            "note_name": "p",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^1|4",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               4,
@@ -432,13 +366,7 @@
           "note_number": 2,
           "value": {
             "text": "r'",
-            "note_name": "r",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^13|20",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               4,
@@ -468,13 +396,7 @@
           "note_number": 0,
           "value": {
             "text": "t",
-            "note_name": "t",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^1|20",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               5,
@@ -504,13 +426,7 @@
           "note_number": 1,
           "value": {
             "text": "q'",
-            "note_name": "q",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^9|20",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               5,
@@ -540,13 +456,7 @@
           "note_number": 2,
           "value": {
             "text": "s'",
-            "note_name": "s",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^17|20",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               5,
@@ -576,13 +486,7 @@
           "note_number": 0,
           "value": {
             "text": "p'",
-            "note_name": "p",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^1|4",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               6,
@@ -612,13 +516,7 @@
           "note_number": 1,
           "value": {
             "text": "r'",
-            "note_name": "r",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^13|20",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               6,
@@ -648,13 +546,7 @@
           "note_number": 2,
           "value": {
             "text": "t'",
-            "note_name": "t",
-            "tuning": {
-              "scale_name": "5-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "880*^1|20",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               6,
@@ -684,13 +576,7 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "12-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               8,
@@ -720,13 +606,7 @@
           "note_number": 1,
           "value": {
             "text": "1:e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "12-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^7|12",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               8,
@@ -756,13 +636,7 @@
           "note_number": 2,
           "value": {
             "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "12-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^5|6",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               8,
@@ -792,13 +666,7 @@
           "note_number": 0,
           "value": {
             "text": "c'",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "12-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "440*^1|4",
-            "cycle": 1,
             "velocity": 72,
             "end_time": [
               9,
@@ -828,13 +696,7 @@
           "note_number": 1,
           "value": {
             "text": "e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "12-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^7|12",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               9,
@@ -864,13 +726,7 @@
           "note_number": 2,
           "value": {
             "text": "g,",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "12-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "110*^5|6",
-            "cycle": -1,
             "velocity": 72,
             "end_time": [
               9,
@@ -900,13 +756,7 @@
           "note_number": 3,
           "value": {
             "text": "c,",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "12-EDO",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "110*^1|4",
-            "cycle": -1,
             "velocity": 72,
             "end_time": [
               9,

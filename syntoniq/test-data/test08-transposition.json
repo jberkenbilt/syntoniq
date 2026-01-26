@@ -36,13 +36,7 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               1,
@@ -72,13 +66,7 @@
           "note_number": 1,
           "value": {
             "text": "1:e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "275*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               1,
@@ -108,13 +96,7 @@
           "note_number": 2,
           "value": {
             "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "330*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               1,
@@ -144,13 +126,7 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "275*^1|4"
-            },
             "absolute_pitch": "275*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               2,
@@ -180,13 +156,7 @@
           "note_number": 1,
           "value": {
             "text": "1:e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "275*^1|4"
-            },
             "absolute_pitch": "343.75*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               2,
@@ -216,13 +186,7 @@
           "note_number": 2,
           "value": {
             "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "275*^1|4"
-            },
             "absolute_pitch": "412.5*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               2,
@@ -252,13 +216,7 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "220*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               3,
@@ -288,13 +246,7 @@
           "note_number": 1,
           "value": {
             "text": "1:e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "275*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               3,
@@ -324,13 +276,7 @@
           "note_number": 2,
           "value": {
             "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "220*^1|4"
-            },
             "absolute_pitch": "330*^1|4",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               3,
@@ -360,13 +306,7 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "264"
-            },
             "absolute_pitch": "264",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               4,
@@ -396,13 +336,7 @@
           "note_number": 1,
           "value": {
             "text": "1:e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "264"
-            },
             "absolute_pitch": "330",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               4,
@@ -432,13 +366,7 @@
           "note_number": 2,
           "value": {
             "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "264"
-            },
             "absolute_pitch": "396",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               4,
@@ -468,13 +396,7 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "297"
-            },
             "absolute_pitch": "297",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               5,
@@ -504,13 +426,7 @@
           "note_number": 1,
           "value": {
             "text": "1:e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "297"
-            },
             "absolute_pitch": "371.25",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               5,
@@ -540,13 +456,7 @@
           "note_number": 2,
           "value": {
             "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "297"
-            },
             "absolute_pitch": "445.5",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               5,
@@ -576,13 +486,7 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "note_name": "c",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "264"
-            },
             "absolute_pitch": "264",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               6,
@@ -612,13 +516,7 @@
           "note_number": 1,
           "value": {
             "text": "1:e",
-            "note_name": "e",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "264"
-            },
             "absolute_pitch": "330",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               6,
@@ -648,13 +546,7 @@
           "note_number": 2,
           "value": {
             "text": "1:g",
-            "note_name": "g",
-            "tuning": {
-              "scale_name": "JI1",
-              "base_pitch": "264"
-            },
             "absolute_pitch": "396",
-            "cycle": 0,
             "velocity": 72,
             "end_time": [
               6,

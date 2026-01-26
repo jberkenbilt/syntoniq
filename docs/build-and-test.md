@@ -64,8 +64,8 @@ Score files in `syntoniq/test-data/*.stq` are converted to all supported output 
 The best way to check generated output is to listen to them. Unless obvious, the stq files contain comments explaining what to listen for.
 
 * Play a csound file with `csound file.csd`.
-* Timidity++ can play MTS MIDI files: `timidity file.mts.midi`. Use `timidity -A100,100a` to normalize to maximum volume. `timidity -A70,70a -OwM /tmp/a.midi` produces decent WAV files.
-* As of 2025, Timidity can't deal with MPE. You could load these into a DAW, but the easiest way to hear them is
+* FluidSynth can play MIDI files with MPE. (TiMidity++ cannot.): `fluidsynth -iq file.midi -F /tmp/a.wav` produces a WAV file.
+* You can load MIDI files into a DAW, but the easiest way or send them through Surge XT:
   * Start surge XT or any other synth that listens to MIDI events
   * Use `aplaymidi -l` to find suitable port; on Linux, the MIDI through port is a good choice
-  * `aplaymidi --port 'Midi Through' file.mpe.midi`
+  * `aplaymidi --port 'Midi Through' file.midi`

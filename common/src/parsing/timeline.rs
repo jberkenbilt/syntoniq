@@ -1,5 +1,5 @@
 use crate::parsing::model::Span;
-use crate::parsing::score::{ScalesByName, Tuning, serialize_scales};
+use crate::parsing::score::{ScalesByName, serialize_scales};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
@@ -116,10 +116,7 @@ pub struct NoteEvent<'s> {
 #[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
 pub struct NoteValue<'s> {
     pub text: &'s str,
-    pub note_name: Cow<'s, str>,
-    pub tuning: Tuning<'s>,
     pub absolute_pitch: Pitch,
-    pub cycle: i8,
     pub velocity: u8,
     pub end_time: Ratio<u32>,
     pub adjusted_end_time: Ratio<u32>,

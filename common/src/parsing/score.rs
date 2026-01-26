@@ -574,10 +574,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                             // There is no pending note, so make a new one.
                             let value = NoteValue {
                                 text: &self.score.src[note.span],
-                                note_name: note_name.value.clone(),
-                                tuning: tuning.clone(),
                                 absolute_pitch,
-                                cycle,
                                 velocity: 0,
                                 end_time,
                                 adjusted_end_time: Ratio::from_integer(0),
