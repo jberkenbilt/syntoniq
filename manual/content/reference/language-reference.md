@@ -225,7 +225,7 @@ Duration is a rational number or decimal with up to three decimal places. It is 
   * `^` — like `>` but more; corresponds to marcato.
   * `.` - may be repeated; shortens the note by one quarter of a beat as long as duration remains at least one quarter of a beat. This roughly corresponds to staccato. It is a shortcut and behaves the same regardless of the note length. For more precise control, you can use full-length notes with specific durations, such as 7/8.
   * `~` — tie: sustains the note, holding the pitch constant across any subsequent holds (discussed below). If the subsequent note has the same pitch, this implements a tie. For Csound, if the next pitch is different, this acts like a slur, changing the pitch of the note without releasing and retriggering the note.
-  * `&` — glide: sustains the note indicating the pitch should glide smoothly to the pitch of the next note. Otherwise, it behaves like `~` in that intervening holds extend its duration. For Csound, this implements smooth pitch changes. With MIDI, it causes several pitch-bend changes per second.
+  * `&` — glide: sustains the note indicating the pitch should glide smoothly to the pitch of the next note. Like with `~`, intervening holds extend its duration. The following note is re-articulated by default, but you can combine tie and glide to create chains of continuous pitch glides. For Csound, this implements smooth pitch changes. With MIDI, it causes several pitch-bend changes per second.
 
 #### Holds
 

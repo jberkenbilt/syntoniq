@@ -40,6 +40,12 @@ pub struct LayoutKey<'s> {
     pub keyboard: Cow<'s, str>,
 }
 
+#[derive(Clone)]
+struct PendingNote<'s> {
+    event: WithTime<Spanned<NoteEvent<'s>>>,
+    tied: bool,
+}
+
 pub struct Score<'s> {
     src: &'s str,
     _version: u32,
@@ -49,7 +55,7 @@ pub struct Score<'s> {
     /// empty string key is default tuning
     tunings: HashMap<Cow<'s, str>, Tuning<'s>>,
     pending_dynamic_changes: HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
-    pending_notes: HashMap<PartNote<'s>, WithTime<Spanned<NoteEvent<'s>>>>,
+    pending_notes: HashMap<PartNote<'s>, PendingNote<'s>>,
     pending_tempo: Option<WithTime<Spanned<TempoEvent>>>,
     tempo_in_flight_until: Option<Spanned<Ratio<u32>>>,
     line_start_time: Ratio<u32>,
@@ -101,7 +107,7 @@ pub struct MappingData<'s> {
 pub struct MarkData<'s> {
     event: Arc<TimelineEvent<'s>>,
     pending_dynamic_changes: HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
-    pending_notes: HashMap<PartNote<'s>, WithTime<Spanned<NoteEvent<'s>>>>,
+    pending_notes: HashMap<PartNote<'s>, PendingNote<'s>>,
 }
 
 #[derive(Serialize, ToStatic)]
@@ -244,9 +250,9 @@ impl<'s> ScaleBuilder<'s> {
         // used in the score. If this scale divides an interval, we should fill in useful names for
         // the rest of the notes. This provides more useful data about the scale in the generated
         // JSON file, and for the keyboard program, it allows a more semantically meaningful note
-        // name to be displayed. The result of this code is that note names explicitly used by users
-        // will always take precedence over computed note names, but every pitch in the scale will
-        // have a name, even if the pitch never appeared in the score.
+        // name to be displayed. This code ensures that note names explicitly used by users will
+        // always take precedence over computed note names, but every pitch in the scale will have
+        // a name, regardless of whether it ever appeared in the score.
         let assignments = self
             .generator
             .map(|g| g.assign_generated_notes())
@@ -395,7 +401,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
     ) {
         let mut velocity: u8 = 72;
         let mut seen = HashSet::new();
-        let sustained = r_note.sustained();
+        let tied = r_note.is_tie();
         let mut shorten: Ratio<u32> = Ratio::from_integer(0);
         for m in &r_note.modifiers {
             if !seen.insert(m.value) {
@@ -426,30 +432,19 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                 NoteModifier::Shorten => {
                     // TODO: Make this amount configurable
                     shorten += Ratio::new(1, 4);
-                    if sustained {
+                    if tied {
                         self.diags.err(
                             code::SCORE,
                             m.span,
-                            "shorten may not appear with a sustained note",
+                            "shorten may not appear with a tied note",
                         );
                     }
                 }
-                NoteModifier::Tie => {
-                    if seen.contains(&NoteModifier::Glide) {
-                        self.diags
-                            .err(code::SCORE, m.span, "tie may not appear with glide");
-                    }
-                }
-                NoteModifier::Glide => {
-                    if seen.contains(&NoteModifier::Tie) {
-                        self.diags
-                            .err(code::SCORE, m.span, "glide may not appear with tie");
-                    }
-                }
+                NoteModifier::Tie | NoteModifier::Glide => {}
             }
         }
         value.velocity = velocity;
-        if !sustained && let Some(last_pitch) = value.pitches.last_mut() {
+        if !tied && let Some(last_pitch) = value.pitches.last_mut() {
             let mut duration = last_pitch.end_time - start_time;
             let min_duration = cmp::min(duration, Ratio::new(1, 4));
             if duration - min_duration > shorten {
@@ -530,8 +525,8 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                         let mut pending = self.score.pending_notes.remove(&part_note);
                         // If the current note is accented, end the pending note.
                         // If the pending note is a glide, set is end pitch.
-                        if let Some(note_event) = pending.as_mut() {
-                            let pitches = &mut note_event.item.value.value.pitches;
+                        if let Some(pending_note) = pending.as_mut() {
+                            let pitches = &mut pending_note.event.item.value.value.pitches;
                             // There is guaranteed to be at least one pitch change.
                             let last_pitch = pitches.last_mut().unwrap();
                             if last_pitch.end_pitch.is_some() {
@@ -540,14 +535,16 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                                 last_pitch.end_pitch = Some(absolute_pitch.clone());
                             }
                         }
-                        let pending = pending.and_then(|note_event| {
-                            if r_note.modifiers.iter().any(|x| {
-                                matches!(x.value, NoteModifier::Accent | NoteModifier::Marcato)
-                            }) {
-                                self.score.insert_note(note_event);
+                        let pending = pending.and_then(|pending_note| {
+                            if !pending_note.tied
+                                || r_note.modifiers.iter().any(|x| {
+                                    matches!(x.value, NoteModifier::Accent | NoteModifier::Marcato)
+                                })
+                            {
+                                self.score.insert_note(pending_note.event);
                                 None
                             } else {
-                                Some(note_event)
+                                Some(pending_note)
                             }
                         });
                         let end_pitch = if r_note.is_glide() {
@@ -565,31 +562,35 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                             end_pitch,
                             end_time,
                         };
-                        let mut note_event = pending.unwrap_or_else(|| {
+                        let mut pending_note = pending.unwrap_or_else(|| {
                             // There is no pending note, so make a new one.
                             let value = NoteValue {
                                 text: &self.score.src[note.span],
                                 velocity: 0,
                                 pitches: Default::default(),
                             };
-                            WithTime::new(
-                                time,
-                                Spanned::new(note.span, NoteEvent { part_note, value }),
-                            )
+                            PendingNote {
+                                event: WithTime::new(
+                                    time,
+                                    Spanned::new(note.span, NoteEvent { part_note, value }),
+                                ),
+                                tied: false, // conditionally set below
+                            }
                         });
                         // Append this pitch change.
-                        note_event.item.value.value.pitches.push(this_pitch);
+                        pending_note.event.item.value.value.pitches.push(this_pitch);
                         self.adjust_velocity_and_time(
                             r_note,
                             time,
-                            &mut note_event.item.value.value,
+                            &mut pending_note.event.item.value.value,
                         );
+                        pending_note.tied = r_note.is_tie();
                         // If the current note is sustained, what we have is still pending. Otherwise,
                         // add it to the timeline.
-                        if r_note.sustained() {
-                            self.score.pending_notes.insert(part_note, note_event);
+                        if r_note.is_sustain() {
+                            self.score.pending_notes.insert(part_note, pending_note);
                         } else {
-                            self.score.insert_note(note_event);
+                            self.score.insert_note(pending_note.event);
                         }
                     } else {
                         self.diags.err(
@@ -608,7 +609,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                         // It is guaranteed that there is at least one pitch in any pending note.
                         // Extend the end time of the last pitch to cover the hold. For a tie, this
                         // extends the tie. For a glide, it extends the duration of the glide.
-                        let pitches = &mut p.item.value.value.pitches;
+                        let pitches = &mut p.event.item.value.value.pitches;
                         let last_pitch = pitches.last_mut().unwrap();
                         last_pitch.end_time = end_time;
                     }
@@ -1412,14 +1413,14 @@ impl<'s> Score<'s> {
     fn check_pending_over_repeat(
         diags: &Diagnostics,
         span: Span,
-        pending_notes: &HashMap<PartNote<'s>, WithTime<Spanned<NoteEvent<'s>>>>,
+        pending_notes: &HashMap<PartNote<'s>, PendingNote<'s>>,
         pending_dynamic_changes: &HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
     ) {
         if !pending_notes.is_empty() {
             let mut err =
                 Diagnostic::new(code::SCORE, span, "notes may not be tied across repeats");
             for note in pending_notes.values() {
-                err = err.with_context(note.item.span, "this tie is unresolved");
+                err = err.with_context(note.event.item.span, "this sustain is unresolved");
             }
             diags.push(err);
         }
@@ -1743,10 +1744,13 @@ impl<'s> Score<'s> {
     }
 
     pub fn do_final_checks(&mut self, diags: &Diagnostics) {
-        // Complete any pending notes.
         let pending_notes = mem::take(&mut self.pending_notes);
         for pending in pending_notes.into_values() {
-            self.insert_note(pending);
+            diags.err(
+                code::SCORE,
+                pending.event.item.span,
+                "this sustain was never resolved",
+            );
         }
         for (part, &span) in &self.midi_instruments {
             if !part.is_empty() && !self.known_parts.contains(part) {

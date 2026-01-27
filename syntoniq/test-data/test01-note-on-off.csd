@@ -113,15 +113,15 @@ t 0 72
 i "SetPartParam" 0 2 1 "freq_1" 261.626
 ; 2:c @331
 i 1.1 0 2 1 1 0.567
-; 4:c@356
+; 4:c@354
 i "SetPartParam" 0 4 1 "freq_2" 261.626
-; 4:c @356
+; 4:c @354
 i 1.2 0 4 1 2 0.567
 ; 2:e:~@335
 i "SetPartParam" 2 2 1 "freq_1" 329.628
 ; e:~@341
 i "SetPartParam" 4 2 1 "freq_1" 329.628
-; e:~@345
+; e@345
 i "SetPartParam" 6 2 1 "freq_1" 329.628
 ; 2:e:~ @335
 i 1.1 2 6 1 1 0.567

@@ -28,21 +28,21 @@
       "repeat_depth": 0,
       "span": [
         58,
-        65
+        66
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "4:c'5:&",
+            "text": "4:c'5:&~",
             "velocity": 72,
             "pitches": [
               {
-                "text": "4:c'5:&",
+                "text": "4:c'5:&~",
                 "span": [
                   58,
-                  65
+                  66
                 ],
                 "start_pitch": "7040*^1|4",
                 "start_time": [
@@ -56,10 +56,10 @@
                 ]
               },
               {
-                "text": "2:c,4:&",
+                "text": "2:c,4:&~",
                 "span": [
-                  66,
-                  73
+                  67,
+                  75
                 ],
                 "start_pitch": "55/4*^1|4",
                 "start_time": [
@@ -75,8 +75,8 @@
               {
                 "text": "c",
                 "span": [
-                  74,
-                  75
+                  76,
+                  77
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
