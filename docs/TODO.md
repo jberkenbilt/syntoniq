@@ -7,6 +7,7 @@ This is general TODO across internal docs, manual, and software.
 These are proposed pre-1.0 items. Details are below for many.
 
 * Create a minimal emacs mode
+* Make sure we explicitly test > 7 channel pairs for multiple ports
 * Fix edge cases -- see copilot-initial-review.md
 * calc -- from scripts in misc
 * Maybe: interactive chord builder
@@ -36,7 +37,6 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
 # Software
 
 * See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
-* MPE channel rotation: There's a bug in how we do channel allocation. When we change notes on a channel, we send note off, pitch bend, note on, which means the pitch bend applies to the release of the old note. This causes is a small audible glitch if there's a big gap between successive pitch bends. This is not usually noticeable with regular music but can be. It is very noticeable with glide over more than 8 octaves as in test20.
 * Create the interactive chord builder -- see below
 * Expand scripts in misc to support other than octave
 * Consider bringing misc/exponent-to-ratio and misc/scale-semitones into the main CLI as a separate subcommand like `syntoniq calc`. If so, mention in the microtonal section of the manual. Also add something to show the base pitch of a generated note, e.g. `JK!17` should show `^5|17` or `jI` should show `81/80`.

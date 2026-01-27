@@ -40,32 +40,40 @@ use syntoniq_common::pitch;
 //
 // MIDI details:
 //
-//   - Each port can have at most 15 separate note channels. Channel 9 is not special. (In non-MPE
-//     MIDI, channel 9, 0-based, is usually reserved from drums.) Channel 0 is the control channel.
-//     Pitch bend there is global. Channels 1 through 15 (or whatever is specified in the MPE init
-//     message) are all note channels.
+//   - Each port can have at most 15 separate note channels. Pitch bend is channel-wide and takes
+//     effect immediately, which means you can't "reuse" a channel immediately if you change pitch
+//     bend. If you do note-off, pitch-bend, note-on back to back, the release tail of the old note
+//     will be altered by the pitch bend. For this reason, MPE implementations typically use some
+//     kind of LRU (least-recently used) strategy for channel allocation. This doesn't work well for
+//     us as we want to be able to handle all the notes changing. Also, this effectively scrambles
+//     which note goes to which channel. In the worst case, you need 2n channels for n notes to
+//     handle when all the notes change together. For this reason, we use 7 pairs of channels per
+//     track with one pair for each note. In non-MPE MIDI, channel 9 (numbered from 0) is usually
+//     drums. When MPE is enabled, channel 9 loses that meaning, but some software, such as
+//     FluidSynth (at least as of version 2.4) doesn't seem to pay attention to that. To avoid this
+//     headache, we use channels 1-8 and 10-15, numbered from 0 for notes.
 //   - Each part has exactly one instrument.
 //   - When possible, we want to avoid splitting a part across ports.
 //   - We want a dedicated track for each group of (part, port) for optimal DAW convenience.
 //
 // Therefore:
-//   - There is one MIDI port for every 15 channels (since we don't put notes on channel 0, the
-//     MPE control channel)
-//   - There is one channel for each distinct note on each instrument. Technically, we could
+//   - There is one MIDI port for every 7 channels (since we don't put notes on channel 0, the
+//     MPE control channel, or channel 9, and we use channels in pairs)
+//   - There is one channel pair for each distinct note on each instrument. Technically, we could
 //     allocate channels based on pitch, but since the syntoniq score syntax already ensures
 //     that each "note" line is monophonic, we have a natural way to assign notes to channels.
-//   - To avoid needlessly splitting parts up across ports, if a part has 15 or fewer notes numbers,
+//   - To avoid needlessly splitting parts up across ports, if a part has 7 or fewer notes numbers,
 //     we keep all its channels on the same port. If we have multiple parts, we can "bin-pack"
-//     and combine parts on ports if they have 15 or fewer distinct note numbers.
+//     and combine parts on ports if they have 7 or fewer distinct note numbers.
 //   - We assign ports and channels to tracks such that a given track consists entirely of notes
 //     from a single *part* and notes from a single *port*.
 //
 // We do the following up front
 //   - Count the distinct note numbers for each part
-//   - If a part has more than 15 note numbers, create tracks to use up 15, leaving some left as
+//   - If a part has more than 7 note numbers, create tracks to use up 7, leaving some left as
 //     a remainder.
 //   - See if we can bin-pack using a naive algorithm (the general problem is NP-complete) to
-//     combine some parts (or remainders) into a single port if they have a combined total of 15 or
+//     combine some parts (or remainders) into a single port if they have a combined total of 7 or
 //     fewer note numbers
 //   - Allocate tracks based on (part, port)
 //
@@ -130,14 +138,22 @@ struct SyntheticEvent {
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct PortChannel {
     midi_port: u7,
-    channel: u4,
+    channel_idx: u8,
 }
 
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct TrackPortChannel {
     track: usize,
     midi_port: u7,
-    channel: u4,
+    channel_idx: u8,
+}
+impl From<TrackPortChannel> for PortChannel {
+    fn from(value: TrackPortChannel) -> Self {
+        PortChannel {
+            midi_port: value.midi_port,
+            channel_idx: value.channel_idx,
+        }
+    }
 }
 
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
@@ -149,6 +165,36 @@ struct MidiNoteData {
     bend: Option<u14>,
 }
 
+#[derive(Default)]
+struct MpeChannelTracker {
+    mappings: RefCell<BTreeMap<PortChannel, bool>>,
+}
+impl MpeChannelTracker {
+    fn idx_to_ch(idx: u8, alt: bool) -> u4 {
+        // MIDI channel 0 is reserved, and we skip channel 9.
+        let ch_low = match idx {
+            0..4 => u4::from(2 * idx + 1),
+            4..7 => u4::from(2 * idx + 2),
+            _ => panic!("idx_to_ch called with idx > 7"),
+        };
+        if alt { ch_low + u4::from(1) } else { ch_low }
+    }
+
+    fn get<T: Copy + Into<PortChannel>>(&self, key: T, toggle: bool) -> u4 {
+        let port_channel = key.into();
+        let mut mappings = self.mappings.borrow_mut();
+        let entry = mappings.entry(port_channel).or_default();
+        if toggle {
+            *entry = !*entry;
+        }
+        Self::idx_to_ch(port_channel.channel_idx, *entry)
+    }
+
+    fn get_both(idx: u8) -> [u4; 2] {
+        [Self::idx_to_ch(idx, false), Self::idx_to_ch(idx, true)]
+    }
+}
+
 struct MidiGenerator<'s> {
     arena: &'s Arena,
     timeline: &'s Timeline<'s>,
@@ -157,6 +203,7 @@ struct MidiGenerator<'s> {
     ticks_per_beat: u15,
     micros_per_beat: u24,
     part_channels: BTreeMap<&'s str, BTreeSet<TrackPortChannel>>,
+    mpe_channel_tracker: MpeChannelTracker,
     tracks: Vec<Vec<TrackEvent<'s>>>,
     pitch_data: MpeData<'s>,
     smf: Option<Smf<'s>>,
@@ -168,12 +215,11 @@ fn set_channel_instrument(
     score_part: &str,
     channel: u4,
 ) -> anyhow::Result<()> {
-    let Some(instrument) = midi_instruments
+    let instrument = midi_instruments
         .get(score_part)
         .or_else(|| midi_instruments.get(""))
-    else {
-        return Ok(());
-    };
+        .cloned()
+        .unwrap_or_default();
     if instrument.bank > 0 {
         let (bank_msb, bank_lsb) = split_u14(instrument.bank)?;
         track.push(TrackEvent {
@@ -234,7 +280,7 @@ impl<'s> MpeData<'s> {
         for (score_part, channels_set) in channels_for_part {
             all_items.push((score_part, channels_set.into_iter().collect()));
         }
-        let bins = bin_pack(15, all_items);
+        let bins = bin_pack(7, all_items);
         for (i, bin) in bins.into_iter().enumerate() {
             let midi_port = u7::from(i as u8);
             for (ch, (score_part, note_number)) in bin.into_iter().enumerate() {
@@ -244,7 +290,7 @@ impl<'s> MpeData<'s> {
                 };
                 let port_channel = PortChannel {
                     midi_port,
-                    channel: u4::from((1 + ch) as u8),
+                    channel_idx: ch as u8,
                 };
                 self.channel_data.insert(key, port_channel);
             }
@@ -271,12 +317,9 @@ impl<'s> MpeData<'s> {
             }
             if channels_seen.insert(port_channel) {
                 let track = tracks.last_mut().unwrap();
-                set_channel_instrument(
-                    midi_instruments,
-                    track,
-                    k.score_part,
-                    port_channel.channel,
-                )?;
+                for ch in MpeChannelTracker::get_both(port_channel.channel_idx) {
+                    set_channel_instrument(midi_instruments, track, k.score_part, ch)?;
+                }
             }
             if ports_seen.insert(port_channel.midi_port) {
                 // This is the first time we've seen this port, so use this track to initialize
@@ -305,7 +348,7 @@ impl<'s> MpeData<'s> {
             let tpc = TrackPortChannel {
                 track,
                 midi_port: port_channel.midi_port,
-                channel: port_channel.channel,
+                channel_idx: port_channel.channel_idx,
             };
             part_channels
                 .entry(channel_key.score_part)
@@ -340,7 +383,7 @@ impl<'s> MpeData<'s> {
         Ok(TrackPortChannel {
             track,
             midi_port: port_channel.midi_port,
-            channel: port_channel.channel,
+            channel_idx: port_channel.channel_idx,
         })
     }
 }
@@ -529,6 +572,7 @@ impl<'s> MidiGenerator<'s> {
             micros_per_beat,
             pitch_data,
             part_channels: Default::default(),
+            mpe_channel_tracker: Default::default(),
             tracks: Default::default(),
             smf: None,
         })
@@ -602,17 +646,24 @@ impl<'s> MidiGenerator<'s> {
         Ok(())
     }
 
-    fn volume_event(tpc: TrackPortChannel, delta: u28, value: u7) -> TrackEvent<'s> {
-        TrackEvent {
-            delta,
-            kind: TrackEventKind::Midi {
-                channel: tpc.channel,
-                message: MidiMessage::Controller {
-                    controller: 7.into(),
-                    value,
-                },
-            },
-        }
+    fn volume_events(tpc: TrackPortChannel, mut delta: u28, value: u7) -> Vec<TrackEvent<'s>> {
+        MpeChannelTracker::get_both(tpc.channel_idx)
+            .into_iter()
+            .map(|channel| {
+                let t = TrackEvent {
+                    delta,
+                    kind: TrackEventKind::Midi {
+                        channel,
+                        message: MidiMessage::Controller {
+                            controller: 7.into(),
+                            value,
+                        },
+                    },
+                };
+                delta = 0.into();
+                t
+            })
+            .collect()
     }
 
     fn handle_tempo_event(
@@ -658,7 +709,7 @@ impl<'s> MidiGenerator<'s> {
             let delta = self.get_delta(tpc.track, event.time)?;
             let value = u7::try_from(dynamic_event.start_level)
                 .ok_or_else(|| anyhow!("volume out of range"))?;
-            self.tracks[tpc.track].push(Self::volume_event(tpc, delta, value));
+            self.tracks[tpc.track].append(&mut Self::volume_events(tpc, delta, value));
             if let Some(end_level) = &dynamic_event.end_level {
                 let total_time = end_level.time - event.time;
                 let total_ticks = *(total_time * u16::from(self.ticks_per_beat) as u32)
@@ -847,16 +898,19 @@ impl<'s> MidiGenerator<'s> {
                 .map(|(time, _)| *time)
                 .unwrap_or(final_end_time);
             // Generate synthetic events for turning notes on and off at the right times.
+            let need_note_on = last_note.map(|x| x != mpe_note).unwrap_or(true);
+            let channel = self
+                .mpe_channel_tracker
+                .get(track_port_channel, need_note_on);
             let midi_note = {
                 MidiNoteData {
                     track: track_port_channel.track,
                     midi_port: track_port_channel.midi_port,
-                    channel: track_port_channel.channel,
+                    channel,
                     key: mpe_note.into(),
                     bend: Some(bend.into()),
                 }
             };
-            let need_note_on = last_note.map(|x| x != mpe_note).unwrap_or(true);
             events.insert(MidiEvent::Synthetic(SyntheticEvent {
                 time,
                 repeat_depth: event.repeat_depth,
@@ -1052,6 +1106,16 @@ fn init_mpe(track: &mut Vec<TrackEvent>) {
             Some(0.into()),
         );
         end_rpn(track, ch.into());
+        track.push(TrackEvent {
+            delta: 0.into(),
+            kind: TrackEventKind::Midi {
+                channel: ch.into(),
+                message: MidiMessage::Controller {
+                    controller: 7.into(),
+                    value: 127.into(),
+                },
+            },
+        });
     }
 }
 
