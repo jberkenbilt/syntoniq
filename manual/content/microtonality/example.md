@@ -118,7 +118,7 @@ There are various `tempo` directives. The first one sets the initial tempo. The 
 
 # Tie and Glide
 
-The end of the first block glides smoothly into the beginning of the second block. The bass note is first glided up an octave over one beat. Then all notes glide smoothly up one 17-EDO step. The base note is re-articulated because the glide is not combined with a tie. This demonstrates the use of glide across a tuning change.
+The end of the first block glides smoothly into the beginning of the second block. The bass note is first glided up an octave over one beat. Then all notes glide smoothly up one 17-EDO step. The bass note is re-articulated because the glide is not combined with a tie. This demonstrates the use of glide across a tuning change.
 
 # Polyrhythms
 
