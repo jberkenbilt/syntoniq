@@ -108,14 +108,17 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 1
 t 0 120
-; 1:g @52
+; 1:g@52
 i "SetPartParam" 0 1 1 "freq_1" 391.995
+; 1:g @52
 i 1.1 0 1 1 1 0.567
-; f @56
+; f@56
 i "SetPartParam" 1 1 1 "freq_1" 349.228
+; f @56
 i 1.1 1 1 1 1 0.567
-; d @58
+; d@58
 i "SetPartParam" 2 1 1 "freq_1" 293.665
+; d @58
 i 1.1 2 1 1 1 0.567
 ;; END SYNTONIQ
 

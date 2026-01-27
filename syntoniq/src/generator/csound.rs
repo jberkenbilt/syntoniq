@@ -1,11 +1,10 @@
 use anyhow::{anyhow, bail};
 use num_rational::Ratio;
 use std::collections::btree_map::Entry;
-use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use std::path::Path;
-use std::sync::Arc;
 use std::{cmp, fs};
-use syntoniq_common::parsing::{CsoundInstrumentId, Timeline, TimelineData, TimelineEvent};
+use syntoniq_common::parsing::{CsoundInstrumentId, Timeline, TimelineData};
 
 pub(crate) const DEFAULT_TEMPLATE: &str = include_str!("csound-template.csd");
 
@@ -176,8 +175,7 @@ impl<'s> CsoundGenerator<'s> {
 
     fn generate(mut self) -> anyhow::Result<String> {
         self.analyze()?;
-        let mut events: BTreeSet<_> = self.timeline.events.iter().cloned().collect();
-        while let Some(event) = events.pop_first() {
+        for event in &self.timeline.events {
             let time = ratio_to_rounded_float(event.time, 3);
             let offset = event.span.start;
             match &event.data {
@@ -228,42 +226,45 @@ impl<'s> CsoundGenerator<'s> {
                         .note_numbers
                         .get(&e.part_note.note_number)
                         .ok_or_else(|| anyhow!("unknown note number"))?;
-                    let freq = rounded_float(e.value.absolute_pitch.as_float(), 3);
                     let velocity = ratio_to_rounded_float(
                         Ratio::new(cmp::min(127, e.value.velocity as u32), 127),
                         3,
                     );
-                    let note_text = &e.value.text;
-                    if event.time > e.value.adjusted_end_time {
+                    // instrument.note is a decimal number, so we need to use leading zeroes based
+                    // on the number of note numbers.
+                    let instr_note_number = pad_number(*note_number, part_data.note_numbers.len());
+                    let instr = instrument.output(Some(instr_note_number));
+                    for pc in &e.value.pitches {
+                        let start_time = ratio_to_rounded_float(pc.start_time, 3);
+                        let duration = ratio_to_rounded_float(pc.end_time - pc.start_time, 3);
+                        let freq = rounded_float(pc.start_pitch.as_float(), 3);
+                        let text = pc.text;
+                        let this_offset = pc.span.start;
+                        self.content.push_str(&format!("; {text}@{this_offset}\n"));
+                        match pc.end_pitch.as_ref() {
+                            None => {
+                                self.content.push_str(&format!(
+                                    "i \"SetPartParam\" {start_time} {duration} {part_number} \"freq_{note_number}\" {freq}\n"
+                                ));
+                            }
+                            Some(end_pitch) => {
+                                let end_freq = rounded_float(end_pitch.as_float(), 3);
+                                self.content.push_str(&format!(
+                                    "i \"SetPartParamRamp\" {start_time} {duration} {part_number} \"freq_{note_number}\" {freq} {end_freq}\n"
+                                ));
+                            }
+                        }
+                    }
+                    let note_text = e.value.text;
+                    let end_time = e.value.pitches.last().unwrap().end_time;
+                    if event.time > end_time {
                         bail!("end time is in the past")
                     }
-                    let duration =
-                        ratio_to_rounded_float(e.value.adjusted_end_time - event.time, 3);
-                    if e.value.velocity > 0 {
-                        // Create a synthetic event to decrease the note count, using 0 velocity as a
-                        // signal.
-                        let mut off_event = e.clone();
-                        off_event.value.velocity = 0;
-                        events.insert(Arc::new(TimelineEvent {
-                            time: e.value.adjusted_end_time,
-                            repeat_depth: event.repeat_depth,
-                            span: event.span,
-                            data: TimelineData::Note(off_event),
-                        }));
-                        // instrument.note is a decimal number, so we need to use leading zeroes based
-                        // on the number of note numbers.
-                        let instr_note_number =
-                            pad_number(*note_number, part_data.note_numbers.len());
-                        let instr = instrument.output(Some(instr_note_number));
-                        // TODO: implement glide
-                        self.content.push_str(&format!("; {note_text} @{offset}\n"));
-                        self.content.push_str(&format!(
-                            "i \"SetPartParam\" {time} {duration} {part_number} \"freq_{note_number}\" {freq}\n"
-                        ));
-                        self.content.push_str(&format!(
-                            "i {instr} {time} {duration} {part_number} {note_number} {velocity}\n"
-                        ));
-                    }
+                    let duration = ratio_to_rounded_float(end_time - event.time, 3);
+                    self.content.push_str(&format!("; {note_text} @{offset}\n"));
+                    self.content.push_str(&format!(
+                        "i {instr} {time} {duration} {part_number} {note_number} {velocity}\n"
+                    ));
                 }
                 TimelineData::Mark(e) => {
                     self.content

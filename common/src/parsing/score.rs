@@ -25,8 +25,8 @@ use crate::parsing::pass2::Pass2;
 use crate::parsing::score::generator::NoteGenerator;
 use crate::parsing::{
     CsoundInstrumentId, DynamicEvent, MarkEvent, MidiInstrumentNumber, NoteEvent, NoteValue,
-    Options, PartNote, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime, pass2,
-    score_helpers,
+    Options, PartNote, PitchChange, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime,
+    pass2, score_helpers,
 };
 use crate::pitch::Pitch;
 pub use directives::*;
@@ -449,47 +449,16 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
             }
         }
         value.velocity = velocity;
-        if sustained {
-            // Signal that we don't know the end time yet.
-            value.adjusted_end_time = Ratio::from_integer(0);
-        } else {
-            let mut duration = value.end_time - start_time;
+        if !sustained && let Some(last_pitch) = value.pitches.last_mut() {
+            let mut duration = last_pitch.end_time - start_time;
             let min_duration = cmp::min(duration, Ratio::new(1, 4));
             if duration - min_duration > shorten {
                 duration -= shorten;
             } else {
                 duration = min_duration;
             }
-            value.adjusted_end_time = start_time + duration;
+            last_pitch.end_time = start_time + duration;
         };
-    }
-
-    fn get_or_complete_pending_note(
-        &mut self,
-        part_note: &PartNote<'s>,
-        r_note: &RegularNote<'s>,
-        absolute_pitch: &Pitch,
-    ) -> Option<WithTime<Spanned<NoteEvent<'s>>>> {
-        // Determine whether the pending note, if any, should be completed or may still need to be
-        // extended. If the subsequent note is explicitly articulated, end the pending note
-        // regardless of the pitch change. Otherwise, for tied notes, we extend the note if the
-        // pitch is the same, and for glide, we extend the note unconditionally. For tied notes, we
-        // don't care if the tuning changed as long as the pitch is the same. This way, we can pivot
-        // tunings in the middle of a tied pivot note.
-        // TODO: QXXXQ -- detect glide
-        let mut pending = self.score.pending_notes.remove(part_note)?;
-        let prev = &mut pending.item.value.value;
-        if &prev.absolute_pitch == absolute_pitch
-            && !r_note
-                .modifiers
-                .iter()
-                .any(|x| matches!(x.value, NoteModifier::Accent | NoteModifier::Marcato))
-        {
-            return Some(pending);
-        }
-        // Complete the last note, setting its adjusted duration to the full note length.
-        self.score.insert_note(pending);
-        None
     }
 
     fn validate_note_line(&mut self, line: &NoteLine<'s>) {
@@ -506,6 +475,9 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
         let mut beats_so_far = Ratio::from_integer(0u32);
         let mut first = true;
         let mut last_note_span = line.leader.span;
+        let part = line.leader.value.name.value;
+        let note_number = line.leader.value.note.value;
+        let part_note = PartNote { part, note_number };
         for note in &line.notes {
             last_note_span = note.span;
             let (is_bar_check, beats) = match &note.value {
@@ -538,71 +510,110 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                 self.score.update_time_lcm(beats);
                 beats
             };
-            if let Note::Regular(r_note) = &note.value
-                && let Some(scale) = self.score.scales.get(&tuning.scale_name)
-            {
-                let note_name = &r_note.note.name;
-                if let Some(base_relative) =
-                    { scale.borrow_mut().get_note(self.diags, note_name).clone() }
-                {
-                    let time = beats_so_far + self.score.line_start_time;
-                    let part = line.leader.value.name.value;
-                    let note_number = line.leader.value.note.value;
-                    let cycle = r_note.note.octave.map(Spanned::value).unwrap_or(0);
-                    let mut absolute_pitch = &tuning.base_pitch * &base_relative;
-                    if cycle != 0 {
-                        absolute_pitch *=
-                            &Pitch::from(scale.borrow().definition.cycle.pow(cycle as i32));
-                    }
-                    let end_time = time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats);
-                    let part_note = PartNote { part, note_number };
-                    // At this moment, there may be a pending sustained note that this note may
-                    // be tied to, and this note may itself be sustained. If there is a pending
-                    // note that we are tied to, extend the pending note and work with it.
-                    // Otherwise, complete any pending note and create a new one for the current
-                    // note. Then, if this note is sustained, save it; otherwise, add it to the
-                    // timeline.
-                    let mut pending = self
-                        .get_or_complete_pending_note(&part_note, r_note, &absolute_pitch)
-                        .map(|mut p| {
-                            // Extend the note's end time to cover this note.
-                            // TODO: QXXXQ -- glide: amend note
-                            p.item.value.value.end_time = end_time;
-                            p
-                        })
-                        .unwrap_or_else(|| {
+            let time = beats_so_far + self.score.line_start_time;
+            match &note.value {
+                Note::Regular(r_note) => {
+                    let note_name = &r_note.note.name;
+                    if let Some(scale) = self.score.scales.get(&tuning.scale_name)
+                        && let Some(base_relative) =
+                            { scale.borrow_mut().get_note(self.diags, note_name).clone() }
+                    {
+                        let cycle = r_note.note.octave.map(Spanned::value).unwrap_or(0);
+                        let mut absolute_pitch = &tuning.base_pitch * &base_relative;
+                        if cycle != 0 {
+                            absolute_pitch *=
+                                &Pitch::from(scale.borrow().definition.cycle.pow(cycle as i32));
+                        }
+                        let end_time =
+                            time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats);
+                        // Get any note that might be currently sustained either by tie or glide.
+                        let mut pending = self.score.pending_notes.remove(&part_note);
+                        // If the current note is accented, end the pending note.
+                        // If the pending note is a glide, set is end pitch.
+                        if let Some(note_event) = pending.as_mut() {
+                            let pitches = &mut note_event.item.value.value.pitches;
+                            // There is guaranteed to be at least one pitch change.
+                            let last_pitch = pitches.last_mut().unwrap();
+                            if last_pitch.end_pitch.is_some() {
+                                // A `Some` value is a place-holder for whatever the next pitch
+                                // ends up being.
+                                last_pitch.end_pitch = Some(absolute_pitch.clone());
+                            }
+                        }
+                        let pending = pending.and_then(|note_event| {
+                            if r_note.modifiers.iter().any(|x| {
+                                matches!(x.value, NoteModifier::Accent | NoteModifier::Marcato)
+                            }) {
+                                self.score.insert_note(note_event);
+                                None
+                            } else {
+                                Some(note_event)
+                            }
+                        });
+                        let end_pitch = if r_note.is_glide() {
+                            // Use a Some value as a placeholder. The pitch will be supplied
+                            // when this is resolved.
+                            Some(Pitch::unit())
+                        } else {
+                            None
+                        };
+                        let this_pitch = PitchChange {
+                            text: &self.score.src[note.span],
+                            span: note.span,
+                            start_pitch: absolute_pitch,
+                            start_time: time,
+                            end_pitch,
+                            end_time,
+                        };
+                        let mut note_event = pending.unwrap_or_else(|| {
                             // There is no pending note, so make a new one.
                             let value = NoteValue {
                                 text: &self.score.src[note.span],
-                                absolute_pitch,
                                 velocity: 0,
-                                end_time,
-                                adjusted_end_time: Ratio::from_integer(0),
-                                pitch_changes: Default::default(),
+                                pitches: Default::default(),
                             };
                             WithTime::new(
                                 time,
                                 Spanned::new(note.span, NoteEvent { part_note, value }),
                             )
                         });
-                    self.adjust_velocity_and_time(r_note, time, &mut pending.item.value.value);
-                    // If the current note is sustained, what we have is still pending. Otherwise,
-                    // add it to the timeline.
-                    if r_note.sustained() {
-                        self.score.pending_notes.insert(part_note, pending);
+                        // Append this pitch change.
+                        note_event.item.value.value.pitches.push(this_pitch);
+                        self.adjust_velocity_and_time(
+                            r_note,
+                            time,
+                            &mut note_event.item.value.value,
+                        );
+                        // If the current note is sustained, what we have is still pending. Otherwise,
+                        // add it to the timeline.
+                        if r_note.sustained() {
+                            self.score.pending_notes.insert(part_note, note_event);
+                        } else {
+                            self.score.insert_note(note_event);
+                        }
                     } else {
-                        self.score.insert_note(pending);
+                        self.diags.err(
+                            code::SCORE,
+                            note.span,
+                            format!(
+                                "note '{}' is not in the current scale ('{}')",
+                                note_name.value, tuning.scale_name,
+                            ),
+                        )
                     }
-                } else {
-                    self.diags.err(
-                        code::SCORE,
-                        note.span,
-                        format!(
-                            "note '{}' is not in the current scale ('{}')",
-                            note_name.value, tuning.scale_name,
-                        ),
-                    )
                 }
+                Note::Hold(h) => {
+                    if let Some(p) = self.score.pending_notes.get_mut(&part_note) {
+                        let end_time = time + h.duration.map(Spanned::value).unwrap_or(prev_beats);
+                        // It is guaranteed that there is at least one pitch in any pending note.
+                        // Extend the end time of the last pitch to cover the hold. For a tie, this
+                        // extends the tie. For a glide, it extends the duration of the glide.
+                        let pitches = &mut p.item.value.value.pitches;
+                        let last_pitch = pitches.last_mut().unwrap();
+                        last_pitch.end_time = end_time;
+                    }
+                }
+                Note::BarCheck(_) => {}
             }
             beats_so_far += beats;
         }
@@ -956,10 +967,7 @@ impl<'s> Score<'s> {
         }));
     }
 
-    fn insert_note(&mut self, mut note: WithTime<Spanned<NoteEvent<'s>>>) {
-        if note.item.value.value.adjusted_end_time == Ratio::from_integer(0) {
-            note.item.value.value.adjusted_end_time = note.item.value.value.end_time;
-        }
+    fn insert_note(&mut self, note: WithTime<Spanned<NoteEvent<'s>>>) {
         self.insert_event(
             note.time,
             note.item.span,
@@ -1408,8 +1416,11 @@ impl<'s> Score<'s> {
         pending_dynamic_changes: &HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
     ) {
         if !pending_notes.is_empty() {
-            let mut err =
-                Diagnostic::new(code::SCORE, span, "notes may not be tied across repeats");
+            let mut err = Diagnostic::new(
+                code::SCORE,
+                span,
+                "notes may not be sustained across repeats",
+            );
             for note in pending_notes.values() {
                 err = err.with_context(note.item.span, "this tie is unresolved");
             }
@@ -1922,7 +1933,13 @@ impl<'s> Score<'s> {
                         continue;
                     }
                 }
-                TimelineData::Note(_) => {
+                TimelineData::Note(note_event) => {
+                    if note_event.value.pitches[0].start_time
+                        == note_event.value.pitches.last().unwrap().end_time
+                    {
+                        // Skipped notes end up having zero duration. Omit from timeline.
+                        continue;
+                    }
                     if let Some(e) = current_tempo.take() {
                         self.timeline.events.insert(e);
                     }

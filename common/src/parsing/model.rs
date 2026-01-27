@@ -358,6 +358,12 @@ impl<'s> RegularNote<'s> {
             .iter()
             .any(|x| matches!(x.value, NoteModifier::Tie | NoteModifier::Glide))
     }
+
+    pub fn is_glide(&self) -> bool {
+        self.modifiers
+            .iter()
+            .any(|x| matches!(x.value, NoteModifier::Glide))
+    }
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]

@@ -1630,14 +1630,24 @@
                 "note_number": 0,
                 "part": "p1",
                 "value": {
-                  "absolute_pitch": "220*^1|4",
-                  "adjusted_end_time": [
-                    1,
-                    1
-                  ],
-                  "end_time": [
-                    1,
-                    1
+                  "pitches": [
+                    {
+                      "end_pitch": null,
+                      "end_time": [
+                        1,
+                        1
+                      ],
+                      "span": [
+                        28,
+                        31
+                      ],
+                      "start_pitch": "220*^1|4",
+                      "start_time": [
+                        0,
+                        1
+                      ],
+                      "text": "2:c"
+                    }
                   ],
                   "text": "2:c",
                   "velocity": 72
@@ -1660,14 +1670,24 @@
                 "note_number": 0,
                 "part": "p1",
                 "value": {
-                  "absolute_pitch": "220*^5|12",
-                  "adjusted_end_time": [
-                    3,
-                    1
-                  ],
-                  "end_time": [
-                    3,
-                    1
+                  "pitches": [
+                    {
+                      "end_pitch": null,
+                      "end_time": [
+                        3,
+                        1
+                      ],
+                      "span": [
+                        40,
+                        43
+                      ],
+                      "start_pitch": "220*^5|12",
+                      "start_time": [
+                        1,
+                        1
+                      ],
+                      "text": "2:d"
+                    }
                   ],
                   "text": "2:d",
                   "velocity": 72
@@ -1690,14 +1710,24 @@
                 "note_number": 1,
                 "part": "p1",
                 "value": {
-                  "absolute_pitch": "220*^7|12",
-                  "adjusted_end_time": [
-                    3,
-                    1
-                  ],
-                  "end_time": [
-                    3,
-                    1
+                  "pitches": [
+                    {
+                      "end_pitch": null,
+                      "end_time": [
+                        3,
+                        1
+                      ],
+                      "span": [
+                        55,
+                        58
+                      ],
+                      "start_pitch": "220*^7|12",
+                      "start_time": [
+                        2,
+                        1
+                      ],
+                      "text": "1:e"
+                    }
                   ],
                   "text": "1:e",
                   "velocity": 72
@@ -1720,14 +1750,24 @@
                 "note_number": 0,
                 "part": "p1",
                 "value": {
-                  "absolute_pitch": "220*^2|3",
-                  "adjusted_end_time": [
-                    4,
-                    1
-                  ],
-                  "end_time": [
-                    4,
-                    1
+                  "pitches": [
+                    {
+                      "end_pitch": null,
+                      "end_time": [
+                        4,
+                        1
+                      ],
+                      "span": [
+                        68,
+                        71
+                      ],
+                      "start_pitch": "220*^2|3",
+                      "start_time": [
+                        3,
+                        1
+                      ],
+                      "text": "1:f"
+                    }
                   ],
                   "text": "1:f",
                   "velocity": 72

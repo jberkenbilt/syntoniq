@@ -109,101 +109,133 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 2
 t 0 90
-; 1:c @99
+; 1:c@99
 i "SetPartParam" 0 1 1 "freq_1" 261.626
+; 1:c @99
 i 1.1 0 1 1 1 0.567
-; 31:c, @194
+; 31:c,@194
 i "SetPartParam" 0 31 1 "freq_2" 130.813
+; 31:c, @194
 i 1.2 0 31 1 2 0.567
-; c+ @103
+; c+@103
 i "SetPartParam" 1 1 1 "freq_1" 267.541
+; c+ @103
 i 1.1 1 1 1 1 0.567
-; c# @106
+; c#@106
 i "SetPartParam" 2 1 1 "freq_1" 273.591
+; c# @106
 i 1.1 2 1 1 1 0.567
-; d% @109
+; d%@109
 i "SetPartParam" 3 1 1 "freq_1" 279.777
+; d% @109
 i 1.1 3 1 1 1 0.567
-; d- @112
+; d-@112
 i "SetPartParam" 4 1 1 "freq_1" 286.103
+; d- @112
 i 1.1 4 1 1 1 0.567
-; d @115
+; d@115
 i "SetPartParam" 5 1 1 "freq_1" 292.572
+; d @115
 i 1.1 5 1 1 1 0.567
-; d+ @117
+; d+@117
 i "SetPartParam" 6 1 1 "freq_1" 299.188
+; d+ @117
 i 1.1 6 1 1 1 0.567
-; d# @120
+; d#@120
 i "SetPartParam" 7 1 1 "freq_1" 305.953
+; d# @120
 i 1.1 7 1 1 1 0.567
-; e% @123
+; e%@123
 i "SetPartParam" 8 1 1 "freq_1" 312.871
+; e% @123
 i 1.1 8 1 1 1 0.567
-; e- @126
+; e-@126
 i "SetPartParam" 9 1 1 "freq_1" 319.945
+; e- @126
 i 1.1 9 1 1 1 0.567
-; e @129
+; e@129
 i "SetPartParam" 10 1 1 "freq_1" 327.18
+; e @129
 i 1.1 10 1 1 1 0.567
-; e+ @131
+; e+@131
 i "SetPartParam" 11 1 1 "freq_1" 334.578
+; e+ @131
 i 1.1 11 1 1 1 0.567
-; f- @134
+; f-@134
 i "SetPartParam" 12 1 1 "freq_1" 342.143
+; f- @134
 i 1.1 12 1 1 1 0.567
-; f @137
+; f@137
 i "SetPartParam" 13 1 1 "freq_1" 349.88
+; f @137
 i 1.1 13 1 1 1 0.567
-; f+ @139
+; f+@139
 i "SetPartParam" 14 1 1 "freq_1" 357.791
+; f+ @139
 i 1.1 14 1 1 1 0.567
-; f# @142
+; f#@142
 i "SetPartParam" 15 1 1 "freq_1" 365.881
+; f# @142
 i 1.1 15 1 1 1 0.567
-; g% @145
+; g%@145
 i "SetPartParam" 16 1 1 "freq_1" 374.154
+; g% @145
 i 1.1 16 1 1 1 0.567
-; g- @148
+; g-@148
 i "SetPartParam" 17 1 1 "freq_1" 382.614
+; g- @148
 i 1.1 17 1 1 1 0.567
-; g @151
+; g@151
 i "SetPartParam" 18 1 1 "freq_1" 391.266
+; g @151
 i 1.1 18 1 1 1 0.567
-; g+ @153
+; g+@153
 i "SetPartParam" 19 1 1 "freq_1" 400.113
+; g+ @153
 i 1.1 19 1 1 1 0.567
-; g# @156
+; g#@156
 i "SetPartParam" 20 1 1 "freq_1" 409.16
+; g# @156
 i 1.1 20 1 1 1 0.567
-; a% @159
+; a%@159
 i "SetPartParam" 21 1 1 "freq_1" 418.412
+; a% @159
 i 1.1 21 1 1 1 0.567
-; a- @162
+; a-@162
 i "SetPartParam" 22 1 1 "freq_1" 427.872
+; a- @162
 i 1.1 22 1 1 1 0.567
-; a @165
+; a@165
 i "SetPartParam" 23 1 1 "freq_1" 437.547
+; a @165
 i 1.1 23 1 1 1 0.567
-; a+ @167
+; a+@167
 i "SetPartParam" 24 1 1 "freq_1" 447.441
+; a+ @167
 i 1.1 24 1 1 1 0.567
-; a# @170
+; a#@170
 i "SetPartParam" 25 1 1 "freq_1" 457.558
+; a# @170
 i 1.1 25 1 1 1 0.567
-; b% @173
+; b%@173
 i "SetPartParam" 26 1 1 "freq_1" 467.904
+; b% @173
 i 1.1 26 1 1 1 0.567
-; b- @176
+; b-@176
 i "SetPartParam" 27 1 1 "freq_1" 478.484
+; b- @176
 i 1.1 27 1 1 1 0.567
-; b @179
+; b@179
 i "SetPartParam" 28 1 1 "freq_1" 489.303
+; b @179
 i 1.1 28 1 1 1 0.567
-; b+ @181
+; b+@181
 i "SetPartParam" 29 1 1 "freq_1" 500.367
+; b+ @181
 i 1.1 29 1 1 1 0.567
-; c' @184
+; c'@184
 i "SetPartParam" 30 1 1 "freq_1" 523.251
+; c' @184
 i 1.1 30 1 1 1 0.567
 ;; END SYNTONIQ
 

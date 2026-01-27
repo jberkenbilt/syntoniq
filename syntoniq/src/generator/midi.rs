@@ -6,17 +6,21 @@ use midly::{
     Arena, Format, Header, MetaMessage, MidiMessage, Smf, Timing, TrackEvent, TrackEventKind,
 };
 use num_rational::Ratio;
+use num_traits::Num;
+use num_traits::cast::ToPrimitive;
 use std::borrow::Cow;
 use std::cell::RefCell;
+use std::cmp::Ordering;
 use std::collections::btree_map::{Entry, VacantEntry};
 use std::collections::{BTreeMap, BTreeSet, VecDeque};
 use std::path::Path;
 use std::sync::Arc;
+use syntoniq_common::parsing::model::Span;
 use syntoniq_common::parsing::{
     DynamicEvent, MidiInstrumentNumber, NoteEvent, TempoEvent, Timeline, TimelineData,
     TimelineEvent,
 };
-
+use syntoniq_common::pitch;
 // Key concepts:
 //   - A "part" is a syntoniq part, corresponding to a part in the score. A "port" is a MIDI port.
 //     To reduce confusion, we will use `score_part` and `midi_port` rather than `part` and `port`.
@@ -73,6 +77,55 @@ use syntoniq_common::parsing::{
 //   - Play the note in the track using the given channel.
 //   - The note will have the correct instrument and MIDI port because of the track and the correct
 //     pitch because of the channel.
+
+// These values are given by the MPE specification.
+const MPE_RANGE: u8 = 48;
+const MPE_RANGE_F: f64 = 48.0;
+
+#[derive(PartialEq, Eq)]
+enum MidiEvent<'s> {
+    Timeline(Arc<TimelineEvent<'s>>),
+    Synthetic(SyntheticEvent),
+}
+impl<'s> MidiEvent<'s> {
+    fn time(&self) -> Ratio<u32> {
+        match self {
+            MidiEvent::Timeline(e) => e.time,
+            MidiEvent::Synthetic(e) => e.time,
+        }
+    }
+}
+impl<'s> PartialOrd for MidiEvent<'s> {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+impl<'s> Ord for MidiEvent<'s> {
+    fn cmp(&self, other: &Self) -> Ordering {
+        let t1 = self.time();
+        let t2 = other.time();
+        if t1 == t2 {
+            match (self, other) {
+                (MidiEvent::Timeline(s), MidiEvent::Timeline(o)) => s.cmp(o),
+                (MidiEvent::Synthetic(s), MidiEvent::Synthetic(o)) => s.cmp(o),
+                (MidiEvent::Synthetic(_), MidiEvent::Timeline(_)) => Ordering::Greater,
+                (MidiEvent::Timeline(_), MidiEvent::Synthetic(_)) => Ordering::Less,
+            }
+        } else {
+            t1.cmp(&t2)
+        }
+    }
+}
+
+#[derive(Eq, PartialEq, Ord, PartialOrd)]
+struct SyntheticEvent {
+    time: Ratio<u32>,
+    repeat_depth: usize,
+    span: Span,
+    velocity: u7,
+    midi_note: MidiNoteData,
+    need_note_event: bool,
+}
 
 #[derive(Debug, Copy, Clone, PartialOrd, PartialEq, Ord, Eq, Hash)]
 struct PortChannel {
@@ -262,11 +315,11 @@ impl<'s> MpeData<'s> {
         Ok(())
     }
 
-    fn track_port_channel_key(
+    fn track_port_channel(
         &self,
         score_part: &str,
         note_event: &NoteEvent,
-    ) -> anyhow::Result<MidiNoteData> {
+    ) -> anyhow::Result<TrackPortChannel> {
         let port_channel = self
             .channel_data
             .get(&MpeChannelKey {
@@ -275,11 +328,6 @@ impl<'s> MpeData<'s> {
             })
             .cloned()
             .ok_or_else(|| anyhow!("unknown channel for note"))?;
-        let (midi_note, bend) = note_event
-            .value
-            .absolute_pitch
-            .midi()
-            .ok_or_else(|| anyhow!("error getting MIDI pitch information for pitch"))?;
         let track_key = MpeTrackKey {
             score_part,
             midi_port: port_channel.midi_port,
@@ -289,12 +337,10 @@ impl<'s> MpeData<'s> {
             .get(&track_key)
             .cloned()
             .ok_or_else(|| anyhow!("unable to get track for note"))?;
-        Ok(MidiNoteData {
+        Ok(TrackPortChannel {
             track,
             midi_port: port_channel.midi_port,
             channel: port_channel.channel,
-            key: midi_note.into(),
-            bend: Some(bend.into()),
         })
     }
 }
@@ -358,23 +404,49 @@ pub fn ramp(start_level: u8, end_level: u8, ticks: u32, steps: u32) -> Vec<(u32,
     out
 }
 
-fn ramp_rational(
+trait MultiplyByRatio: Copy {
+    fn times_ratio(&self, other: Ratio<u32>) -> Self;
+}
+
+impl MultiplyByRatio for Ratio<u32> {
+    fn times_ratio(&self, other: Ratio<u32>) -> Self {
+        self * other
+    }
+}
+impl MultiplyByRatio for f64 {
+    fn times_ratio(&self, other: Ratio<u32>) -> Self {
+        self * other.to_f64().unwrap()
+    }
+}
+
+fn ramp_smooth<T>(
+    start_level: T,
+    end_level: T,
+    start_time: Ratio<u32>,
+    duration: Ratio<u32>,
+    steps: u32,
+) -> Vec<(Ratio<u32> /*time*/, T /*level*/)>
+where
+    T: MultiplyByRatio + Num,
+{
+    let mut result = Vec::with_capacity(steps as usize);
+    for i in 1..=steps {
+        let frac = Ratio::new(i, steps);
+        let t = start_time + duration.times_ratio(frac);
+        let v = start_level + (end_level - start_level).times_ratio(frac);
+        result.push((t, v));
+    }
+    result
+}
+
+fn ramp_tempo(
     start_level: Ratio<u32>,
     end_level: Ratio<u32>,
     start_time: Ratio<u32>,
     duration: Ratio<u32>,
 ) -> Vec<(Ratio<u32> /*time*/, Ratio<u32> /*level*/)> {
     let steps: u32 = (duration * 4u32).ceil().to_integer();
-    let mut result = Vec::with_capacity(steps as usize);
-
-    for i in 1..=steps {
-        let frac = Ratio::new(i, steps);
-        let t = start_time + duration * frac;
-        let v = start_level + (end_level - start_level) * frac;
-        result.push((t, v));
-    }
-
-    result
+    ramp_smooth(start_level, end_level, start_time, duration, steps)
 }
 
 /// Given a group labeled groups `(A, [B])`, pack these into bins of `[A, B]` of no more than a
@@ -545,7 +617,7 @@ impl<'s> MidiGenerator<'s> {
 
     fn handle_tempo_event(
         &mut self,
-        events: &mut BTreeSet<Arc<TimelineEvent<'s>>>,
+        events: &mut BTreeSet<MidiEvent<'s>>,
         event: &TimelineEvent<'s>,
         tempo_event: &TempoEvent,
     ) -> anyhow::Result<()> {
@@ -560,13 +632,13 @@ impl<'s> MidiGenerator<'s> {
             let end_bpm = t.item;
             // The event comes with an absolute time. We need a duration.
             let duration = t.time - event.time;
-            for (time, bpm) in ramp_rational(tempo_event.bpm, end_bpm, event.time, duration) {
-                events.insert(Arc::new(TimelineEvent {
+            for (time, bpm) in ramp_tempo(tempo_event.bpm, end_bpm, event.time, duration) {
+                events.insert(MidiEvent::Timeline(Arc::new(TimelineEvent {
                     time,
                     repeat_depth: event.repeat_depth,
                     span: event.span,
                     data: TimelineData::Tempo(TempoEvent { bpm, end_bpm: None }),
-                }));
+                })));
             }
         }
         Ok(())
@@ -574,7 +646,7 @@ impl<'s> MidiGenerator<'s> {
 
     fn handle_dynamic_event(
         &mut self,
-        events: &mut BTreeSet<Arc<TimelineEvent<'s>>>,
+        events: &mut BTreeSet<MidiEvent<'s>>,
         event: &TimelineEvent<'s>,
         dynamic_event: &DynamicEvent<'s>,
     ) -> anyhow::Result<()> {
@@ -600,7 +672,7 @@ impl<'s> MidiGenerator<'s> {
                     steps,
                 ) {
                     let time = event.time + (Ratio::new(ticks, total_ticks) * total_time);
-                    events.insert(Arc::new(TimelineEvent {
+                    events.insert(MidiEvent::Timeline(Arc::new(TimelineEvent {
                         time,
                         repeat_depth: event.repeat_depth,
                         span: event.span,
@@ -610,43 +682,33 @@ impl<'s> MidiGenerator<'s> {
                             start_level: level,
                             end_level: None,
                         }),
-                    }));
+                    })));
                 }
             }
         }
         Ok(())
     }
 
-    fn handle_note_event(
-        &mut self,
-        events: &mut BTreeSet<Arc<TimelineEvent<'s>>>,
-        event: &TimelineEvent<'s>,
-        note_event: &NoteEvent<'s>,
-    ) -> anyhow::Result<()> {
-        let score_part = note_event.part_note.part;
-        let midi_note = self
-            .pitch_data
-            .track_port_channel_key(score_part, note_event)?;
-        let velocity = u7::try_from(note_event.value.velocity)
-            .ok_or_else(|| anyhow!("overflow getting velocity"))?;
-        let mut delta = self.get_delta(midi_note.track, event.time)?;
+    fn handle_synthetic_event(&mut self, event: &SyntheticEvent) -> anyhow::Result<()> {
+        let velocity = event.velocity;
+        let mut delta = self.get_delta(event.midi_note.track, event.time)?;
         if velocity == 0 {
-            self.tracks[midi_note.track].push(TrackEvent {
+            self.tracks[event.midi_note.track].push(TrackEvent {
                 delta,
                 kind: TrackEventKind::Midi {
-                    channel: midi_note.channel,
+                    channel: event.midi_note.channel,
                     message: MidiMessage::NoteOff {
-                        key: midi_note.key,
+                        key: event.midi_note.key,
                         vel: velocity,
                     },
                 },
             });
         } else {
-            if let Some(bend) = midi_note.bend {
-                self.tracks[midi_note.track].push(TrackEvent {
+            if let Some(bend) = event.midi_note.bend {
+                self.tracks[event.midi_note.track].push(TrackEvent {
                     delta,
                     kind: TrackEventKind::Midi {
-                        channel: midi_note.channel,
+                        channel: event.midi_note.channel,
                         message: MidiMessage::PitchBend {
                             bend: PitchBend(bend),
                         },
@@ -654,54 +716,219 @@ impl<'s> MidiGenerator<'s> {
                 });
                 delta = 0.into();
             }
-            self.tracks[midi_note.track].push(TrackEvent {
-                delta,
-                kind: TrackEventKind::Midi {
-                    channel: midi_note.channel,
-                    message: MidiMessage::NoteOn {
-                        key: midi_note.key,
-                        vel: velocity,
+            if event.need_note_event {
+                self.tracks[event.midi_note.track].push(TrackEvent {
+                    delta,
+                    kind: TrackEventKind::Midi {
+                        channel: event.midi_note.channel,
+                        message: MidiMessage::NoteOn {
+                            key: event.midi_note.key,
+                            vel: velocity,
+                        },
                     },
-                },
+                });
+            }
+        }
+        Ok(())
+    }
+
+    fn handle_note_event(
+        &mut self,
+        events: &mut BTreeSet<MidiEvent<'s>>,
+        event: &TimelineEvent<'s>,
+        note_event: &NoteEvent<'s>,
+    ) -> anyhow::Result<()> {
+        let velocity = u7::try_from(note_event.value.velocity)
+            .ok_or_else(|| anyhow!("overflow getting velocity"))?;
+        let score_part = note_event.part_note.part;
+        let track_port_channel = self.pitch_data.track_port_channel(score_part, note_event)?;
+        // Generate a list of all the pitches we need, with times. Pitches are represented as
+        // fractional MIDI note numbers in the range [0.0, 128.0). fractional_midi_note always
+        // return values in that range.
+        let mut pitches: Vec<(Ratio<u32>, f64)> = Default::default();
+        for pc in &note_event.value.pitches {
+            let start_note = pc
+                .start_pitch
+                .fractional_midi_note()
+                .ok_or_else(|| anyhow!("error getting MIDI pitch information for pitch"))?;
+            match &pc.end_pitch {
+                None => {
+                    pitches.push((pc.start_time, start_note));
+                }
+                Some(end_pitch) => {
+                    let end_note = end_pitch
+                        .fractional_midi_note()
+                        .ok_or_else(|| anyhow!("error getting MIDI pitch information for pitch"))?;
+                    let duration = pc.end_time - pc.start_time;
+                    let steps = *(duration * 64).ceil().numer();
+                    pitches.append(&mut ramp_smooth(
+                        start_note,
+                        end_note,
+                        pc.start_time,
+                        pc.end_time - pc.start_time,
+                        steps,
+                    ));
+                }
+            }
+        }
+        // Find the minimum and maximum note so we can find a good pivot for pitch bend.
+        let (min_note, max_note) = pitches
+            .iter()
+            .copied()
+            .map(|(_, note)| note)
+            .fold((f64::INFINITY, f64::NEG_INFINITY), |(min, max), x| {
+                (min.min(x), max.max(x))
             });
-            // Generate an event to turn the note off. Use velocity 0 as a signal.
-            let mut off = note_event.clone();
-            off.value.velocity = 0;
-            let off_event = Arc::new(TimelineEvent {
-                time: note_event.value.adjusted_end_time,
+        let max_rounded = max_note.round();
+        let middle_rounded = ((min_note + max_note) / 2.0).round();
+        // Compute pitch bends from as few note as possible since changing notes creates a brief
+        // discontinuity in pitch. MPE pitch bend is 48 semitones in either direction, so we have
+        // a total range of 8 octaves, which is enough for all practical purposes. Since MIDI spans
+        // 128 semitones, there's a chance we could have to split into at most two ranges. First,
+        // see if we can pivot from a single note, which will be a rounded f64 in the range
+        // [0.0, 128.0).
+        let pivot = if max_rounded - min_note < MPE_RANGE_F {
+            // We can express the entire range as bend from the top pitch.
+            Some(max_rounded)
+        } else if middle_rounded - min_note < MPE_RANGE_F && max_note - middle_rounded < MPE_RANGE_F
+        {
+            // We can express the entire range as bend from a single note that lies between the
+            // top and bottom note.
+            Some(middle_rounded)
+        } else {
+            // We need to split into two ranges.
+            None
+        };
+        let mut note_bend: Vec<_> = match pivot {
+            Some(pivot) => {
+                let mpe_note = pivot as u8;
+                // Map the pitches into the pivot note and a bend relative to it.
+                pitches
+                    .into_iter()
+                    .map(|(time, fractional_note)| {
+                        (time, (mpe_note, pitch::mpe_bend(fractional_note - pivot)))
+                    })
+                    .collect()
+            }
+            None => {
+                // There will be a discontinuity since we have to switch notes. Make that as low
+                // as possible because it will be hardest to perceive. Find the lowest note that
+                // can be bent to the top pitch.
+                let high_pivot = (max_note - MPE_RANGE_F).ceil();
+                // The highest high pivot possible would be 80, which can bend all the way to 32,
+                // so anything <= 32 will work for the low pivot.
+                let low_pivot = 16.0;
+                pitches
+                    .into_iter()
+                    .map(|(time, fractional_note)| {
+                        let pivot = if (fractional_note - high_pivot).abs() < MPE_RANGE_F {
+                            high_pivot
+                        } else {
+                            low_pivot
+                        };
+                        (
+                            time,
+                            (pivot as u8, pitch::mpe_bend(fractional_note - pivot)),
+                        )
+                    })
+                    .collect()
+            }
+        };
+        note_bend.dedup_by_key(|(_, note)| *note);
+        let mut note_bend: VecDeque<_> = note_bend.into_iter().collect();
+        let final_end_time = note_event.value.pitches.last().unwrap().end_time;
+        // Generate an initial NoteOn event, a final NoteOff event, and intervening pitch bend
+        // events. If we have to switch notes, generate intermediate off/on notes. This will be
+        // audible but only happens if the entire range covers more than 8 octaves.
+        let mut last_note: Option<u8> = None;
+        while let Some((time, (mpe_note, bend))) = note_bend.pop_front() {
+            let end_time = note_bend
+                .front()
+                .map(|(time, _)| *time)
+                .unwrap_or(final_end_time);
+            // Generate synthetic events for turning notes on and off at the right times.
+            let midi_note = {
+                MidiNoteData {
+                    track: track_port_channel.track,
+                    midi_port: track_port_channel.midi_port,
+                    channel: track_port_channel.channel,
+                    key: mpe_note.into(),
+                    bend: Some(bend.into()),
+                }
+            };
+            let need_note_on = last_note.map(|x| x != mpe_note).unwrap_or(true);
+            events.insert(MidiEvent::Synthetic(SyntheticEvent {
+                time,
                 repeat_depth: event.repeat_depth,
                 span: event.span,
-                data: TimelineData::Note(off),
-            });
-            events.insert(off_event);
+                velocity,
+                midi_note,
+                need_note_event: need_note_on,
+            }));
+            last_note = Some(mpe_note);
+            let need_note_off = note_bend
+                .front()
+                .map(|(_, (x, _))| *x != mpe_note)
+                .unwrap_or(true);
+            if need_note_off {
+                // Generate an event to turn the note off. Use velocity 0 as a signal.
+                events.insert(MidiEvent::Synthetic(SyntheticEvent {
+                    time: end_time,
+                    repeat_depth: event.repeat_depth,
+                    span: event.span,
+                    velocity: 0.into(),
+                    midi_note,
+                    need_note_event: need_note_off,
+                }));
+            }
         }
         Ok(())
     }
 
     fn handle_event(
         &mut self,
-        events: &mut BTreeSet<Arc<TimelineEvent<'s>>>,
-        event: &TimelineEvent<'s>,
+        events: &mut BTreeSet<MidiEvent<'s>>,
+        midi_event: &MidiEvent<'s>,
     ) -> anyhow::Result<()> {
         // We have to track last event time as we go since events may be inserted into the
         // even stream during processing.
-        self.last_event_time = event.time;
-        match &event.data {
-            TimelineData::Tempo(e) => self.handle_tempo_event(events, event, e)?,
-            TimelineData::Dynamic(e) => self.handle_dynamic_event(events, event, e)?,
-            TimelineData::Note(e) => self.handle_note_event(events, event, e)?,
-            TimelineData::Mark(_) | TimelineData::RepeatStart(_) | TimelineData::RepeatEnd(_) => {}
+        self.last_event_time = midi_event.time();
+        match midi_event {
+            MidiEvent::Timeline(event) => match &event.data {
+                TimelineData::Tempo(e) => self.handle_tempo_event(events, event, e)?,
+                TimelineData::Dynamic(e) => self.handle_dynamic_event(events, event, e)?,
+                TimelineData::Note(e) => self.handle_note_event(events, event, e)?,
+                TimelineData::Mark(_)
+                | TimelineData::RepeatStart(_)
+                | TimelineData::RepeatEnd(_) => {}
+            },
+            MidiEvent::Synthetic(e) => {
+                self.handle_synthetic_event(e)?;
+            }
         }
+
         Ok(())
     }
 
     fn generate(mut self) -> anyhow::Result<Smf<'s>> {
         self.analyze()?;
         self.init_output()?;
-        let mut events: BTreeSet<_> = self.timeline.events.iter().cloned().collect();
+        let mut events: BTreeSet<_> = self
+            .timeline
+            .events
+            .iter()
+            .map(|x| MidiEvent::Timeline(x.clone()))
+            .collect();
         while let Some(event) = events.pop_first() {
             if let Err(e) = self.handle_event(&mut events, &event) {
-                bail!("while handle event at location {}: {e}", event.span);
+                match event {
+                    MidiEvent::Timeline(ev) => {
+                        bail!("while handling event at location {}: {e}", ev.span);
+                    }
+                    MidiEvent::Synthetic(_) => {
+                        bail!("while handling synthetic event: {e}");
+                    }
+                }
             }
         }
         let deltas: Vec<_> = (0..self.tracks.len())
@@ -821,7 +1048,7 @@ fn init_mpe(track: &mut Vec<TrackEvent>) {
             0.into(),
             ch.into(),
             0.into(),
-            Some(48.into()),
+            Some(MPE_RANGE.into()),
             Some(0.into()),
         );
         end_rpn(track, ch.into());
@@ -890,9 +1117,10 @@ mod tests {
     }
 
     #[test]
-    fn test_ramp_rational() {
+    fn test_ramp_smooth() {
+        // Use ramp_tempo to test since it uses rationals and is deterministic.
         assert_eq!(
-            ramp_rational(
+            ramp_tempo(
                 Ratio::new(9, 2),
                 Ratio::new(7, 1),
                 Ratio::from_integer(12),
