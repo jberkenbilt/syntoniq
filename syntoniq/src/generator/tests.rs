@@ -301,6 +301,19 @@ fn test_options() -> anyhow::Result<()> {
                 omit_parts: true,
             },
         ),
+        (
+            "test05-dynamics",
+            "error-unknown-part",
+            Options {
+                start_mark: None,
+                end_mark: None,
+                skip_repeats: false,
+                tempo_percent: None,
+                skip_beats: None,
+                part: vec!["potato".to_string()],
+                omit_parts: true,
+            },
+        ),
     ];
 
     for (base, name, parse_options) in test_cases {
@@ -317,8 +330,12 @@ fn test_options() -> anyhow::Result<()> {
             parse_options,
         };
         if let Err(e) = generator::run(options) {
+            if name.contains("error") {
+                continue;
+            }
             errors.push(format!("{base}: {e}"));
         }
+        assert!(!name.contains("error"), "expected error was not seen");
         for suf in ["json", "midi", "csd"] {
             let actual = fs::read(outfile(suf))?;
             let exp = fs::read(exp_file(suf)).unwrap_or_default();
