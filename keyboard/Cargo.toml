@@ -14,14 +14,14 @@ env_logger.workspace = true
 anyhow.workspace = true
 askama.workspace = true
 chrono.workspace = true
-flume = "0.11.1"
-tokio = { version = "1.47.1", features = ["full"] }
-axum = { version = "0.8.4", features = ["macros", "json"] }
-tokio-stream = { version = "0.1.17", features = ["sync"] }
-rust-embed = "8.7.2"
-derive_more = { version = "2.0.1", features = ["debug"] }
+flume = "0.12.0"
+tokio = { version = "1.49.0", features = ["full"] }
+axum = { version = "0.8.8", features = ["macros", "json"] }
+tokio-stream = { version = "0.1.18", features = ["sync"] }
+rust-embed = "8.11.0"
+derive_more = { version = "2.1.1", features = ["debug"] }
 num_enum = "0.7.5"
-arc-swap = "1.7.1"
+arc-swap = "1.8.0"
 bimap = "0.6.3"
 
 [build-dependencies]
