@@ -6,7 +6,7 @@ sort_by = "weight"
 
 Syntoniq supports two ways to sustain a note: tie (`~`) and glide (`&`). In both cases, the note's duration is extended over subsequent holds or subsequent sustained notes. A sustained note ends at the end of the next non-sustained note or when an accented note is encountered.
 
-Here's a example, explained below.
+Here's an example, explained below.
 
 <!-- generate include=tie-glide1.stq checksum=66286ef6b073a19b0bc3cc4560629ac35e518c05a15a71a6f32acb6fb923f950 -->
 ```syntoniq

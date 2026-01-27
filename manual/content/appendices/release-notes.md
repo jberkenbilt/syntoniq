@@ -11,7 +11,7 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 ## Improvements
 
 * Upgrade manual to Zola version 0.22. The syntax highlighting was simple enough for a successful AI conversion.
-* Refactor Csound instrument to be more future proof. New parameters are varied through channels intead of arguments to the instrument.
+* Refactor Csound instrument to be more future proof. New parameters are varied through channels instead of arguments to the instrument.
 * Drop support for MTS MIDI. The previous implementation was incompatible with glide, and writing MTS SysEx codes into a MIDI file is not the usual way of MTS. I have also not found any tool that supports MTS and MPE together. This means we also drop TiMidity++, which doesn't support MPE. We can use FluidSynth instead for simple SoundFont-based rendering, or use Csound's SoundFont opcodes.
 * Implement pitch glide.
 

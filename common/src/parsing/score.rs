@@ -1416,8 +1416,11 @@ impl<'s> Score<'s> {
         pending_dynamic_changes: &HashMap<&'s str, WithTime<Spanned<RegularDynamic>>>,
     ) {
         if !pending_notes.is_empty() {
-            let mut err =
-                Diagnostic::new(code::SCORE, span, "notes may not be tied across repeats");
+            let mut err = Diagnostic::new(
+                code::SCORE,
+                span,
+                "notes may not be sustained across repeats",
+            );
             for note in pending_notes.values() {
                 err = err.with_context(note.item.span, "this tie is unresolved");
             }
