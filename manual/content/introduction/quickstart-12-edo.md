@@ -103,6 +103,8 @@ To generate
 -->
 {{ audio(src="introduction/hello-fluid.mp3", caption="Audio Created by FluidSynth") }}
 
+For better quality with fluidsynth, you can run `fluidsynth` interactively and give it the `interp 7` command. Then you send MIDI files to its input port. See documentation for `fluidsynth` for more help.
+
 Another way to hear this on Linux is to install a synth tool, such as Surge XT, and to send the file to it using a tool such as `aplaymidi`. For example:
 ```sh
 # start Surge XT and set up audio

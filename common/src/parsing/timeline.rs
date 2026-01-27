@@ -140,7 +140,7 @@ pub struct DynamicEvent<'s> {
     pub end_level: Option<WithTime<u8>>,
 }
 
-#[derive(Serialize, Clone, Copy, PartialOrd, PartialEq, Ord, Eq)]
+#[derive(Default, Serialize, Clone, Copy, PartialOrd, PartialEq, Ord, Eq)]
 pub struct MidiInstrumentNumber {
     pub bank: u16,
     pub instrument: u8,

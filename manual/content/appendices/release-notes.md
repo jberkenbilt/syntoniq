@@ -14,6 +14,8 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 * Refactor Csound instrument to be more future proof. New parameters are varied through channels intead of arguments to the instrument.
 * Drop support for MTS MIDI. The previous implementation was incompatible with glide, and writing MTS SysEx codes into a MIDI file is not the usual way of MTS. I have also not found any tool that supports MTS and MPE together. This means we also drop TiMidity++, which doesn't support MPE. We can use FluidSynth instead for simple SoundFont-based rendering, or use Csound's SoundFont opcodes.
 * Implement pitch glide.
+* Rework MPE channel allocation to use a pair of channels per note line so we can properly avoid immediate channel reuse. This means we only get 7 simultaneous notes per track, but we still allocate as many ports and tracks as required.
+* Initialize volume and instruments for each channel unconditionally. This makes it easier to work with sending multiple outputs to the same MIDI device.
 
 # v0.1.0 - January 22, 2026
 
