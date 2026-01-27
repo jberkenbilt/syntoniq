@@ -1,12 +1,27 @@
+# Common Setup
+
+```sh
+version=$(toml-to-json < Cargo.toml | jq -r .workspace.package.version)
+repo=~/source/syntoniq
+release=~/Q/storage/releases/syntoniq/$version
+mkdir -p $release
+```
+
 # Prepare Release
 
 Remember: the version in Cargo.toml is the *next* version to release.
 
-Create docs/github-releases/vX.Y.Z.md with release notes. Copy the previous one and modify it for consistency. Push to main.
+Update rust dependencies.
+```sh
+cargo upgrade -i allow && cargo update
+```
+
+Create docs/github-releases/v$version.md with release notes. Copy the previous one and modify it for consistency. Push to main.
 
 Make sure the release date is set in manual/content/appendices/release-notes.md
 
 ```sh
+git add docs/github-releases/v$version.md
 git commit -a -m"Prepare version $version"
 ```
 
@@ -14,13 +29,7 @@ Push to main.
 
 # Create Release
 
-Common setup:
-```sh
-version=$(toml-to-json < Cargo.toml | jq -r .workspace.package.version)
-repo=~/source/syntoniq
-release=~/Q/storage/releases/syntoniq/$version
-mkdir -p $release
-```
+Deploy the manual.
 
 Tag the release. Do this *after* CI is built in case there is a problem. We don't trigger anything on the tag. In the source repository:
 

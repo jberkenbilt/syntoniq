@@ -14,12 +14,10 @@ These are proposed pre-1.0 items. Details are below for many.
 
 # Build/CI
 
-* Resolve manual generation in CI
 * Do the lychee check in build_all
 
 # Video
 
-* Delete ~/Q/video/syntoniq/rendered/old/ when sure
 * Could add TOC. Example format:
 
 ```
