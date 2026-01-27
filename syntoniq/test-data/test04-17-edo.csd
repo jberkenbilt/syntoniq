@@ -114,74 +114,97 @@ f 1 0 32768 10 1 1 1 1 1 1 1
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 3
 t 0 72
-; 6:c,2 @376
+; 6:c,2@376
 i "SetPartParam" 0 6 1 "freq_1" 65.406
+; 6:c,2 @376
 i "potato.1" 0 6 1 1 0.567
-; 1:g, @360
+; 1:g,@360
 i "SetPartParam" 2 1 1 "freq_2" 196.665
+; 1:g, @360
 i "potato.2" 2 1 1 2 0.567
-; 3:g @345
+; 3:g@345
 i "SetPartParam" 3 3 1 "freq_3" 393.33
+; 3:g @345
 i "potato.3" 3 3 1 3 0.567
-; 3:c @365
+; 3:c@365
 i "SetPartParam" 3 3 1 "freq_2" 261.626
+; 3:c @365
 i "potato.2" 3 3 1 2 0.567
-; 6:c,2 @436
+; 6:c,2@436
 i "SetPartParam" 6 6 1 "freq_1" 65.406
+; 6:c,2 @436
 i "potato.1" 6 6 1 1 0.567
-; 1:g, @414
+; 1:g,@414
 i "SetPartParam" 7 1 1 "freq_2" 196.665
+; 1:g, @414
 i "potato.2" 7 1 1 2 0.567
-; a%, @419
+; a%,@419
 i "SetPartParam" 8 1 1 "freq_2" 213.374
+; a%, @419
 i "potato.2" 8 1 1 2 0.567
-; 3:g @399
+; 3:g@399
 i "SetPartParam" 9 3 1 "freq_3" 393.33
+; 3:g @399
 i "potato.3" 9 3 1 3 0.567
-; c @423
+; c@423
 i "SetPartParam" 9 1 1 "freq_2" 261.626
+; c @423
 i "potato.2" 9 1 1 2 0.567
-; 2:d @425
+; 2:d@425
 i "SetPartParam" 10 2 1 "freq_2" 295.667
+; 2:d @425
 i "potato.2" 10 2 1 2 0.567
-; 6:c,2 @476
+; 6:c,2@476
 i "SetPartParam" 12 6 1 "freq_1" 65.406
+; 6:c,2 @476
 i "potato.1" 12 6 1 1 0.567
-; 1:g, @454
+; 1:g,@454
 i "SetPartParam" 13 1 1 "freq_2" 196.665
+; 1:g, @454
 i "potato.2" 13 1 1 2 0.567
-; a%, @459
+; a%,@459
 i "SetPartParam" 14 1 1 "freq_2" 213.374
+; a%, @459
 i "potato.2" 14 1 1 2 0.567
-; d @463
+; d@463
 i "SetPartParam" 15 1 1 "freq_2" 295.667
+; d @463
 i "potato.2" 15 1 1 2 0.567
-; e @465
+; e@465
 i "SetPartParam" 16 1 1 "freq_2" 334.138
+; e @465
 i "potato.2" 16 1 1 2 0.567
-; d @467
+; d@467
 i "SetPartParam" 17 1 1 "freq_2" 295.667
+; d @467
 i "potato.2" 17 1 1 2 0.567
-; 5:c,2 @519
+; 5:c,2@519
 i "SetPartParam" 18 5 1 "freq_2" 65.406
+; 5:c,2 @519
 i "potato.2" 18 5 1 2 0.567
-; 1:g, @494
+; 1:g,@494
 i "SetPartParam" 19 1 1 "freq_3" 196.665
+; 1:g, @494
 i "potato.3" 19 1 1 3 0.567
-; a%, @499
+; a%,@499
 i "SetPartParam" 20 1 1 "freq_3" 213.374
+; a%, @499
 i "potato.3" 20 1 1 3 0.567
-; d @503
+; d@503
 i "SetPartParam" 21 1 1 "freq_3" 295.667
+; d @503
 i "potato.3" 21 1 1 3 0.567
-; e @505
+; e@505
 i "SetPartParam" 22 1 1 "freq_3" 334.138
+; e @505
 i "potato.3" 22 1 1 3 0.567
-; 4:c# @507
+; 4:c#@507
 i "SetPartParam" 23 4 1 "freq_3" 272.513
+; 4:c# @507
 i "potato.3" 23 4 1 3 0.567
-; 4:b%,3 @536
+; 4:b%,3@536
 i "SetPartParam" 23 4 1 "freq_2" 60.284
+; 4:b%,3 @536
 i "potato.2" 23 4 1 2 0.567
 ;; END SYNTONIQ
 

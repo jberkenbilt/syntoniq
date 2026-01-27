@@ -55,8 +55,10 @@ impl<'s> TimelineEvent<'s> {
                 }
             }
             TimelineData::Note(e) => {
-                Self::add_or_subtract(&mut e.value.adjusted_end_time, &delta, subtract);
-                Self::add_or_subtract(&mut e.value.end_time, &delta, subtract);
+                for p in e.value.pitches.iter_mut() {
+                    Self::add_or_subtract(&mut p.start_time, &delta, subtract);
+                    Self::add_or_subtract(&mut p.end_time, &delta, subtract);
+                }
             }
             TimelineData::Mark(_) | TimelineData::RepeatStart(_) | TimelineData::RepeatEnd(_) => {}
         };
@@ -116,18 +118,18 @@ pub struct NoteEvent<'s> {
 #[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
 pub struct NoteValue<'s> {
     pub text: &'s str,
-    pub absolute_pitch: Pitch,
     pub velocity: u8,
-    pub end_time: Ratio<u32>,
-    pub adjusted_end_time: Ratio<u32>,
-    #[serde(default, skip_serializing_if = "Vec::is_empty")]
-    pub pitch_changes: Vec<PitchChange>,
+    pub pitches: Vec<PitchChange<'s>>,
 }
 
 #[derive(Serialize, Clone, Debug, PartialOrd, PartialEq, Ord, Eq)]
-pub struct PitchChange {
-    pub when: Ratio<u32>,
-    pub pitch: Pitch,
+pub struct PitchChange<'s> {
+    pub text: &'s str,
+    pub span: Span,
+    pub start_pitch: Pitch,
+    pub start_time: Ratio<u32>,
+    pub end_pitch: Option<Pitch>,
+    pub end_time: Ratio<u32>,
 }
 
 #[derive(Serialize, Debug, Clone, PartialOrd, PartialEq, Ord, Eq)]

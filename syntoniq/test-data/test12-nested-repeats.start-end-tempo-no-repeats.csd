@@ -108,21 +108,26 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 1
 t 0 135 6 135 6 135
-; 1:c @255
+; 1:c@255
 i "SetPartParam" 0 1 1 "freq_1" 261.626
+; 1:c @255
 i 1.1 0 1 1 1 0.567
-; e @259
+; e@259
 i "SetPartParam" 1 1 1 "freq_1" 329.628
+; e @259
 i 1.1 1 1 1 1 0.567
-; g @261
+; g@261
 i "SetPartParam" 2 1 1 "freq_1" 391.995
+; g @261
 i 1.1 2 1 1 1 0.567
 ; mark 'chorus-main-end' @'[274,291)
-; 2:a @315
+; 2:a@315
 i "SetPartParam" 3 2 1 "freq_1" 440
+; 2:a @315
 i 1.1 3 2 1 1 0.567
-; 2:c @416
+; 2:c@416
 i "SetPartParam" 6 2 1 "freq_1" 261.626
+; 2:c @416
 i 1.1 6 2 1 1 0.567
 ;; END SYNTONIQ
 

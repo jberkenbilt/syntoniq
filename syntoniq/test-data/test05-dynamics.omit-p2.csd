@@ -111,76 +111,95 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 4
 t 0 72
-; 4:c @598
+; 4:c@598
 i "SetPartParam" 0 4 1 "freq_1" 261.626
+; 4:c @598
 i 1.1 0 4 1 1 0.567
-; 4:e @609
+; 4:e@609
 i "SetPartParam" 0 4 1 "freq_2" 327.032
+; 4:e @609
 i 1.2 0 4 1 2 0.567
-; 4:g @620
+; 4:g@620
 i "SetPartParam" 0 4 1 "freq_3" 392.438
+; 4:g @620
 i 1.3 0 4 1 3 0.567
-; 2:h7 @631
+; 2:h7@631
 i "SetPartParam" 0 2 1 "freq_4" 457.845
+; 2:h7 @631
 i 1.4 0 2 1 4 0.567
 i "SetPartParamRamp" 0 1 1 "amp" 0.252 0.504 ; 32@0< @646
 i "SetPartParamRamp" 1 1 1 "amp" 0.504 0.756 ; 64@1< @652
-; 2:b% @636
+; 2:b%@636
 i "SetPartParam" 2 2 1 "freq_4" 465.112
+; 2:b% @636
 i 1.4 2 2 1 4 0.567
 i "SetPartParamRamp" 2 1 1 "amp" 0.756 1 ; 96@2< @658
 i "SetPartParam" 3 0.01 1 "amp" 1 ; 127@3 @664
-; 4:d @713
+; 4:d@713
 i "SetPartParam" 4 4 1 "freq_1" 294.329
+; 4:d @713
 i 1.1 4 4 1 1 0.567
-; 2:f# @724
+; 2:f#@724
 i "SetPartParam" 4 2 1 "freq_2" 367.911
+; 2:f# @724
 i 1.2 4 2 1 2 0.567
-; 4:a @742
+; 4:a@742
 i "SetPartParam" 4 4 1 "freq_3" 436.043
+; 4:a @742
 i 1.3 4 4 1 3 0.567
 i "SetPartParamRamp" 4 1 1 "amp" 1 0.756 ; 127@0> @751
 i "SetPartParamRamp" 5 1 1 "amp" 0.756 0.504 ; 96@1> @758
-; 2:h11 @729
+; 2:h11@729
 i "SetPartParam" 6 2 1 "freq_2" 359.735
+; 2:h11 @729
 i 1.2 6 2 1 2 0.567
 i "SetPartParamRamp" 6 1 1 "amp" 0.504 0.252 ; 64@2> @764
 i "SetPartParam" 7 0.01 1 "amp" 0.252 ; 32@3 @770
-; 4:c @895
+; 4:c@895
 i "SetPartParam" 8 4 1 "freq_1" 327.032
+; 4:c @895
 i 1.1 8 4 1 1 0.567
-; 4:e @906
+; 4:e@906
 i "SetPartParam" 8 4 1 "freq_2" 408.79
+; 4:e @906
 i 1.2 8 4 1 2 0.567
-; 4:g @917
+; 4:g@917
 i "SetPartParam" 8 4 1 "freq_3" 490.548
+; 4:g @917
 i 1.3 8 4 1 3 0.567
-; 2:h7 @928
+; 2:h7@928
 i "SetPartParam" 8 2 1 "freq_4" 572.306
+; 2:h7 @928
 i 1.4 8 2 1 4 0.567
 i "SetPartParamRamp" 8 1 1 "amp" 0.252 0.504 ; 32@0< @943
 i "SetPartParamRamp" 9 1 1 "amp" 0.504 0.756 ; 64@1< @949
-; 2:b% @933
+; 2:b%@933
 i "SetPartParam" 10 2 1 "freq_4" 581.39
+; 2:b% @933
 i 1.4 10 2 1 4 0.567
 i "SetPartParamRamp" 10 1 1 "amp" 0.756 1 ; 96@2< @955
 i "SetPartParam" 11 0.01 1 "amp" 1 ; 127@3 @961
-; 4:c @1051
+; 4:c@1051
 i "SetPartParam" 12 4 1 "freq_1" 261.626
+; 4:c @1051
 i 1.1 12 4 1 1 0.567
-; 4:e @1062
+; 4:e@1062
 i "SetPartParam" 12 4 1 "freq_2" 327.032
+; 4:e @1062
 i 1.2 12 4 1 2 0.567
-; 4:g @1073
+; 4:g@1073
 i "SetPartParam" 12 4 1 "freq_3" 392.438
+; 4:g @1073
 i 1.3 12 4 1 3 0.567
-; 2:h7 @1084
+; 2:h7@1084
 i "SetPartParam" 12 2 1 "freq_4" 457.845
+; 2:h7 @1084
 i 1.4 12 2 1 4 0.567
 i "SetPartParamRamp" 12 1 1 "amp" 0.252 0.504 ; 32@0< @1099
 i "SetPartParamRamp" 13 1 1 "amp" 0.504 0.756 ; 64@1< @1105
-; 2:b% @1089
+; 2:b%@1089
 i "SetPartParam" 14 2 1 "freq_4" 465.112
+; 2:b% @1089
 i 1.4 14 2 1 4 0.567
 i "SetPartParamRamp" 14 1 1 "amp" 0.756 1 ; 96@2< @1111
 i "SetPartParam" 15 0.01 1 "amp" 1 ; 127@3 @1117

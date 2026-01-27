@@ -108,153 +108,198 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 1
 t 0 240 3 240 3 300 9 320 15 320 15 360 21 360 21 360 27 360 27 300 33 320 39 320 39 360 45 360 45 360
-; 1:g @52
+; 1:g@52
 i "SetPartParam" 0 1 1 "freq_1" 391.995
+; 1:g @52
 i 1.1 0 1 1 1 0.567
-; f @56
+; f@56
 i "SetPartParam" 1 1 1 "freq_1" 349.228
+; f @56
 i 1.1 1 1 1 1 0.567
-; d @58
+; d@58
 i "SetPartParam" 2 1 1 "freq_1" 293.665
+; d @58
 i 1.1 2 1 1 1 0.567
 ; mark 'verse-start' @'[80,93)
-; 1:c @161
+; 1:c@161
 i "SetPartParam" 3 1 1 "freq_1" 261.626
+; 1:c @161
 i 1.1 3 1 1 1 0.567
-; e @165
+; e@165
 i "SetPartParam" 4 1 1 "freq_1" 329.628
+; e @165
 i 1.1 4 1 1 1 0.567
-; g @167
+; g@167
 i "SetPartParam" 5 1 1 "freq_1" 391.995
+; g @167
 i 1.1 5 1 1 1 0.567
-; f @169
+; f@169
 i "SetPartParam" 6 1 1 "freq_1" 349.228
+; f @169
 i 1.1 6 1 1 1 0.567
-; e @171
+; e@171
 i "SetPartParam" 7 1 1 "freq_1" 329.628
+; e @171
 i 1.1 7 1 1 1 0.567
-; d @173
+; d@173
 i "SetPartParam" 8 1 1 "freq_1" 293.665
+; d @173
 i 1.1 8 1 1 1 0.567
-; c @177
+; c@177
 i "SetPartParam" 9 1 1 "freq_1" 261.626
+; c @177
 i 1.1 9 1 1 1 0.567
-; e @179
+; e@179
 i "SetPartParam" 10 1 1 "freq_1" 329.628
+; e @179
 i 1.1 10 1 1 1 0.567
-; g @181
+; g@181
 i "SetPartParam" 11 1 1 "freq_1" 391.995
+; g @181
 i 1.1 11 1 1 1 0.567
-; 2:c @183
+; 2:c@183
 i "SetPartParam" 12 2 1 "freq_1" 261.626
+; 2:c @183
 i 1.1 12 2 1 1 0.567
 ; mark 'chorus-main-start' @'[212,231)
-; 1:c @255
+; 1:c@255
 i "SetPartParam" 15 1 1 "freq_1" 261.626
+; 1:c @255
 i 1.1 15 1 1 1 0.567
-; e @259
+; e@259
 i "SetPartParam" 16 1 1 "freq_1" 329.628
+; e @259
 i 1.1 16 1 1 1 0.567
-; g @261
+; g@261
 i "SetPartParam" 17 1 1 "freq_1" 391.995
+; g @261
 i 1.1 17 1 1 1 0.567
 ; mark 'chorus-main-end' @'[274,291)
-; 2:a @315
+; 2:a@315
 i "SetPartParam" 18 2 1 "freq_1" 440
+; 2:a @315
 i 1.1 18 2 1 1 0.567
 ; repeat start 'chorus-main-start' @'[350,369)
-; 1:c @255
+; 1:c@255
 i "SetPartParam" 21 1 1 "freq_1" 261.626
+; 1:c @255
 i 1.1 21 1 1 1 0.567
-; e @259
+; e@259
 i "SetPartParam" 22 1 1 "freq_1" 329.628
+; e @259
 i 1.1 22 1 1 1 0.567
-; g @261
+; g@261
 i "SetPartParam" 23 1 1 "freq_1" 391.995
+; g @261
 i 1.1 23 1 1 1 0.567
 ; repeat end 'chorus-main-end' @'[374,391)
-; 2:c @416
+; 2:c@416
 i "SetPartParam" 24 2 1 "freq_1" 261.626
+; 2:c @416
 i 1.1 24 2 1 1 0.567
 ; mark 'verse-end' @'[435,446)
 ; repeat start 'verse-start' @'[484,497)
-; 1:c @161
+; 1:c@161
 i "SetPartParam" 27 1 1 "freq_1" 261.626
+; 1:c @161
 i 1.1 27 1 1 1 0.567
-; e @165
+; e@165
 i "SetPartParam" 28 1 1 "freq_1" 329.628
+; e @165
 i 1.1 28 1 1 1 0.567
-; g @167
+; g@167
 i "SetPartParam" 29 1 1 "freq_1" 391.995
+; g @167
 i 1.1 29 1 1 1 0.567
-; f @169
+; f@169
 i "SetPartParam" 30 1 1 "freq_1" 349.228
+; f @169
 i 1.1 30 1 1 1 0.567
-; e @171
+; e@171
 i "SetPartParam" 31 1 1 "freq_1" 329.628
+; e @171
 i 1.1 31 1 1 1 0.567
-; d @173
+; d@173
 i "SetPartParam" 32 1 1 "freq_1" 293.665
+; d @173
 i 1.1 32 1 1 1 0.567
-; c @177
+; c@177
 i "SetPartParam" 33 1 1 "freq_1" 261.626
+; c @177
 i 1.1 33 1 1 1 0.567
-; e @179
+; e@179
 i "SetPartParam" 34 1 1 "freq_1" 329.628
+; e @179
 i 1.1 34 1 1 1 0.567
-; g @181
+; g@181
 i "SetPartParam" 35 1 1 "freq_1" 391.995
+; g @181
 i 1.1 35 1 1 1 0.567
-; 2:c @183
+; 2:c@183
 i "SetPartParam" 36 2 1 "freq_1" 261.626
+; 2:c @183
 i 1.1 36 2 1 1 0.567
 ; mark 'chorus-main-start' @'[212,231)
-; 1:c @255
+; 1:c@255
 i "SetPartParam" 39 1 1 "freq_1" 261.626
+; 1:c @255
 i 1.1 39 1 1 1 0.567
-; e @259
+; e@259
 i "SetPartParam" 40 1 1 "freq_1" 329.628
+; e @259
 i 1.1 40 1 1 1 0.567
-; g @261
+; g@261
 i "SetPartParam" 41 1 1 "freq_1" 391.995
+; g @261
 i 1.1 41 1 1 1 0.567
 ; mark 'chorus-main-end' @'[274,291)
-; 2:a @315
+; 2:a@315
 i "SetPartParam" 42 2 1 "freq_1" 440
+; 2:a @315
 i 1.1 42 2 1 1 0.567
 ; repeat start 'chorus-main-start' @'[350,369)
-; 1:c @255
+; 1:c@255
 i "SetPartParam" 45 1 1 "freq_1" 261.626
+; 1:c @255
 i 1.1 45 1 1 1 0.567
-; e @259
+; e@259
 i "SetPartParam" 46 1 1 "freq_1" 329.628
+; e @259
 i 1.1 46 1 1 1 0.567
-; g @261
+; g@261
 i "SetPartParam" 47 1 1 "freq_1" 391.995
+; g @261
 i 1.1 47 1 1 1 0.567
 ; repeat end 'chorus-main-end' @'[374,391)
-; 2:c @416
+; 2:c@416
 i "SetPartParam" 48 2 1 "freq_1" 261.626
+; 2:c @416
 i 1.1 48 2 1 1 0.567
 ; repeat end 'verse-end' @'[502,513)
 ; mark 'ending' @'[533,541)
-; 2:g @550
+; 2:g@550
 i "SetPartParam" 51 2 1 "freq_1" 391.995
+; 2:g @550
 i 1.1 51 2 1 1 0.567
-; 1:g @554
+; 1:g@554
 i "SetPartParam" 53 1 1 "freq_1" 391.995
+; 1:g @554
 i 1.1 53 1 1 1 0.567
-; f @558
+; f@558
 i "SetPartParam" 54 1 1 "freq_1" 349.228
+; f @558
 i 1.1 54 1 1 1 0.567
-; e @560
+; e@560
 i "SetPartParam" 55 1 1 "freq_1" 329.628
+; e @560
 i 1.1 55 1 1 1 0.567
-; d @562
+; d@562
 i "SetPartParam" 56 1 1 "freq_1" 293.665
+; d @562
 i 1.1 56 1 1 1 0.567
-; 4:c @566
+; 4:c@566
 i "SetPartParam" 57 4 1 "freq_1" 261.626
+; 4:c @566
 i 1.1 57 4 1 1 0.567
 ;; END SYNTONIQ
 

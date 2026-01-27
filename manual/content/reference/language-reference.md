@@ -201,8 +201,6 @@ A *part name* must start with an alphabetic character and may contain only alpha
 
 ### Note Lines
 
-FUTURE: update this section if we support glide. Search for glide.
-
 Note lines begin with `[part_name.n]`, where, in this case *the `[` and `]` characters are literal* (not indicating an optional value) and `n` is a non-negative integer value (0 or positive) indicating a note number. Note that the note number is interpreted as a numerical value, ignoring leading zeroes. This is probably the least surprising behavior unless you are used to Csound. If you are accustomed to Csound, keep in mind that, since Syntoniq treats note numbers as *numeric values*, `part.1` and `part.01` refer to the *same note*. This is different from Csound, which treats these like floating point fractional parts. In Csound, `part.1` and `part.10` would be the same. We believe that, for anyone except a Csound user, it is less surprising to view the note line leader as a `.`-separated part name and numerical value.
 
 After the line leader (`[part_name.n]`), a line consists of any of a sequence of
@@ -226,15 +224,12 @@ Duration is a rational number or decimal with up to three decimal places. It is 
   * `>` — slightly increases the velocity (MIDI) or amplitude (Csound) of the note; corresponds to an accent.
   * `^` — like `>` but more; corresponds to marcato.
   * `.` - may be repeated; shortens the note by one quarter of a beat as long as duration remains at least one quarter of a beat. This roughly corresponds to staccato. It is a shortcut and behaves the same regardless of the note length. For more precise control, you can use full-length notes with specific durations, such as 7/8.
-  * `~` — sustains the note. This is most useful with hold (discussed below) or to tie notes across lines. It means to go straight from the note to the next note with the same part and note number.
-
-FUTURE: A future version of Syntoniq is expected to support *glide*, probably using the modifier `&`, but this is subject to change. The current design for glide means that the pitch changes in a perceptually linear fashion (which is exponentially for frequency) from the computed pitch to the computed pitch of the next note over the specified duration.
+  * `~` — tie: sustains the note, holding the pitch constant across any subsequent holds (discussed below). If the subsequent note has the same pitch, this implements a tie. For Csound, if the next pitch is different, this acts like a slur, changing the pitch of the note without releasing and retriggering the note.
+  * `&` — glide: sustains the note indicating the pitch should glide smoothly to the pitch of the next note. Otherwise, it behaves like `~` in that intervening holds extend its duration. For Csound, this implements smooth pitch changes. With MIDI, it causes several pitch-bend changes per second.
 
 #### Holds
 
-You can indicate *hold* with `~`. The `~` character can be preceded by a duration and must be preceded by a duration if it is the first item in the line. A *hold* means "keep doing what you're doing." That means that, following a sustained note, a *hold* means to keep sustaining, and following a non-sustained note, or as the first thing, it is a rest.
-
-FUTURE: glide: It is expected that a hold would then mean "keep gliding". For example, `1:a:& ~ b` would glide smoothly from `a` to `b` over two beats.
+You can indicate *hold* with `~`. The `~` character can be preceded by a duration and must be preceded by a duration if it is the first item in the line. A *hold* means "keep doing what you're doing." That means that, following a tied note, a *hold* means to keep holding the pitch. Following a glide it extends the duration over which the pitch is changed. Following a non-sustained note, or as the first thing, it is a rest.
 
 #### Bar Checks
 

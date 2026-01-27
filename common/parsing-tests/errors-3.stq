@@ -21,8 +21,8 @@ potato  ; layout
 
 [p1.0]  1/2:e g e g e g e   g |      f g     f g   w g    f  g:>^>^..~~
 ; comment in the middle of a score block
-[p1.1]      d   c   d   c     |      e   1/2:d e   d e    d:~ e
-[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g    f  g:>
+[p1.1]      d   c   d   c     |      e   1/2:d e   d e    d:~& e:&&
+[p1.0]  1/2:e g e g e g e   g |      f g     f g   f g:&~ f  g:>
 [p1.2]      ~     1:b,  b%,   |    2:c'2           b,2
 [p1.3]  | 4:~                 |    2:~             a,   ; comment on note line
 [p1.4]    4:~                 |    2:a,          1:g, 1/2:f, e,

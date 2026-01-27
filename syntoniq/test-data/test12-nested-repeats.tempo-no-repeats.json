@@ -36,15 +36,25 @@
           "note_number": 0,
           "value": {
             "text": "1:g",
-            "absolute_pitch": "220*^5|6",
             "velocity": 72,
-            "end_time": [
-              1,
-              1
-            ],
-            "adjusted_end_time": [
-              1,
-              1
+            "pitches": [
+              {
+                "text": "1:g",
+                "span": [
+                  52,
+                  55
+                ],
+                "start_pitch": "220*^5|6",
+                "start_time": [
+                  0,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  1,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -66,15 +76,25 @@
           "note_number": 0,
           "value": {
             "text": "f",
-            "absolute_pitch": "220*^2|3",
             "velocity": 72,
-            "end_time": [
-              2,
-              1
-            ],
-            "adjusted_end_time": [
-              2,
-              1
+            "pitches": [
+              {
+                "text": "f",
+                "span": [
+                  56,
+                  57
+                ],
+                "start_pitch": "220*^2|3",
+                "start_time": [
+                  1,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  2,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -96,15 +116,25 @@
           "note_number": 0,
           "value": {
             "text": "d",
-            "absolute_pitch": "220*^5|12",
             "velocity": 72,
-            "end_time": [
-              3,
-              1
-            ],
-            "adjusted_end_time": [
-              3,
-              1
+            "pitches": [
+              {
+                "text": "d",
+                "span": [
+                  58,
+                  59
+                ],
+                "start_pitch": "220*^5|12",
+                "start_time": [
+                  2,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  3,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -171,15 +201,25 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "absolute_pitch": "220*^1|4",
             "velocity": 72,
-            "end_time": [
-              4,
-              1
-            ],
-            "adjusted_end_time": [
-              4,
-              1
+            "pitches": [
+              {
+                "text": "1:c",
+                "span": [
+                  161,
+                  164
+                ],
+                "start_pitch": "220*^1|4",
+                "start_time": [
+                  3,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  4,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -201,15 +241,25 @@
           "note_number": 0,
           "value": {
             "text": "e",
-            "absolute_pitch": "220*^7|12",
             "velocity": 72,
-            "end_time": [
-              5,
-              1
-            ],
-            "adjusted_end_time": [
-              5,
-              1
+            "pitches": [
+              {
+                "text": "e",
+                "span": [
+                  165,
+                  166
+                ],
+                "start_pitch": "220*^7|12",
+                "start_time": [
+                  4,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  5,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -231,15 +281,25 @@
           "note_number": 0,
           "value": {
             "text": "g",
-            "absolute_pitch": "220*^5|6",
             "velocity": 72,
-            "end_time": [
-              6,
-              1
-            ],
-            "adjusted_end_time": [
-              6,
-              1
+            "pitches": [
+              {
+                "text": "g",
+                "span": [
+                  167,
+                  168
+                ],
+                "start_pitch": "220*^5|6",
+                "start_time": [
+                  5,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  6,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -261,15 +321,25 @@
           "note_number": 0,
           "value": {
             "text": "f",
-            "absolute_pitch": "220*^2|3",
             "velocity": 72,
-            "end_time": [
-              7,
-              1
-            ],
-            "adjusted_end_time": [
-              7,
-              1
+            "pitches": [
+              {
+                "text": "f",
+                "span": [
+                  169,
+                  170
+                ],
+                "start_pitch": "220*^2|3",
+                "start_time": [
+                  6,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  7,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -291,15 +361,25 @@
           "note_number": 0,
           "value": {
             "text": "e",
-            "absolute_pitch": "220*^7|12",
             "velocity": 72,
-            "end_time": [
-              8,
-              1
-            ],
-            "adjusted_end_time": [
-              8,
-              1
+            "pitches": [
+              {
+                "text": "e",
+                "span": [
+                  171,
+                  172
+                ],
+                "start_pitch": "220*^7|12",
+                "start_time": [
+                  7,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  8,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -321,15 +401,25 @@
           "note_number": 0,
           "value": {
             "text": "d",
-            "absolute_pitch": "220*^5|12",
             "velocity": 72,
-            "end_time": [
-              9,
-              1
-            ],
-            "adjusted_end_time": [
-              9,
-              1
+            "pitches": [
+              {
+                "text": "d",
+                "span": [
+                  173,
+                  174
+                ],
+                "start_pitch": "220*^5|12",
+                "start_time": [
+                  8,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  9,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -351,15 +441,25 @@
           "note_number": 0,
           "value": {
             "text": "c",
-            "absolute_pitch": "220*^1|4",
             "velocity": 72,
-            "end_time": [
-              10,
-              1
-            ],
-            "adjusted_end_time": [
-              10,
-              1
+            "pitches": [
+              {
+                "text": "c",
+                "span": [
+                  177,
+                  178
+                ],
+                "start_pitch": "220*^1|4",
+                "start_time": [
+                  9,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  10,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -381,15 +481,25 @@
           "note_number": 0,
           "value": {
             "text": "e",
-            "absolute_pitch": "220*^7|12",
             "velocity": 72,
-            "end_time": [
-              11,
-              1
-            ],
-            "adjusted_end_time": [
-              11,
-              1
+            "pitches": [
+              {
+                "text": "e",
+                "span": [
+                  179,
+                  180
+                ],
+                "start_pitch": "220*^7|12",
+                "start_time": [
+                  10,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  11,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -411,15 +521,25 @@
           "note_number": 0,
           "value": {
             "text": "g",
-            "absolute_pitch": "220*^5|6",
             "velocity": 72,
-            "end_time": [
-              12,
-              1
-            ],
-            "adjusted_end_time": [
-              12,
-              1
+            "pitches": [
+              {
+                "text": "g",
+                "span": [
+                  181,
+                  182
+                ],
+                "start_pitch": "220*^5|6",
+                "start_time": [
+                  11,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  12,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -441,15 +561,25 @@
           "note_number": 0,
           "value": {
             "text": "2:c",
-            "absolute_pitch": "220*^1|4",
             "velocity": 72,
-            "end_time": [
-              14,
-              1
-            ],
-            "adjusted_end_time": [
-              14,
-              1
+            "pitches": [
+              {
+                "text": "2:c",
+                "span": [
+                  183,
+                  186
+                ],
+                "start_pitch": "220*^1|4",
+                "start_time": [
+                  12,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  14,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -507,15 +637,25 @@
           "note_number": 0,
           "value": {
             "text": "1:c",
-            "absolute_pitch": "220*^1|4",
             "velocity": 72,
-            "end_time": [
-              16,
-              1
-            ],
-            "adjusted_end_time": [
-              16,
-              1
+            "pitches": [
+              {
+                "text": "1:c",
+                "span": [
+                  255,
+                  258
+                ],
+                "start_pitch": "220*^1|4",
+                "start_time": [
+                  15,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  16,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -537,15 +677,25 @@
           "note_number": 0,
           "value": {
             "text": "e",
-            "absolute_pitch": "220*^7|12",
             "velocity": 72,
-            "end_time": [
-              17,
-              1
-            ],
-            "adjusted_end_time": [
-              17,
-              1
+            "pitches": [
+              {
+                "text": "e",
+                "span": [
+                  259,
+                  260
+                ],
+                "start_pitch": "220*^7|12",
+                "start_time": [
+                  16,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  17,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -567,15 +717,25 @@
           "note_number": 0,
           "value": {
             "text": "g",
-            "absolute_pitch": "220*^5|6",
             "velocity": 72,
-            "end_time": [
-              18,
-              1
-            ],
-            "adjusted_end_time": [
-              18,
-              1
+            "pitches": [
+              {
+                "text": "g",
+                "span": [
+                  261,
+                  262
+                ],
+                "start_pitch": "220*^5|6",
+                "start_time": [
+                  17,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  18,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -613,15 +773,25 @@
           "note_number": 0,
           "value": {
             "text": "2:a",
-            "absolute_pitch": "440",
             "velocity": 72,
-            "end_time": [
-              20,
-              1
-            ],
-            "adjusted_end_time": [
-              20,
-              1
+            "pitches": [
+              {
+                "text": "2:a",
+                "span": [
+                  315,
+                  318
+                ],
+                "start_pitch": "440",
+                "start_time": [
+                  18,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  20,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -643,15 +813,25 @@
           "note_number": 0,
           "value": {
             "text": "2:c",
-            "absolute_pitch": "220*^1|4",
             "velocity": 72,
-            "end_time": [
-              23,
-              1
-            ],
-            "adjusted_end_time": [
-              23,
-              1
+            "pitches": [
+              {
+                "text": "2:c",
+                "span": [
+                  416,
+                  419
+                ],
+                "start_pitch": "220*^1|4",
+                "start_time": [
+                  21,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  23,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -725,15 +905,25 @@
           "note_number": 0,
           "value": {
             "text": "2:g",
-            "absolute_pitch": "220*^5|6",
             "velocity": 72,
-            "end_time": [
-              26,
-              1
-            ],
-            "adjusted_end_time": [
-              26,
-              1
+            "pitches": [
+              {
+                "text": "2:g",
+                "span": [
+                  550,
+                  553
+                ],
+                "start_pitch": "220*^5|6",
+                "start_time": [
+                  24,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  26,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -775,15 +965,25 @@
           "note_number": 0,
           "value": {
             "text": "1:g",
-            "absolute_pitch": "220*^5|6",
             "velocity": 72,
-            "end_time": [
-              27,
-              1
-            ],
-            "adjusted_end_time": [
-              27,
-              1
+            "pitches": [
+              {
+                "text": "1:g",
+                "span": [
+                  554,
+                  557
+                ],
+                "start_pitch": "220*^5|6",
+                "start_time": [
+                  26,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  27,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -805,15 +1005,25 @@
           "note_number": 0,
           "value": {
             "text": "f",
-            "absolute_pitch": "220*^2|3",
             "velocity": 72,
-            "end_time": [
-              28,
-              1
-            ],
-            "adjusted_end_time": [
-              28,
-              1
+            "pitches": [
+              {
+                "text": "f",
+                "span": [
+                  558,
+                  559
+                ],
+                "start_pitch": "220*^2|3",
+                "start_time": [
+                  27,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  28,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -835,15 +1045,25 @@
           "note_number": 0,
           "value": {
             "text": "e",
-            "absolute_pitch": "220*^7|12",
             "velocity": 72,
-            "end_time": [
-              29,
-              1
-            ],
-            "adjusted_end_time": [
-              29,
-              1
+            "pitches": [
+              {
+                "text": "e",
+                "span": [
+                  560,
+                  561
+                ],
+                "start_pitch": "220*^7|12",
+                "start_time": [
+                  28,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  29,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -865,15 +1085,25 @@
           "note_number": 0,
           "value": {
             "text": "d",
-            "absolute_pitch": "220*^5|12",
             "velocity": 72,
-            "end_time": [
-              30,
-              1
-            ],
-            "adjusted_end_time": [
-              30,
-              1
+            "pitches": [
+              {
+                "text": "d",
+                "span": [
+                  562,
+                  563
+                ],
+                "start_pitch": "220*^5|12",
+                "start_time": [
+                  29,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  30,
+                  1
+                ]
+              }
             ]
           }
         }
@@ -895,15 +1125,25 @@
           "note_number": 0,
           "value": {
             "text": "4:c",
-            "absolute_pitch": "220*^1|4",
             "velocity": 72,
-            "end_time": [
-              34,
-              1
-            ],
-            "adjusted_end_time": [
-              34,
-              1
+            "pitches": [
+              {
+                "text": "4:c",
+                "span": [
+                  566,
+                  569
+                ],
+                "start_pitch": "220*^1|4",
+                "start_time": [
+                  30,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  34,
+                  1
+                ]
+              }
             ]
           }
         }

@@ -148,6 +148,22 @@ impl From<Ratio<u32>> for Pitch {
     }
 }
 
+/// Compute a fractional MIDI note to a midi note number and a pitch bend value using ±48 semitones.
+pub fn mpe_bend(semitones: f64) -> u16 {
+    // - Pitch bend is 8192 + 8192 * (semitones/bend range). MPE pitch bend range is typically 48
+    // - semitones and is explicitly configured as this value.
+    debug_assert!(semitones.abs() < 48.0);
+    (8192.0 + (8192.0 / 48.0 * semitones).round()) as u16
+}
+
+/// Compute a fractional MIDI note to a midi note number and a pitch bend value using ±48 semitones.
+pub fn note_bend(fractional_note: f64) -> (u8, u16) {
+    let note = fractional_note.round() as u8;
+    let delta = fractional_note - note as f64;
+    let bend = mpe_bend(delta);
+    (note, bend)
+}
+
 impl Pitch {
     pub fn new(factors: Vec<Factor>) -> Self {
         // Algorithm:
@@ -330,7 +346,7 @@ impl Pitch {
             .fold(1.0f64, |accum, factor| accum * factor.as_float())
     }
 
-    fn fractional_midi_note(&self) -> Option<f64> {
+    pub fn fractional_midi_note(&self) -> Option<f64> {
         // Calculate ratio over 440.0 Hz.
         let r1 = self.as_float() / 440.0;
         // Calculate semitones above 440, then add 69, the MIDI note number for 440.
@@ -344,13 +360,7 @@ impl Pitch {
 
     /// Compute a frequency to a midi note number and a pitch bend value using ±48 semitones.
     pub fn midi(&self) -> Option<(u8, u16)> {
-        let n1 = self.fractional_midi_note()?;
-        let note = n1.round() as u8;
-        let delta = n1 - note as f64;
-        // - pitch bend is 8192 + 8192 * (semitones/bend range)
-        // - bend range is typically 48 semitones
-        let bend = (8192.0 + (8192.0 / 48.0 * delta).round()) as u16;
-        Some((note, bend))
+        Some(note_bend(self.fractional_midi_note()?))
     }
 }
 

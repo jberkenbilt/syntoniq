@@ -1,6 +1,6 @@
 +++
 title = "Complete Example"
-weight = 60
+weight = 70
 sort_by = "weight"
 +++
 
@@ -18,7 +18,7 @@ Here are a few things to keep in mind. I mention them up front to avoid repeatin
 
 We'll use the score below to demonstrate remaining features.
 
-<!-- generate include=full-example.stq checksum=8a76ec4ac7dbe8fa6df29684f7007c7bdea1c0bad9d5b38a4914f1ab92bb8a16 -->
+<!-- generate include=full-example.stq checksum=54fe42d349001b8ebbce37a57f55294b0c59f467e68bc1aae874bd2f51a717fa -->
 ```syntoniq
 syntoniq(version=1)
 ; Define scales with different octave divisions
@@ -36,13 +36,13 @@ set_base_pitch(relative=0.5 part="bass")
 tempo(bpm=80)
 
 mark(label="opening")
-[chords.0] 1:A    A   2:A    | 1:A    MA   2:A
-[chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
-[chords.2] 1:C    D   2:C    | 1:C    MC   2:C
-[chords.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK
-[chords.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
+[chords.0] 1:A    A   2:A    | 1:A    MA   2:A:&
+[chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK:&
+[chords.2] 1:C    D   2:C    | 1:C    MC   2:C:&
+[chords.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK:&
+[chords.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I':&
 [chords] 127@0 |
-[bass.0] 2/3:A Bi, C, 2:A,:~ | 4:A,
+[bass.0] 2/3:A Bi, C, 2:A,:~ | 1:A,:~ 1:A,:& 2:A:&
 [bass] 127@0 |
 
 mark(label="transition")
@@ -115,6 +115,10 @@ In the last score block, you can see a crescendo. This is a dynamic followed by 
 # Tempo
 
 There are various `tempo` directives. The first one sets the initial tempo. The second one, preceding the final score block, indicates a start time, a duration, and an end tempo. The start time is an offset from the current moment in the score, which is the time offset at the beginning of the next score block. This indicates a gradual (linear) tempo change over the number of beats specified in the duration.
+
+# Tie and Glide
+
+The end of the first block glides smoothly into the beginning of the second block. The bass note is first glided up an octave over one beat. Then all notes glide smoothly up one 17-EDO step. This demonstrates the use of glide across a tuning change.
 
 # Polyrhythms
 

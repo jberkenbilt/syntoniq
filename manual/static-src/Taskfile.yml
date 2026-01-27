@@ -20,6 +20,8 @@ tasks:
       - stq-csound-mp3:ji-sample-41-edo
       - stq-csound-mp3:transposition1
       - stq-csound-mp3:transposition2
+      - stq-csound-mp3:tie-glide1
+      - stq-csound-mp3:tie-glide2
       - stq-csound-mp3:full-example
       - built-in-scales
       - built-in-keyboard

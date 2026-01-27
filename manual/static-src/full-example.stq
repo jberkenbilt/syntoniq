@@ -14,13 +14,13 @@ set_base_pitch(relative=0.5 part="bass")
 tempo(bpm=80)
 
 mark(label="opening")
-[chords.0] 1:A    A   2:A    | 1:A    MA   2:A
-[chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
-[chords.2] 1:C    D   2:C    | 1:C    MC   2:C
-[chords.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK
-[chords.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
+[chords.0] 1:A    A   2:A    | 1:A    MA   2:A:&
+[chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK:&
+[chords.2] 1:C    D   2:C    | 1:C    MC   2:C:&
+[chords.3] 1:CJK  DJK 2:CJK  | 1:CJK  MCJK 2:CJK:&
+[chords.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I':&
 [chords] 127@0 |
-[bass.0] 2/3:A Bi, C, 2:A,:~ | 4:A,
+[bass.0] 2/3:A Bi, C, 2:A,:~ | 1:A,:~ 1:A,:& 2:A:&
 [bass] 127@0 |
 
 mark(label="transition")
