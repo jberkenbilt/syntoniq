@@ -65,7 +65,7 @@ The best way to check generated output is to listen to them. Unless obvious, the
 
 * Play a csound file with `csound file.csd`.
 * FluidSynth can play MIDI files with MPE. (TiMidity++ cannot.): `fluidsynth -iq file.midi -F /tmp/a.wav` produces a WAV file.
-* You can load MIDI files into a DAW, but the easiest way or send them through Surge XT:
+* You can load MIDI files into a DAW, but the easiest way to send them through Surge XT:
   * Start surge XT or any other synth that listens to MIDI events
   * Use `aplaymidi -l` to find suitable port; on Linux, the MIDI through port is a good choice
   * `aplaymidi --port 'Midi Through' file.midi`
