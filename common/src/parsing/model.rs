@@ -353,10 +353,16 @@ impl<'s> Display for RegularNote<'s> {
     }
 }
 impl<'s> RegularNote<'s> {
-    pub fn sustained(&self) -> bool {
+    pub fn is_sustain(&self) -> bool {
         self.modifiers
             .iter()
             .any(|x| matches!(x.value, NoteModifier::Tie | NoteModifier::Glide))
+    }
+
+    pub fn is_tie(&self) -> bool {
+        self.modifiers
+            .iter()
+            .any(|x| matches!(x.value, NoteModifier::Tie))
     }
 
     pub fn is_glide(&self) -> bool {

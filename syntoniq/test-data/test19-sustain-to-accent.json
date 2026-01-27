@@ -28,21 +28,21 @@
       "repeat_depth": 0,
       "span": [
         59,
-        64
+        65
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 0,
           "value": {
-            "text": "3:c:&",
+            "text": "3:c:&~",
             "velocity": 72,
             "pitches": [
               {
-                "text": "3:c:&",
+                "text": "3:c:&~",
                 "span": [
                   59,
-                  64
+                  65
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -58,8 +58,8 @@
               {
                 "text": "3:A:~",
                 "span": [
-                  122,
-                  127
+                  125,
+                  130
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -84,22 +84,22 @@
       ],
       "repeat_depth": 0,
       "span": [
-        72,
-        77
+        73,
+        79
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 1,
           "value": {
-            "text": "3:e:&",
+            "text": "3:e:&~",
             "velocity": 72,
             "pitches": [
               {
-                "text": "3:e:&",
+                "text": "3:e:&~",
                 "span": [
-                  72,
-                  77
+                  73,
+                  79
                 ],
                 "start_pitch": "220*^7|12",
                 "start_time": [
@@ -115,8 +115,8 @@
               {
                 "text": "3:E:~",
                 "span": [
-                  135,
-                  140
+                  138,
+                  143
                 ],
                 "start_pitch": "275*^1|4",
                 "start_time": [
@@ -141,22 +141,22 @@
       ],
       "repeat_depth": 0,
       "span": [
-        85,
-        90
+        87,
+        93
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 2,
           "value": {
-            "text": "3:g:&",
+            "text": "3:g:&~",
             "velocity": 72,
             "pitches": [
               {
-                "text": "3:g:&",
+                "text": "3:g:&~",
                 "span": [
-                  85,
-                  90
+                  87,
+                  93
                 ],
                 "start_pitch": "220*^5|6",
                 "start_time": [
@@ -172,8 +172,8 @@
               {
                 "text": "3:C:~",
                 "span": [
-                  148,
-                  153
+                  151,
+                  156
                 ],
                 "start_pitch": "330*^1|4",
                 "start_time": [
@@ -189,8 +189,8 @@
               {
                 "text": "3:C:&",
                 "span": [
-                  190,
-                  195
+                  194,
+                  199
                 ],
                 "start_pitch": "330*^1|4",
                 "start_time": [
@@ -215,8 +215,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        162,
-        168
+        165,
+        171
       ],
       "data": {
         "Note": {
@@ -224,13 +224,13 @@
           "note_number": 0,
           "value": {
             "text": "3:A:&>",
-            "velocity": 72,
+            "velocity": 96,
             "pitches": [
               {
                 "text": "3:A:&>",
                 "span": [
-                  162,
-                  168
+                  165,
+                  171
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -240,23 +240,6 @@
                 "end_pitch": "55*^1|4",
                 "end_time": [
                   9,
-                  1
-                ]
-              },
-              {
-                "text": "3:A,2",
-                "span": [
-                  204,
-                  209
-                ],
-                "start_pitch": "55*^1|4",
-                "start_time": [
-                  9,
-                  1
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  12,
                   1
                 ]
               }
@@ -272,22 +255,22 @@
       ],
       "repeat_depth": 0,
       "span": [
-        176,
-        182
+        179,
+        186
       ],
       "data": {
         "Note": {
           "part": "p1",
           "note_number": 1,
           "value": {
-            "text": "3:E:&^",
+            "text": "3:E:&~^",
             "velocity": 108,
             "pitches": [
               {
-                "text": "3:E:&^",
+                "text": "3:E:&~^",
                 "span": [
-                  176,
-                  182
+                  179,
+                  186
                 ],
                 "start_pitch": "275*^1|4",
                 "start_time": [
@@ -312,8 +295,48 @@
       ],
       "repeat_depth": 0,
       "span": [
-        217,
-        223
+        208,
+        213
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 0,
+          "value": {
+            "text": "3:A,2",
+            "velocity": 72,
+            "pitches": [
+              {
+                "text": "3:A,2",
+                "span": [
+                  208,
+                  213
+                ],
+                "start_pitch": "55*^1|4",
+                "start_time": [
+                  9,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  12,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        9,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        254,
+        260
       ],
       "data": {
         "Note": {
@@ -326,8 +349,8 @@
               {
                 "text": "3:E,:^",
                 "span": [
-                  217,
-                  223
+                  254,
+                  260
                 ],
                 "start_pitch": "137.5*^1|4",
                 "start_time": [
@@ -352,8 +375,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        231,
-        237
+        302,
+        308
       ],
       "data": {
         "Note": {
@@ -366,8 +389,8 @@
               {
                 "text": "3:C':>",
                 "span": [
-                  231,
-                  237
+                  302,
+                  308
                 ],
                 "start_pitch": "660*^1|4",
                 "start_time": [
