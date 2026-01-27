@@ -150,10 +150,16 @@ impl From<Ratio<u32>> for Pitch {
 
 /// Compute a fractional MIDI note to a midi note number and a pitch bend value using ±48 semitones.
 pub fn mpe_bend(semitones: f64) -> u16 {
-    // - Pitch bend is 8192 + 8192 * (semitones/bend range). MPE pitch bend range is typically 48
-    // - semitones and is explicitly configured as this value.
-    debug_assert!(semitones.abs() < 48.0);
-    (8192.0 + (8192.0 / 48.0 * semitones).round()) as u16
+    // Pitch bend is 8192 + 8192 * (semitones/bend range). MPE pitch bend range is typically 48
+    // semitones and is explicitly configured as this value. This method is never called with
+    // a value outside the range. Although it's a public function, this isn't a proper library
+    // and is used only by other crates in the workspace.
+    assert!(
+        semitones.abs() < 48.0,
+        "mpe_bend was called with >= 48 semitones"
+    );
+    let bend = 8192.0 + (8192.0 / 48.0 * semitones).round();
+    bend.clamp(0.0, 16383.0) as u16
 }
 
 /// Compute a fractional MIDI note to a midi note number and a pitch bend value using ±48 semitones.
@@ -583,5 +589,16 @@ mod tests {
         let p = Pitch::must_parse("^1|2");
         assert_eq!(p.invert().to_string(), "1/2*^1|2");
         assert_eq!(p.invert().invert().to_string(), "^1|2");
+    }
+
+    #[test]
+    #[should_panic]
+    fn test_bend() {
+        mpe_bend(48.0);
+    }
+
+    #[test]
+    fn test_bend_edge() {
+        assert_eq!(mpe_bend(47.9999), 16383);
     }
 }
