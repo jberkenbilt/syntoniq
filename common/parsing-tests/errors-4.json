@@ -2639,27 +2639,47 @@
           644
         ],
         "value": {
+          "raw": ":",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          644,
+          645
+        ],
+        "value": {
+          "raw": "&",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          645,
+          646
+        ],
+        "value": {
           "raw": "\n",
           "t": "Newline"
         }
       },
       {
         "span": [
-          644,
-          650
+          646,
+          652
         ],
         "value": {
           "raw": "[p1.1]",
           "t": {
             "NoteLeader": {
               "name_span": [
-                645,
-                647
+                647,
+                649
               ],
               "note": {
                 "span": [
-                  648,
-                  649
+                  650,
+                  651
                 ],
                 "value": 1
               }
@@ -2669,8 +2689,8 @@
       },
       {
         "span": [
-          650,
-          652
+          652,
+          654
         ],
         "value": {
           "raw": "  ",
@@ -2679,8 +2699,8 @@
       },
       {
         "span": [
-          652,
-          653
+          654,
+          655
         ],
         "value": {
           "raw": "4",
@@ -2688,8 +2708,8 @@
             "Number": {
               "n": {
                 "span": [
-                  652,
-                  653
+                  654,
+                  655
                 ],
                 "value": 4
               }
@@ -2699,8 +2719,8 @@
       },
       {
         "span": [
-          653,
-          654
+          655,
+          656
         ],
         "value": {
           "raw": ":",
@@ -2709,8 +2729,8 @@
       },
       {
         "span": [
-          654,
-          655
+          656,
+          657
         ],
         "value": {
           "raw": "e",
@@ -2719,8 +2739,8 @@
       },
       {
         "span": [
-          655,
-          656
+          657,
+          658
         ],
         "value": {
           "raw": "\n",
@@ -2729,16 +2749,16 @@
       },
       {
         "span": [
-          656,
-          660
+          658,
+          662
         ],
         "value": {
           "raw": "[p1]",
           "t": {
             "DynamicLeader": {
               "name_span": [
-                657,
-                659
+                659,
+                661
               ]
             }
           }
@@ -2746,8 +2766,8 @@
       },
       {
         "span": [
-          660,
-          661
+          662,
+          663
         ],
         "value": {
           "raw": " ",
@@ -2756,8 +2776,8 @@
       },
       {
         "span": [
-          661,
-          663
+          663,
+          665
         ],
         "value": {
           "raw": "64",
@@ -2765,8 +2785,8 @@
             "Number": {
               "n": {
                 "span": [
-                  661,
-                  663
+                  663,
+                  665
                 ],
                 "value": 64
               }
@@ -2776,8 +2796,8 @@
       },
       {
         "span": [
-          663,
-          664
+          665,
+          666
         ],
         "value": {
           "raw": "@",
@@ -2786,8 +2806,8 @@
       },
       {
         "span": [
-          664,
-          665
+          666,
+          667
         ],
         "value": {
           "raw": "1",
@@ -2795,8 +2815,8 @@
             "Number": {
               "n": {
                 "span": [
-                  664,
-                  665
+                  666,
+                  667
                 ],
                 "value": 1
               }
@@ -2806,8 +2826,8 @@
       },
       {
         "span": [
-          665,
-          666
+          667,
+          668
         ],
         "value": {
           "raw": "\n",
@@ -4464,10 +4484,10 @@
       {
         "span": [
           632,
-          644
+          646
         ],
         "value": {
-          "raw": "[p1.0]  4:c\n",
+          "raw": "[p1.0]  4:c:&\n",
           "t": {
             "NoteLine": {
               "leader": {
@@ -4496,7 +4516,7 @@
                 {
                   "span": [
                     640,
-                    643
+                    645
                   ],
                   "value": {
                     "Regular": {
@@ -4510,7 +4530,15 @@
                           1
                         ]
                       },
-                      "modifiers": [],
+                      "modifiers": [
+                        {
+                          "span": [
+                            644,
+                            645
+                          ],
+                          "value": "Glide"
+                        }
+                      ],
                       "name": {
                         "span": [
                           642,
@@ -4529,8 +4557,8 @@
       },
       {
         "span": [
-          644,
-          656
+          646,
+          658
         ],
         "value": {
           "raw": "[p1.1]  4:e\n",
@@ -4538,21 +4566,21 @@
             "NoteLine": {
               "leader": {
                 "span": [
-                  644,
-                  650
+                  646,
+                  652
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      645,
-                      647
+                      647,
+                      649
                     ],
                     "value": "p1"
                   },
                   "note": {
                     "span": [
-                      648,
-                      649
+                      650,
+                      651
                     ],
                     "value": 1
                   }
@@ -4561,15 +4589,15 @@
               "notes": [
                 {
                   "span": [
-                    652,
-                    655
+                    654,
+                    657
                   ],
                   "value": {
                     "Regular": {
                       "duration": {
                         "span": [
-                          652,
-                          653
+                          654,
+                          655
                         ],
                         "value": [
                           4,
@@ -4579,8 +4607,8 @@
                       "modifiers": [],
                       "name": {
                         "span": [
-                          654,
-                          655
+                          656,
+                          657
                         ],
                         "value": "e"
                       },
@@ -4595,8 +4623,8 @@
       },
       {
         "span": [
-          656,
-          666
+          658,
+          668
         ],
         "value": {
           "raw": "[p1] 64@1\n",
@@ -4605,23 +4633,23 @@
               "dynamics": [
                 {
                   "span": [
-                    661,
-                    665
+                    663,
+                    667
                   ],
                   "value": {
                     "Regular": {
                       "change": null,
                       "level": {
                         "span": [
-                          661,
-                          663
+                          663,
+                          665
                         ],
                         "value": 64
                       },
                       "position": {
                         "span": [
-                          664,
-                          665
+                          666,
+                          667
                         ],
                         "value": [
                           1,
@@ -4634,14 +4662,14 @@
               ],
               "leader": {
                 "span": [
-                  656,
-                  660
+                  658,
+                  662
                 ],
                 "value": {
                   "name": {
                     "span": [
-                      657,
-                      659
+                      659,
+                      661
                     ],
                     "value": "p1"
                   }
@@ -4757,7 +4785,7 @@
                 245,
                 250
               ],
-              "value": "this tie is unresolved"
+              "value": "this sustain is unresolved"
             }
           ],
           "message": {
@@ -4795,7 +4823,7 @@
                 320,
                 325
               ],
-              "value": "this tie is unresolved"
+              "value": "this sustain is unresolved"
             }
           ],
           "message": {
@@ -4852,7 +4880,7 @@
                 245,
                 250
               ],
-              "value": "this tie is unresolved"
+              "value": "this sustain is unresolved"
             }
           ],
           "message": {
@@ -4890,7 +4918,7 @@
                 320,
                 325
               ],
-              "value": "this tie is unresolved"
+              "value": "this sustain is unresolved"
             }
           ],
           "message": {
@@ -4937,6 +4965,17 @@
               598
             ],
             "value": "a tempo change started inside the repeated sections extends beyond the end of the section"
+          }
+        },
+        {
+          "code": "E1021 incorrect score block",
+          "context": [],
+          "message": {
+            "span": [
+              640,
+              645
+            ],
+            "value": "this sustain was never resolved"
           }
         }
       ]

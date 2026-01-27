@@ -20483,7 +20483,7 @@
               609,
               610
             ],
-            "value": "shorten may not appear with a sustained note"
+            "value": "shorten may not appear with a tied note"
           }
         },
         {
@@ -20494,7 +20494,7 @@
               610,
               611
             ],
-            "value": "shorten may not appear with a sustained note"
+            "value": "shorten may not appear with a tied note"
           }
         },
         {
@@ -20517,17 +20517,6 @@
               668
             ],
             "value": "the first note on a line must have an explicit duration"
-          }
-        },
-        {
-          "code": "E1021 incorrect score block",
-          "context": [],
-          "message": {
-            "span": [
-              716,
-              717
-            ],
-            "value": "glide may not appear with tie"
           }
         },
         {
@@ -20558,17 +20547,6 @@
               729
             ],
             "value": "a line for this part/note has already occurred in this block"
-          }
-        },
-        {
-          "code": "E1021 incorrect score block",
-          "context": [],
-          "message": {
-            "span": [
-              779,
-              780
-            ],
-            "value": "tie may not appear with glide"
           }
         },
         {

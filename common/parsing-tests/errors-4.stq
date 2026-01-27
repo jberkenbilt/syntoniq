@@ -26,6 +26,6 @@ repeat(start="c" end="a") ; unknown start
 repeat(start="a" end="b") ; unresolved ties and dynamics
 repeat(start="a" end="b") ; error messages should repeat
 
-[p1.0]  4:c
+[p1.0]  4:c:&
 [p1.1]  4:e
 [p1] 64@1

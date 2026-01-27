@@ -8,6 +8,6 @@ use_scale(scale="JI")
 [p1.1] 2:~  ; glide continues across this line
 [p1.2] 2:~  ; tie continues across this line
 
-[p1.1] 2:C
+[p1.1] 2:C          ; note is re-articulated because the glide is not tied
 [p1.2] 1:A,:~ A,:^  ; note is re-articulated because of the accent
 

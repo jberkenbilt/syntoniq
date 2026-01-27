@@ -116,63 +116,63 @@ i "SetPartParam" 0 0.01 2 "notes" 3
 t 0 72
 ; 1:c:~@58
 i "SetPartParam" 0 1 1 "freq_1" 261.626
-; c:&@66
+; c:&~@67
 i "SetPartParamRamp" 1 1 1 "freq_1" 261.626 293.665
-; d:~@70
+; d:~@72
 i "SetPartParam" 2 1 1 "freq_1" 293.665
-; d:&@74
+; d:&~@76
 i "SetPartParamRamp" 3 1 1 "freq_1" 293.665 329.628
-; e:&@78
+; e:&~@81
 i "SetPartParamRamp" 4 1 1 "freq_1" 329.628 293.665
-; d:&@84
+; d:&~@87
 i "SetPartParamRamp" 5 1 1 "freq_1" 293.665 261.626
-; c:~@90
+; c:~@94
 i "SetPartParam" 6 1 1 "freq_1" 261.626
-; c@94
+; c@98
 i "SetPartParam" 7 1 1 "freq_1" 261.626
 ; 1:c:~ @58
 i 1.1 0 8 1 1 0.567
-; 1:c,3:&@103
+; 1:c,3:&~@107
 i "SetPartParamRamp" 0 4 2 "freq_2" 32.703 2093.005
-; c'3:~@123
+; c'3:~@130
 i "SetPartParam" 4 1 2 "freq_2" 2093.005
-; g'2:&@129
+; g'2:&~@136
 i "SetPartParamRamp" 5 1 2 "freq_2" 1567.982 261.626
-; c:&@135
+; c:&~@143
 i "SetPartParamRamp" 6 1 2 "freq_2" 261.626 130.813
-; c,@139
+; c,@148
 i "SetPartParam" 7 1 2 "freq_2" 130.813
-; 1:c,3:& @103
+; 1:c,3:&~ @107
 i 1.2 0 8 2 2 0.567
-; 3:c:&@150
+; 3:c:&~@159
 i "SetPartParamRamp" 8 3 1 "freq_1" 261.626 261.626
-; 3:A:~@213
+; 3:A:~@225
 i "SetPartParam" 11 3 1 "freq_1" 261.626
-; 3:A:&@253
+; 3:A:&~@265
 i "SetPartParamRamp" 14 3 1 "freq_1" 261.626 65.406
-; 3:A,2@293
+; 3:A,2@308
 i "SetPartParam" 17 3 1 "freq_1" 65.406
-; 3:c:& @150
+; 3:c:&~ @159
 i 1.1 8 12 1 1 0.567
-; 3:e:&@163
+; 3:e:&~@173
 i "SetPartParamRamp" 8 3 1 "freq_3" 329.628 327.032
-; 3:E:~@226
+; 3:E:~@238
 i "SetPartParam" 11 3 1 "freq_3" 327.032
-; 3:E:&@266
+; 3:E:&~@279
 i "SetPartParamRamp" 14 3 1 "freq_3" 327.032 163.516
-; 3:E,@306
+; 3:E,@321
 i "SetPartParam" 17 3 1 "freq_3" 163.516
-; 3:e:& @163
+; 3:e:&~ @173
 i 1.3 8 12 1 3 0.567
-; 3:g:&@176
+; 3:g:&~@187
 i "SetPartParamRamp" 8 3 1 "freq_4" 391.995 392.438
-; 3:C:~@239
+; 3:C:~@251
 i "SetPartParam" 11 3 1 "freq_4" 392.438
-; 3:C:&@279
+; 3:C:&~@293
 i "SetPartParamRamp" 14 3 1 "freq_4" 392.438 784.877
-; 3:C'@318
+; 3:C'@333
 i "SetPartParam" 17 3 1 "freq_4" 784.877
-; 3:g:& @176
+; 3:g:&~ @187
 i 1.4 8 12 1 4 0.567
 ;; END SYNTONIQ
 
