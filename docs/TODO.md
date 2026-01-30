@@ -2,35 +2,36 @@
 
 This is general TODO across internal docs, manual, and software.
 
+# Save Pitch
+
+In all cases, part is optional and repeatable. Values must be consistent across parts if repeated: for save, all notes must have the same pitch. For restore, all notes must exist across all the parts. It should be possible to internally implement transpose as save and restore to a transient variable.
+
+```syntoniq
+; save the current pitch of note "x" in variable "y"
+save_pitch(note="x" var="y" part="z")
+; restore the pitch from variable "y" to note "x"
+restore_pitch(note="x" var="y" part="z")
+; error if all specified items are not the same
+check_pitch(note="x" var="y" pitch=p part="z")
+; Example
+use_scale(scale="ji")
+check_pitch(note="E!41" note="A13!41" pitch=220*^1|4*^13|41 pitch=220*^93|164)
+```
+
 # Pre-1.0
 
 These are proposed pre-1.0 items. Details are below for many.
 
-* Create a minimal emacs mode
+* save_pitch, restore_pitch, check_pitch
+* calc -- from scripts in misc
 * Make sure we explicitly test > 7 channel pairs for multiple ports
 * Fix edge cases -- see copilot-initial-review.md
-* calc -- from scripts in misc
+* Create a minimal emacs mode
 * Maybe: interactive chord builder
 
 # Build/CI
 
 * Do the lychee check in build_all
-
-# Video
-
-* Could add TOC. Example format:
-
-```
-00:00 Introduction
-02:15 Connecting the HexBoard
-05:40 The Web Interface
-```
-
-## Keyboard
-
-When transposition is in effect, it is not indicated on the web UI. There should be some indication of transposition, perhaps in the area, which can show the mappings in effect with their transposition. Trying to work it into the note name makes the note name too long and busy.
-
-Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dark mode since it matches the hardware.
 
 # Software
 
@@ -55,33 +56,20 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
   * Write LSP
   * Reformatting -- see below
 
+## Keyboard
+
+When transposition is in effect, it is not indicated on the web UI. There should be some indication of transposition, perhaps in the area, which can show the mappings in effect with their transposition. Trying to work it into the note name makes the note name too long and busy.
+
+Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dark mode since it matches the hardware.
+
 # Documentation
 
 * Have something that checks link integrity (internal and external)
 * Embed KeTeX rather than getting from a CDN
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
-* Find all occurrences of `TODO` in the docs.
 * Tweak theme for better colors
 * Figure out where to document the stuff in misc. Somewhere in the docs directory
 * Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep. Main thrust is justification for 100% code coverage
-
-# Release
-
-```
-cargo build --workspace --all-targets --release
-cargo build --target-dir target.x86 --target x86_64-apple-darwin --workspace --all-targets --release
-lipo -create -output syntoniq-kbd target/release/syntoniq-kbd target.x86/x86_64-apple-darwin/release/syntoniq-kbd
-```
-
-* Use cargo-dist for creating distributions.
-
-# Reminders
-
-On Linux, you can watch Syntoniq's MIDI output with `aseqdump`, e.g.:
-```sh
-aconnect -l
-aseqdump -p 128:0
-```
 
 # Reformatter
 

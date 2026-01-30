@@ -1,6 +1,14 @@
 
 The text below is a template for the video descriptions. Move "(this video)" to the correct line for each description.
 
+Could add TOC. Example format:
+
+```
+00:00 Introduction
+02:15 Connecting the HexBoard
+05:40 The Web Interface
+```
+
 ----------------------------------------------------------------------
 
 This video introduces some features of the Syntoniq Keyboard. Syntoniq: https://syntoniq.cc

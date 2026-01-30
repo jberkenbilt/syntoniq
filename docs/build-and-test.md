@@ -42,6 +42,12 @@ We do not rely *only* on coverage. There are a lot of logic that could be missed
 
 The engine and some other parts of the keyboard have unit tests. Most of the complex logic is tested that way, including some of the web logic. This includes complex keyboard interaction logic. For the most part, we rely on manual testing for the keyboards themselves.
 
+On Linux, you can watch Syntoniq's MIDI output with `aseqdump`, e.g.:
+```sh
+aconnect -l
+aseqdump -p 128:0
+```
+
 # Other Tools
 
 * `tokenize` -- parses a score file into JSON and can handle all passes separately. This is the only way to see JSON for layouts and intermediate tokens.
