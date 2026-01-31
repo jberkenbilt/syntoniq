@@ -66,6 +66,9 @@ csound_instrument(part="p1" number=3)
 csound_instrument(part="p1" number=3) ; duplicate
 csound_instrument(part="p29" number=3) ; unknown part
 
+check_pitch() ; no items to compare
+check_pitch(note="c") ; only one item to compare
+
 tempo(bpm=5 end_bpm=5) tempo(bpm=5 duration=5)
 
 ; unresolved define_scale must be the last thing in the file

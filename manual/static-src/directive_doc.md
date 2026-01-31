@@ -1,4 +1,15 @@
 
+## check_pitch
+
+Check that all pitches are the same. If multiple parts are specified, all specified notes must
+exist in all the parts' tunings. All parameters may be repeated.
+
+**Parameters**:
+* **note (repeatable)** — Notes compare
+* **var (repeatable)** — Variables to compare
+* **pitch (repeatable)** — Pitches to compare
+* **part (repeatable)** — Which parts to tune; if not specified, all parts are tuned
+
 ## csound_instrument
 
 Set the Csound instrument number or name for zero or more parts. If no part
@@ -172,6 +183,30 @@ resets the tuning for each specified part to use the global tuning.
 
 **Parameters**:
 * **part (repeatable)** — Which parts to tune; if not specified, all parts are tuned
+
+## restore_pitch
+
+Tune the given parts so that the named to note has the pitch that was previously saved to the
+given variable.
+
+**Parameters**:
+* **note** — Name of the note whose pitch is to be set
+* **var** — Name of the variable that contains the pitch
+* **part (repeatable)** — Which parts to tune; if not specified, all parts are tuned
+
+## save_pitch
+
+Save the pitch of a note to a variable that can be used with
+`restore_pitch`. If no part is given, the note's pitch is retrieved from the
+global tuning. If more than one part is specified, the note must have the
+same pitch in all the parts. This can be used as a quick sanity check when
+saving a note's pitch. See also `restore_pitch` and `check_pitch`.
+
+**Parameters**:
+* **note** — Name of the note whose pitch is to be saved
+* **var** — Name of the variable to save the note's pitch into
+* **part (repeatable)** — Which parts' tuning to get the note's pitch from; if more than one specified, the note
+must have the same pitch in all tunings.
 
 ## set_base_pitch
 

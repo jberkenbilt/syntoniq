@@ -68,3 +68,32 @@ use_scale(scale="12-EDO" part="p4")
 [p2.0]  1:p q r s
 [p3.0]  1:p q r s ; uses global tuning
 [p4.0]  1:c# e% g b
+
+reset_tuning()
+use_scale(scale="5-EDO" part="p1")
+use_scale(scale="5-JI" part="p2")
+use_scale(scale="31-EDO" part="p3")
+use_scale(scale="JI" part="p4")
+; note does not exist in default tuning
+save_pitch(var="x1" note="p")
+; note does not exist in some of the parts
+save_pitch(var="x1" note="p" part="p1" part="p3")
+; note does not have the same value in all of the parts
+save_pitch(var="x1" note="p" part="p1" part="p2" part="p4")
+; unknown variable
+restore_pitch(var="x2" note="p" part="p1" part="p2" part="p4")
+; valid since p is the root in both p1 and p2
+save_pitch(var="x1" note="p" part="p1" part="p2")
+; okay
+check_pitch(var="x1" note="p" part="p1" part="p2" pitch=220*^1|4)
+check_pitch(note="A2!17" note="M!17" part="p4" pitch=220*^1|4*^2|17)
+; all check_pitch errors
+check_pitch(
+    var="x2" ; unknown
+    var="x1"
+    pitch=440
+    pitch=220*2
+    part="p4"
+    part="p3"
+    note="a"
+)

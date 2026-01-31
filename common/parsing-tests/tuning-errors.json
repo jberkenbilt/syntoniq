@@ -6592,6 +6592,2986 @@
           "raw": "\n",
           "t": "Newline"
         }
+      },
+      {
+        "span": [
+          1678,
+          1679
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1679,
+          1691
+        ],
+        "value": {
+          "raw": "reset_tuning",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1691,
+          1692
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1692,
+          1693
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1693,
+          1694
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1694,
+          1703
+        ],
+        "value": {
+          "raw": "use_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1703,
+          1704
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1704,
+          1709
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1709,
+          1710
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1710,
+          1717
+        ],
+        "value": {
+          "raw": "\"5-EDO\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1711,
+                1716
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1717,
+          1718
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1718,
+          1722
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1722,
+          1723
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1723,
+          1727
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1724,
+                1726
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1727,
+          1728
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1728,
+          1729
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1729,
+          1738
+        ],
+        "value": {
+          "raw": "use_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1738,
+          1739
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1739,
+          1744
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1744,
+          1745
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1745,
+          1751
+        ],
+        "value": {
+          "raw": "\"5-JI\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1746,
+                1750
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1751,
+          1752
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1752,
+          1756
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1756,
+          1757
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1757,
+          1761
+        ],
+        "value": {
+          "raw": "\"p2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1758,
+                1760
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1761,
+          1762
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1762,
+          1763
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1763,
+          1772
+        ],
+        "value": {
+          "raw": "use_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1772,
+          1773
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1773,
+          1778
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1778,
+          1779
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1779,
+          1787
+        ],
+        "value": {
+          "raw": "\"31-EDO\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1780,
+                1786
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1787,
+          1788
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1788,
+          1792
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1792,
+          1793
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1793,
+          1797
+        ],
+        "value": {
+          "raw": "\"p3\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1794,
+                1796
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1797,
+          1798
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1798,
+          1799
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1799,
+          1808
+        ],
+        "value": {
+          "raw": "use_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1808,
+          1809
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1809,
+          1814
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1814,
+          1815
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1815,
+          1819
+        ],
+        "value": {
+          "raw": "\"JI\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1816,
+                1818
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1819,
+          1820
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1820,
+          1824
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1824,
+          1825
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1825,
+          1829
+        ],
+        "value": {
+          "raw": "\"p4\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1826,
+                1828
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1829,
+          1830
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1830,
+          1831
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1831,
+          1870
+        ],
+        "value": {
+          "raw": "; note does not exist in default tuning",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1870,
+          1871
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1871,
+          1881
+        ],
+        "value": {
+          "raw": "save_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1881,
+          1882
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1882,
+          1885
+        ],
+        "value": {
+          "raw": "var",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1885,
+          1886
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1886,
+          1890
+        ],
+        "value": {
+          "raw": "\"x1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1887,
+                1889
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1890,
+          1891
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1891,
+          1895
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1895,
+          1896
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1896,
+          1899
+        ],
+        "value": {
+          "raw": "\"p\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1897,
+                1898
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1899,
+          1900
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1900,
+          1901
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1901,
+          1943
+        ],
+        "value": {
+          "raw": "; note does not exist in some of the parts",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1943,
+          1944
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1944,
+          1954
+        ],
+        "value": {
+          "raw": "save_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1954,
+          1955
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1955,
+          1958
+        ],
+        "value": {
+          "raw": "var",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1958,
+          1959
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1959,
+          1963
+        ],
+        "value": {
+          "raw": "\"x1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1960,
+                1962
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1963,
+          1964
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1964,
+          1968
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1968,
+          1969
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1969,
+          1972
+        ],
+        "value": {
+          "raw": "\"p\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1970,
+                1971
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1972,
+          1973
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1973,
+          1977
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1977,
+          1978
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1978,
+          1982
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1979,
+                1981
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1982,
+          1983
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          1983,
+          1987
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          1987,
+          1988
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1988,
+          1992
+        ],
+        "value": {
+          "raw": "\"p3\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                1989,
+                1991
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1992,
+          1993
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          1993,
+          1994
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1994,
+          2049
+        ],
+        "value": {
+          "raw": "; note does not have the same value in all of the parts",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2049,
+          2050
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2050,
+          2060
+        ],
+        "value": {
+          "raw": "save_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2060,
+          2061
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2061,
+          2064
+        ],
+        "value": {
+          "raw": "var",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2064,
+          2065
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2065,
+          2069
+        ],
+        "value": {
+          "raw": "\"x1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2066,
+                2068
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2069,
+          2070
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2070,
+          2074
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2074,
+          2075
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2075,
+          2078
+        ],
+        "value": {
+          "raw": "\"p\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2076,
+                2077
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2078,
+          2079
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2079,
+          2083
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2083,
+          2084
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2084,
+          2088
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2085,
+                2087
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2088,
+          2089
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2089,
+          2093
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2093,
+          2094
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2094,
+          2098
+        ],
+        "value": {
+          "raw": "\"p2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2095,
+                2097
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2098,
+          2099
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2099,
+          2103
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2103,
+          2104
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2104,
+          2108
+        ],
+        "value": {
+          "raw": "\"p4\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2105,
+                2107
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2108,
+          2109
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2109,
+          2110
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2110,
+          2128
+        ],
+        "value": {
+          "raw": "; unknown variable",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2128,
+          2129
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2129,
+          2142
+        ],
+        "value": {
+          "raw": "restore_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2142,
+          2143
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2143,
+          2146
+        ],
+        "value": {
+          "raw": "var",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2146,
+          2147
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2147,
+          2151
+        ],
+        "value": {
+          "raw": "\"x2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2148,
+                2150
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2151,
+          2152
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2152,
+          2156
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2156,
+          2157
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2157,
+          2160
+        ],
+        "value": {
+          "raw": "\"p\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2158,
+                2159
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2160,
+          2161
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2161,
+          2165
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2165,
+          2166
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2166,
+          2170
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2167,
+                2169
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2170,
+          2171
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2171,
+          2175
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2175,
+          2176
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2176,
+          2180
+        ],
+        "value": {
+          "raw": "\"p2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2177,
+                2179
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2180,
+          2181
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2181,
+          2185
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2185,
+          2186
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2186,
+          2190
+        ],
+        "value": {
+          "raw": "\"p4\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2187,
+                2189
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2190,
+          2191
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2191,
+          2192
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2192,
+          2237
+        ],
+        "value": {
+          "raw": "; valid since p is the root in both p1 and p2",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2237,
+          2238
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2238,
+          2248
+        ],
+        "value": {
+          "raw": "save_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2248,
+          2249
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2249,
+          2252
+        ],
+        "value": {
+          "raw": "var",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2252,
+          2253
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2253,
+          2257
+        ],
+        "value": {
+          "raw": "\"x1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2254,
+                2256
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2257,
+          2258
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2258,
+          2262
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2262,
+          2263
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2263,
+          2266
+        ],
+        "value": {
+          "raw": "\"p\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2264,
+                2265
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2266,
+          2267
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2267,
+          2271
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2271,
+          2272
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2272,
+          2276
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2273,
+                2275
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2276,
+          2277
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2277,
+          2281
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2281,
+          2282
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2282,
+          2286
+        ],
+        "value": {
+          "raw": "\"p2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2283,
+                2285
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2286,
+          2287
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2287,
+          2288
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2288,
+          2294
+        ],
+        "value": {
+          "raw": "; okay",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2294,
+          2295
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2295,
+          2306
+        ],
+        "value": {
+          "raw": "check_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2306,
+          2307
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2307,
+          2310
+        ],
+        "value": {
+          "raw": "var",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2310,
+          2311
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2311,
+          2315
+        ],
+        "value": {
+          "raw": "\"x1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2312,
+                2314
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2315,
+          2316
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2316,
+          2320
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2320,
+          2321
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2321,
+          2324
+        ],
+        "value": {
+          "raw": "\"p\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2322,
+                2323
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2324,
+          2325
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2325,
+          2329
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2329,
+          2330
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2330,
+          2334
+        ],
+        "value": {
+          "raw": "\"p1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2331,
+                2333
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2334,
+          2335
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2335,
+          2339
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2339,
+          2340
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2340,
+          2344
+        ],
+        "value": {
+          "raw": "\"p2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2341,
+                2343
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2344,
+          2345
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2345,
+          2350
+        ],
+        "value": {
+          "raw": "pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2350,
+          2351
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2351,
+          2354
+        ],
+        "value": {
+          "raw": "220",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2351,
+                  2354
+                ],
+                "value": 220
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2354,
+          2355
+        ],
+        "value": {
+          "raw": "*",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2355,
+          2356
+        ],
+        "value": {
+          "raw": "^",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2356,
+          2357
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2356,
+                  2357
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2357,
+          2358
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2358,
+          2359
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2358,
+                  2359
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2359,
+          2360
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2360,
+          2361
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2361,
+          2372
+        ],
+        "value": {
+          "raw": "check_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2372,
+          2373
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2373,
+          2377
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2377,
+          2378
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2378,
+          2385
+        ],
+        "value": {
+          "raw": "\"A2!17\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2379,
+                2384
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2385,
+          2386
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2386,
+          2390
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2390,
+          2391
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2391,
+          2397
+        ],
+        "value": {
+          "raw": "\"M!17\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2392,
+                2396
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2397,
+          2398
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2398,
+          2402
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2402,
+          2403
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2403,
+          2407
+        ],
+        "value": {
+          "raw": "\"p4\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2404,
+                2406
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2407,
+          2408
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2408,
+          2413
+        ],
+        "value": {
+          "raw": "pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2413,
+          2414
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2414,
+          2417
+        ],
+        "value": {
+          "raw": "220",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2414,
+                  2417
+                ],
+                "value": 220
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2417,
+          2418
+        ],
+        "value": {
+          "raw": "*",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2418,
+          2419
+        ],
+        "value": {
+          "raw": "^",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2419,
+          2420
+        ],
+        "value": {
+          "raw": "1",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2419,
+                  2420
+                ],
+                "value": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2420,
+          2421
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2421,
+          2422
+        ],
+        "value": {
+          "raw": "4",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2421,
+                  2422
+                ],
+                "value": 4
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2422,
+          2423
+        ],
+        "value": {
+          "raw": "*",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2423,
+          2424
+        ],
+        "value": {
+          "raw": "^",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2424,
+          2425
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2424,
+                  2425
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2425,
+          2426
+        ],
+        "value": {
+          "raw": "|",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2426,
+          2428
+        ],
+        "value": {
+          "raw": "17",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2426,
+                  2428
+                ],
+                "value": 17
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2428,
+          2429
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2429,
+          2430
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2430,
+          2454
+        ],
+        "value": {
+          "raw": "; all check_pitch errors",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2454,
+          2455
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2455,
+          2466
+        ],
+        "value": {
+          "raw": "check_pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2466,
+          2467
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2467,
+          2468
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2468,
+          2472
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2472,
+          2475
+        ],
+        "value": {
+          "raw": "var",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2475,
+          2476
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2476,
+          2480
+        ],
+        "value": {
+          "raw": "\"x2\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2477,
+                2479
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2480,
+          2481
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2481,
+          2490
+        ],
+        "value": {
+          "raw": "; unknown",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2490,
+          2491
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2491,
+          2495
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2495,
+          2498
+        ],
+        "value": {
+          "raw": "var",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2498,
+          2499
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2499,
+          2503
+        ],
+        "value": {
+          "raw": "\"x1\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2500,
+                2502
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2503,
+          2504
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2504,
+          2508
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2508,
+          2513
+        ],
+        "value": {
+          "raw": "pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2513,
+          2514
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2514,
+          2517
+        ],
+        "value": {
+          "raw": "440",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2514,
+                  2517
+                ],
+                "value": 440
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2517,
+          2518
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2518,
+          2522
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2522,
+          2527
+        ],
+        "value": {
+          "raw": "pitch",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2527,
+          2528
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2528,
+          2531
+        ],
+        "value": {
+          "raw": "220",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2528,
+                  2531
+                ],
+                "value": 220
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2531,
+          2532
+        ],
+        "value": {
+          "raw": "*",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2532,
+          2533
+        ],
+        "value": {
+          "raw": "2",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2532,
+                  2533
+                ],
+                "value": 2
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2533,
+          2534
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2534,
+          2538
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2538,
+          2542
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2542,
+          2543
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2543,
+          2547
+        ],
+        "value": {
+          "raw": "\"p4\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2544,
+                2546
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2547,
+          2548
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2548,
+          2552
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2552,
+          2556
+        ],
+        "value": {
+          "raw": "part",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2556,
+          2557
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2557,
+          2561
+        ],
+        "value": {
+          "raw": "\"p3\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2558,
+                2560
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2561,
+          2562
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2562,
+          2566
+        ],
+        "value": {
+          "raw": "    ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2566,
+          2570
+        ],
+        "value": {
+          "raw": "note",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2570,
+          2571
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2571,
+          2574
+        ],
+        "value": {
+          "raw": "\"a\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2572,
+                2573
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2574,
+          2575
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2575,
+          2576
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2576,
+          2577
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
       }
     ]
   },
@@ -10653,6 +13633,1374 @@
             }
           }
         }
+      },
+      {
+        "span": [
+          1678,
+          1679
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1679,
+          1693
+        ],
+        "value": {
+          "raw": "reset_tuning()",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1679,
+                  1691
+                ],
+                "value": "reset_tuning"
+              },
+              "params": []
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1693,
+          1694
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1694,
+          1728
+        ],
+        "value": {
+          "raw": "use_scale(scale=\"5-EDO\" part=\"p1\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1694,
+                  1703
+                ],
+                "value": "use_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      1704,
+                      1709
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1710,
+                      1717
+                    ],
+                    "value": {
+                      "String": "5-EDO"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1718,
+                      1722
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1723,
+                      1727
+                    ],
+                    "value": {
+                      "String": "p1"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1728,
+          1729
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1729,
+          1762
+        ],
+        "value": {
+          "raw": "use_scale(scale=\"5-JI\" part=\"p2\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1729,
+                  1738
+                ],
+                "value": "use_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      1739,
+                      1744
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1745,
+                      1751
+                    ],
+                    "value": {
+                      "String": "5-JI"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1752,
+                      1756
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1757,
+                      1761
+                    ],
+                    "value": {
+                      "String": "p2"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1762,
+          1763
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1763,
+          1798
+        ],
+        "value": {
+          "raw": "use_scale(scale=\"31-EDO\" part=\"p3\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1763,
+                  1772
+                ],
+                "value": "use_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      1773,
+                      1778
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1779,
+                      1787
+                    ],
+                    "value": {
+                      "String": "31-EDO"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1788,
+                      1792
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1793,
+                      1797
+                    ],
+                    "value": {
+                      "String": "p3"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1798,
+          1799
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1799,
+          1830
+        ],
+        "value": {
+          "raw": "use_scale(scale=\"JI\" part=\"p4\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1799,
+                  1808
+                ],
+                "value": "use_scale"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      1809,
+                      1814
+                    ],
+                    "value": "scale"
+                  },
+                  "value": {
+                    "span": [
+                      1815,
+                      1819
+                    ],
+                    "value": {
+                      "String": "JI"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1820,
+                      1824
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1825,
+                      1829
+                    ],
+                    "value": {
+                      "String": "p4"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1830,
+          1831
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1831,
+          1870
+        ],
+        "value": {
+          "raw": "; note does not exist in default tuning",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1870,
+          1871
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1871,
+          1900
+        ],
+        "value": {
+          "raw": "save_pitch(var=\"x1\" note=\"p\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1871,
+                  1881
+                ],
+                "value": "save_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      1882,
+                      1885
+                    ],
+                    "value": "var"
+                  },
+                  "value": {
+                    "span": [
+                      1886,
+                      1890
+                    ],
+                    "value": {
+                      "String": "x1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1891,
+                      1895
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      1896,
+                      1899
+                    ],
+                    "value": {
+                      "String": "p"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1900,
+          1901
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1901,
+          1943
+        ],
+        "value": {
+          "raw": "; note does not exist in some of the parts",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          1943,
+          1944
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1944,
+          1993
+        ],
+        "value": {
+          "raw": "save_pitch(var=\"x1\" note=\"p\" part=\"p1\" part=\"p3\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  1944,
+                  1954
+                ],
+                "value": "save_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      1955,
+                      1958
+                    ],
+                    "value": "var"
+                  },
+                  "value": {
+                    "span": [
+                      1959,
+                      1963
+                    ],
+                    "value": {
+                      "String": "x1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1964,
+                      1968
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      1969,
+                      1972
+                    ],
+                    "value": {
+                      "String": "p"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1973,
+                      1977
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1978,
+                      1982
+                    ],
+                    "value": {
+                      "String": "p1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      1983,
+                      1987
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      1988,
+                      1992
+                    ],
+                    "value": {
+                      "String": "p3"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          1993,
+          1994
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          1994,
+          2049
+        ],
+        "value": {
+          "raw": "; note does not have the same value in all of the parts",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2049,
+          2050
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2050,
+          2109
+        ],
+        "value": {
+          "raw": "save_pitch(var=\"x1\" note=\"p\" part=\"p1\" part=\"p2\" part=\"p4\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2050,
+                  2060
+                ],
+                "value": "save_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2061,
+                      2064
+                    ],
+                    "value": "var"
+                  },
+                  "value": {
+                    "span": [
+                      2065,
+                      2069
+                    ],
+                    "value": {
+                      "String": "x1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2070,
+                      2074
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      2075,
+                      2078
+                    ],
+                    "value": {
+                      "String": "p"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2079,
+                      2083
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2084,
+                      2088
+                    ],
+                    "value": {
+                      "String": "p1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2089,
+                      2093
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2094,
+                      2098
+                    ],
+                    "value": {
+                      "String": "p2"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2099,
+                      2103
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2104,
+                      2108
+                    ],
+                    "value": {
+                      "String": "p4"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2109,
+          2110
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2110,
+          2128
+        ],
+        "value": {
+          "raw": "; unknown variable",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2128,
+          2129
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2129,
+          2191
+        ],
+        "value": {
+          "raw": "restore_pitch(var=\"x2\" note=\"p\" part=\"p1\" part=\"p2\" part=\"p4\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2129,
+                  2142
+                ],
+                "value": "restore_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2143,
+                      2146
+                    ],
+                    "value": "var"
+                  },
+                  "value": {
+                    "span": [
+                      2147,
+                      2151
+                    ],
+                    "value": {
+                      "String": "x2"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2152,
+                      2156
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      2157,
+                      2160
+                    ],
+                    "value": {
+                      "String": "p"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2161,
+                      2165
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2166,
+                      2170
+                    ],
+                    "value": {
+                      "String": "p1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2171,
+                      2175
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2176,
+                      2180
+                    ],
+                    "value": {
+                      "String": "p2"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2181,
+                      2185
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2186,
+                      2190
+                    ],
+                    "value": {
+                      "String": "p4"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2191,
+          2192
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2192,
+          2237
+        ],
+        "value": {
+          "raw": "; valid since p is the root in both p1 and p2",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2237,
+          2238
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2238,
+          2287
+        ],
+        "value": {
+          "raw": "save_pitch(var=\"x1\" note=\"p\" part=\"p1\" part=\"p2\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2238,
+                  2248
+                ],
+                "value": "save_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2249,
+                      2252
+                    ],
+                    "value": "var"
+                  },
+                  "value": {
+                    "span": [
+                      2253,
+                      2257
+                    ],
+                    "value": {
+                      "String": "x1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2258,
+                      2262
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      2263,
+                      2266
+                    ],
+                    "value": {
+                      "String": "p"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2267,
+                      2271
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2272,
+                      2276
+                    ],
+                    "value": {
+                      "String": "p1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2277,
+                      2281
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2282,
+                      2286
+                    ],
+                    "value": {
+                      "String": "p2"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2287,
+          2288
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2288,
+          2294
+        ],
+        "value": {
+          "raw": "; okay",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2294,
+          2295
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2295,
+          2360
+        ],
+        "value": {
+          "raw": "check_pitch(var=\"x1\" note=\"p\" part=\"p1\" part=\"p2\" pitch=220*^1|4)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2295,
+                  2306
+                ],
+                "value": "check_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2307,
+                      2310
+                    ],
+                    "value": "var"
+                  },
+                  "value": {
+                    "span": [
+                      2311,
+                      2315
+                    ],
+                    "value": {
+                      "String": "x1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2316,
+                      2320
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      2321,
+                      2324
+                    ],
+                    "value": {
+                      "String": "p"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2325,
+                      2329
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2330,
+                      2334
+                    ],
+                    "value": {
+                      "String": "p1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2335,
+                      2339
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2340,
+                      2344
+                    ],
+                    "value": {
+                      "String": "p2"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2345,
+                      2350
+                    ],
+                    "value": "pitch"
+                  },
+                  "value": {
+                    "span": [
+                      2351,
+                      2359
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Pitch": "220*^1|4"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2360,
+          2361
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2361,
+          2429
+        ],
+        "value": {
+          "raw": "check_pitch(note=\"A2!17\" note=\"M!17\" part=\"p4\" pitch=220*^1|4*^2|17)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2361,
+                  2372
+                ],
+                "value": "check_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2373,
+                      2377
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      2378,
+                      2385
+                    ],
+                    "value": {
+                      "String": "A2!17"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2386,
+                      2390
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      2391,
+                      2397
+                    ],
+                    "value": {
+                      "String": "M!17"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2398,
+                      2402
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2403,
+                      2407
+                    ],
+                    "value": {
+                      "String": "p4"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2408,
+                      2413
+                    ],
+                    "value": "pitch"
+                  },
+                  "value": {
+                    "span": [
+                      2414,
+                      2428
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Pitch": "220*^25|68"
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2429,
+          2430
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2430,
+          2454
+        ],
+        "value": {
+          "raw": "; all check_pitch errors",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2454,
+          2455
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2455,
+          2576
+        ],
+        "value": {
+          "raw": "check_pitch(\n    var=\"x2\" ; unknown\n    var=\"x1\"\n    pitch=440\n    pitch=220*2\n    part=\"p4\"\n    part=\"p3\"\n    note=\"a\"\n)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2455,
+                  2466
+                ],
+                "value": "check_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2472,
+                      2475
+                    ],
+                    "value": "var"
+                  },
+                  "value": {
+                    "span": [
+                      2476,
+                      2480
+                    ],
+                    "value": {
+                      "String": "x2"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2495,
+                      2498
+                    ],
+                    "value": "var"
+                  },
+                  "value": {
+                    "span": [
+                      2499,
+                      2503
+                    ],
+                    "value": {
+                      "String": "x1"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2508,
+                      2513
+                    ],
+                    "value": "pitch"
+                  },
+                  "value": {
+                    "span": [
+                      2514,
+                      2517
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          440,
+                          "440"
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2522,
+                      2527
+                    ],
+                    "value": "pitch"
+                  },
+                  "value": {
+                    "span": [
+                      2528,
+                      2533
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Pitch": "440"
+                      }
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2538,
+                      2542
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2543,
+                      2547
+                    ],
+                    "value": {
+                      "String": "p4"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2552,
+                      2556
+                    ],
+                    "value": "part"
+                  },
+                  "value": {
+                    "span": [
+                      2557,
+                      2561
+                    ],
+                    "value": {
+                      "String": "p3"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2566,
+                      2570
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      2571,
+                      2574
+                    ],
+                    "value": {
+                      "String": "a"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2576,
+          2577
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
       }
     ]
   },
@@ -10780,6 +15128,108 @@
               1524
             ],
             "value": "exactly one of absolute or relative must be specified"
+          }
+        },
+        {
+          "code": "E1022 incorrect tuning",
+          "context": [],
+          "message": {
+            "span": [
+              1896,
+              1899
+            ],
+            "value": "note 'p' is not present in scale '12-EDO', which is the current default scale"
+          }
+        },
+        {
+          "code": "E1022 incorrect tuning",
+          "context": [],
+          "message": {
+            "span": [
+              1969,
+              1972
+            ],
+            "value": "note 'p' is not present in scale '31-EDO', which is the current scale for part 'p3'"
+          }
+        },
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [],
+          "message": {
+            "span": [
+              2075,
+              2078
+            ],
+            "value": "note 'p' has different pitches across specified parts"
+          }
+        },
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [],
+          "message": {
+            "span": [
+              2147,
+              2151
+            ],
+            "value": "unknown variable 'x2'"
+          }
+        },
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [],
+          "message": {
+            "span": [
+              2476,
+              2480
+            ],
+            "value": "unknown variable 'x2'"
+          }
+        },
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [
+            {
+              "span": [
+                2499,
+                2503
+              ],
+              "value": "variable 'x1' has pitch 220*^1|4"
+            },
+            {
+              "span": [
+                2514,
+                2517
+              ],
+              "value": "pitch '440' has pitch 440"
+            },
+            {
+              "span": [
+                2528,
+                2533
+              ],
+              "value": "pitch '220*2' has pitch 440"
+            },
+            {
+              "span": [
+                2571,
+                2574
+              ],
+              "value": "note 'a' in part 'p3' has pitch 220*^123|124"
+            },
+            {
+              "span": [
+                2571,
+                2574
+              ],
+              "value": "note 'a' in part 'p4' has pitch 220*^1|4"
+            }
+          ],
+          "message": {
+            "span": [
+              2455,
+              2466
+            ],
+            "value": "not all items have the same pitch"
           }
         }
       ]

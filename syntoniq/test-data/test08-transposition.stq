@@ -25,6 +25,7 @@ use_scale(scale="JI1")
 
 ; Transpose by note
 transpose(written="c" pitch_from="e" part="p1")
+check_pitch(note="c" pitch=220*^1|4*5/4 part="p1")
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
@@ -42,13 +43,14 @@ set_base_pitch(absolute=264 part="p1")
 [p1.2] 1:g
 
 ; Relative pitch
+save_pitch(var="old_e" note="e" part="p1")
 set_base_pitch(relative=9/8 part="p1")
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
-; Reverse relative pitch
-set_base_pitch(relative=8/9 part="p1")
+; Restore saved pitch
+restore_pitch(var="old_e" note="e" part="p1")
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g

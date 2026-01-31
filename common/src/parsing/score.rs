@@ -65,6 +65,7 @@ pub struct Score<'s> {
     marks: HashMap<Cow<'s, str>, MarkData<'s>>,
     layouts: HashMap<LayoutKey<'s>, LayoutData<'s>>,
     mappings: HashMap<Cow<'s, str>, MappingData<'s>>,
+    variables: HashMap<Cow<'s, str>, Pitch>,
     timeline: Timeline<'s>,
 }
 
@@ -918,6 +919,7 @@ impl<'s> Score<'s> {
             marks: Default::default(),
             layouts: Default::default(),
             mappings: Default::default(),
+            variables: Default::default(),
             timeline,
         };
         score.add_builtin_scales();
@@ -998,6 +1000,9 @@ impl<'s> Score<'s> {
             Directive::UseScale(x) => self.use_scale(diags, x),
             Directive::Transpose(x) => self.transpose(diags, x),
             Directive::SetBasePitch(x) => self.set_base_pitch(x),
+            Directive::SavePitch(x) => self.save_pitch(diags, x),
+            Directive::RestorePitch(x) => self.restore_pitch(diags, x),
+            Directive::CheckPitch(x) => self.check_pitch(diags, x),
             Directive::ResetTuning(x) => self.reset_tuning(x),
             Directive::MidiInstrument(x) => self.midi_instrument(diags, x),
             Directive::CsoundInstrument(x) => self.csound_instrument(diags, x),
@@ -1210,23 +1215,25 @@ impl<'s> Score<'s> {
         part: &str,
         tuning: &Tuning<'s>,
         note: &Spanned<Cow<'s, str>>,
-    ) -> Pitch {
+    ) -> (Pitch, bool) {
         if let Some(scale) = self.scales.get(&tuning.scale_name)
             && let Some(base_relative) = { scale.borrow_mut().get_note(diags, note) }
         {
-            &base_relative * &tuning.base_pitch
+            (&base_relative * &tuning.base_pitch, true)
         } else {
-            diags.err(
-                code::TUNE,
-                note.span,
+            let msg = if part.is_empty() {
+                format!(
+                    "note '{}' is not present in scale '{}', which is the current default scale",
+                    note.value, tuning.scale_name,
+                )
+            } else {
                 format!(
                     "note '{}' is not present in scale '{}', which is the current scale for part '{}'",
-                    note.value,
-                    tuning.scale_name,
-                    part,
-                ),
-            );
-            tuning.base_pitch.clone()
+                    note.value, tuning.scale_name, part,
+                )
+            };
+            diags.err(code::TUNE, note.span, msg);
+            (tuning.base_pitch.clone(), false)
         }
     }
 
@@ -1234,13 +1241,13 @@ impl<'s> Score<'s> {
         let cur_tunings = self.cur_tunings(&directive.part);
         // Get the base pitch for each part.
         let base_pitches: HashMap<Cow<'s, str>, Pitch> = {
-            // Make sure the note name is valid in voice
+            // Make sure the note name is valid in the part
             cur_tunings
                 .iter()
                 .map(|(part, existing)| {
-                    let written =
+                    let (written, _) =
                         self.note_pitch_in_tuning(diags, part, existing, &directive.written);
-                    let from_pitch =
+                    let (from_pitch, _) =
                         self.note_pitch_in_tuning(diags, part, existing, &directive.pitch_from);
                     let factor = &from_pitch / &written;
                     (part.clone(), &existing.base_pitch * &factor)
@@ -1268,6 +1275,120 @@ impl<'s> Score<'s> {
             })
             .collect();
         self.apply_tuning(None, cur_tunings, base_pitches);
+    }
+
+    fn save_pitch(&mut self, diags: &Diagnostics, directive: SavePitch<'s>) {
+        let cur_tunings = self.cur_tunings(&directive.part);
+        // Get the pitch from each part.
+        let pitches: HashSet<Pitch> = {
+            cur_tunings
+                .iter()
+                .filter_map(|(part, existing)| {
+                    let (pitch, ok) =
+                        self.note_pitch_in_tuning(diags, part, existing, &directive.note);
+                    if ok { Some(pitch) } else { None }
+                })
+                .collect()
+        };
+        if pitches.len() > 1 {
+            diags.err(
+                code::DIRECTIVE_USAGE,
+                directive.note.span,
+                format!(
+                    "note '{}' has different pitches across specified parts",
+                    directive.note.value
+                ),
+            );
+            return;
+        }
+        if let Some(pitch) = pitches.into_iter().next() {
+            self.variables.insert(directive.var.value, pitch);
+        }
+    }
+
+    fn restore_pitch(&mut self, diags: &Diagnostics, directive: RestorePitch<'s>) {
+        let Some(pitch) = self.variables.get(&directive.var.value).cloned() else {
+            diags.err(
+                code::DIRECTIVE_USAGE,
+                directive.var.span,
+                format!("unknown variable '{}'", directive.var.value),
+            );
+            return;
+        };
+        let cur_tunings = self.cur_tunings(&directive.part);
+        // Get the base pitch for each part.
+        let base_pitches: HashMap<Cow<'s, str>, Pitch> = {
+            cur_tunings
+                .iter()
+                .map(|(part, existing)| {
+                    let (note_pitch, _) =
+                        self.note_pitch_in_tuning(diags, part, existing, &directive.note);
+                    let factor = &pitch / &note_pitch;
+                    (part.clone(), &existing.base_pitch * &factor)
+                })
+                .collect()
+        };
+        self.apply_tuning(None, cur_tunings, base_pitches);
+    }
+
+    fn check_pitch(&mut self, diags: &Diagnostics, directive: CheckPitch<'s>) {
+        let cur_tunings = self.cur_tunings(&directive.part);
+        let mut to_compare: Vec<(Spanned<String>, Pitch)> = Default::default();
+        // For each note, check the note in each tuning
+        for note in &directive.note {
+            for (part, existing) in &cur_tunings {
+                let (pitch, ok) = self.note_pitch_in_tuning(diags, part, existing, note);
+                if ok {
+                    to_compare.push((
+                        Spanned::new(
+                            note.span,
+                            format!("note '{}' in part '{}'", note.value, part),
+                        ),
+                        pitch,
+                    ));
+                }
+            }
+        }
+        for var in &directive.var {
+            match self.variables.get(&var.value) {
+                None => {
+                    diags.err(
+                        code::DIRECTIVE_USAGE,
+                        var.span,
+                        format!("unknown variable '{}'", var.value),
+                    );
+                }
+                Some(p) => {
+                    to_compare.push((
+                        Spanned::new(var.span, format!("variable '{}'", var.value)),
+                        p.clone(),
+                    ));
+                }
+            }
+        }
+        for pitch in &directive.pitch {
+            let text = &self.src[pitch.span];
+            to_compare.push((
+                Spanned::new(pitch.span, format!("pitch '{}'", text)),
+                pitch.value.clone(),
+            ));
+        }
+        let all_pitches: HashSet<&Pitch> = to_compare.iter().map(|(_, p)| p).collect();
+        if all_pitches.len() != 1 {
+            let mut err = Diagnostic::new(
+                code::DIRECTIVE_USAGE,
+                directive.span,
+                "not all items have the same pitch",
+            );
+            to_compare.sort_by_key(|(x, _)| (x.span, x.value.to_string()));
+            for (description, pitch) in to_compare {
+                err = err.with_context(
+                    description.span,
+                    format!("{} has pitch {}", description.value, pitch),
+                );
+            }
+            diags.push(err);
+        }
     }
 
     fn apply_tuning(

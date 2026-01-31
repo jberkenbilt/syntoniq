@@ -270,7 +270,18 @@ If you use `<` or `>`, Syntoniq will enforce that there is a subsequent dynamic 
 
 Below is an alphabetical list of directives. You can get this by running `syntoniq doc`.
 
-<!-- generate include=directive_doc.md checksum=6f430836449aed3a6ae50bfe83b3a35b7b88b204de0240849d76bda5da2b42ab -->
+<!-- generate include=directive_doc.md checksum=34e6de52f378617923b0bfda31c73d3aeb7d07870640b346eedb4eaaa98bda89 -->
+
+## check_pitch
+
+Check that all pitches are the same. If multiple parts are specified, all specified notes must
+exist in all the parts' tunings. All parameters may be repeated.
+
+**Parameters**:
+* **note (repeatable)** — Notes compare
+* **var (repeatable)** — Variables to compare
+* **pitch (repeatable)** — Pitches to compare
+* **part (repeatable)** — Which parts to tune; if not specified, all parts are tuned
 
 ## csound_instrument
 
@@ -445,6 +456,30 @@ resets the tuning for each specified part to use the global tuning.
 
 **Parameters**:
 * **part (repeatable)** — Which parts to tune; if not specified, all parts are tuned
+
+## restore_pitch
+
+Tune the given parts so that the named to note has the pitch that was previously saved to the
+given variable.
+
+**Parameters**:
+* **note** — Name of the note whose pitch is to be set
+* **var** — Name of the variable that contains the pitch
+* **part (repeatable)** — Which parts to tune; if not specified, all parts are tuned
+
+## save_pitch
+
+Save the pitch of a note to a variable that can be used with
+`restore_pitch`. If no part is given, the note's pitch is retrieved from the
+global tuning. If more than one part is specified, the note must have the
+same pitch in all the parts. This can be used as a quick sanity check when
+saving a note's pitch. See also `restore_pitch` and `check_pitch`.
+
+**Parameters**:
+* **note** — Name of the note whose pitch is to be saved
+* **var** — Name of the variable to save the note's pitch into
+* **part (repeatable)** — Which parts' tuning to get the note's pitch from; if more than one specified, the note
+must have the same pitch in all tunings.
 
 ## set_base_pitch
 

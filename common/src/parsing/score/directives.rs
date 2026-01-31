@@ -15,7 +15,7 @@ pub trait FromRawDirective<'s>: Sized {
     fn show_help(w: &mut impl io::Write) -> io::Result<()>;
 }
 
-// NOTE: doc comments directives must be valid markdown. They are automatically included in the
+// NOTE: doc comments directives must be valid Markdown. They are automatically included in the
 // manual.
 
 #[derive(FromRawDirective)]
@@ -199,6 +199,73 @@ impl<'s> SetBasePitch<'s> {
                 code::TUNE,
                 self.span,
                 "exactly one of absolute or relative must be specified",
+            );
+        }
+    }
+}
+
+#[derive(FromRawDirective)]
+/// Save the pitch of a note to a variable that can be used with
+/// `restore_pitch`. If no part is given, the note's pitch is retrieved from the
+/// global tuning. If more than one part is specified, the note must have the
+/// same pitch in all the parts. This can be used as a quick sanity check when
+/// saving a note's pitch. See also `restore_pitch` and `check_pitch`.
+pub struct SavePitch<'s> {
+    pub span: Span,
+    /// Name of the note whose pitch is to be saved
+    pub note: Spanned<Cow<'s, str>>,
+    /// Name of the variable to save the note's pitch into
+    pub var: Spanned<Cow<'s, str>>,
+    /// Which parts' tuning to get the note's pitch from; if more than one specified, the note
+    /// must have the same pitch in all tunings.
+    pub part: Vec<Spanned<Cow<'s, str>>>,
+}
+impl<'s> SavePitch<'s> {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        score_helpers::check_part(diags, &self.part);
+    }
+}
+
+#[derive(FromRawDirective)]
+/// Tune the given parts so that the named to note has the pitch that was previously saved to the
+/// given variable.
+pub struct RestorePitch<'s> {
+    pub span: Span,
+    /// Name of the note whose pitch is to be set
+    pub note: Spanned<Cow<'s, str>>,
+    /// Name of the variable that contains the pitch
+    pub var: Spanned<Cow<'s, str>>,
+    /// Which parts to tune; if not specified, all parts are tuned
+    pub part: Vec<Spanned<Cow<'s, str>>>,
+}
+impl<'s> RestorePitch<'s> {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        score_helpers::check_part(diags, &self.part);
+    }
+}
+
+#[derive(FromRawDirective)]
+/// Check that all pitches are the same. If multiple parts are specified, all specified notes must
+/// exist in all the parts' tunings. All parameters may be repeated.
+pub struct CheckPitch<'s> {
+    pub span: Span,
+    /// Notes compare
+    pub note: Vec<Spanned<Cow<'s, str>>>,
+    /// Variables to compare
+    pub var: Vec<Spanned<Cow<'s, str>>>,
+    /// Pitches to compare
+    pub pitch: Vec<Spanned<Pitch>>,
+    /// Which parts to tune; if not specified, all parts are tuned
+    pub part: Vec<Spanned<Cow<'s, str>>>,
+}
+impl<'s> CheckPitch<'s> {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        score_helpers::check_part(diags, &self.part);
+        if self.note.len() + self.var.len() + self.pitch.len() < 2 {
+            diags.err(
+                code::DIRECTIVE_USAGE,
+                self.span,
+                "at least two items must be given for comparison",
             );
         }
     }
@@ -437,6 +504,9 @@ pub enum Directive<'s> {
     UseScale(UseScale<'s>),
     Transpose(Transpose<'s>),
     SetBasePitch(SetBasePitch<'s>),
+    SavePitch(SavePitch<'s>),
+    RestorePitch(RestorePitch<'s>),
+    CheckPitch(CheckPitch<'s>),
     ResetTuning(ResetTuning<'s>),
     MidiInstrument(MidiInstrument<'s>),
     CsoundInstrument(CsoundInstrument<'s>),

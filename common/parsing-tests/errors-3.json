@@ -11994,61 +11994,11 @@
       {
         "span": [
           2308,
-          2313
-        ],
-        "value": {
-          "raw": "tempo",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          2313,
-          2314
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2314,
-          2317
-        ],
-        "value": {
-          "raw": "bpm",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          2317,
-          2318
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2318,
           2319
         ],
         "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  2318,
-                  2319
-                ],
-                "value": 5
-              }
-            }
-          }
+          "raw": "check_pitch",
+          "t": "Identifier"
         }
       },
       {
@@ -12057,184 +12007,14 @@
           2320
         ],
         "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          2320,
-          2327
-        ],
-        "value": {
-          "raw": "end_bpm",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          2327,
-          2328
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2328,
-          2329
-        ],
-        "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  2328,
-                  2329
-                ],
-                "value": 5
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          2329,
-          2330
-        ],
-        "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2330,
-          2331
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          2331,
-          2336
-        ],
-        "value": {
-          "raw": "tempo",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          2336,
-          2337
-        ],
-        "value": {
           "raw": "(",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          2337,
-          2340
-        ],
-        "value": {
-          "raw": "bpm",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          2340,
-          2341
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2341,
-          2342
-        ],
-        "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  2341,
-                  2342
-                ],
-                "value": 5
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          2342,
-          2343
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          2343,
-          2351
-        ],
-        "value": {
-          "raw": "duration",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          2351,
-          2352
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2352,
-          2353
-        ],
-        "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  2352,
-                  2353
-                ],
-                "value": 5
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          2353,
-          2354
+          2320,
+          2321
         ],
         "value": {
           "raw": ")",
@@ -12243,12 +12023,42 @@
       },
       {
         "span": [
-          2354,
-          2355
+          2321,
+          2322
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2322,
+          2343
+        ],
+        "value": {
+          "raw": "; no items to compare",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2343,
+          2344
         ],
         "value": {
           "raw": "\n",
           "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2344,
+          2355
+        ],
+        "value": {
+          "raw": "check_pitch",
+          "t": "Identifier"
         }
       },
       {
@@ -12257,64 +12067,24 @@
           2356
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          2356,
-          2416
-        ],
-        "value": {
-          "raw": "; unresolved define_scale must be the last thing in the file",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          2416,
-          2417
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          2417,
-          2429
-        ],
-        "value": {
-          "raw": "define_scale",
-          "t": "Identifier"
-        }
-      },
-      {
-        "span": [
-          2429,
-          2430
-        ],
-        "value": {
           "raw": "(",
           "t": "Punctuation"
         }
       },
       {
         "span": [
-          2430,
-          2435
+          2356,
+          2360
         ],
         "value": {
-          "raw": "scale",
+          "raw": "note",
           "t": "Identifier"
         }
       },
       {
         "span": [
-          2435,
-          2436
+          2360,
+          2361
         ],
         "value": {
           "raw": "=",
@@ -12323,16 +12093,16 @@
       },
       {
         "span": [
-          2436,
-          2442
+          2361,
+          2364
         ],
         "value": {
-          "raw": "\"oops\"",
+          "raw": "\"c\"",
           "t": {
             "String": {
               "inner_span": [
-                2437,
-                2441
+                2362,
+                2363
               ]
             }
           }
@@ -12340,8 +12110,8 @@
       },
       {
         "span": [
-          2442,
-          2443
+          2364,
+          2365
         ],
         "value": {
           "raw": ")",
@@ -12350,8 +12120,405 @@
       },
       {
         "span": [
-          2443,
-          2444
+          2365,
+          2366
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2366,
+          2392
+        ],
+        "value": {
+          "raw": "; only one item to compare",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2392,
+          2393
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2393,
+          2394
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2394,
+          2399
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2399,
+          2400
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2400,
+          2403
+        ],
+        "value": {
+          "raw": "bpm",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2403,
+          2404
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2404,
+          2405
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2404,
+                  2405
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2405,
+          2406
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2406,
+          2413
+        ],
+        "value": {
+          "raw": "end_bpm",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2413,
+          2414
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2414,
+          2415
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2414,
+                  2415
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2415,
+          2416
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2416,
+          2417
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2417,
+          2422
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2422,
+          2423
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2423,
+          2426
+        ],
+        "value": {
+          "raw": "bpm",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2426,
+          2427
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2427,
+          2428
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2427,
+                  2428
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2428,
+          2429
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2429,
+          2437
+        ],
+        "value": {
+          "raw": "duration",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2437,
+          2438
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2438,
+          2439
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2438,
+                  2439
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2439,
+          2440
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2440,
+          2441
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2441,
+          2442
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2442,
+          2502
+        ],
+        "value": {
+          "raw": "; unresolved define_scale must be the last thing in the file",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2502,
+          2503
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2503,
+          2515
+        ],
+        "value": {
+          "raw": "define_scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2515,
+          2516
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2516,
+          2521
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "Identifier"
+        }
+      },
+      {
+        "span": [
+          2521,
+          2522
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2522,
+          2528
+        ],
+        "value": {
+          "raw": "\"oops\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2523,
+                2527
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2528,
+          2529
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2529,
+          2530
         ],
         "value": {
           "raw": "\n",
@@ -20010,75 +20177,28 @@
       {
         "span": [
           2308,
-          2330
+          2321
         ],
         "value": {
-          "raw": "tempo(bpm=5 end_bpm=5)",
+          "raw": "check_pitch()",
           "t": {
             "Directive": {
               "name": {
                 "span": [
                   2308,
-                  2313
+                  2319
                 ],
-                "value": "tempo"
+                "value": "check_pitch"
               },
-              "params": [
-                {
-                  "key": {
-                    "span": [
-                      2314,
-                      2317
-                    ],
-                    "value": "bpm"
-                  },
-                  "value": {
-                    "span": [
-                      2318,
-                      2319
-                    ],
-                    "value": {
-                      "PitchOrNumber": {
-                        "Integer": [
-                          5,
-                          "5"
-                        ]
-                      }
-                    }
-                  }
-                },
-                {
-                  "key": {
-                    "span": [
-                      2320,
-                      2327
-                    ],
-                    "value": "end_bpm"
-                  },
-                  "value": {
-                    "span": [
-                      2328,
-                      2329
-                    ],
-                    "value": {
-                      "PitchOrNumber": {
-                        "Integer": [
-                          5,
-                          "5"
-                        ]
-                      }
-                    }
-                  }
-                }
-              ]
+              "params": []
             }
           }
         }
       },
       {
         "span": [
-          2330,
-          2331
+          2321,
+          2322
         ],
         "value": {
           "raw": " ",
@@ -20087,17 +20207,117 @@
       },
       {
         "span": [
-          2331,
-          2354
+          2322,
+          2343
         ],
         "value": {
-          "raw": "tempo(bpm=5 duration=5)",
+          "raw": "; no items to compare",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2343,
+          2344
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2344,
+          2365
+        ],
+        "value": {
+          "raw": "check_pitch(note=\"c\")",
           "t": {
             "Directive": {
               "name": {
                 "span": [
-                  2331,
-                  2336
+                  2344,
+                  2355
+                ],
+                "value": "check_pitch"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2356,
+                      2360
+                    ],
+                    "value": "note"
+                  },
+                  "value": {
+                    "span": [
+                      2361,
+                      2364
+                    ],
+                    "value": {
+                      "String": "c"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2365,
+          2366
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2366,
+          2392
+        ],
+        "value": {
+          "raw": "; only one item to compare",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2392,
+          2393
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2393,
+          2394
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2394,
+          2416
+        ],
+        "value": {
+          "raw": "tempo(bpm=5 end_bpm=5)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2394,
+                  2399
                 ],
                 "value": "tempo"
               },
@@ -20105,15 +20325,15 @@
                 {
                   "key": {
                     "span": [
-                      2337,
-                      2340
+                      2400,
+                      2403
                     ],
                     "value": "bpm"
                   },
                   "value": {
                     "span": [
-                      2341,
-                      2342
+                      2404,
+                      2405
                     ],
                     "value": {
                       "PitchOrNumber": {
@@ -20128,15 +20348,15 @@
                 {
                   "key": {
                     "span": [
-                      2343,
-                      2351
+                      2406,
+                      2413
                     ],
-                    "value": "duration"
+                    "value": "end_bpm"
                   },
                   "value": {
                     "span": [
-                      2352,
-                      2353
+                      2414,
+                      2415
                     ],
                     "value": {
                       "PitchOrNumber": {
@@ -20155,8 +20375,86 @@
       },
       {
         "span": [
-          2354,
-          2355
+          2416,
+          2417
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2417,
+          2440
+        ],
+        "value": {
+          "raw": "tempo(bpm=5 duration=5)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2417,
+                  2422
+                ],
+                "value": "tempo"
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2423,
+                      2426
+                    ],
+                    "value": "bpm"
+                  },
+                  "value": {
+                    "span": [
+                      2427,
+                      2428
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          5,
+                          "5"
+                        ]
+                      }
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2429,
+                      2437
+                    ],
+                    "value": "duration"
+                  },
+                  "value": {
+                    "span": [
+                      2438,
+                      2439
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          5,
+                          "5"
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2440,
+          2441
         ],
         "value": {
           "raw": "\n",
@@ -20165,8 +20463,8 @@
       },
       {
         "span": [
-          2355,
-          2356
+          2441,
+          2442
         ],
         "value": {
           "raw": "\n",
@@ -20175,8 +20473,8 @@
       },
       {
         "span": [
-          2356,
-          2416
+          2442,
+          2502
         ],
         "value": {
           "raw": "; unresolved define_scale must be the last thing in the file",
@@ -20185,8 +20483,8 @@
       },
       {
         "span": [
-          2416,
-          2417
+          2502,
+          2503
         ],
         "value": {
           "raw": "\n",
@@ -20195,8 +20493,8 @@
       },
       {
         "span": [
-          2417,
-          2443
+          2503,
+          2529
         ],
         "value": {
           "raw": "define_scale(scale=\"oops\")",
@@ -20204,8 +20502,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  2417,
-                  2429
+                  2503,
+                  2515
                 ],
                 "value": "define_scale"
               },
@@ -20213,15 +20511,15 @@
                 {
                   "key": {
                     "span": [
-                      2430,
-                      2435
+                      2516,
+                      2521
                     ],
                     "value": "scale"
                   },
                   "value": {
                     "span": [
-                      2436,
-                      2442
+                      2522,
+                      2528
                     ],
                     "value": {
                       "String": "oops"
@@ -20235,8 +20533,8 @@
       },
       {
         "span": [
-          2443,
-          2444
+          2529,
+          2530
         ],
         "value": {
           "raw": "\n",
@@ -21152,12 +21450,34 @@
           }
         },
         {
-          "code": "E1020 general usage",
+          "code": "E1017 incorrect directive usage",
           "context": [],
           "message": {
             "span": [
               2308,
-              2313
+              2319
+            ],
+            "value": "at least two items must be given for comparison"
+          }
+        },
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [],
+          "message": {
+            "span": [
+              2344,
+              2355
+            ],
+            "value": "at least two items must be given for comparison"
+          }
+        },
+        {
+          "code": "E1020 general usage",
+          "context": [],
+          "message": {
+            "span": [
+              2394,
+              2399
             ],
             "value": "'end_bpm' and 'duration' must either both be present or both be absent"
           }
@@ -21167,8 +21487,8 @@
           "context": [],
           "message": {
             "span": [
-              2331,
-              2336
+              2417,
+              2422
             ],
             "value": "'end_bpm' and 'duration' must either both be present or both be absent"
           }
@@ -21178,8 +21498,8 @@
           "context": [],
           "message": {
             "span": [
-              2417,
-              2443
+              2503,
+              2529
             ],
             "value": "this directive must be followed by a scale block"
           }
