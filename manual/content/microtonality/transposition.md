@@ -133,4 +133,4 @@ Notes:
 4. Now we're back to 17-EDO and repeat the same chord sequence in the new key, defined by stepping through 13-EDO. You can't really express this cleanly in another way. 221-EDO would exactly contain 13-EDO and 17-EDO (since $13\times 17=221$), but that's a bit silly. Maybe you would never want to do this...but Syntoniq gives you the ability to travel through alien landscapes like this if you feel like it.
 5. This wraps up with a chord sequence. The last note in `[p1.4]` is `CE#`. 17-EDO doesn't have a major third (`E`), and the closest note to 5/4 is the 5-step neutral third. By including the `#` character, we are telling Syntoniq to go to the *next higher step* instead of the *closest step*. This gives us a very sharp major third (almost a flat fourth)—an intentional musical choice in this case.
 
-You have now seen how to use transposition in Syntoniq, and you've seen most of the important features. The rest is simple in comparison. The remaining features of the language will be covered in the next part.
+In addition to the directives introduced in this section, you can transpose by saving and restoring pitches. This is covered in the next section.

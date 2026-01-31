@@ -4,6 +4,13 @@ This is general TODO across internal docs, manual, and software.
 
 # Save Pitch
 
+Pivot:
+* Allow cycle marks
+* For check_pitch, require `part` and `note` to appear the same number of times to allow cross-part checking.
+* **Param** value should be allowed to be note or identifier. Parts and notes should not be encoded as strings. Scales and layouts are still strings.
+
+old:
+
 In all cases, part is optional and repeatable. Values must be consistent across parts if repeated: for save, all notes must have the same pitch. For restore, all notes must exist across all the parts. It should be possible to internally implement transpose as save and restore to a transient variable.
 
 ```syntoniq

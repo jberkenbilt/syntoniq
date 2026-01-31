@@ -1,6 +1,6 @@
 +++
 title = "Complete Example"
-weight = 70
+weight = 80
 sort_by = "weight"
 +++
 

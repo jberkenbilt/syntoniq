@@ -1,0 +1,44 @@
+; See Save and Restore Pitch section of manual for the "note x" parts.
+syntoniq(version=1)
+tempo(bpm=40)
+use_scale(scale="JI")
+
+; Set the base pitch to 264 for our part p1. That way, a major sixth
+; above the root will have the frequency 440, aligning with
+; traditional A440. A major sixth above is a minor third below. That
+; puts us off by an octave. Cycle marks are not currently allowed
+; here, but we can compensate two different ways.
+set_base_pitch(absolute=264)
+; Use `Bf` to raise the pitch by an octave
+check_pitch(note="Bf" pitch=440)
+; Check the pitch of an octave lower
+check_pitch(note="f" pitch=440/2 pitch=220)
+
+; Major triad, JI
+[p1.0] 1:A
+[p1.1] 1:E
+[p1.2] 1:C
+
+save_pitch(note="E" var="orig_E")
+save_pitch(note="p" var="orig_p")
+restore_pitch(note="A" var="orig_E")
+; Right now `d` is a perfect fourth below the original E. That's
+; 3/4*5/4 = 15/16.
+check_pitch(note="d" var="orig_p" pitch=264*15/16)
+[p1.0] 1:d
+[p1.1] 1:A
+[p1.2] 1:E
+
+restore_pitch(note="C" var="orig_E")
+[p1.0] 1:A
+[p1.1] 1:C
+[p1.2] 1:A'
+
+restore_pitch(note="h" var="orig_E")
+[p1.0] 1:h f
+[p1.1] 1:A A
+[p1.2] 1:E D
+
+; Lost? Let's check. The original E = 5/4, so A should be 8/7*5/4 =
+; 10/7 above the base pitch.
+check_pitch(note="A" pitch=264*10/7)
