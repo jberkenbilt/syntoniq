@@ -178,54 +178,54 @@ i "SetPartParam" 6 2 1 "freq_2" 359.735
 i 1.2 6 2 1 2 0.567
 i "SetPartParamRamp" 6 1 1 "amp" 0.504 0.252 ; 64@2> @764
 i "SetPartParam" 7 0.01 1 "amp" 0.252 ; 32@3 @770
-; 4:c@895
+; 4:c@891
 i "SetPartParam" 8 4 1 "freq_1" 327.032
-; 4:c @895
+; 4:c @891
 i 1.1 8 4 1 1 0.567
-; 4:e@906
+; 4:e@902
 i "SetPartParam" 8 4 1 "freq_2" 408.79
-; 4:e @906
+; 4:e @902
 i 1.2 8 4 1 2 0.567
-; 4:g@917
+; 4:g@913
 i "SetPartParam" 8 4 1 "freq_3" 490.548
-; 4:g @917
+; 4:g @913
 i 1.3 8 4 1 3 0.567
-; 2:h7@928
+; 2:h7@924
 i "SetPartParam" 8 2 1 "freq_4" 572.306
-; 2:h7 @928
+; 2:h7 @924
 i 1.4 8 2 1 4 0.567
-i "SetPartParamRamp" 8 1 1 "amp" 0.252 0.504 ; 32@0< @943
-i "SetPartParamRamp" 9 1 1 "amp" 0.504 0.756 ; 64@1< @949
-; 2:b%@933
+i "SetPartParamRamp" 8 1 1 "amp" 0.252 0.504 ; 32@0< @939
+i "SetPartParamRamp" 9 1 1 "amp" 0.504 0.756 ; 64@1< @945
+; 2:b%@929
 i "SetPartParam" 10 2 1 "freq_4" 581.39
-; 2:b% @933
+; 2:b% @929
 i 1.4 10 2 1 4 0.567
-i "SetPartParamRamp" 10 1 1 "amp" 0.756 1 ; 96@2< @955
-i "SetPartParam" 11 0.01 1 "amp" 1 ; 127@3 @961
-; 4:c@1051
+i "SetPartParamRamp" 10 1 1 "amp" 0.756 1 ; 96@2< @951
+i "SetPartParam" 11 0.01 1 "amp" 1 ; 127@3 @957
+; 4:c@1043
 i "SetPartParam" 12 4 1 "freq_1" 261.626
-; 4:c @1051
+; 4:c @1043
 i 1.1 12 4 1 1 0.567
-; 4:e@1062
+; 4:e@1054
 i "SetPartParam" 12 4 1 "freq_2" 327.032
-; 4:e @1062
+; 4:e @1054
 i 1.2 12 4 1 2 0.567
-; 4:g@1073
+; 4:g@1065
 i "SetPartParam" 12 4 1 "freq_3" 392.438
-; 4:g @1073
+; 4:g @1065
 i 1.3 12 4 1 3 0.567
-; 2:h7@1084
+; 2:h7@1076
 i "SetPartParam" 12 2 1 "freq_4" 457.845
-; 2:h7 @1084
+; 2:h7 @1076
 i 1.4 12 2 1 4 0.567
-i "SetPartParamRamp" 12 1 1 "amp" 0.252 0.504 ; 32@0< @1099
-i "SetPartParamRamp" 13 1 1 "amp" 0.504 0.756 ; 64@1< @1105
-; 2:b%@1089
+i "SetPartParamRamp" 12 1 1 "amp" 0.252 0.504 ; 32@0< @1091
+i "SetPartParamRamp" 13 1 1 "amp" 0.504 0.756 ; 64@1< @1097
+; 2:b%@1081
 i "SetPartParam" 14 2 1 "freq_4" 465.112
-; 2:b% @1089
+; 2:b% @1081
 i 1.4 14 2 1 4 0.567
-i "SetPartParamRamp" 14 1 1 "amp" 0.756 1 ; 96@2< @1111
-i "SetPartParam" 15 0.01 1 "amp" 1 ; 127@3 @1117
+i "SetPartParamRamp" 14 1 1 "amp" 0.756 1 ; 96@2< @1103
+i "SetPartParam" 15 0.01 1 "amp" 1 ; 127@3 @1109
 ;; END SYNTONIQ
 
 e

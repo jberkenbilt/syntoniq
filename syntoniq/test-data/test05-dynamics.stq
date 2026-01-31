@@ -44,7 +44,7 @@ use_scale(scale="JI1" part="p1")
 [p2] 32@0
 
 ; Transpose up from c to e
-transpose(written="c" pitch_from="e" part="p1")
+transpose(written=c pitch_from=e part="p1")
 [p1.0] 4:c
 [p1.1] 4:e
 [p1.2] 4:g
@@ -52,7 +52,7 @@ transpose(written="c" pitch_from="e" part="p1")
 [p1] 32@0< 64@1< 96@2< 127@3
 
 ; Reverse the transposition
-transpose(written="e" pitch_from="c" part="p1")
+transpose(written=e pitch_from=c part="p1")
 [p1.0] 4:c
 [p1.1] 4:e
 [p1.2] 4:g

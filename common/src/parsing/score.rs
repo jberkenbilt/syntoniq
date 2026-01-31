@@ -226,7 +226,7 @@ impl<'s> ScaleBuilder<'s> {
     ) -> Option<Pitch> {
         // TODO: work in octave
         let name = &note.value.name;
-        self.notes.get(&name.value).cloned().or_else(|| {
+        let pitch = self.notes.get(&name.value).cloned().or_else(|| {
             let pitch = self.generator.as_ref()?.get_note(diags, &name.as_ref());
             if let Some(p) = &pitch {
                 self.notes.insert(name.value.clone(), p.clone());
@@ -235,6 +235,12 @@ impl<'s> ScaleBuilder<'s> {
                     .or_insert(name.value.clone());
             }
             pitch
+        });
+        pitch.map(|p| match note.value.octave {
+            Some(cycle) if cycle.value != 0 => {
+                &p * &Pitch::from(self.definition.cycle.pow(cycle.value as i32))
+            }
+            _ => p,
         })
     }
 
@@ -520,12 +526,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                         && let Some(base_relative) =
                             { scale.borrow_mut().get_note(self.diags, note_octave).clone() }
                     {
-                        let cycle = note_octave.value.octave.map(Spanned::value).unwrap_or(0);
-                        let mut absolute_pitch = &tuning.base_pitch * &base_relative;
-                        if cycle != 0 {
-                            absolute_pitch *=
-                                &Pitch::from(scale.borrow().definition.cycle.pow(cycle as i32));
-                        }
+                        let absolute_pitch = &tuning.base_pitch * &base_relative;
                         let end_time =
                             time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats);
                         // Get any note that might be currently sustained either by tie or glide.
@@ -1220,30 +1221,22 @@ impl<'s> Score<'s> {
         diags: &Diagnostics,
         part: &str,
         tuning: &Tuning<'s>,
-        note: &Spanned<Cow<'s, str>>,
+        note: &Spanned<NoteOctave<'s>>,
     ) -> (Pitch, bool) {
-        // TODO: TEMP
-        let xxx_temp = Spanned::new(
-            note.span,
-            NoteOctave {
-                name: note.clone(),
-                octave: None,
-            },
-        );
         if let Some(scale) = self.scales.get(&tuning.scale_name)
-            && let Some(base_relative) = { scale.borrow_mut().get_note(diags, &xxx_temp) }
+            && let Some(base_relative) = { scale.borrow_mut().get_note(diags, note) }
         {
             (&base_relative * &tuning.base_pitch, true)
         } else {
             let msg = if part.is_empty() {
                 format!(
                     "note '{}' is not present in scale '{}', which is the current default scale",
-                    note.value, tuning.scale_name,
+                    note.value.name.value, tuning.scale_name,
                 )
             } else {
                 format!(
                     "note '{}' is not present in scale '{}', which is the current scale for part '{}'",
-                    note.value, tuning.scale_name, part,
+                    note.value.name.value, tuning.scale_name, part,
                 )
             };
             diags.err(code::TUNE, note.span, msg);
@@ -1310,7 +1303,7 @@ impl<'s> Score<'s> {
                 directive.note.span,
                 format!(
                     "note '{}' has different pitches across specified parts",
-                    directive.note.value
+                    directive.note.value.name.value
                 ),
             );
             return;
@@ -1356,7 +1349,7 @@ impl<'s> Score<'s> {
                     to_compare.push((
                         Spanned::new(
                             note.span,
-                            format!("note '{}' in part '{}'", note.value, part),
+                            format!("note '{}' in part '{}'", note.value.name.value, part),
                         ),
                         pitch,
                     ));
@@ -1778,11 +1771,8 @@ impl<'s> Score<'s> {
                                 // Push something so counts are accurate.
                                 note_row.push(None);
                             }
-                            Some(note_base_relative) => {
-                                let scale_ref = scale.borrow();
+                            Some(adjusted_base_relative) => {
                                 let cycle = note.value.octave.map(|x| x.value as i32).unwrap_or(0);
-                                let adjusted_base_relative = &note_base_relative
-                                    * &Pitch::from(scale_ref.definition.cycle.pow(cycle));
                                 note_row.push(Some(MappingItem {
                                     note_name: note.value.name.value.clone(),
                                     cycle,

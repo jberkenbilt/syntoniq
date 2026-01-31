@@ -1,6 +1,6 @@
 // -*- fill-column: 80 -*-
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics, code};
-use crate::parsing::model::{DataBlock, LayoutBlock, ScaleBlock, Span, Spanned};
+use crate::parsing::model::{DataBlock, LayoutBlock, NoteOctave, ScaleBlock, Span, Spanned};
 use crate::parsing::score::HashSet;
 use crate::parsing::score::RawDirective;
 use crate::parsing::score_helpers;
@@ -159,10 +159,10 @@ pub struct Transpose<'s> {
     /// Name of note used as anchor pitch for transposition. In the new tuning,
     /// this note will have the pitch that the note in `pitch_from` has before
     /// the transposition.
-    pub written: Spanned<Cow<'s, str>>,
+    pub written: Spanned<NoteOctave<'s>>,
     /// Name of the note in the existing tuning whose pitch will be given to the
     /// `written` note after transposition.
-    pub pitch_from: Spanned<Cow<'s, str>>,
+    pub pitch_from: Spanned<NoteOctave<'s>>,
     /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Cow<'s, str>>>,
 }
@@ -213,7 +213,7 @@ impl<'s> SetBasePitch<'s> {
 pub struct SavePitch<'s> {
     pub span: Span,
     /// Name of the note whose pitch is to be saved
-    pub note: Spanned<Cow<'s, str>>,
+    pub note: Spanned<NoteOctave<'s>>,
     /// Name of the variable to save the note's pitch into
     pub var: Spanned<Cow<'s, str>>,
     /// Which parts' tuning to get the note's pitch from; if more than one specified, the note
@@ -232,7 +232,7 @@ impl<'s> SavePitch<'s> {
 pub struct RestorePitch<'s> {
     pub span: Span,
     /// Name of the note whose pitch is to be set
-    pub note: Spanned<Cow<'s, str>>,
+    pub note: Spanned<NoteOctave<'s>>,
     /// Name of the variable that contains the pitch
     pub var: Spanned<Cow<'s, str>>,
     /// Which parts to tune; if not specified, all parts are tuned
@@ -250,7 +250,7 @@ impl<'s> RestorePitch<'s> {
 pub struct CheckPitch<'s> {
     pub span: Span,
     /// Notes compare
-    pub note: Vec<Spanned<Cow<'s, str>>>,
+    pub note: Vec<Spanned<NoteOctave<'s>>>,
     /// Variables to compare
     pub var: Vec<Spanned<Cow<'s, str>>>,
     /// Pitches to compare

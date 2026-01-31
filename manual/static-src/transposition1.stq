@@ -12,7 +12,7 @@ set_base_pitch(absolute=220*6/5) ; note 1
 [p1.3] 1:A' h':~ ; sustain pivot
 
 ; After transpose, `A` will sound like `h` did before: note 3
-transpose(written="A" pitch_from="h")
+transpose(written=A pitch_from=h)
 
 ; Do it again
 [p1.0] 1:A  A
@@ -21,7 +21,7 @@ transpose(written="A" pitch_from="h")
 [p1.3] 1:A' h':~
 
 ; Pivot 7/8 to 11/8: note 4
-transpose(written="Cl" pitch_from="h")
+transpose(written=Cl pitch_from=h)
 
 ; Pivot, then move to a major triad
 [p1.0] 1:A   A
@@ -30,7 +30,7 @@ transpose(written="Cl" pitch_from="h")
 [p1.3] 1:Cl' C'
 
 ; Change keys: note 5
-transpose(written="A" pitch_from="D++")
+transpose(written=A pitch_from=D++)
 
 [p1.0] 2:A
 [p1.1] 2:C

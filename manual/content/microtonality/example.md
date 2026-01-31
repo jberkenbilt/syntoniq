@@ -18,7 +18,7 @@ Here are a few things to keep in mind. I mention them up front to avoid repeatin
 
 We'll use the score below to demonstrate remaining features.
 
-<!-- generate include=full-example.stq checksum=d2ac508975be6530333e42796ae790d211c169eeee258b624851318b307458d7 -->
+<!-- generate include=full-example.stq checksum=e32d20c97b1496c6c6570b9c69bf8d1879a4a820b969354243615d7d8012e8e8 -->
 ```syntoniq
 syntoniq(version=1)
 ; Define scales with different octave divisions
@@ -46,7 +46,7 @@ mark(label="opening")
 [bass] 127@0 |
 
 mark(label="transition")
-transpose(part="chords" part="bass" written="A" pitch_from="A1")
+transpose(part="chords" part="bass" written=A pitch_from=A1)
 [chords.0] 1:A    A   2:A    | 1:A    MA   2:A
 [chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
 [chords.2] 1:C    D   2:C    | 1:C    MC   2:C
@@ -59,7 +59,7 @@ transpose(part="chords" part="bass" written="A" pitch_from="A1")
 mark(label="a")
 reset_tuning(part="chords")
 use_scale(scale="gen-17" part="chords")
-transpose(part="bass" written="A1" pitch_from="A0")
+transpose(part="bass" written=A1 pitch_from=A0)
 [chords.0] 1:A    A   2:A    | 1:A    MA   2:A
 [chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
 [chords.2] 1:C    D   2:C    | 1:C    MC   2:C

@@ -14,7 +14,7 @@ The two directives we will cover here are
 
 Let's dive into some examples. The first example takes us on a bit of a wild ride through some strange pivots and modulations. I'm not going to claim that it is a great work of art, but it should demonstrate the basics of Syntoniq transposition. Editorial note: the comments in the score below refer to material in the text after the audio. This is in the hope of making this easier to consume on various screen sizes!
 
-<!-- generate include=transposition1.stq checksum=b36219371ef7d887f0d3042b1b99ca97e45d0aaa887d221f9ff0c05a8fdaaf41 -->
+<!-- generate include=transposition1.stq checksum=00bc795ee7511269c1bd58140de4bfe5dfaa23cead9f393762ef7db3bbc718b4 -->
 ```syntoniq
 ; See Transposition section of manual for the "note x" parts.
 syntoniq(version=1)
@@ -30,7 +30,7 @@ set_base_pitch(absolute=220*6/5) ; note 1
 [p1.3] 1:A' h':~ ; sustain pivot
 
 ; After transpose, `A` will sound like `h` did before: note 3
-transpose(written="A" pitch_from="h")
+transpose(written=A pitch_from=h)
 
 ; Do it again
 [p1.0] 1:A  A
@@ -39,7 +39,7 @@ transpose(written="A" pitch_from="h")
 [p1.3] 1:A' h':~
 
 ; Pivot 7/8 to 11/8: note 4
-transpose(written="Cl" pitch_from="h")
+transpose(written=Cl pitch_from=h)
 
 ; Pivot, then move to a major triad
 [p1.0] 1:A   A
@@ -48,7 +48,7 @@ transpose(written="Cl" pitch_from="h")
 [p1.3] 1:Cl' C'
 
 ; Change keys: note 5
-transpose(written="A" pitch_from="D++")
+transpose(written=A pitch_from=D++)
 
 [p1.0] 2:A
 [p1.1] 2:C
@@ -77,7 +77,7 @@ Notes from above:
 
 For a second example, let's take a little melody in one EDO, and then use some steps in a second EDO to change to a new, unrelated key. This melody will start in 17-EDO, one of my personal favorites. The single step in 17-EDO is almost exactly the ratio 25/24 (off by less than 0.1¢), which is what you get if you go up a major third and down a minor third in just intonation ($\frac{5}{4}\times\frac{5}{6} = \frac{25}{24}$). Two steps is almost exactly 13/12, flat by less than 3¢. That makes the notes `Y` and `M` particularly useful in 17-EDO. 17-EDO also has a very good fourth and fifth: 10 steps of 17-EDO is less than 4¢ sharp for 3/2. It lacks an interval close to the major third, but 5 steps is a close neutral third, quite close to 11/9. 11/9 can be written as `JK` in our system. This is a feature that falls out of normal arithmetic. Each single letter represents a single harmonic sequence step by design. That means each pair of adjacent letters represents two steps: `JK` = $\frac{10}{9}\times\frac{11}{10} = \frac{11}{9}$.
 
-<!-- generate include=transposition2.stq checksum=622ad2f6ad709e6c0f6e3150da8d0bf1cd4f37e5a2fff5d4ebde7f3ba03f99fa -->
+<!-- generate include=transposition2.stq checksum=591f5b749c96015680909d296ddbc7627138684a18bb2288e2ad90a26c3822b3 -->
 ```syntoniq
 ; See Transposition section of manual for the "note x" parts.
 syntoniq(version=1)
@@ -94,7 +94,7 @@ use_scale(scale="gen-17")
 [p1.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
 
 ; Repeat up a step: note 2
-transpose(written="A" pitch_from="Y")
+transpose(written=A pitch_from=Y)
 [p1.0] 1:A    A   2:A    | 1:A    MA   2:A
 [p1.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
 [p1.2] 1:C    D   2:C    | 1:C    MC   2:C
@@ -103,11 +103,11 @@ transpose(written="A" pitch_from="Y")
 
 ; Sustain and pivot: note 3
 use_scale(scale="gen-13")
-transpose(written="A" pitch_from="CJK!17")
+transpose(written=A pitch_from=CJK!17)
 [p1.3] 1:a a1 a2 a3
 
 use_scale(scale="gen-17")
-transpose(written="CJK" pitch_from="a4!13")
+transpose(written=CJK pitch_from=a4!13)
 ; Repeat after stepping in 13-EDO: note 4
 [p1.0] 1:A    A   2:A    | 1:A    MA   2:A
 [p1.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK

@@ -39,7 +39,7 @@ use_scale(scale="5-EDO" part="p1")
 
 ; Transpose to set the base pitch to the current pitch of `d`, then
 ; switch to the 5-JI scale for p2.
-transpose(written="c" pitch_from="d" part="p2") use_scale(scale="5-JI" part="p2")
+transpose(written=c pitch_from=d part="p2") use_scale(scale="5-JI" part="p2")
 
 mark(label="a")
 tempo(bpm=72 start_time=1 end_bpm=96 duration=2)

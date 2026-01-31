@@ -13,7 +13,7 @@ use_scale(scale="gen-17")
 [p1.4] 1:I'   A'  2:I'   | 1:I'   MI'  2:I'
 
 ; Repeat up a step: note 2
-transpose(written="A" pitch_from="Y")
+transpose(written=A pitch_from=Y)
 [p1.0] 1:A    A   2:A    | 1:A    MA   2:A
 [p1.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
 [p1.2] 1:C    D   2:C    | 1:C    MC   2:C
@@ -22,11 +22,11 @@ transpose(written="A" pitch_from="Y")
 
 ; Sustain and pivot: note 3
 use_scale(scale="gen-13")
-transpose(written="A" pitch_from="CJK!17")
+transpose(written=A pitch_from=CJK!17)
 [p1.3] 1:a a1 a2 a3
 
 use_scale(scale="gen-17")
-transpose(written="CJK" pitch_from="a4!13")
+transpose(written=CJK pitch_from=a4!13)
 ; Repeat after stepping in 13-EDO: note 4
 [p1.0] 1:A    A   2:A    | 1:A    MA   2:A
 [p1.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK

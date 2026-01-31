@@ -5,7 +5,7 @@ This is general TODO across internal docs, manual, and software.
 # Save Pitch
 
 Pivot:
-* Allow cycle marks
+* Update syntax
 * For check_pitch, require `part` and `note` to appear the same number of times to allow cross-part checking.
 * **Param** value should be allowed to be note or identifier. Parts and notes should not be encoded as strings. Scales and layouts are still strings.
 

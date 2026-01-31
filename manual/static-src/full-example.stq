@@ -24,7 +24,7 @@ mark(label="opening")
 [bass] 127@0 |
 
 mark(label="transition")
-transpose(part="chords" part="bass" written="A" pitch_from="A1")
+transpose(part="chords" part="bass" written=A pitch_from=A1)
 [chords.0] 1:A    A   2:A    | 1:A    MA   2:A
 [chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
 [chords.2] 1:C    D   2:C    | 1:C    MC   2:C
@@ -37,7 +37,7 @@ transpose(part="chords" part="bass" written="A" pitch_from="A1")
 mark(label="a")
 reset_tuning(part="chords")
 use_scale(scale="gen-17" part="chords")
-transpose(part="bass" written="A1" pitch_from="A0")
+transpose(part="bass" written=A1 pitch_from=A0)
 [chords.0] 1:A    A   2:A    | 1:A    MA   2:A
 [chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
 [chords.2] 1:C    D   2:C    | 1:C    MC   2:C
