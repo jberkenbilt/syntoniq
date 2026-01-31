@@ -6,6 +6,16 @@ sort_by = "weight"
 
 This section includes release notes for the Syntoniq software. See also [docs/TODO.md](https://github.com/jberkenbilt/syntoniq/blob/main/docs/TODO.md) for the latest roadmap.
 
+# v0.3.0 - Unreleased
+
+## Breaking Changes
+
+* Directives can now take note names and identifiers (such as part names) in addition to strings, pitches, and numbers. The transpose directive takes note names, which may now include octave/cycle markers, rather than strings for its `written` and `pitch_from` parameters. All directives that take `part` now take a raw identifier. All examples have been updated. This paves the way for future semantic checks on note and part options.
+
+## Improvements
+
+* New directives added: `save_pitch`, `restore_pitch`, and `check_pitch`
+
 # v0.2.0 - January 27, 2026
 
 ## Improvements

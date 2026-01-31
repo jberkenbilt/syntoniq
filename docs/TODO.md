@@ -2,33 +2,10 @@
 
 This is general TODO across internal docs, manual, and software.
 
-# Save Pitch
-
-Pivot:
-* For check_pitch, require `part` and `note` to appear the same number of times to allow cross-part checking.
-* **Param** value should be allowed to be note or identifier. Parts and notes should not be encoded as strings. Scales and layouts are still strings.
-
-old:
-
-In all cases, part is optional and repeatable. Values must be consistent across parts if repeated: for save, all notes must have the same pitch. For restore, all notes must exist across all the parts. It should be possible to internally implement transpose as save and restore to a transient variable.
-
-```syntoniq
-; save the current pitch of note "x" in variable "y"
-save_pitch(note="x" var="y" part="z")
-; restore the pitch from variable "y" to note "x"
-restore_pitch(note="x" var="y" part="z")
-; error if all specified items are not the same
-check_pitch(note="x" var="y" pitch=p part="z")
-; Example
-use_scale(scale="ji")
-check_pitch(note="E!41" note="A13!41" pitch=220*^1|4*^13|41 pitch=220*^93|164)
-```
-
 # Pre-1.0
 
 These are proposed pre-1.0 items. Details are below for many.
 
-* save_pitch, restore_pitch, check_pitch
 * calc -- from scripts in misc
 * Make sure we explicitly test > 7 channel pairs for multiple ports
 * Fix edge cases -- see copilot-initial-review.md

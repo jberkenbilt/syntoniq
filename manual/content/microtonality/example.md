@@ -126,7 +126,7 @@ Notice the use of durations like `4/5` and `2/3` in various places in the score.
 
 # Reset Tuning
 
-We have previously encountered various directives for transposing and setting pitch. Immediately after `mark(label="a")`, you can see that we use the `reset_tuning` directive to completely clear the tuning for the `chords` part. This is gratuitous and is just to show `reset_tuning`. To get us back to "gen-17", we had to call `use_scale` again. We could have just passed `part="bass" part="chords"` to the transpose we use to reverse the transposition of the `bass` part.
+We have previously encountered various directives for transposing and setting pitch. Immediately after `mark(label="a")`, you can see that we use the `reset_tuning` directive to completely clear the tuning for the `chords` part. This is gratuitous and is just to show `reset_tuning`. To get us back to "gen-17", we had to call `use_scale` again. We could have just passed `part=bass part=chords` to the transpose we use to reverse the transposition of the `bass` part.
 
 # Articulation
 

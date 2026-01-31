@@ -6,7 +6,7 @@ use_scale(scale="JI")
 ; Set the base pitch to 264 for our part p1. That way, a major sixth
 ; above the root will have the frequency 440, aligning with
 ; traditional A440. A major sixth above is a minor third below. That
-; puts us off by an octave.
+; puts us off by an octave, so we check the note `f'`.
 set_base_pitch(absolute=264)
 check_pitch(note=f' pitch=440)
 
@@ -38,3 +38,11 @@ restore_pitch(note=h var="orig_E")
 ; Lost? Let's check. The original E = 5/4, so A should be 8/7*5/4 =
 ; 10/7 above the base pitch.
 check_pitch(note=A pitch=264*10/7)
+
+; Unrelated but to demonstrate, you can also sanity check generated
+; notes. This verifies that a note lands where you think it does. The
+; closest scale degree to a major third in 41-EDO is the 13th step.
+check_pitch(note=E!41 note=A13!41)
+; You can also see how the octave marks work.
+check_pitch(note=B note=A')
+check_pitch(note=b note=A,)

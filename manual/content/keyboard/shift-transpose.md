@@ -15,7 +15,7 @@ Now that we've covered the basics of using the keyboard to play notes and chords
 In a nutshell, the features do the following:
 * Both features are activated by entering a mode, then selecting two keys in sequence.
 * **Shift** — shifts the positions of all the keys on the keyboard so that the first key "moves" to the second position. After the move, pressing the second key does whatever pressing the first key used to do, and all the other keys have moved accordingly. It's like sliding the whole layout around. This makes it possible for you to reach notes that are off the edges of the keyboard.
-* **Transpose** — transposes the pitches of all the keys on the keyboard so that the first key's pitch is assigned to the second key. All other notes in the scale are transposed so the relative pitches of the notes stay the same. This operation is effectively the same as `transpose(from_pitch="first-key" written="second-key")` in the Syntoniq language.
+* **Transpose** — transposes the pitches of all the keys on the keyboard so that the first key's pitch is assigned to the second key. All other notes in the scale are transposed so the relative pitches of the notes stay the same. This operation is effectively the same as `transpose(from_pitch=first-key written=second-key)` in the Syntoniq language.
 
 Noticing that both operations transfer some property of the first key to the second key can help you remember how to use the features: shift transfers the physical position, and transpose transfers the pitch.
 

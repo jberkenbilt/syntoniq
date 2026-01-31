@@ -150,12 +150,12 @@ impl<'s> UseScale<'s> {
 #[derive(FromRawDirective)]
 /// Change the base pitch of the scale in a way that makes the new pitch of
 /// `written` equal to the current pitch of `pitch_from`. For example, you could
-/// transpose up a whole step in 12-TET with `transpose(written="c"
-/// pitch_from="d")`. This method of specifying transposition is easily
-/// reversible even in non-EDO tunings by simply swapping `written` and
-/// `pitch_from`. This can be applied to multiple parts or to the default
-/// tuning. The parts do not all have to be using the same scale as long as they
-/// are all using scales that have both named notes.
+/// transpose up a whole step in 12-TET with `transpose(written=c pitch_from=d)`.
+/// This method of specifying transposition is easily reversible even in non-EDO
+/// tunings by simply swapping `written` and `pitch_from`. This can be applied
+/// to multiple parts or to the default tuning. The parts do not all have to be
+/// using the same scale as long as they are all using scales that have both
+/// named notes.
 pub struct Transpose<'s> {
     pub span: Span,
     /// Name of note used as anchor pitch for transposition. In the new tuning,
@@ -229,7 +229,7 @@ impl<'s> SavePitch<'s> {
 }
 
 #[derive(FromRawDirective)]
-/// Tune the given parts so that the named to note has the pitch that was previously saved to the
+/// Tune the given parts so that the named note has the pitch that was previously saved to the
 /// given variable.
 pub struct RestorePitch<'s> {
     pub span: Span,
@@ -237,7 +237,7 @@ pub struct RestorePitch<'s> {
     pub note: Spanned<NoteOctave<'s>>,
     /// Name of the variable that contains the pitch
     pub var: Spanned<Cow<'s, str>>,
-    /// Which parts to tune; if not specified, all parts are tuned
+    /// Which parts to transpose; if not specified, the default tuning is updated.
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> RestorePitch<'s> {
@@ -257,7 +257,7 @@ pub struct CheckPitch<'s> {
     pub var: Vec<Spanned<Cow<'s, str>>>,
     /// Pitches to compare
     pub pitch: Vec<Spanned<Pitch>>,
-    /// Which parts to tune; if not specified, all parts are tuned
+    /// Which parts check; if none given, the default tuning is checked.
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> CheckPitch<'s> {

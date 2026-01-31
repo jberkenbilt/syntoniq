@@ -8,7 +8,7 @@ exist in all the parts' tunings. All parameters may be repeated.
 * **note (repeatable)** — Notes compare
 * **var (repeatable)** — Variables to compare
 * **pitch (repeatable)** — Pitches to compare
-* **part (repeatable)** — Which parts to tune; if not specified, all parts are tuned
+* **part (repeatable)** — Which parts check; if none given, the default tuning is checked.
 
 ## csound_instrument
 
@@ -186,13 +186,13 @@ resets the tuning for each specified part to use the global tuning.
 
 ## restore_pitch
 
-Tune the given parts so that the named to note has the pitch that was previously saved to the
+Tune the given parts so that the named note has the pitch that was previously saved to the
 given variable.
 
 **Parameters**:
 * **note** — Name of the note whose pitch is to be set
 * **var** — Name of the variable that contains the pitch
-* **part (repeatable)** — Which parts to tune; if not specified, all parts are tuned
+* **part (repeatable)** — Which parts to transpose; if not specified, the default tuning is updated.
 
 ## save_pitch
 
@@ -249,12 +249,12 @@ change.
 
 Change the base pitch of the scale in a way that makes the new pitch of
 `written` equal to the current pitch of `pitch_from`. For example, you could
-transpose up a whole step in 12-TET with `transpose(written="c"
-pitch_from="d")`. This method of specifying transposition is easily
-reversible even in non-EDO tunings by simply swapping `written` and
-`pitch_from`. This can be applied to multiple parts or to the default
-tuning. The parts do not all have to be using the same scale as long as they
-are all using scales that have both named notes.
+transpose up a whole step in 12-TET with `transpose(written=c pitch_from=d)`.
+This method of specifying transposition is easily reversible even in non-EDO
+tunings by simply swapping `written` and `pitch_from`. This can be applied
+to multiple parts or to the default tuning. The parts do not all have to be
+using the same scale as long as they are all using scales that have both
+named notes.
 
 **Parameters**:
 * **written** — Name of note used as anchor pitch for transposition. In the new tuning,

@@ -21,7 +21,7 @@ transpose(written=A pitch_from=h)
 [p1.3] 1:A' h':~
 
 ; Pivot 7/8 to 11/8: note 4
-transpose(written=Cl pitch_from=h)
+transpose(written=Cl' pitch_from=h')
 
 ; Pivot, then move to a major triad
 [p1.0] 1:A   A

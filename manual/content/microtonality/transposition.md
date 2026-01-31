@@ -6,15 +6,15 @@ sort_by = "weight"
 
 Now that you've learned about defining scales and using generated scales, it's time to talk about transposition. Please see [Language Reference](../../reference/language-reference/) for a list of all the directives and their parameters, or run `syntoniq doc` from the command line. This section will cover the two directives you will use for transposition.
 
-A side note on syntax: the transposition directives all take optional `part` parameters that specifies part names. We've been using `p1` as the part name, but you can call it anything that uses alphanumeric characters or the underscore, like `trumpet_2` or `Alto` or `potato`. Syntoniq directives can have repeatable options, so if we wanted to change the base pitch of the tuning for parts `p1` and `p2`, we could call `set_base_pitch(... part="p1" part="p2")`. If no `part` parameters are specified, the directives apply to all parts.
+A side note on syntax: the transposition directives all take optional `part` parameters that specifies part names. We've been using `p1` as the part name, but you can call it anything that uses alphanumeric characters or the underscore, like `trumpet_2` or `Alto` or `potato`. Syntoniq directives can have repeatable options, so if we wanted to change the base pitch of the tuning for parts `p1` and `p2`, we could call `set_base_pitch(... part=p1 part=p2)`. If no `part` parameters are specified, the directives apply to all parts.
 
 The two directives we will cover here are
 * `set_base_pitch` — changes the base pitch of a scale to either an absolute frequency or to a multiple of the current base pitch
-* `transpose` — transpose the whole scale so that the note name given as the argument to `written` takes its pitch from the note name given as `pitch_from`
+* `transpose` — transpose the whole scale so that the note name given as the argument to `written` takes its pitch from the note name given as `pitch_from`. Both `written` and `pitch_from` may include optional cycle (octave) markers.
 
 Let's dive into some examples. The first example takes us on a bit of a wild ride through some strange pivots and modulations. I'm not going to claim that it is a great work of art, but it should demonstrate the basics of Syntoniq transposition. Editorial note: the comments in the score below refer to material in the text after the audio. This is in the hope of making this easier to consume on various screen sizes!
 
-<!-- generate include=transposition1.stq checksum=00bc795ee7511269c1bd58140de4bfe5dfaa23cead9f393762ef7db3bbc718b4 -->
+<!-- generate include=transposition1.stq checksum=bdbc28479704d78712c8a44b0f0317e84ad83f10d17e16928942040a356f1f33 -->
 ```syntoniq
 ; See Transposition section of manual for the "note x" parts.
 syntoniq(version=1)
@@ -39,7 +39,7 @@ transpose(written=A pitch_from=h)
 [p1.3] 1:A' h':~
 
 ; Pivot 7/8 to 11/8: note 4
-transpose(written=Cl pitch_from=h)
+transpose(written=Cl' pitch_from=h')
 
 ; Pivot, then move to a major triad
 [p1.0] 1:A   A
@@ -69,8 +69,8 @@ set_base_pitch(relative=^2|53)
 Notes from above:
 1. When setting the base pitch, we chose `220*6/5` to clearly indicate a 6/5 minor third above 220 Hz. We could have written 264. This is just to show we can set the base pitch to any frequency.
 2. We start by playing some chords and pivoting on the `h'` note, which is the septimal minor seventh. The `:~` after the note indicates a sustain. The sustain goes to the next note with the same *note number*, which comes from the line prefix. In this case, this is `[p1.3]` (note 3 of part `p1`), so the note is tied to the next note in `[p1.3]`.
-3. This is the first example of the transpose syntax. When we say `transpose(written="A" pitch_from="h")`, we are saying that, after transposition, the "written note `A`" will get its pitch from the pitch currently belonging to note `h`. This shifts the pitch down by a ratio of 7/8. It's tricky to indicate the transposition direction clearly, so think of this as describing the "state change". When we transpose, we are saying that a given written note gets its pitch from something else, and in our case, the something else can only be the tuning before transposition. Clear? Hopefully it will become clear!
-4. This time, we take the pitch of `h` and give it to `Cl`. Since `h` is below the root by a little more than a whole step (7/8) and `Cl` is above the root by a little more than a fourth (11/8), this will move the pitch down by more than a fifth. But you don't really have to worry about that too much. We're saying the new `Cl` sounds like the old `h`. That means the new `Cl'` sounds like the old `h'`. As we sustain the note in `[p1.3]` again, the transposition clearly tells us what the new note has to be to keep the same sound.
+3. This is the first example of the transpose syntax. When we say `transpose(written=A pitch_from=h)`, we are saying that, after transposition, the "written note `A`" will get its pitch from the pitch currently belonging to note `h`. This shifts the pitch down by a ratio of 7/8. It's tricky to indicate the transposition direction clearly, so think of this as describing the "state change". When we transpose, we are saying that a given written note gets its pitch from something else, and in our case, the something else can only be the tuning before transposition. Clear? Hopefully it will become clear!
+4. This time, we take the pitch of `h'` and give it to `Cl'`. The octave marks were superfluous here, but they were used to show that they are valid. Since `h` is below the root by a little more than a whole step (7/8) and `Cl` is above the root by a little more than a fourth (11/8), this will move the pitch down by more than a fifth. But you don't really have to worry about that too much. We're saying the new `Cl` sounds like the old `h`. That means the new `Cl'` sounds like the old `h'`. As we sustain the note in `[p1.3]` again, the transposition clearly tells us what the new note has to be to keep the same sound.
 5. At this point in the music, it sounds like we are setting up for a key change: it feels like a dominant wanting to shift up a fourth to a new tonic. To do this, we say the note `A` (the root) should get its pitch from what is currently a fourth up, which would be `D`. But as a little microtonal twist, let's worm-hole to a new key two 53-EDO steps above the fourth by taking the pitch from `D++`. We could have also written this as `DA2`, since `A2` means two steps of the current interval division.
 6. This time, we transpose using `set_base_pitch(relative=^2|53)`, meaning to multiply `^2|53` to the pitch. This is the same as going up two steps. We could have used `A` and `A2` in a transpose statement, but the intent is easier to read here. The transposition amount doesn't have to be related to the scale in any way.
 7. After the transposition, play the chord a few more times. The second time, use `!` to override the divisions and play the pure JI intervals. 53-EDO is tight, so there's not much difference, but there's a little. Then use `!19` to find the closest note in 19-EDO. Here, the major third is a bit flat, so this sounds noticeably different. Finally, change the chord's voicing and return to 53-EDO. We could have done all this by defining more scales repeatedly calling `use_scale`, but to just "borrow" a note from another scale, using the overrides is easier.
