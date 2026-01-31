@@ -32,14 +32,14 @@ define_scale(scale="5-JI" cycle_ratio=2) <<
 
 [p1.0]  1:c d e' f,
 
-use_scale(scale="5-EDO" part="p1")
+use_scale(scale="5-EDO" part=p1)
 
 [p1.0]  1:p'2 q,2:> r:^ s:~
 [p2.1]  1:c   d:.   e:> f:.^
 
 ; Transpose to set the base pitch to the current pitch of `d`, then
 ; switch to the 5-JI scale for p2.
-transpose(written=c pitch_from=d part="p2") use_scale(scale="5-JI" part="p2")
+transpose(written=c pitch_from=d part=p2) use_scale(scale="5-JI" part=p2)
 
 mark(label="a")
 tempo(bpm=72 start_time=1 end_bpm=96 duration=2)
@@ -66,8 +66,8 @@ define_scale(scale="fifths-3" cycle_ratio=3) <<
   27/8  a!  ;  9/8  * cycle
   81/16 e!  ; 27/16 * cycle
 >>
-use_scale(scale="fifths" part="p1") set_base_pitch(absolute=264 part="p1")
-use_scale(scale="fifths-3" part="p2") set_base_pitch(absolute=264 part="p2")
+use_scale(scale="fifths" part=p1) set_base_pitch(absolute=264 part=p1)
+use_scale(scale="fifths-3" part=p2) set_base_pitch(absolute=264 part=p2)
 [p1.1] 2/5:c d, e,2 1/5:g:~ g 2/5:a,
 [p2.1] 2/5:c!' a! g!'2 e! d!'
 

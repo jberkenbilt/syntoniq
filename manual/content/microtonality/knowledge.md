@@ -95,12 +95,12 @@ Let's make this more concrete with a different discrepancy. If a perfect fifth i
 
 Let's hear what this sounds like. In this example, you'll see the use of the built-in "JI" scale with some unfamiliar note names like `I` and `II`. We will come back to that later! You'll also get a sneak preview of a few of Syntoniq's other features.
 
-<!-- generate include=major-thirds.stq checksum=4ddc7ce2f6168c9a43ba68a20399b820307f1110ce4c9e2f4604ec4a575e14a2 -->
+<!-- generate include=major-thirds.stq checksum=d77921f7e8f068265e19b325c3b1beff8ff60988910030a832548b68c2dd1854 -->
 ```syntoniq
 syntoniq(version=1)
 ; Part p1 uses the default scale. Part p2 uses the built-in "JI"
 ; scale, for just intonation.
-use_scale(scale="JI" part="p2")
+use_scale(scale="JI" part=p2)
 
 ; Play two whole steps and a major third using 12-tone equal
 ; temperament

@@ -1,8 +1,9 @@
 use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
-    Dynamic, DynamicChange, DynamicLeader, DynamicLine, LayoutItemType, Note, NoteLeader, NoteLine,
-    NoteModifier, NoteOctave, RawDirective, RegularDynamic, RegularNote, Span, Spanned,
+    Dynamic, DynamicChange, DynamicLeader, DynamicLine, Identifier, LayoutItemType, Note,
+    NoteLeader, NoteLine, NoteModifier, NoteOctave, RawDirective, RegularDynamic, RegularNote,
+    Span, Spanned,
 };
 use num_rational::Ratio;
 use serde::Serialize;
@@ -1181,14 +1182,17 @@ impl<'s> Score<'s> {
             .unwrap_or(DEFAULT_TUNING.clone())
     }
 
-    fn cur_tunings(&mut self, part: &[Spanned<Cow<'s, str>>]) -> HashMap<Cow<'s, str>, Tuning<'s>> {
+    fn cur_tunings(
+        &mut self,
+        part: &[Spanned<Identifier<'s>>],
+    ) -> HashMap<Cow<'s, str>, Tuning<'s>> {
         // Look up tuning by part for each part we are trying to tune. If no part is specified,
         // this applies to the global tuning. The first part gathers the part names we care
         // about, and the second part gets the effective tuning for the part.
         if part.is_empty() {
             vec![Cow::Borrowed("")]
         } else {
-            part.iter().map(|x| x.value.clone()).collect()
+            part.iter().map(|x| x.value.name.clone()).collect()
         }
         .into_iter()
         .map(|x| {
@@ -1431,7 +1435,7 @@ impl<'s> Score<'s> {
         } else {
             let mut parts = Vec::new();
             for p in reset_tuning.part {
-                self.tunings.remove(&p.value);
+                self.tunings.remove(&p.value.name);
                 parts.push(p.value.clone());
             }
         }

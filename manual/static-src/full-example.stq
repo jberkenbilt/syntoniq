@@ -3,13 +3,13 @@ syntoniq(version=1)
 define_generated_scale(scale="gen-17" divisions=17)
 define_generated_scale(scale="gen-5" divisions=5)
 ; Use gen-17 for both chords and bass
-use_scale(scale="gen-17" part="chords" part="bass")
+use_scale(scale="gen-17" part=chords part=bass)
 ; Use gen-5 for the melody
-use_scale(scale="gen-5" part="melody")
+use_scale(scale="gen-5" part=melody)
 ; Transpose melody up an octave
-set_base_pitch(relative=2 part="melody")
+set_base_pitch(relative=2 part=melody)
 ; Transpose bass down an octave
-set_base_pitch(relative=0.5 part="bass")
+set_base_pitch(relative=0.5 part=bass)
 ; Set a global tempo
 tempo(bpm=80)
 
@@ -24,7 +24,7 @@ mark(label="opening")
 [bass] 127@0 |
 
 mark(label="transition")
-transpose(part="chords" part="bass" written=A pitch_from=A1)
+transpose(part=chords part=bass written=A pitch_from=A1)
 [chords.0] 1:A    A   2:A    | 1:A    MA   2:A
 [chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
 [chords.2] 1:C    D   2:C    | 1:C    MC   2:C
@@ -35,9 +35,9 @@ transpose(part="chords" part="bass" written=A pitch_from=A1)
 [bass]   127@0> | 64@2
 
 mark(label="a")
-reset_tuning(part="chords")
-use_scale(scale="gen-17" part="chords")
-transpose(part="bass" written=A1 pitch_from=A0)
+reset_tuning(part=chords)
+use_scale(scale="gen-17" part=chords)
+transpose(part=bass written=A1 pitch_from=A0)
 [chords.0] 1:A    A   2:A    | 1:A    MA   2:A
 [chords.1] 1:JK   I   2:JK   | 1:JK   MJK  2:JK
 [chords.2] 1:C    D   2:C    | 1:C    MC   2:C

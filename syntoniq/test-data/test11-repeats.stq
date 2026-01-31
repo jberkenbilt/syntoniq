@@ -15,7 +15,7 @@ tempo(bpm=45)
 ; Repeated section -- ensure pitches match first and second time
 
 mark(label="a")
-use_scale(scale="alt" part="p1")
+use_scale(scale="alt" part=p1)
 ; low c, middle c
 [p1.0] 1:p,
 [p2.0] 1:c
@@ -32,7 +32,7 @@ use_scale(scale="alt")
 [p2.0] 1:q
 mark(label="b")
 
-use_scale(scale="12-EDO" part="p2")
+use_scale(scale="12-EDO" part=p2)
 ; middle g, high g
 [p1.0] 1:~ q  ~
 [p2.0] 1:~ g' ~

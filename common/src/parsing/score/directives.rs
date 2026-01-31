@@ -1,6 +1,8 @@
 // -*- fill-column: 80 -*-
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics, code};
-use crate::parsing::model::{DataBlock, LayoutBlock, NoteOctave, ScaleBlock, Span, Spanned};
+use crate::parsing::model::{
+    DataBlock, Identifier, LayoutBlock, NoteOctave, ScaleBlock, Span, Spanned,
+};
 use crate::parsing::score::HashSet;
 use crate::parsing::score::RawDirective;
 use crate::parsing::score_helpers;
@@ -137,7 +139,7 @@ pub struct UseScale<'s> {
     /// Scale name
     pub scale: Spanned<Cow<'s, str>>,
     /// Which parts to tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> UseScale<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
@@ -164,7 +166,7 @@ pub struct Transpose<'s> {
     /// `written` note after transposition.
     pub pitch_from: Spanned<NoteOctave<'s>>,
     /// Which parts to tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> Transpose<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
@@ -186,7 +188,7 @@ pub struct SetBasePitch<'s> {
     /// Multiply the base pitch of the current tuning by the specified factor
     pub relative: Option<Spanned<Pitch>>,
     /// Which parts to tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> SetBasePitch<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
@@ -218,7 +220,7 @@ pub struct SavePitch<'s> {
     pub var: Spanned<Cow<'s, str>>,
     /// Which parts' tuning to get the note's pitch from; if more than one specified, the note
     /// must have the same pitch in all tunings.
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> SavePitch<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
@@ -236,7 +238,7 @@ pub struct RestorePitch<'s> {
     /// Name of the variable that contains the pitch
     pub var: Spanned<Cow<'s, str>>,
     /// Which parts to tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> RestorePitch<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
@@ -256,7 +258,7 @@ pub struct CheckPitch<'s> {
     /// Pitches to compare
     pub pitch: Vec<Spanned<Pitch>>,
     /// Which parts to tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> CheckPitch<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
@@ -277,7 +279,7 @@ impl<'s> CheckPitch<'s> {
 pub struct ResetTuning<'s> {
     pub span: Span,
     /// Which parts to tune; if not specified, all parts are tuned
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> ResetTuning<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
@@ -298,7 +300,7 @@ pub struct MidiInstrument<'s> {
     pub bank: Option<Spanned<u32>>,
     /// Which parts use this instrument; if not specified, all unassigned parts
     /// use it
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> MidiInstrument<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
@@ -336,7 +338,7 @@ pub struct CsoundInstrument<'s> {
     pub name: Option<Spanned<Cow<'s, str>>>,
     /// Which parts use this instrument; if not specified, all unassigned parts
     /// use it
-    pub part: Vec<Spanned<Cow<'s, str>>>,
+    pub part: Vec<Spanned<Identifier<'s>>>,
 }
 impl<'s> CsoundInstrument<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {

@@ -1,7 +1,7 @@
 syntoniq(version=1)
 ; Use different instruments
 midi_instrument(instrument=23)
-midi_instrument(part="p2" instrument=55)
+midi_instrument(part=p2 instrument=55)
 
 ; Create simple JI scale
 define_scale(scale="JI1") <<
@@ -25,7 +25,7 @@ define_scale(scale="JI1") <<
 ; Part 1 changes dynamics getting louder and then softer. Part 2 does
 ; a sudden dynamic change.
 
-use_scale(scale="JI1" part="p1")
+use_scale(scale="JI1" part=p1)
 [p1.0] 4:c
 [p1.1] 4:e
 [p1.2] 4:g
@@ -44,7 +44,7 @@ use_scale(scale="JI1" part="p1")
 [p2] 32@0
 
 ; Transpose up from c to e
-transpose(written=c pitch_from=e part="p1")
+transpose(written=c pitch_from=e part=p1)
 [p1.0] 4:c
 [p1.1] 4:e
 [p1.2] 4:g
@@ -52,7 +52,7 @@ transpose(written=c pitch_from=e part="p1")
 [p1] 32@0< 64@1< 96@2< 127@3
 
 ; Reverse the transposition
-transpose(written=e pitch_from=c part="p1")
+transpose(written=e pitch_from=c part=p1)
 [p1.0] 4:c
 [p1.1] 4:e
 [p1.2] 4:g

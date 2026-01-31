@@ -185,7 +185,7 @@ impl PitchOrNumber {
     }
 }
 
-#[derive(Serialize, Debug, Clone, PartialEq)]
+#[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Identifier<'s> {
     pub name: Cow<'s, str>,
 }

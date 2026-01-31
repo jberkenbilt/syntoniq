@@ -24,46 +24,46 @@ use_scale(scale="JI1")
 [p1.2] 1:g
 
 ; Transpose by note
-transpose(written=c pitch_from=e part="p1")
-check_pitch(note=c pitch=220*^1|4*5/4 part="p1")
+transpose(written=c pitch_from=e part=p1)
+check_pitch(note=c pitch=220*^1|4*5/4 part=p1)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
 ; Reverse by note
-transpose(written=e pitch_from=c part="p1")
+transpose(written=e pitch_from=c part=p1)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
 ; Absolute pitch (a tiny bit higher)
-set_base_pitch(absolute=264 part="p1")
+set_base_pitch(absolute=264 part=p1)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
 ; Relative pitch
-save_pitch(var="old_e" note=e part="p1")
-set_base_pitch(relative=9/8 part="p1")
+save_pitch(var="old_e" note=e part=p1)
+set_base_pitch(relative=9/8 part=p1)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
 ; Restore saved pitch
-restore_pitch(var="old_e" note=e part="p1")
+restore_pitch(var="old_e" note=e part=p1)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
 ; Transpose with octave marks. This goes up two octaves.
-transpose(written=c, pitch_from=c' part="p1")
+transpose(written=c, pitch_from=c' part=p1)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g
 
 ; Save and restore with octaves. This goes back down.
-save_pitch(note=c,2 var="x" part="p1")
-restore_pitch(note=c var="x" part="p1")
+save_pitch(note=c,2 var="x" part=p1)
+restore_pitch(note=c var="x" part=p1)
 [p1.0] 1:c
 [p1.1] 1:e
 [p1.2] 1:g

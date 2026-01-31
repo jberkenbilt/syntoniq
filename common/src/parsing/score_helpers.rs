@@ -256,28 +256,26 @@ pub fn check_unique<T: Debug + Serialize + Eq + Hash>(diags: &Diagnostics, items
     }
 }
 
-pub fn check_part(diags: &Diagnostics, items: &[Spanned<Cow<'_, str>>]) {
+pub fn check_part(diags: &Diagnostics, items: &[Spanned<Identifier<'_>>]) {
     check_unique(diags, items);
-    for i in items {
-        if i.value.is_empty() {
-            diags.err(code::USAGE, i.span, "a part name may not be empty");
-        }
-    }
 }
 
 pub fn check_duplicate_by_part<'s, T: Clone>(
     diags: &Diagnostics,
     thing: &str,
-    parts: &[Spanned<Cow<'s, str>>],
+    parts: &[Spanned<Identifier<'s>>],
     span: Span,
     existing: &mut HashMap<Cow<'s, str>, Span>,
     item: T,
     map: &mut BTreeMap<Cow<'s, str>, T>,
 ) {
-    let part_spans = if parts.is_empty() {
+    let part_spans: Vec<Spanned<Cow<str>>> = if parts.is_empty() {
         vec![Spanned::new(span, Cow::Borrowed(""))]
     } else {
-        parts.to_vec()
+        parts
+            .iter()
+            .map(|x| Spanned::new(x.span, x.value.name.clone()))
+            .collect()
     };
     for part_span in part_spans {
         if let Some(old) = existing.insert(part_span.value.clone(), part_span.span) {

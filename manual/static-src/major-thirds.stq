@@ -1,7 +1,7 @@
 syntoniq(version=1)
 ; Part p1 uses the default scale. Part p2 uses the built-in "JI"
 ; scale, for just intonation.
-use_scale(scale="JI" part="p2")
+use_scale(scale="JI" part=p2)
 
 ; Play two whole steps and a major third using 12-tone equal
 ; temperament
