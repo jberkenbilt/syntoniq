@@ -8,7 +8,7 @@
         ],
         "value": {
           "raw": "syntoniq",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -28,7 +28,7 @@
         ],
         "value": {
           "raw": "version",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -192,7 +192,7 @@
         ],
         "value": {
           "raw": "mark",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -212,7 +212,7 @@
         ],
         "value": {
           "raw": "label",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -602,7 +602,9 @@
                   0,
                   8
                 ],
-                "value": "syntoniq"
+                "value": {
+                  "name": "syntoniq"
+                }
               },
               "params": [
                 {
@@ -611,7 +613,9 @@
                       9,
                       16
                     ],
-                    "value": "version"
+                    "value": {
+                      "name": "version"
+                    }
                   },
                   "value": {
                     "span": [
@@ -703,14 +707,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          30,
-                          31
-                        ],
-                        "value": "c"
-                      },
-                      "octave": null
+                      "span": [
+                        30,
+                        31
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            30,
+                            31
+                          ],
+                          "value": "c"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -743,7 +753,9 @@
                   33,
                   37
                 ],
-                "value": "mark"
+                "value": {
+                  "name": "mark"
+                }
               },
               "params": [
                 {
@@ -752,7 +764,9 @@
                       38,
                       43
                     ],
-                    "value": "label"
+                    "value": {
+                      "name": "label"
+                    }
                   },
                   "value": {
                     "span": [
@@ -829,14 +843,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          58,
-                          59
-                        ],
-                        "value": "d"
-                      },
-                      "octave": null
+                      "span": [
+                        58,
+                        59
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            58,
+                            59
+                          ],
+                          "value": "d"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -922,14 +942,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          73,
-                          74
-                        ],
-                        "value": "e"
-                      },
-                      "octave": null
+                      "span": [
+                        73,
+                        74
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            73,
+                            74
+                          ],
+                          "value": "e"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -1008,14 +1034,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          86,
-                          87
-                        ],
-                        "value": "f"
-                      },
-                      "octave": null
+                      "span": [
+                        86,
+                        87
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            86,
+                            87
+                          ],
+                          "value": "f"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }

@@ -8,7 +8,7 @@
         ],
         "value": {
           "raw": "syntoniq",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -28,7 +28,7 @@
         ],
         "value": {
           "raw": "version",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -88,7 +88,7 @@
         ],
         "value": {
           "raw": "define_generated_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -108,7 +108,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -155,7 +155,7 @@
         ],
         "value": {
           "raw": "tolerance",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -255,7 +255,7 @@
         ],
         "value": {
           "raw": "define_generated_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -275,7 +275,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -322,7 +322,7 @@
         ],
         "value": {
           "raw": "divisions",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -372,7 +372,7 @@
         ],
         "value": {
           "raw": "tolerance",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -472,7 +472,7 @@
         ],
         "value": {
           "raw": "define_generated_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -492,7 +492,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -549,7 +549,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -569,7 +569,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1030,7 +1030,7 @@
         ],
         "value": {
           "raw": "define_generated_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1050,7 +1050,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1097,7 +1097,7 @@
         ],
         "value": {
           "raw": "divisions",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1157,7 +1157,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1177,7 +1177,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1409,7 +1409,9 @@
                   0,
                   8
                 ],
-                "value": "syntoniq"
+                "value": {
+                  "name": "syntoniq"
+                }
               },
               "params": [
                 {
@@ -1418,7 +1420,9 @@
                       9,
                       16
                     ],
-                    "value": "version"
+                    "value": {
+                      "name": "version"
+                    }
                   },
                   "value": {
                     "span": [
@@ -1464,7 +1468,9 @@
                   20,
                   42
                 ],
-                "value": "define_generated_scale"
+                "value": {
+                  "name": "define_generated_scale"
+                }
               },
               "params": [
                 {
@@ -1473,7 +1479,9 @@
                       43,
                       48
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -1491,7 +1499,9 @@
                       53,
                       62
                     ],
-                    "value": "tolerance"
+                    "value": {
+                      "name": "tolerance"
+                    }
                   },
                   "value": {
                     "span": [
@@ -1534,7 +1544,9 @@
                   71,
                   93
                 ],
-                "value": "define_generated_scale"
+                "value": {
+                  "name": "define_generated_scale"
+                }
               },
               "params": [
                 {
@@ -1543,7 +1555,9 @@
                       94,
                       99
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -1561,7 +1575,9 @@
                       104,
                       113
                     ],
-                    "value": "divisions"
+                    "value": {
+                      "name": "divisions"
+                    }
                   },
                   "value": {
                     "span": [
@@ -1584,7 +1600,9 @@
                       116,
                       125
                     ],
-                    "value": "tolerance"
+                    "value": {
+                      "name": "tolerance"
+                    }
                   },
                   "value": {
                     "span": [
@@ -1627,7 +1645,9 @@
                   134,
                   156
                 ],
-                "value": "define_generated_scale"
+                "value": {
+                  "name": "define_generated_scale"
+                }
               },
               "params": [
                 {
@@ -1636,7 +1656,9 @@
                       157,
                       162
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -1677,7 +1699,9 @@
                   174,
                   183
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -1686,7 +1710,9 @@
                       184,
                       189
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -1763,14 +1789,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          210,
-                          212
-                        ],
-                        "value": "b1"
-                      },
-                      "octave": null
+                      "span": [
+                        210,
+                        212
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            210,
+                            212
+                          ],
+                          "value": "b1"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1783,14 +1815,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          213,
-                          215
-                        ],
-                        "value": "z0"
-                      },
-                      "octave": null
+                      "span": [
+                        213,
+                        215
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            213,
+                            215
+                          ],
+                          "value": "z0"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1803,14 +1841,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          216,
-                          217
-                        ],
-                        "value": "z"
-                      },
-                      "octave": null
+                      "span": [
+                        216,
+                        217
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            216,
+                            217
+                          ],
+                          "value": "z"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1823,14 +1867,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          218,
-                          220
-                        ],
-                        "value": "a+"
-                      },
-                      "octave": null
+                      "span": [
+                        218,
+                        220
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            218,
+                            220
+                          ],
+                          "value": "a+"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1843,14 +1893,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          221,
-                          223
-                        ],
-                        "value": "a-"
-                      },
-                      "octave": null
+                      "span": [
+                        221,
+                        223
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            221,
+                            223
+                          ],
+                          "value": "a-"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1863,14 +1919,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          224,
-                          226
-                        ],
-                        "value": "b2"
-                      },
-                      "octave": null
+                      "span": [
+                        224,
+                        226
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            224,
+                            226
+                          ],
+                          "value": "b2"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1883,14 +1945,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          227,
-                          230
-                        ],
-                        "value": "a2#"
-                      },
-                      "octave": null
+                      "span": [
+                        227,
+                        230
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            227,
+                            230
+                          ],
+                          "value": "a2#"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1903,14 +1971,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          231,
-                          233
-                        ],
-                        "value": "z1"
-                      },
-                      "octave": null
+                      "span": [
+                        231,
+                        233
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            231,
+                            233
+                          ],
+                          "value": "z1"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1923,14 +1997,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          234,
-                          237
-                        ],
-                        "value": "a19"
-                      },
-                      "octave": null
+                      "span": [
+                        234,
+                        237
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            234,
+                            237
+                          ],
+                          "value": "a19"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1943,14 +2023,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          238,
-                          241
-                        ],
-                        "value": "a%#"
-                      },
-                      "octave": null
+                      "span": [
+                        238,
+                        241
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            238,
+                            241
+                          ],
+                          "value": "a%#"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1963,14 +2049,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          242,
-                          245
-                        ],
-                        "value": "a#%"
-                      },
-                      "octave": null
+                      "span": [
+                        242,
+                        245
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            242,
+                            245
+                          ],
+                          "value": "a#%"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -1983,14 +2075,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          246,
-                          249
-                        ],
-                        "value": "a##"
-                      },
-                      "octave": null
+                      "span": [
+                        246,
+                        249
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            246,
+                            249
+                          ],
+                          "value": "a##"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2003,14 +2101,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          250,
-                          253
-                        ],
-                        "value": "a%%"
-                      },
-                      "octave": null
+                      "span": [
+                        250,
+                        253
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            250,
+                            253
+                          ],
+                          "value": "a%%"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2023,14 +2127,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          254,
-                          256
-                        ],
-                        "value": "x/"
-                      },
-                      "octave": null
+                      "span": [
+                        254,
+                        256
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            254,
+                            256
+                          ],
+                          "value": "x/"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2043,14 +2153,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          257,
-                          262
-                        ],
-                        "value": "a5!12"
-                      },
-                      "octave": null
+                      "span": [
+                        257,
+                        262
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            257,
+                            262
+                          ],
+                          "value": "a5!12"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2063,14 +2179,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          263,
-                          269
-                        ],
-                        "value": "a13!12"
-                      },
-                      "octave": null
+                      "span": [
+                        263,
+                        269
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            263,
+                            269
+                          ],
+                          "value": "a13!12"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2083,14 +2205,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          270,
-                          275
-                        ],
-                        "value": "a+!17"
-                      },
-                      "octave": null
+                      "span": [
+                        270,
+                        275
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            270,
+                            275
+                          ],
+                          "value": "a+!17"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -2113,7 +2241,9 @@
                   276,
                   298
                 ],
-                "value": "define_generated_scale"
+                "value": {
+                  "name": "define_generated_scale"
+                }
               },
               "params": [
                 {
@@ -2122,7 +2252,9 @@
                       299,
                       304
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -2140,7 +2272,9 @@
                       320,
                       329
                     ],
-                    "value": "divisions"
+                    "value": {
+                      "name": "divisions"
+                    }
                   },
                   "value": {
                     "span": [
@@ -2186,7 +2320,9 @@
                   334,
                   343
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -2195,7 +2331,9 @@
                       344,
                       349
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -2272,14 +2410,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          375,
-                          378
-                        ],
-                        "value": "a16"
-                      },
-                      "octave": null
+                      "span": [
+                        375,
+                        378
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            375,
+                            378
+                          ],
+                          "value": "a16"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2292,14 +2436,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          379,
-                          382
-                        ],
-                        "value": "a17"
-                      },
-                      "octave": null
+                      "span": [
+                        379,
+                        382
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            379,
+                            382
+                          ],
+                          "value": "a17"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2312,14 +2462,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          383,
-                          385
-                        ],
-                        "value": "a+"
-                      },
-                      "octave": null
+                      "span": [
+                        383,
+                        385
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            383,
+                            385
+                          ],
+                          "value": "a+"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2332,14 +2488,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          386,
-                          388
-                        ],
-                        "value": "a-"
-                      },
-                      "octave": null
+                      "span": [
+                        386,
+                        388
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            386,
+                            388
+                          ],
+                          "value": "a-"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -2352,14 +2514,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          389,
-                          392
-                        ],
-                        "value": "a5!"
-                      },
-                      "octave": null
+                      "span": [
+                        389,
+                        392
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            389,
+                            392
+                          ],
+                          "value": "a5!"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }

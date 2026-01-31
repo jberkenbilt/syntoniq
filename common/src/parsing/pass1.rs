@@ -539,7 +539,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
                     '"' => parse_next!(string_literal(&diags)),
                     '>' if input.starts_with(">>") => parse_next!(definition_end()),
                     x if x.is_ascii_punctuation() => parse_next!(punctuation()),
-                    x if AsChar::is_alpha(x) => parse_next!(identifier()),
+                    x if AsChar::is_alpha(x) => parse_next!(note_name()),
                     _ => None,
                 },
                 LexState::NoteLine => match ch {

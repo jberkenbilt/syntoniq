@@ -33,6 +33,12 @@ make_parser2!(parse_param, param, Param<'s>);
 make_parser2!(parse_directive, directive, Spanned<RawDirective<'s>>);
 make_parser2!(parse_octave, octave, Spanned<i8>);
 
+fn ident(s: &str) -> Identifier<'_> {
+    Identifier {
+        name: Cow::Borrowed(s),
+    }
+}
+
 #[test]
 fn for_coverage() {
     // Usually I consider 100% coverage to be a non-goal, but for the parser, it's good to have
@@ -222,7 +228,7 @@ fn test_param() -> anyhow::Result<()> {
     assert_eq!(
         s,
         Param {
-            key: Spanned::new(0..1, "a"),
+            key: Spanned::new(0..1, ident("a")),
             value: Spanned::new(2..3, ParamValue::Zero,),
         }
     );
@@ -232,7 +238,7 @@ fn test_param() -> anyhow::Result<()> {
     assert_eq!(
         s,
         Param {
-            key: Spanned::new(0..1, "a"),
+            key: Spanned::new(0..1, ident("a")),
             value: Spanned::new(
                 2..7,
                 ParamValue::PitchOrNumber(PitchOrNumber::Pitch(Pitch::must_parse("^2|19")))
@@ -245,11 +251,43 @@ fn test_param() -> anyhow::Result<()> {
     assert_eq!(
         s,
         Param {
-            key: Spanned::new(0..6, "potato"),
+            key: Spanned::new(0..6, ident("potato")),
             value: Spanned::new(9..16, ParamValue::String(Cow::Borrowed("salad"))),
         }
     );
     assert_eq!(rest, "!");
+
+    let (s, rest) = parse_param("potato = C#").map_err(to_anyhow)?;
+    assert_eq!(
+        s,
+        Param {
+            key: Spanned::new(0..6, ident("potato")),
+            value: Spanned::new(
+                9..11,
+                ParamValue::NoteOrIdentifier(NoteOrIdentifier::Note(NoteOctave {
+                    name: Spanned::new(9..11, Cow::Borrowed("C#")),
+                    octave: None,
+                }))
+            ),
+        }
+    );
+    assert!(rest.is_empty());
+
+    let (s, rest) = parse_param("potato = C#'").map_err(to_anyhow)?;
+    assert_eq!(
+        s,
+        Param {
+            key: Spanned::new(0..6, ident("potato")),
+            value: Spanned::new(
+                9..12,
+                ParamValue::NoteOrIdentifier(NoteOrIdentifier::Note(NoteOctave {
+                    name: Spanned::new(9..11, Cow::Borrowed("C#")),
+                    octave: Some(Spanned::new(11..12, 1)),
+                }))
+            ),
+        }
+    );
+    assert!(rest.is_empty());
 
     Ok(())
 }
@@ -261,17 +299,17 @@ fn test_directive() -> anyhow::Result<()> {
     assert_eq!(
         d.value,
         RawDirective {
-            name: Spanned::new(0..4, "tune"),
+            name: Spanned::new(0..4, ident("tune")),
             params: vec![
                 Param {
-                    key: Spanned::new(5..15, "base_pitch"),
+                    key: Spanned::new(5..15, ident("base_pitch")),
                     value: Spanned::new(
                         16..21,
                         ParamValue::PitchOrNumber(PitchOrNumber::Pitch(Pitch::must_parse("^2|19")))
                     ),
                 },
                 Param {
-                    key: Spanned::new(22..27, "scale"),
+                    key: Spanned::new(22..27, ident("scale")),
                     value: Spanned::new(28..36, ParamValue::String(Cow::Borrowed("17-EDO"))),
                 }
             ],
@@ -284,9 +322,9 @@ fn test_directive() -> anyhow::Result<()> {
     assert_eq!(
         d.value,
         RawDirective {
-            name: Spanned::new(0..1, "f"),
+            name: Spanned::new(0..1, ident("f")),
             params: vec![Param {
-                key: Spanned::new(2..3, "a"),
+                key: Spanned::new(2..3, ident("a")),
                 value: Spanned::new(
                     4..7,
                     ParamValue::PitchOrNumber(PitchOrNumber::Ratio((
@@ -306,23 +344,25 @@ fn test_directive() -> anyhow::Result<()> {
             two   = 22/7
             three = "π+🥔"
             four  = *3^-2|31*3/2   ; comment
+            five  = D++!3/17'4
+            six   = one_two
         )"#,
     )
     .map_err(to_anyhow)?;
     assert_eq!(
         d.value,
         RawDirective {
-            name: Spanned::new(0..8, "function"),
+            name: Spanned::new(0..8, ident("function")),
             params: vec![
                 Param {
-                    key: Spanned::new(41..44, "one"),
+                    key: Spanned::new(41..44, ident("one")),
                     value: Spanned::new(
                         49..50,
                         ParamValue::PitchOrNumber(PitchOrNumber::Integer((1, Pitch::unit(),)))
                     ),
                 },
                 Param {
-                    key: Spanned::new(63..66, "two"),
+                    key: Spanned::new(63..66, ident("two")),
                     value: Spanned::new(
                         71..75,
                         ParamValue::PitchOrNumber(PitchOrNumber::Ratio((
@@ -332,16 +372,41 @@ fn test_directive() -> anyhow::Result<()> {
                     ),
                 },
                 Param {
-                    key: Spanned::new(88..93, "three"),
+                    key: Spanned::new(88..93, ident("three")),
                     value: Spanned::new(96..105, ParamValue::String(Cow::Borrowed("π+🥔"))),
                 },
                 Param {
-                    key: Spanned::new(118..122, "four"),
+                    key: Spanned::new(118..122, ident("four")),
                     value: Spanned::new(
                         126..138,
                         ParamValue::PitchOrNumber(PitchOrNumber::Pitch(Pitch::must_parse(
                             "0.5*3^29|31"
                         )))
+                    ),
+                },
+                Param {
+                    key: Spanned::new(163..167, ident("five")),
+                    value: Spanned::new(
+                        171..181,
+                        ParamValue::NoteOrIdentifier(NoteOrIdentifier::Note(NoteOctave {
+                            name: Spanned::new(171..179, Cow::Borrowed("D++!3/17")),
+                            octave: Some(Spanned::new(179..181, 4)),
+                        }))
+                    ),
+                },
+                Param {
+                    key: Spanned::new(194..197, ident("six")),
+                    value: Spanned::new(
+                        202..209,
+                        ParamValue::NoteOrIdentifier(NoteOrIdentifier::Identifier(
+                            Identifier {
+                                name: Cow::Borrowed("one_two"),
+                            },
+                            NoteOctave {
+                                name: Spanned::new(202..209, Cow::Borrowed("one_two")),
+                                octave: None,
+                            }
+                        ))
                     ),
                 },
             ],

@@ -8,7 +8,7 @@
         ],
         "value": {
           "raw": "define_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -28,7 +28,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -85,7 +85,7 @@
         ],
         "value": {
           "raw": "ignored",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -136,7 +136,9 @@
                   0,
                   12
                 ],
-                "value": "define_scale"
+                "value": {
+                  "name": "define_scale"
+                }
               },
               "params": [
                 {
@@ -145,7 +147,9 @@
                       13,
                       18
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -186,7 +190,9 @@
                   36,
                   43
                 ],
-                "value": "ignored"
+                "value": {
+                  "name": "ignored"
+                }
               },
               "params": []
             }

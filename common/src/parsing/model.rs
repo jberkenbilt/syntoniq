@@ -186,10 +186,51 @@ impl PitchOrNumber {
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct Identifier<'s> {
+    pub name: Cow<'s, str>,
+}
+impl<'s> Display for Identifier<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.name)
+    }
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub enum NoteOrIdentifier<'s> {
+    Note(NoteOctave<'s>),
+    Identifier(Identifier<'s>, NoteOctave<'s>),
+}
+impl<'s> Display for NoteOrIdentifier<'s> {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self {
+            NoteOrIdentifier::Note(n) => write!(f, "{n}"),
+            NoteOrIdentifier::Identifier(i, _) => color!(f, 98, "{}", i.name),
+        }
+    }
+}
+
+impl<'s> NoteOrIdentifier<'s> {
+    pub fn as_note(&self) -> Option<&NoteOctave<'s>> {
+        match self {
+            NoteOrIdentifier::Note(n) => Some(n),
+            NoteOrIdentifier::Identifier(_, n) => Some(n),
+        }
+    }
+
+    pub fn as_identifier(&self) -> Option<&Identifier<'s>> {
+        match self {
+            NoteOrIdentifier::Note(_) => None,
+            NoteOrIdentifier::Identifier(i, _) => Some(i),
+        }
+    }
+}
+
+#[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum ParamValue<'s> {
     Zero,
     PitchOrNumber(PitchOrNumber),
     String(Cow<'s, str>),
+    NoteOrIdentifier(NoteOrIdentifier<'s>),
 }
 impl<'s> Display for ParamValue<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -197,6 +238,7 @@ impl<'s> Display for ParamValue<'s> {
             ParamValue::Zero => color!(f, 6, "0"),
             ParamValue::PitchOrNumber(pr) => Display::fmt(pr, f),
             ParamValue::String(s) => color!(f, 166, "\"{s}\""),
+            ParamValue::NoteOrIdentifier(n) => Display::fmt(n, f),
         }
     }
 }
@@ -206,7 +248,7 @@ impl<'s> ParamValue<'s> {
         match self {
             ParamValue::Zero => None,
             ParamValue::PitchOrNumber(pr) => Some(pr.as_pitch()),
-            ParamValue::String(_) => None,
+            ParamValue::String(_) | ParamValue::NoteOrIdentifier(_) => None,
         }
     }
 
@@ -214,7 +256,7 @@ impl<'s> ParamValue<'s> {
         match self {
             ParamValue::Zero => None, // 0 can be represented as a ratio, but we don't allow it
             ParamValue::PitchOrNumber(pr) => pr.try_as_ratio(),
-            ParamValue::String(_) => None,
+            ParamValue::String(_) | ParamValue::NoteOrIdentifier(_) => None,
         }
     }
 
@@ -222,27 +264,44 @@ impl<'s> ParamValue<'s> {
         match self {
             ParamValue::Zero => Some(0),
             ParamValue::PitchOrNumber(pr) => pr.try_as_int(),
-            ParamValue::String(_) => None,
+            ParamValue::String(_) | ParamValue::NoteOrIdentifier(_) => None,
         }
     }
 
     pub fn try_as_string(&self) -> Option<&Cow<'s, str>> {
         match self {
-            ParamValue::Zero => None,
-            ParamValue::PitchOrNumber(_r) => None,
+            ParamValue::Zero | ParamValue::PitchOrNumber(_) | ParamValue::NoteOrIdentifier(_) => {
+                None
+            }
             ParamValue::String(s) => Some(s),
+        }
+    }
+
+    pub fn try_as_note(&self) -> Option<&NoteOctave<'s>> {
+        match self {
+            ParamValue::Zero | ParamValue::PitchOrNumber(_) | ParamValue::String(_) => None,
+            ParamValue::NoteOrIdentifier(n) => n.as_note(),
+        }
+    }
+
+    pub fn try_as_identifier(&self) -> Option<&Identifier<'s>> {
+        // An identifier is returned as a string that could be parsed as an identifier. All
+        // identifiers are also valid note names.
+        match self {
+            ParamValue::Zero | ParamValue::PitchOrNumber(_) | ParamValue::String(_) => None,
+            ParamValue::NoteOrIdentifier(n) => n.as_identifier(),
         }
     }
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct Param<'s> {
-    pub key: Spanned<&'s str>,
+    pub key: Spanned<Identifier<'s>>,
     pub value: Spanned<ParamValue<'s>>,
 }
 impl<'s> Display for Param<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        color!(f, 88, "{}", self.key.value,)?;
+        write!(f, "{}", self.key)?;
         color!(f, 55, "=")?;
         write!(f, "{}", self.value.value)
     }
@@ -256,7 +315,7 @@ pub enum DataBlock<'s> {
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct RawDirective<'s> {
-    pub name: Spanned<&'s str>,
+    pub name: Spanned<Identifier<'s>>,
     pub params: Vec<Param<'s>>,
     #[serde(skip_serializing_if = "Option::is_none")] // omit if None
     pub block: Option<Spanned<DataBlock<'s>>>,
@@ -333,7 +392,7 @@ impl Display for NoteModifier {
 pub struct RegularNote<'s> {
     pub duration: Option<Spanned<Ratio<u32>>>,
     #[serde(flatten)]
-    pub note: NoteOctave<'s>,
+    pub note: Spanned<NoteOctave<'s>>,
     pub modifiers: Vec<Spanned<NoteModifier>>,
 }
 impl<'s> Display for RegularNote<'s> {
@@ -665,15 +724,63 @@ mod tests {
         assert!(pv.try_as_ratio().is_none());
         assert!(pv.try_as_pitch().is_none());
         assert_eq!(pv.try_as_string().unwrap(), "a");
+        assert!(pv.try_as_identifier().is_none());
+        assert!(pv.try_as_note().is_none());
         let pv = ParamValue::PitchOrNumber(PitchOrNumber::Integer((12, Pitch::must_parse("12"))));
         assert_eq!(pv.try_as_int().unwrap(), 12);
         assert_eq!(pv.try_as_ratio().unwrap(), Ratio::from_integer(12));
         assert_eq!(*pv.try_as_pitch().unwrap(), Pitch::must_parse("12"));
         assert!(pv.try_as_string().is_none());
+        assert!(pv.try_as_identifier().is_none());
+        assert!(pv.try_as_note().is_none());
         let pv = ParamValue::Zero;
         assert_eq!(pv.try_as_int().unwrap(), 0);
         assert!(pv.try_as_ratio().is_none());
         assert!(pv.try_as_pitch().is_none());
         assert!(pv.try_as_string().is_none());
+        assert!(pv.try_as_identifier().is_none());
+        assert!(pv.try_as_note().is_none());
+        let pv = ParamValue::NoteOrIdentifier(NoteOrIdentifier::Note(NoteOctave {
+            name: Spanned::new(1..3, "x+"),
+            octave: None,
+        }));
+        assert!(pv.try_as_int().is_none());
+        assert!(pv.try_as_ratio().is_none());
+        assert!(pv.try_as_pitch().is_none());
+        assert!(pv.try_as_string().is_none());
+        assert!(pv.try_as_identifier().is_none());
+        assert_eq!(
+            pv.try_as_note().unwrap(),
+            &NoteOctave {
+                name: Spanned::new(1..3, "x+"),
+                octave: None,
+            }
+        );
+        let pv = ParamValue::NoteOrIdentifier(NoteOrIdentifier::Identifier(
+            Identifier {
+                name: Cow::Borrowed("x"),
+            },
+            NoteOctave {
+                name: Spanned::new(1..2, "x"),
+                octave: None,
+            },
+        ));
+        assert!(pv.try_as_int().is_none());
+        assert!(pv.try_as_ratio().is_none());
+        assert!(pv.try_as_pitch().is_none());
+        assert!(pv.try_as_string().is_none());
+        assert_eq!(
+            pv.try_as_identifier().unwrap(),
+            &Identifier {
+                name: Cow::Borrowed("x")
+            }
+        );
+        assert_eq!(
+            pv.try_as_note().unwrap(),
+            &NoteOctave {
+                name: Spanned::new(1..2, "x"),
+                octave: None,
+            }
+        );
     }
 }

@@ -3,9 +3,10 @@
 
 use crate::parsing::diagnostics::{self, Diagnostics, code};
 use crate::parsing::model::{
-    DataBlock, Dynamic, DynamicLine, GetSpan, Hold, LayoutBlock, LayoutItem, LayoutItemType, Note,
-    NoteLeader, NoteLine, NoteModifier, NoteOctave, Param, ParamValue, PitchOrNumber, RawDirective,
-    RegularNote, ScaleBlock, ScaleNote, Span, Spanned, Token,
+    DataBlock, Dynamic, DynamicLine, GetSpan, Hold, Identifier, LayoutBlock, LayoutItem,
+    LayoutItemType, Note, NoteLeader, NoteLine, NoteModifier, NoteOctave, NoteOrIdentifier, Param,
+    ParamValue, PitchOrNumber, RawDirective, RegularNote, ScaleBlock, ScaleNote, Span, Spanned,
+    Token,
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
@@ -345,10 +346,51 @@ fn pitch_or_number(
     }
 }
 
-fn identifier<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<&'s str>> {
-    one_of(|x: Token1| matches!(x.value.t, Pass1::Identifier))
-        .parse_next(input)
-        .map(|t| Spanned::new(t.span, t.value.raw))
+fn note_or_identifier<'s>(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2<'_, 's>) -> winnow::Result<Spanned<NoteOrIdentifier<'s>>> {
+    move |input| {
+        let as_identifier = peek(identifier).parse_next(input);
+        note_octave(diags)
+            .with_taken()
+            .parse_next(input)
+            .map(|(note, tokens)| {
+                let span = tokens.get_span().unwrap();
+                let r = match as_identifier {
+                    Ok(i) if i.span == note.span => {
+                        NoteOrIdentifier::Identifier(i.value, note.value)
+                    }
+                    _ => NoteOrIdentifier::Note(note.value),
+                };
+                Spanned::new(span, r)
+            })
+    }
+}
+
+fn identifier<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<Identifier<'s>>> {
+    let t: winnow::Result<Spanned<Identifier<'s>>> =
+        one_of(|x: Token1| matches!(x.value.t, Pass1::Identifier | Pass1::NoteName))
+            .parse_next(input)
+            .map(|t| {
+                // This can be an identifier if the note name contains only characters that are allowed
+                // in identifiers.
+                Spanned::new(
+                    t.span,
+                    Identifier {
+                        name: Cow::Borrowed(t.value.raw),
+                    },
+                )
+            });
+    if let Ok(v) = &t
+        && !v
+            .value
+            .name
+            .chars()
+            .all(|c| c == '_' || c.is_ascii_alphanumeric())
+    {
+        return fail(input);
+    }
+    t
 }
 
 fn definition_start<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
@@ -393,6 +435,7 @@ fn param_value<'s>(
             string(diags).map(|x| ParamValue::String(x.value)),
             zero().map(|_| ParamValue::Zero),
             pitch_or_number(diags).map(|x| ParamValue::PitchOrNumber(x.value)),
+            note_or_identifier(diags).map(|x| ParamValue::NoteOrIdentifier(x.value)),
         ))
         .with_taken()
         .parse_next(input)
@@ -560,16 +603,13 @@ fn regular_note<'s>(
         )
             .parse_next(input)
             .map(|items| {
-                let (duration, note_octave, modifiers) = items;
+                let (duration, note, modifiers) = items;
                 // This merges these spans. Since `name` is definite set, we can safely unwrap
                 // the result.
                 let modifier_span = modifiers.get_span();
-                let span = model::merge_spans(&[
-                    duration.get_span(),
-                    note_octave.get_span(),
-                    modifier_span,
-                ])
-                .unwrap();
+                let span =
+                    model::merge_spans(&[duration.get_span(), note.get_span(), modifier_span])
+                        .unwrap();
                 let modifiers = modifiers
                     .map(|x| note_modifiers(x, diags))
                     .unwrap_or_default();
@@ -577,7 +617,7 @@ fn regular_note<'s>(
                     span,
                     Note::Regular(RegularNote {
                         duration,
-                        note: note_octave.value,
+                        note,
                         modifiers,
                     }),
                 )
@@ -1114,8 +1154,8 @@ fn handle_token<'s>(
         Pass1::Space => Ok(promote_and_consume_first(input, Pass2::Space)),
         Pass1::Newline => Ok(promote_and_consume_first(input, Pass2::Newline)),
         Pass1::Comment => Ok(promote_and_consume_first(input, Pass2::Comment)),
-        Pass1::Identifier => {
-            // Pass 1 only gives us the `Identifier` token at the top-level. The top level state
+        Pass1::NoteName => {
+            // Pass 1 only gives us the `NoteName` token at the top-level. The top level state
             // consists entirely of directives (after white space and comments have been handled).
             // We get better error messages if we know we're in something that looks like a
             // directive instead of a stray identifier, so look for the open parenthesis. This
@@ -1156,7 +1196,7 @@ fn handle_token<'s>(
                     diags.err(
                         code::TOPLEVEL_SYNTAX,
                         tok.span,
-                        "unable to parse as directive; expected directive(k=v, ...)",
+                        "unable to parse as directive; expected directive(k=v ...)",
                     );
                     Err(Degraded::Directive)
                 }

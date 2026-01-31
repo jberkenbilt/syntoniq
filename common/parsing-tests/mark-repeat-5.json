@@ -8,7 +8,7 @@
         ],
         "value": {
           "raw": "syntoniq",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -28,7 +28,7 @@
         ],
         "value": {
           "raw": "version",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -525,7 +525,9 @@
                   0,
                   8
                 ],
-                "value": "syntoniq"
+                "value": {
+                  "name": "syntoniq"
+                }
               },
               "params": [
                 {
@@ -534,7 +536,9 @@
                       9,
                       16
                     ],
-                    "value": "version"
+                    "value": {
+                      "name": "version"
+                    }
                   },
                   "value": {
                     "span": [
@@ -626,14 +630,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          30,
-                          31
-                        ],
-                        "value": "c"
-                      },
-                      "octave": null
+                      "span": [
+                        30,
+                        31
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            30,
+                            31
+                          ],
+                          "value": "c"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -702,14 +712,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          42,
-                          43
-                        ],
-                        "value": "d"
-                      },
-                      "octave": null
+                      "span": [
+                        42,
+                        43
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            42,
+                            43
+                          ],
+                          "value": "d"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -795,14 +811,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          57,
-                          58
-                        ],
-                        "value": "e"
-                      },
-                      "octave": null
+                      "span": [
+                        57,
+                        58
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            57,
+                            58
+                          ],
+                          "value": "e"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -881,14 +903,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          70,
-                          71
-                        ],
-                        "value": "f"
-                      },
-                      "octave": null
+                      "span": [
+                        70,
+                        71
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            70,
+                            71
+                          ],
+                          "value": "f"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }

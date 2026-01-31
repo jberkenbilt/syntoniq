@@ -419,14 +419,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          12,
-                          13
-                        ],
-                        "value": "e"
-                      },
-                      "octave": null
+                      "span": [
+                        12,
+                        13
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            12,
+                            13
+                          ],
+                          "value": "e"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -454,19 +460,25 @@
                           "value": "Tie"
                         }
                       ],
-                      "name": {
-                        "span": [
-                          14,
-                          15
-                        ],
-                        "value": "g"
-                      },
-                      "octave": {
-                        "span": [
-                          15,
-                          17
-                        ],
-                        "value": -3
+                      "span": [
+                        14,
+                        17
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            14,
+                            15
+                          ],
+                          "value": "g"
+                        },
+                        "octave": {
+                          "span": [
+                            15,
+                            17
+                          ],
+                          "value": -3
+                        }
                       }
                     }
                   }
@@ -528,14 +540,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          32,
-                          35
-                        ],
-                        "value": "c#+"
-                      },
-                      "octave": null
+                      "span": [
+                        32,
+                        35
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            32,
+                            35
+                          ],
+                          "value": "c#+"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -548,14 +566,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          36,
-                          37
-                        ],
-                        "value": "f"
-                      },
-                      "octave": null
+                      "span": [
+                        36,
+                        37
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            36,
+                            37
+                          ],
+                          "value": "f"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -568,14 +592,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          39,
-                          40
-                        ],
-                        "value": "g"
-                      },
-                      "octave": null
+                      "span": [
+                        39,
+                        40
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            39,
+                            40
+                          ],
+                          "value": "g"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }

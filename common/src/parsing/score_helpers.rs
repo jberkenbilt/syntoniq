@@ -1,5 +1,5 @@
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics, code};
-use crate::parsing::model::{Param, ParamValue, Span, Spanned};
+use crate::parsing::model::{Identifier, NoteOctave, Param, ParamValue, Span, Spanned};
 use crate::pitch::Pitch;
 use num_rational::Ratio;
 use serde::Serialize;
@@ -179,10 +179,14 @@ where
 }
 
 pub trait CheckValue<'s>: Sized {
-    fn check_value(p: &ParamValue<'s>) -> Result<Self, impl AsRef<str>>;
+    fn check_value(pv: &ParamValue<'s>) -> Result<Self, impl AsRef<str>>;
 }
 
-pub fn check_value<'s, T>(diags: &Diagnostics, d_name: &str, p: &Param<'s>) -> Option<Spanned<T>>
+pub fn check_value<'s, T>(
+    diags: &Diagnostics,
+    d_name: &Identifier<'s>,
+    p: &Param<'s>,
+) -> Option<Spanned<T>>
 where
     T: CheckValue<'s> + Serialize + Debug,
 {
@@ -223,6 +227,20 @@ impl<'s> CheckValue<'s> for Pitch {
 impl<'s> CheckValue<'s> for Cow<'s, str> {
     fn check_value(pv: &ParamValue<'s>) -> Result<Self, impl AsRef<str>> {
         pv.try_as_string().cloned().ok_or("should be a string")
+    }
+}
+
+impl<'s> CheckValue<'s> for NoteOctave<'s> {
+    fn check_value(pv: &ParamValue<'s>) -> Result<Self, impl AsRef<str>> {
+        pv.try_as_note().cloned().ok_or("should be a note name")
+    }
+}
+
+impl<'s> CheckValue<'s> for Identifier<'s> {
+    fn check_value(pv: &ParamValue<'s>) -> Result<Self, impl AsRef<str>> {
+        pv.try_as_identifier()
+            .cloned()
+            .ok_or("should be an identifier")
     }
 }
 

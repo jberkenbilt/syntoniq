@@ -8,7 +8,7 @@
         ],
         "value": {
           "raw": "syntoniq",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -28,7 +28,7 @@
         ],
         "value": {
           "raw": "bad_args",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -99,7 +99,9 @@
                   0,
                   8
                 ],
-                "value": "syntoniq"
+                "value": {
+                  "name": "syntoniq"
+                }
               },
               "params": [
                 {
@@ -108,7 +110,9 @@
                       9,
                       17
                     ],
-                    "value": "bad_args"
+                    "value": {
+                      "name": "bad_args"
+                    }
                   },
                   "value": {
                     "span": [

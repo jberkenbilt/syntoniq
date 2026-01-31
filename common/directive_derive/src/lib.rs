@@ -200,8 +200,8 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
 
         // Generate the code that checks the parameter type and initializes.
         arg_checks.push(quote! {
-            if k.value == stringify!(#field_name) {
-                params_seen.insert(k.value.to_string());
+            if k.value.name == stringify!(#field_name) {
+                params_seen.insert(k.value.name.to_string());
                 handled = true;
                 #arg_check
             }
@@ -371,7 +371,7 @@ fn from_raw_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStre
     quote! {
         impl<'s> FromRawDirective<'s> for #top_name<'s> {
             fn from_raw(diags: &Diagnostics, span: Span, d: &RawDirective<'s>) -> Option<Self> {
-                match d.name.value.as_ref() {
+                match d.name.value.name.as_ref() {
                     #(#match_arms)*
                     _ => {
                         diags.err(

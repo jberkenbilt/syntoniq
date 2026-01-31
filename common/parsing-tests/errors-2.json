@@ -28,7 +28,7 @@
         ],
         "value": {
           "raw": "onceThere",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -48,7 +48,7 @@
         ],
         "value": {
           "raw": "quack",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -95,7 +95,7 @@
         ],
         "value": {
           "raw": "a",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -175,7 +175,7 @@
         ],
         "value": {
           "raw": "b",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -305,7 +305,7 @@
         ],
         "value": {
           "raw": "d",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -415,7 +415,7 @@
         ],
         "value": {
           "raw": "f",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -575,7 +575,7 @@
         ],
         "value": {
           "raw": "valid",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -615,7 +615,7 @@
         ],
         "value": {
           "raw": "invalid",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -635,7 +635,7 @@
         ],
         "value": {
           "raw": "ignored",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -655,7 +655,7 @@
         ],
         "value": {
           "raw": "a",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -702,7 +702,7 @@
         ],
         "value": {
           "raw": "c",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -762,7 +762,7 @@
         ],
         "value": {
           "raw": "d",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -852,7 +852,7 @@
         ],
         "value": {
           "raw": "oops",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -872,7 +872,7 @@
         ],
         "value": {
           "raw": "missing",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -909,7 +909,7 @@
         ],
         "value": {
           "raw": "a",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2099,7 +2099,7 @@
         ],
         "value": {
           "raw": "valid",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2139,7 +2139,7 @@
         ],
         "value": {
           "raw": "a",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2209,7 +2209,7 @@
         ],
         "value": {
           "raw": "b",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2286,7 +2286,7 @@
         ],
         "value": {
           "raw": "c",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2436,7 +2436,7 @@
         ],
         "value": {
           "raw": "degraded_directive",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2476,7 +2476,7 @@
         ],
         "value": {
           "raw": "resume",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2526,7 +2526,7 @@
         ],
         "value": {
           "raw": "at",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2546,7 +2546,7 @@
         ],
         "value": {
           "raw": "clope",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2606,7 +2606,7 @@
         ],
         "value": {
           "raw": "reported_again",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2636,7 +2636,7 @@
         ],
         "value": {
           "raw": "valid",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2696,7 +2696,7 @@
         ],
         "value": {
           "raw": "invalid_syntax",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2716,7 +2716,7 @@
         ],
         "value": {
           "raw": "not_a_directive",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2736,7 +2736,7 @@
         ],
         "value": {
           "raw": "valid",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5396,7 +5396,7 @@
               278,
               282
             ],
-            "value": "unable to parse as directive; expected directive(k=v, ...)"
+            "value": "unable to parse as directive; expected directive(k=v ...)"
           }
         },
         {
@@ -5440,7 +5440,7 @@
               556,
               574
             ],
-            "value": "unable to parse as directive; expected directive(k=v, ...)"
+            "value": "unable to parse as directive; expected directive(k=v ...)"
           }
         },
         {

@@ -2,7 +2,7 @@ use crate::parsing::diagnostics::code;
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics};
 use crate::parsing::model::{
     Dynamic, DynamicChange, DynamicLeader, DynamicLine, LayoutItemType, Note, NoteLeader, NoteLine,
-    NoteModifier, RawDirective, RegularDynamic, RegularNote, Span, Spanned,
+    NoteModifier, NoteOctave, RawDirective, RegularDynamic, RegularNote, Span, Spanned,
 };
 use num_rational::Ratio;
 use serde::Serialize;
@@ -219,7 +219,13 @@ pub struct MappingItem<'s> {
 }
 
 impl<'s> ScaleBuilder<'s> {
-    pub fn get_note(&mut self, diags: &Diagnostics, name: &Spanned<Cow<'s, str>>) -> Option<Pitch> {
+    pub fn get_note(
+        &mut self,
+        diags: &Diagnostics,
+        note: &Spanned<NoteOctave<'s>>,
+    ) -> Option<Pitch> {
+        // TODO: work in octave
+        let name = &note.value.name;
         self.notes.get(&name.value).cloned().or_else(|| {
             let pitch = self.generator.as_ref()?.get_note(diags, &name.as_ref());
             if let Some(p) = &pitch {
@@ -509,12 +515,12 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
             let time = beats_so_far + self.score.line_start_time;
             match &note.value {
                 Note::Regular(r_note) => {
-                    let note_name = &r_note.note.name;
+                    let note_octave = &r_note.note;
                     if let Some(scale) = self.score.scales.get(&tuning.scale_name)
                         && let Some(base_relative) =
-                            { scale.borrow_mut().get_note(self.diags, note_name).clone() }
+                            { scale.borrow_mut().get_note(self.diags, note_octave).clone() }
                     {
-                        let cycle = r_note.note.octave.map(Spanned::value).unwrap_or(0);
+                        let cycle = note_octave.value.octave.map(Spanned::value).unwrap_or(0);
                         let mut absolute_pitch = &tuning.base_pitch * &base_relative;
                         if cycle != 0 {
                             absolute_pitch *=
@@ -599,7 +605,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                             note.span,
                             format!(
                                 "note '{}' is not in the current scale ('{}')",
-                                note_name.value, tuning.scale_name,
+                                note_octave.value.name.value, tuning.scale_name,
                             ),
                         )
                     }
@@ -934,7 +940,7 @@ impl<'s> Score<'s> {
                 self.handle_directive(&temp_diags, Span::from(0..1), &rd);
             };
         }
-        debug_assert!(!temp_diags.has_errors());
+        debug_assert!(!temp_diags.has_errors(), "{}", temp_diags.to_string());
     }
 
     pub fn into_output(self) -> ScoreOutput<'s> {
@@ -1216,8 +1222,16 @@ impl<'s> Score<'s> {
         tuning: &Tuning<'s>,
         note: &Spanned<Cow<'s, str>>,
     ) -> (Pitch, bool) {
+        // TODO: TEMP
+        let xxx_temp = Spanned::new(
+            note.span,
+            NoteOctave {
+                name: note.clone(),
+                octave: None,
+            },
+        );
         if let Some(scale) = self.scales.get(&tuning.scale_name)
-            && let Some(base_relative) = { scale.borrow_mut().get_note(diags, note) }
+            && let Some(base_relative) = { scale.borrow_mut().get_note(diags, &xxx_temp) }
         {
             (&base_relative * &tuning.base_pitch, true)
         } else {
@@ -1753,7 +1767,7 @@ impl<'s> Score<'s> {
                 match &item.value.item {
                     LayoutItemType::Note(note) => {
                         let scale = self.scales.get(&scale_name).unwrap();
-                        let sd = scale.borrow_mut().get_note(diags, &note.value.name);
+                        let sd = scale.borrow_mut().get_note(diags, note);
                         match sd {
                             None => {
                                 diags.err(

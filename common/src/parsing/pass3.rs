@@ -19,7 +19,7 @@ fn check_init<'s>(
     for (i, tok) in tokens.iter().enumerate() {
         match &tok.value.t {
             Pass2::Space | Pass2::Newline | Pass2::Comment => continue,
-            Pass2::Directive(raw) if raw.name.value == "syntoniq" => {
+            Pass2::Directive(raw) if raw.name.value.name == "syntoniq" => {
                 if let Some(Directive::Syntoniq(x)) = Directive::from_raw(diags, tok.span, raw) {
                     return Some((i + 1, Score::new(src, x)));
                 }

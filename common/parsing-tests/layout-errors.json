@@ -8,7 +8,7 @@
         ],
         "value": {
           "raw": "syntoniq",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -28,7 +28,7 @@
         ],
         "value": {
           "raw": "version",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -88,7 +88,7 @@
         ],
         "value": {
           "raw": "define_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -108,7 +108,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -725,7 +725,7 @@
         ],
         "value": {
           "raw": "define_manual_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -765,7 +765,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -822,7 +822,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1049,7 +1049,7 @@
         ],
         "value": {
           "raw": "define_manual_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1089,7 +1089,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1146,7 +1146,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1403,7 +1403,7 @@
         ],
         "value": {
           "raw": "define_manual_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1443,7 +1443,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1500,7 +1500,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1757,7 +1757,7 @@
         ],
         "value": {
           "raw": "define_manual_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1797,7 +1797,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1854,7 +1854,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2121,7 +2121,7 @@
         ],
         "value": {
           "raw": "define_manual_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2161,7 +2161,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2218,7 +2218,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2485,7 +2485,7 @@
         ],
         "value": {
           "raw": "define_isomorphic_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2505,7 +2505,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2552,7 +2552,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2599,7 +2599,7 @@
         ],
         "value": {
           "raw": "steps_h",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2649,7 +2649,7 @@
         ],
         "value": {
           "raw": "steps_v",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2729,7 +2729,7 @@
         ],
         "value": {
           "raw": "define_isomorphic_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2749,7 +2749,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2796,7 +2796,7 @@
         ],
         "value": {
           "raw": "steps_h",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2846,7 +2846,7 @@
         ],
         "value": {
           "raw": "steps_v",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2926,7 +2926,7 @@
         ],
         "value": {
           "raw": "define_isomorphic_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2946,7 +2946,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2993,7 +2993,7 @@
         ],
         "value": {
           "raw": "steps_h",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3043,7 +3043,7 @@
         ],
         "value": {
           "raw": "steps_v",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3123,7 +3123,7 @@
         ],
         "value": {
           "raw": "define_isomorphic_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3143,7 +3143,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3190,7 +3190,7 @@
         ],
         "value": {
           "raw": "steps_h",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3240,7 +3240,7 @@
         ],
         "value": {
           "raw": "steps_v",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3300,7 +3300,7 @@
         ],
         "value": {
           "raw": "place_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3340,7 +3340,7 @@
         ],
         "value": {
           "raw": "layout",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3397,7 +3397,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3454,7 +3454,7 @@
         ],
         "value": {
           "raw": "base_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3514,7 +3514,7 @@
         ],
         "value": {
           "raw": "keyboard",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3571,7 +3571,7 @@
         ],
         "value": {
           "raw": "anchor_row",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3631,7 +3631,7 @@
         ],
         "value": {
           "raw": "anchor_col",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3701,7 +3701,7 @@
         ],
         "value": {
           "raw": "place_mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3741,7 +3741,7 @@
         ],
         "value": {
           "raw": "layout",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3798,7 +3798,7 @@
         ],
         "value": {
           "raw": "mapping",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3855,7 +3855,7 @@
         ],
         "value": {
           "raw": "base_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3915,7 +3915,7 @@
         ],
         "value": {
           "raw": "keyboard",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3972,7 +3972,7 @@
         ],
         "value": {
           "raw": "anchor_row",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4032,7 +4032,7 @@
         ],
         "value": {
           "raw": "anchor_col",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4113,7 +4113,9 @@
                   0,
                   8
                 ],
-                "value": "syntoniq"
+                "value": {
+                  "name": "syntoniq"
+                }
               },
               "params": [
                 {
@@ -4122,7 +4124,9 @@
                       9,
                       16
                     ],
-                    "value": "version"
+                    "value": {
+                      "name": "version"
+                    }
                   },
                   "value": {
                     "span": [
@@ -4316,7 +4320,9 @@
                   20,
                   32
                 ],
-                "value": "define_scale"
+                "value": {
+                  "name": "define_scale"
+                }
               },
               "params": [
                 {
@@ -4325,7 +4331,9 @@
                       33,
                       38
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -4547,7 +4555,9 @@
                   111,
                   132
                 ],
-                "value": "define_manual_mapping"
+                "value": {
+                  "name": "define_manual_mapping"
+                }
               },
               "params": [
                 {
@@ -4556,7 +4566,9 @@
                       138,
                       145
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -4574,7 +4586,9 @@
                       155,
                       160
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -4834,7 +4848,9 @@
                   196,
                   217
                 ],
-                "value": "define_manual_mapping"
+                "value": {
+                  "name": "define_manual_mapping"
+                }
               },
               "params": [
                 {
@@ -4843,7 +4859,9 @@
                       223,
                       230
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -4861,7 +4879,9 @@
                       240,
                       245
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5121,7 +5141,9 @@
                   297,
                   318
                 ],
-                "value": "define_manual_mapping"
+                "value": {
+                  "name": "define_manual_mapping"
+                }
               },
               "params": [
                 {
@@ -5130,7 +5152,9 @@
                       324,
                       331
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5148,7 +5172,9 @@
                       341,
                       346
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5432,7 +5458,9 @@
                   427,
                   448
                 ],
-                "value": "define_manual_mapping"
+                "value": {
+                  "name": "define_manual_mapping"
+                }
               },
               "params": [
                 {
@@ -5441,7 +5469,9 @@
                       454,
                       461
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5459,7 +5489,9 @@
                       471,
                       476
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5722,7 +5754,9 @@
                   528,
                   549
                 ],
-                "value": "define_manual_mapping"
+                "value": {
+                  "name": "define_manual_mapping"
+                }
               },
               "params": [
                 {
@@ -5731,7 +5765,9 @@
                       555,
                       562
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5749,7 +5785,9 @@
                       572,
                       577
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5810,7 +5848,9 @@
                   626,
                   651
                 ],
-                "value": "define_isomorphic_mapping"
+                "value": {
+                  "name": "define_isomorphic_mapping"
+                }
               },
               "params": [
                 {
@@ -5819,7 +5859,9 @@
                       652,
                       659
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5837,7 +5879,9 @@
                       665,
                       670
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5855,7 +5899,9 @@
                       679,
                       686
                     ],
-                    "value": "steps_h"
+                    "value": {
+                      "name": "steps_h"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5878,7 +5924,9 @@
                       689,
                       696
                     ],
-                    "value": "steps_v"
+                    "value": {
+                      "name": "steps_v"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5944,7 +5992,9 @@
                   708,
                   733
                 ],
-                "value": "define_isomorphic_mapping"
+                "value": {
+                  "name": "define_isomorphic_mapping"
+                }
               },
               "params": [
                 {
@@ -5953,7 +6003,9 @@
                       734,
                       741
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5971,7 +6023,9 @@
                       747,
                       754
                     ],
-                    "value": "steps_h"
+                    "value": {
+                      "name": "steps_h"
+                    }
                   },
                   "value": {
                     "span": [
@@ -5994,7 +6048,9 @@
                       757,
                       764
                     ],
-                    "value": "steps_v"
+                    "value": {
+                      "name": "steps_v"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6060,7 +6116,9 @@
                   780,
                   805
                 ],
-                "value": "define_isomorphic_mapping"
+                "value": {
+                  "name": "define_isomorphic_mapping"
+                }
               },
               "params": [
                 {
@@ -6069,7 +6127,9 @@
                       806,
                       813
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6087,7 +6147,9 @@
                       819,
                       826
                     ],
-                    "value": "steps_h"
+                    "value": {
+                      "name": "steps_h"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6110,7 +6172,9 @@
                       829,
                       836
                     ],
-                    "value": "steps_v"
+                    "value": {
+                      "name": "steps_v"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6176,7 +6240,9 @@
                   879,
                   904
                 ],
-                "value": "define_isomorphic_mapping"
+                "value": {
+                  "name": "define_isomorphic_mapping"
+                }
               },
               "params": [
                 {
@@ -6185,7 +6251,9 @@
                       905,
                       912
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6203,7 +6271,9 @@
                       918,
                       925
                     ],
-                    "value": "steps_h"
+                    "value": {
+                      "name": "steps_h"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6226,7 +6296,9 @@
                       928,
                       935
                     ],
-                    "value": "steps_v"
+                    "value": {
+                      "name": "steps_v"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6272,7 +6344,9 @@
                   939,
                   952
                 ],
-                "value": "place_mapping"
+                "value": {
+                  "name": "place_mapping"
+                }
               },
               "params": [
                 {
@@ -6281,7 +6355,9 @@
                       958,
                       964
                     ],
-                    "value": "layout"
+                    "value": {
+                      "name": "layout"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6299,7 +6375,9 @@
                       979,
                       986
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6317,7 +6395,9 @@
                       996,
                       1006
                     ],
-                    "value": "base_pitch"
+                    "value": {
+                      "name": "base_pitch"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6340,7 +6420,9 @@
                       1015,
                       1023
                     ],
-                    "value": "keyboard"
+                    "value": {
+                      "name": "keyboard"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6358,7 +6440,9 @@
                       1032,
                       1042
                     ],
-                    "value": "anchor_row"
+                    "value": {
+                      "name": "anchor_row"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6381,7 +6465,9 @@
                       1050,
                       1060
                     ],
-                    "value": "anchor_col"
+                    "value": {
+                      "name": "anchor_col"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6427,7 +6513,9 @@
                   1065,
                   1078
                 ],
-                "value": "place_mapping"
+                "value": {
+                  "name": "place_mapping"
+                }
               },
               "params": [
                 {
@@ -6436,7 +6524,9 @@
                       1084,
                       1090
                     ],
-                    "value": "layout"
+                    "value": {
+                      "name": "layout"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6454,7 +6544,9 @@
                       1104,
                       1111
                     ],
-                    "value": "mapping"
+                    "value": {
+                      "name": "mapping"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6472,7 +6564,9 @@
                       1126,
                       1136
                     ],
-                    "value": "base_pitch"
+                    "value": {
+                      "name": "base_pitch"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6495,7 +6589,9 @@
                       1145,
                       1153
                     ],
-                    "value": "keyboard"
+                    "value": {
+                      "name": "keyboard"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6513,7 +6609,9 @@
                       1162,
                       1172
                     ],
-                    "value": "anchor_row"
+                    "value": {
+                      "name": "anchor_row"
+                    }
                   },
                   "value": {
                     "span": [
@@ -6536,7 +6634,9 @@
                       1180,
                       1190
                     ],
-                    "value": "anchor_col"
+                    "value": {
+                      "name": "anchor_col"
+                    }
                   },
                   "value": {
                     "span": [

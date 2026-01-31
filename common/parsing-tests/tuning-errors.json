@@ -8,7 +8,7 @@
         ],
         "value": {
           "raw": "syntoniq",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -28,7 +28,7 @@
         ],
         "value": {
           "raw": "version",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -138,7 +138,7 @@
         ],
         "value": {
           "raw": "define_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -158,7 +158,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -755,7 +755,7 @@
         ],
         "value": {
           "raw": "define_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -775,7 +775,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1456,7 +1456,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1476,7 +1476,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1523,7 +1523,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1928,7 +1928,7 @@
         ],
         "value": {
           "raw": "transpose",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1948,7 +1948,7 @@
         ],
         "value": {
           "raw": "written",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -1995,7 +1995,7 @@
         ],
         "value": {
           "raw": "pitch_from",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2042,7 +2042,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2099,7 +2099,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2119,7 +2119,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2166,7 +2166,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2551,7 +2551,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2571,7 +2571,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2618,7 +2618,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2665,7 +2665,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2722,7 +2722,7 @@
         ],
         "value": {
           "raw": "transpose",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2742,7 +2742,7 @@
         ],
         "value": {
           "raw": "written",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2789,7 +2789,7 @@
         ],
         "value": {
           "raw": "pitch_from",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2836,7 +2836,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2883,7 +2883,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2940,7 +2940,7 @@
         ],
         "value": {
           "raw": "set_base_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -2960,7 +2960,7 @@
         ],
         "value": {
           "raw": "absolute",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3010,7 +3010,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3057,7 +3057,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3144,7 +3144,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3164,7 +3164,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3211,7 +3211,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3298,7 +3298,7 @@
         ],
         "value": {
           "raw": "transpose",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3318,7 +3318,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3365,7 +3365,7 @@
         ],
         "value": {
           "raw": "written",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3412,7 +3412,7 @@
         ],
         "value": {
           "raw": "pitch_from",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3479,7 +3479,7 @@
         ],
         "value": {
           "raw": "reset_tuning",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3539,7 +3539,7 @@
         ],
         "value": {
           "raw": "transpose",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3559,7 +3559,7 @@
         ],
         "value": {
           "raw": "written",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3606,7 +3606,7 @@
         ],
         "value": {
           "raw": "pitch_from",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3663,7 +3663,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3683,7 +3683,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3740,7 +3740,7 @@
         ],
         "value": {
           "raw": "transpose",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3760,7 +3760,7 @@
         ],
         "value": {
           "raw": "written",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3807,7 +3807,7 @@
         ],
         "value": {
           "raw": "pitch_from",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3854,7 +3854,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3911,7 +3911,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3931,7 +3931,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -3978,7 +3978,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4055,7 +4055,7 @@
         ],
         "value": {
           "raw": "transpose",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4075,7 +4075,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4122,7 +4122,7 @@
         ],
         "value": {
           "raw": "written",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4169,7 +4169,7 @@
         ],
         "value": {
           "raw": "pitch_from",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4246,7 +4246,7 @@
         ],
         "value": {
           "raw": "transpose",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4266,7 +4266,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4313,7 +4313,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4360,7 +4360,7 @@
         ],
         "value": {
           "raw": "written",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4407,7 +4407,7 @@
         ],
         "value": {
           "raw": "pitch_from",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4792,7 +4792,7 @@
         ],
         "value": {
           "raw": "reset_tuning",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -4812,7 +4812,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5187,7 +5187,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5207,7 +5207,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5254,7 +5254,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5301,7 +5301,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5358,7 +5358,7 @@
         ],
         "value": {
           "raw": "set_base_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5378,7 +5378,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5425,7 +5425,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5472,7 +5472,7 @@
         ],
         "value": {
           "raw": "absolute",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5532,7 +5532,7 @@
         ],
         "value": {
           "raw": "set_base_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5552,7 +5552,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5599,7 +5599,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5646,7 +5646,7 @@
         ],
         "value": {
           "raw": "relative",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5746,7 +5746,7 @@
         ],
         "value": {
           "raw": "set_base_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5766,7 +5766,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5813,7 +5813,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5870,7 +5870,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5890,7 +5890,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -5937,7 +5937,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6610,7 +6610,7 @@
         ],
         "value": {
           "raw": "reset_tuning",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6650,7 +6650,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6670,7 +6670,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6717,7 +6717,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6774,7 +6774,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6794,7 +6794,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6841,7 +6841,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6898,7 +6898,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6918,7 +6918,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -6965,7 +6965,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7022,7 +7022,7 @@
         ],
         "value": {
           "raw": "use_scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7042,7 +7042,7 @@
         ],
         "value": {
           "raw": "scale",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7089,7 +7089,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7166,7 +7166,7 @@
         ],
         "value": {
           "raw": "save_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7186,7 +7186,7 @@
         ],
         "value": {
           "raw": "var",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7233,7 +7233,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7310,7 +7310,7 @@
         ],
         "value": {
           "raw": "save_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7330,7 +7330,7 @@
         ],
         "value": {
           "raw": "var",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7377,7 +7377,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7424,7 +7424,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7471,7 +7471,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7548,7 +7548,7 @@
         ],
         "value": {
           "raw": "save_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7568,7 +7568,7 @@
         ],
         "value": {
           "raw": "var",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7615,7 +7615,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7662,7 +7662,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7709,7 +7709,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7756,7 +7756,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7833,7 +7833,7 @@
         ],
         "value": {
           "raw": "restore_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7853,7 +7853,7 @@
         ],
         "value": {
           "raw": "var",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7900,7 +7900,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7947,7 +7947,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -7994,7 +7994,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8041,7 +8041,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8118,7 +8118,7 @@
         ],
         "value": {
           "raw": "save_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8138,7 +8138,7 @@
         ],
         "value": {
           "raw": "var",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8185,7 +8185,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8232,7 +8232,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8279,7 +8279,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8356,7 +8356,7 @@
         ],
         "value": {
           "raw": "check_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8376,7 +8376,7 @@
         ],
         "value": {
           "raw": "var",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8423,7 +8423,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8470,7 +8470,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8517,7 +8517,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8564,7 +8564,7 @@
         ],
         "value": {
           "raw": "pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8694,7 +8694,7 @@
         ],
         "value": {
           "raw": "check_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8714,7 +8714,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8761,7 +8761,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8808,7 +8808,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -8855,7 +8855,7 @@
         ],
         "value": {
           "raw": "pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9075,7 +9075,7 @@
         ],
         "value": {
           "raw": "check_pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9115,7 +9115,7 @@
         ],
         "value": {
           "raw": "var",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9192,7 +9192,7 @@
         ],
         "value": {
           "raw": "var",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9249,7 +9249,7 @@
         ],
         "value": {
           "raw": "pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9309,7 +9309,7 @@
         ],
         "value": {
           "raw": "pitch",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9399,7 +9399,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9456,7 +9456,7 @@
         ],
         "value": {
           "raw": "part",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9513,7 +9513,7 @@
         ],
         "value": {
           "raw": "note",
-          "t": "Identifier"
+          "t": "NoteName"
         }
       },
       {
@@ -9591,7 +9591,9 @@
                   0,
                   8
                 ],
-                "value": "syntoniq"
+                "value": {
+                  "name": "syntoniq"
+                }
               },
               "params": [
                 {
@@ -9600,7 +9602,9 @@
                       9,
                       16
                     ],
-                    "value": "version"
+                    "value": {
+                      "name": "version"
+                    }
                   },
                   "value": {
                     "span": [
@@ -9844,7 +9848,9 @@
                   108,
                   120
                 ],
-                "value": "define_scale"
+                "value": {
+                  "name": "define_scale"
+                }
               },
               "params": [
                 {
@@ -9853,7 +9859,9 @@
                       121,
                       126
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10069,7 +10077,9 @@
                   187,
                   199
                 ],
-                "value": "define_scale"
+                "value": {
+                  "name": "define_scale"
+                }
               },
               "params": [
                 {
@@ -10078,7 +10088,9 @@
                       200,
                       205
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10165,14 +10177,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          271,
-                          272
-                        ],
-                        "value": "c"
-                      },
-                      "octave": null
+                      "span": [
+                        271,
+                        272
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            271,
+                            272
+                          ],
+                          "value": "c"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10185,14 +10203,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          273,
-                          274
-                        ],
-                        "value": "d"
-                      },
-                      "octave": null
+                      "span": [
+                        273,
+                        274
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            273,
+                            274
+                          ],
+                          "value": "d"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10205,14 +10229,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          275,
-                          276
-                        ],
-                        "value": "e"
-                      },
-                      "octave": null
+                      "span": [
+                        275,
+                        276
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            275,
+                            276
+                          ],
+                          "value": "e"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10225,14 +10255,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          277,
-                          278
-                        ],
-                        "value": "f"
-                      },
-                      "octave": null
+                      "span": [
+                        277,
+                        278
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            277,
+                            278
+                          ],
+                          "value": "f"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -10265,7 +10301,9 @@
                   280,
                   289
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -10274,7 +10312,9 @@
                       290,
                       295
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10292,7 +10332,9 @@
                       304,
                       308
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10379,14 +10421,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          326,
-                          327
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        326,
+                        327
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            326,
+                            327
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10399,14 +10447,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          328,
-                          329
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        328,
+                        329
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            328,
+                            329
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10419,14 +10473,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          330,
-                          331
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        330,
+                        331
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            330,
+                            331
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10439,14 +10499,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          332,
-                          333
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        332,
+                        333
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            332,
+                            333
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -10505,14 +10571,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          344,
-                          345
-                        ],
-                        "value": "c"
-                      },
-                      "octave": null
+                      "span": [
+                        344,
+                        345
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            344,
+                            345
+                          ],
+                          "value": "c"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10525,14 +10597,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          346,
-                          347
-                        ],
-                        "value": "d"
-                      },
-                      "octave": null
+                      "span": [
+                        346,
+                        347
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            346,
+                            347
+                          ],
+                          "value": "d"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10545,14 +10623,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          348,
-                          349
-                        ],
-                        "value": "e"
-                      },
-                      "octave": null
+                      "span": [
+                        348,
+                        349
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            348,
+                            349
+                          ],
+                          "value": "e"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10565,14 +10649,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          350,
-                          351
-                        ],
-                        "value": "f"
-                      },
-                      "octave": null
+                      "span": [
+                        350,
+                        351
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            350,
+                            351
+                          ],
+                          "value": "f"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -10645,7 +10735,9 @@
                   456,
                   465
                 ],
-                "value": "transpose"
+                "value": {
+                  "name": "transpose"
+                }
               },
               "params": [
                 {
@@ -10654,7 +10746,9 @@
                       466,
                       473
                     ],
-                    "value": "written"
+                    "value": {
+                      "name": "written"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10672,7 +10766,9 @@
                       478,
                       488
                     ],
-                    "value": "pitch_from"
+                    "value": {
+                      "name": "pitch_from"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10690,7 +10786,9 @@
                       493,
                       497
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10731,7 +10829,9 @@
                   504,
                   513
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -10740,7 +10840,9 @@
                       514,
                       519
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10758,7 +10860,9 @@
                       527,
                       531
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -10845,14 +10949,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          549,
-                          550
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        549,
+                        550
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            549,
+                            550
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10865,14 +10975,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          551,
-                          552
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        551,
+                        552
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            551,
+                            552
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10885,14 +11001,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          553,
-                          554
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        553,
+                        554
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            553,
+                            554
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10905,14 +11027,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          555,
-                          556
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        555,
+                        556
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            555,
+                            556
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -10971,14 +11099,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          567,
-                          568
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        567,
+                        568
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            567,
+                            568
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -10991,14 +11125,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          569,
-                          570
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        569,
+                        570
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            569,
+                            570
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -11011,14 +11151,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          571,
-                          572
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        571,
+                        572
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            571,
+                            572
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -11031,14 +11177,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          573,
-                          574
-                        ],
-                        "value": "u"
-                      },
-                      "octave": null
+                      "span": [
+                        573,
+                        574
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            573,
+                            574
+                          ],
+                          "value": "u"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -11091,7 +11243,9 @@
                   601,
                   610
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -11100,7 +11254,9 @@
                       611,
                       616
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11118,7 +11274,9 @@
                       621,
                       625
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11136,7 +11294,9 @@
                       631,
                       635
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11177,7 +11337,9 @@
                   642,
                   651
                 ],
-                "value": "transpose"
+                "value": {
+                  "name": "transpose"
+                }
               },
               "params": [
                 {
@@ -11186,7 +11348,9 @@
                       652,
                       659
                     ],
-                    "value": "written"
+                    "value": {
+                      "name": "written"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11204,7 +11368,9 @@
                       664,
                       674
                     ],
-                    "value": "pitch_from"
+                    "value": {
+                      "name": "pitch_from"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11222,7 +11388,9 @@
                       679,
                       683
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11240,7 +11408,9 @@
                       689,
                       693
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11281,7 +11451,9 @@
                   700,
                   714
                 ],
-                "value": "set_base_pitch"
+                "value": {
+                  "name": "set_base_pitch"
+                }
               },
               "params": [
                 {
@@ -11290,7 +11462,9 @@
                       715,
                       723
                     ],
-                    "value": "absolute"
+                    "value": {
+                      "name": "absolute"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11313,7 +11487,9 @@
                       728,
                       732
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11331,7 +11507,9 @@
                       738,
                       742
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11402,7 +11580,9 @@
                   778,
                   787
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -11411,7 +11591,9 @@
                       788,
                       793
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11429,7 +11611,9 @@
                       803,
                       807
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11500,7 +11684,9 @@
                   860,
                   869
                 ],
-                "value": "transpose"
+                "value": {
+                  "name": "transpose"
+                }
               },
               "params": [
                 {
@@ -11509,7 +11695,9 @@
                       870,
                       874
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11527,7 +11715,9 @@
                       880,
                       887
                     ],
-                    "value": "written"
+                    "value": {
+                      "name": "written"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11545,7 +11735,9 @@
                       892,
                       902
                     ],
-                    "value": "pitch_from"
+                    "value": {
+                      "name": "pitch_from"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11596,7 +11788,9 @@
                   909,
                   921
                 ],
-                "value": "reset_tuning"
+                "value": {
+                  "name": "reset_tuning"
+                }
               },
               "params": []
             }
@@ -11647,7 +11841,9 @@
                   935,
                   944
                 ],
-                "value": "transpose"
+                "value": {
+                  "name": "transpose"
+                }
               },
               "params": [
                 {
@@ -11656,7 +11852,9 @@
                       945,
                       952
                     ],
-                    "value": "written"
+                    "value": {
+                      "name": "written"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11674,7 +11872,9 @@
                       957,
                       967
                     ],
-                    "value": "pitch_from"
+                    "value": {
+                      "name": "pitch_from"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11715,7 +11915,9 @@
                   973,
                   982
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -11724,7 +11926,9 @@
                       983,
                       988
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11765,7 +11969,9 @@
                   998,
                   1007
                 ],
-                "value": "transpose"
+                "value": {
+                  "name": "transpose"
+                }
               },
               "params": [
                 {
@@ -11774,7 +11980,9 @@
                       1008,
                       1015
                     ],
-                    "value": "written"
+                    "value": {
+                      "name": "written"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11792,7 +12000,9 @@
                       1020,
                       1030
                     ],
-                    "value": "pitch_from"
+                    "value": {
+                      "name": "pitch_from"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11810,7 +12020,9 @@
                       1035,
                       1039
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11851,7 +12063,9 @@
                   1046,
                   1055
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -11860,7 +12074,9 @@
                       1056,
                       1061
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11878,7 +12094,9 @@
                       1069,
                       1073
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11939,7 +12157,9 @@
                   1100,
                   1109
                 ],
-                "value": "transpose"
+                "value": {
+                  "name": "transpose"
+                }
               },
               "params": [
                 {
@@ -11948,7 +12168,9 @@
                       1110,
                       1114
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11966,7 +12188,9 @@
                       1120,
                       1127
                     ],
-                    "value": "written"
+                    "value": {
+                      "name": "written"
+                    }
                   },
                   "value": {
                     "span": [
@@ -11984,7 +12208,9 @@
                       1132,
                       1142
                     ],
-                    "value": "pitch_from"
+                    "value": {
+                      "name": "pitch_from"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12045,7 +12271,9 @@
                   1181,
                   1190
                 ],
-                "value": "transpose"
+                "value": {
+                  "name": "transpose"
+                }
               },
               "params": [
                 {
@@ -12054,7 +12282,9 @@
                       1191,
                       1195
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12072,7 +12302,9 @@
                       1201,
                       1205
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12090,7 +12322,9 @@
                       1211,
                       1218
                     ],
-                    "value": "written"
+                    "value": {
+                      "name": "written"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12108,7 +12342,9 @@
                       1223,
                       1233
                     ],
-                    "value": "pitch_from"
+                    "value": {
+                      "name": "pitch_from"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12195,14 +12431,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1250,
-                          1251
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        1250,
+                        1251
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1250,
+                            1251
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12215,14 +12457,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1252,
-                          1253
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        1252,
+                        1253
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1252,
+                            1253
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12235,14 +12483,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1254,
-                          1255
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        1254,
+                        1255
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1254,
+                            1255
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12255,14 +12509,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1256,
-                          1257
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        1256,
+                        1257
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1256,
+                            1257
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -12321,14 +12581,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1268,
-                          1269
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        1268,
+                        1269
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1268,
+                            1269
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12341,14 +12607,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1270,
-                          1271
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        1270,
+                        1271
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1270,
+                            1271
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12361,14 +12633,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1272,
-                          1273
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        1272,
+                        1273
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1272,
+                            1273
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12381,14 +12659,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1274,
-                          1275
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        1274,
+                        1275
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1274,
+                            1275
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -12421,7 +12705,9 @@
                   1293,
                   1305
                 ],
-                "value": "reset_tuning"
+                "value": {
+                  "name": "reset_tuning"
+                }
               },
               "params": [
                 {
@@ -12430,7 +12716,9 @@
                       1306,
                       1310
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12507,14 +12795,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1327,
-                          1328
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        1327,
+                        1328
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1327,
+                            1328
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12527,14 +12821,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1329,
-                          1330
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        1329,
+                        1330
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1329,
+                            1330
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12547,14 +12847,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1331,
-                          1332
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        1331,
+                        1332
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1331,
+                            1332
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12567,14 +12873,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1333,
-                          1334
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        1333,
+                        1334
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1333,
+                            1334
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -12633,14 +12945,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1345,
-                          1346
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        1345,
+                        1346
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1345,
+                            1346
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12653,14 +12971,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1347,
-                          1348
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        1347,
+                        1348
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1347,
+                            1348
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12673,14 +12997,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1349,
-                          1350
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        1349,
+                        1350
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1349,
+                            1350
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -12693,14 +13023,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1351,
-                          1352
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        1351,
+                        1352
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1351,
+                            1352
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -12733,7 +13069,9 @@
                   1365,
                   1374
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -12742,7 +13080,9 @@
                       1375,
                       1380
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12760,7 +13100,9 @@
                       1389,
                       1393
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12778,7 +13120,9 @@
                       1399,
                       1403
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12819,7 +13163,9 @@
                   1410,
                   1424
                 ],
-                "value": "set_base_pitch"
+                "value": {
+                  "name": "set_base_pitch"
+                }
               },
               "params": [
                 {
@@ -12828,7 +13174,9 @@
                       1425,
                       1429
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12846,7 +13194,9 @@
                       1435,
                       1439
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12864,7 +13214,9 @@
                       1445,
                       1453
                     ],
-                    "value": "absolute"
+                    "value": {
+                      "name": "absolute"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12910,7 +13262,9 @@
                   1459,
                   1473
                 ],
-                "value": "set_base_pitch"
+                "value": {
+                  "name": "set_base_pitch"
+                }
               },
               "params": [
                 {
@@ -12919,7 +13273,9 @@
                       1474,
                       1478
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12937,7 +13293,9 @@
                       1484,
                       1488
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12955,7 +13313,9 @@
                       1494,
                       1502
                     ],
-                    "value": "relative"
+                    "value": {
+                      "name": "relative"
+                    }
                   },
                   "value": {
                     "span": [
@@ -12998,7 +13358,9 @@
                   1510,
                   1524
                 ],
-                "value": "set_base_pitch"
+                "value": {
+                  "name": "set_base_pitch"
+                }
               },
               "params": [
                 {
@@ -13007,7 +13369,9 @@
                       1525,
                       1529
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13025,7 +13389,9 @@
                       1535,
                       1539
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13066,7 +13432,9 @@
                   1546,
                   1555
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -13075,7 +13443,9 @@
                       1556,
                       1561
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13093,7 +13463,9 @@
                       1571,
                       1575
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13180,14 +13552,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1593,
-                          1594
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        1593,
+                        1594
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1593,
+                            1594
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13200,14 +13578,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1595,
-                          1596
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        1595,
+                        1596
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1595,
+                            1596
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13220,14 +13604,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1597,
-                          1598
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        1597,
+                        1598
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1597,
+                            1598
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13240,14 +13630,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1599,
-                          1600
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        1599,
+                        1600
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1599,
+                            1600
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -13306,14 +13702,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1611,
-                          1612
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        1611,
+                        1612
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1611,
+                            1612
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13326,14 +13728,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1613,
-                          1614
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        1613,
+                        1614
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1613,
+                            1614
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13346,14 +13754,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1615,
-                          1616
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        1615,
+                        1616
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1615,
+                            1616
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13366,14 +13780,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1617,
-                          1618
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        1617,
+                        1618
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1617,
+                            1618
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -13432,14 +13852,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1629,
-                          1630
-                        ],
-                        "value": "p"
-                      },
-                      "octave": null
+                      "span": [
+                        1629,
+                        1630
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1629,
+                            1630
+                          ],
+                          "value": "p"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13452,14 +13878,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1631,
-                          1632
-                        ],
-                        "value": "q"
-                      },
-                      "octave": null
+                      "span": [
+                        1631,
+                        1632
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1631,
+                            1632
+                          ],
+                          "value": "q"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13472,14 +13904,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1633,
-                          1634
-                        ],
-                        "value": "r"
-                      },
-                      "octave": null
+                      "span": [
+                        1633,
+                        1634
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1633,
+                            1634
+                          ],
+                          "value": "r"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13492,14 +13930,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1635,
-                          1636
-                        ],
-                        "value": "s"
-                      },
-                      "octave": null
+                      "span": [
+                        1635,
+                        1636
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1635,
+                            1636
+                          ],
+                          "value": "s"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -13558,14 +14002,20 @@
                         ]
                       },
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1668,
-                          1670
-                        ],
-                        "value": "c#"
-                      },
-                      "octave": null
+                      "span": [
+                        1668,
+                        1670
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1668,
+                            1670
+                          ],
+                          "value": "c#"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13578,14 +14028,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1671,
-                          1673
-                        ],
-                        "value": "e%"
-                      },
-                      "octave": null
+                      "span": [
+                        1671,
+                        1673
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1671,
+                            1673
+                          ],
+                          "value": "e%"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13598,14 +14054,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1674,
-                          1675
-                        ],
-                        "value": "g"
-                      },
-                      "octave": null
+                      "span": [
+                        1674,
+                        1675
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1674,
+                            1675
+                          ],
+                          "value": "g"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 },
@@ -13618,14 +14080,20 @@
                     "Regular": {
                       "duration": null,
                       "modifiers": [],
-                      "name": {
-                        "span": [
-                          1676,
-                          1677
-                        ],
-                        "value": "b"
-                      },
-                      "octave": null
+                      "span": [
+                        1676,
+                        1677
+                      ],
+                      "value": {
+                        "name": {
+                          "span": [
+                            1676,
+                            1677
+                          ],
+                          "value": "b"
+                        },
+                        "octave": null
+                      }
                     }
                   }
                 }
@@ -13658,7 +14126,9 @@
                   1679,
                   1691
                 ],
-                "value": "reset_tuning"
+                "value": {
+                  "name": "reset_tuning"
+                }
               },
               "params": []
             }
@@ -13689,7 +14159,9 @@
                   1694,
                   1703
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -13698,7 +14170,9 @@
                       1704,
                       1709
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13716,7 +14190,9 @@
                       1718,
                       1722
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13757,7 +14233,9 @@
                   1729,
                   1738
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -13766,7 +14244,9 @@
                       1739,
                       1744
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13784,7 +14264,9 @@
                       1752,
                       1756
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13825,7 +14307,9 @@
                   1763,
                   1772
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -13834,7 +14318,9 @@
                       1773,
                       1778
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13852,7 +14338,9 @@
                       1788,
                       1792
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13893,7 +14381,9 @@
                   1799,
                   1808
                 ],
-                "value": "use_scale"
+                "value": {
+                  "name": "use_scale"
+                }
               },
               "params": [
                 {
@@ -13902,7 +14392,9 @@
                       1809,
                       1814
                     ],
-                    "value": "scale"
+                    "value": {
+                      "name": "scale"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13920,7 +14412,9 @@
                       1820,
                       1824
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -13981,7 +14475,9 @@
                   1871,
                   1881
                 ],
-                "value": "save_pitch"
+                "value": {
+                  "name": "save_pitch"
+                }
               },
               "params": [
                 {
@@ -13990,7 +14486,9 @@
                       1882,
                       1885
                     ],
-                    "value": "var"
+                    "value": {
+                      "name": "var"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14008,7 +14506,9 @@
                       1891,
                       1895
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14069,7 +14569,9 @@
                   1944,
                   1954
                 ],
-                "value": "save_pitch"
+                "value": {
+                  "name": "save_pitch"
+                }
               },
               "params": [
                 {
@@ -14078,7 +14580,9 @@
                       1955,
                       1958
                     ],
-                    "value": "var"
+                    "value": {
+                      "name": "var"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14096,7 +14600,9 @@
                       1964,
                       1968
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14114,7 +14620,9 @@
                       1973,
                       1977
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14132,7 +14640,9 @@
                       1983,
                       1987
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14193,7 +14703,9 @@
                   2050,
                   2060
                 ],
-                "value": "save_pitch"
+                "value": {
+                  "name": "save_pitch"
+                }
               },
               "params": [
                 {
@@ -14202,7 +14714,9 @@
                       2061,
                       2064
                     ],
-                    "value": "var"
+                    "value": {
+                      "name": "var"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14220,7 +14734,9 @@
                       2070,
                       2074
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14238,7 +14754,9 @@
                       2079,
                       2083
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14256,7 +14774,9 @@
                       2089,
                       2093
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14274,7 +14794,9 @@
                       2099,
                       2103
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14335,7 +14857,9 @@
                   2129,
                   2142
                 ],
-                "value": "restore_pitch"
+                "value": {
+                  "name": "restore_pitch"
+                }
               },
               "params": [
                 {
@@ -14344,7 +14868,9 @@
                       2143,
                       2146
                     ],
-                    "value": "var"
+                    "value": {
+                      "name": "var"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14362,7 +14888,9 @@
                       2152,
                       2156
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14380,7 +14908,9 @@
                       2161,
                       2165
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14398,7 +14928,9 @@
                       2171,
                       2175
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14416,7 +14948,9 @@
                       2181,
                       2185
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14477,7 +15011,9 @@
                   2238,
                   2248
                 ],
-                "value": "save_pitch"
+                "value": {
+                  "name": "save_pitch"
+                }
               },
               "params": [
                 {
@@ -14486,7 +15022,9 @@
                       2249,
                       2252
                     ],
-                    "value": "var"
+                    "value": {
+                      "name": "var"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14504,7 +15042,9 @@
                       2258,
                       2262
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14522,7 +15062,9 @@
                       2267,
                       2271
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14540,7 +15082,9 @@
                       2277,
                       2281
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14601,7 +15145,9 @@
                   2295,
                   2306
                 ],
-                "value": "check_pitch"
+                "value": {
+                  "name": "check_pitch"
+                }
               },
               "params": [
                 {
@@ -14610,7 +15156,9 @@
                       2307,
                       2310
                     ],
-                    "value": "var"
+                    "value": {
+                      "name": "var"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14628,7 +15176,9 @@
                       2316,
                       2320
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14646,7 +15196,9 @@
                       2325,
                       2329
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14664,7 +15216,9 @@
                       2335,
                       2339
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14682,7 +15236,9 @@
                       2345,
                       2350
                     ],
-                    "value": "pitch"
+                    "value": {
+                      "name": "pitch"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14725,7 +15281,9 @@
                   2361,
                   2372
                 ],
-                "value": "check_pitch"
+                "value": {
+                  "name": "check_pitch"
+                }
               },
               "params": [
                 {
@@ -14734,7 +15292,9 @@
                       2373,
                       2377
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14752,7 +15312,9 @@
                       2386,
                       2390
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14770,7 +15332,9 @@
                       2398,
                       2402
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14788,7 +15352,9 @@
                       2408,
                       2413
                     ],
-                    "value": "pitch"
+                    "value": {
+                      "name": "pitch"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14851,7 +15417,9 @@
                   2455,
                   2466
                 ],
-                "value": "check_pitch"
+                "value": {
+                  "name": "check_pitch"
+                }
               },
               "params": [
                 {
@@ -14860,7 +15428,9 @@
                       2472,
                       2475
                     ],
-                    "value": "var"
+                    "value": {
+                      "name": "var"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14878,7 +15448,9 @@
                       2495,
                       2498
                     ],
-                    "value": "var"
+                    "value": {
+                      "name": "var"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14896,7 +15468,9 @@
                       2508,
                       2513
                     ],
-                    "value": "pitch"
+                    "value": {
+                      "name": "pitch"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14919,7 +15493,9 @@
                       2522,
                       2527
                     ],
-                    "value": "pitch"
+                    "value": {
+                      "name": "pitch"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14939,7 +15515,9 @@
                       2538,
                       2542
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14957,7 +15535,9 @@
                       2552,
                       2556
                     ],
-                    "value": "part"
+                    "value": {
+                      "name": "part"
+                    }
                   },
                   "value": {
                     "span": [
@@ -14975,7 +15555,9 @@
                       2566,
                       2570
                     ],
-                    "value": "note"
+                    "value": {
+                      "name": "note"
+                    }
                   },
                   "value": {
                     "span": [
