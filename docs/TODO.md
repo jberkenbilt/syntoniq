@@ -6,7 +6,7 @@ This is general TODO across internal docs, manual, and software.
 
 These are proposed pre-1.0 items. Details are below for many.
 
-* calc -- from scripts in misc
+* [calc](#calc)
 * Make sure we explicitly test > 7 channel pairs for multiple ports
 * Fix edge cases -- see copilot-initial-review.md
 * Create a minimal emacs mode
@@ -18,10 +18,9 @@ These are proposed pre-1.0 items. Details are below for many.
 
 # Software
 
+* Implement `syntoniq calc` and mention it in the microtonal section and/or CLI reference sections of the manual.
 * See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
 * Create the interactive chord builder -- see below
-* Expand scripts in misc to support other than octave
-* Consider bringing misc/exponent-to-ratio and misc/scale-semitones into the main CLI as a separate subcommand like `syntoniq calc`. If so, mention in the microtonal section of the manual. Also add something to show the base pitch of a generated note, e.g. `JK!17` should show `^5|17` or `jI` should show `81/80`.
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation adjustment directives:
   * four factors: default of each plus modifier for each option
@@ -53,6 +52,13 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
 * Tweak theme for better colors
 * Figure out where to document the stuff in misc. Somewhere in the docs directory
 * Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep. Main thrust is justification for 100% code coverage
+
+# Calc
+
+* `ratio --pitch=p --max-denom=d --tolerance=t` -- ratios within tolerance p of the pitch whose denominator is no more than `d`. `d` is a positive integer and defaults to 32 (maybe find a better default). Tolerance is a pitch that defaults to `^1|75` (16¢)
+* `division --pitch p --max-div=d --interval=i --tolerance=t` -- find close divisions of the specified interval (default 2) with tolerance (default `^1|75)`
+* `equal-scale --interval=i --divisions=d` -- show all degrees of the generated scale in pitch notation, cents, and the best generated scale note
+* `gen-note --note=gen` -- show pitch of generated note in the built-in JI scale (e.g. `JK`, `E!41`, etc.)
 
 # Reformatter
 
