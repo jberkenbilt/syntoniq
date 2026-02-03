@@ -1720,6 +1720,10 @@ impl<'s> Score<'s> {
             name: directive.mapping.value.clone(),
             steps_h: directive.steps_h.value as i32,
             steps_v: directive.steps_v.value as i32,
+            base_idx: directive
+                .base_degree
+                .map(Spanned::value)
+                .unwrap_or_default() as i32,
         });
         let mapping_data = MappingData {
             span: directive.mapping.span,

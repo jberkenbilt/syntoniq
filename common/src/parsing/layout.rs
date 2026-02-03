@@ -303,6 +303,7 @@ pub struct IsomorphicMapping<'s> {
     pub name: Cow<'s, str>,
     pub steps_h: i32,
     pub steps_v: i32,
+    pub base_idx: i32,
 }
 impl<'s> IsomorphicMapping<'s> {
     fn note_at_anchor_delta(
@@ -313,7 +314,7 @@ impl<'s> IsomorphicMapping<'s> {
     ) -> Option<MappedPitch<'s>> {
         let full_degree = (row_delta * self.steps_v) + (col_delta * self.steps_h);
         let num_degrees = scale.pitches.len() as i32;
-        let pitch_idx = full_degree.rem_euclid(num_degrees);
+        let pitch_idx = full_degree.rem_euclid(num_degrees) + self.base_idx;
         let cycle = full_degree.div_euclid(num_degrees);
         let base_interval = scale.pitches[pitch_idx as usize].clone();
         let untiled_base_relative =

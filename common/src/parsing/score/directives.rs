@@ -433,6 +433,8 @@ pub struct DefineIsomorphicMapping<'s> {
     pub steps_h: Spanned<u32>,
     /// Number of scale degrees to go up in the vertical or up-right direction
     pub steps_v: Spanned<u32>,
+    /// Scale degree of anchor pitch. Defaults to the root of the scale.
+    pub base_degree: Option<Spanned<u32>>,
 }
 impl<'s> DefineIsomorphicMapping<'s> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}

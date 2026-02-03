@@ -89,6 +89,7 @@ layout with the 'place_mapping' directive.
 * **scale (optional)** — Scale; if omitted, use the current default scale
 * **steps_h** — Number of scale degrees to go up in the horizontal direction
 * **steps_v** — Number of scale degrees to go up in the vertical or up-right direction
+* **base_degree (optional)** — Scale degree of anchor pitch. Defaults to the root of the scale.
 
 ## define_manual_mapping
 
