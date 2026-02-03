@@ -270,7 +270,7 @@ If you use `<` or `>`, Syntoniq will enforce that there is a subsequent dynamic 
 
 Below is an alphabetical list of directives. You can get this by running `syntoniq doc`.
 
-<!-- generate include=directive_doc.md checksum=f52da99fd16142e81ef5e1216eec637f5f6ffcb33e97d3b90c6b92d616a6939c -->
+<!-- generate include=directive_doc.md checksum=d15aa6ab8ec6138f34db5c4042813c89052e4722b509bd7741c91c7c5a903a21 -->
 
 ## check_pitch
 
@@ -362,7 +362,6 @@ layout with the 'place_mapping' directive.
 * **scale (optional)** — Scale; if omitted, use the current default scale
 * **steps_h** — Number of scale degrees to go up in the horizontal direction
 * **steps_v** — Number of scale degrees to go up in the vertical or up-right direction
-* **base_degree (optional)** — Scale degree of anchor pitch. Defaults to the root of the scale.
 
 ## define_manual_mapping
 

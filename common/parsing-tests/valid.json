@@ -14295,7 +14295,6 @@
                 "cols_right": null,
                 "details": {
                   "Isomorphic": {
-                    "base_idx": 0,
                     "name": "m2",
                     "steps_h": 2,
                     "steps_v": 5
