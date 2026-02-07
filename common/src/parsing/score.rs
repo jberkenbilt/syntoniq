@@ -155,6 +155,10 @@ pub struct Scale<'s> {
 pub struct Assignments {
     pub notes: HashMap<Cow<'static, str>, Pitch>,
     pub primary_names: HashMap<Pitch, Cow<'static, str>>,
+    /// `deltas[note]` = difference between scale degree and pure pitch in scale degrees. If delta
+    /// is negative, the pure note is below the overlaid note, which means the pure interval is
+    /// sharp in the scale.
+    pub deltas: HashMap<Cow<'static, str>, f64>,
 }
 impl Debug for Assignments {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
@@ -2104,6 +2108,38 @@ impl<'s> Score<'s> {
             );
         }
     }
+}
+
+/// Helper function for `syntoniq calc` -- return the "best" generated note for an equal-division
+/// scale. Delta is number of scale note - pure note in scale degrees. A negative delta means the
+/// generated note is below the scale degree.
+pub fn generated_note_names(divided_interval: Ratio<u32>, divisions: u32) -> Vec<(String, f64)> {
+    let g = NoteGenerator {
+        divisions: Some(divisions),
+        divided_interval,
+        tolerance: Default::default(),
+    };
+    let assignments = g.assign_generated_notes();
+    let mut result = Vec::new();
+    for i in 0..divisions {
+        let p = Pitch::must_parse(&format!("{divided_interval}^{i}|{divisions}"));
+        let name = &assignments.primary_names[&p];
+        let delta = assignments.deltas[name];
+        result.push((name.to_string(), delta));
+    }
+    result
+}
+
+/// Helper function for `syntoniq calc` -- return the pitch of the specified note interpreting it
+/// as a note in the generated JI scale.
+pub fn generated_note_pitch(name: &str) -> Option<Pitch> {
+    let g = NoteGenerator {
+        divisions: None,
+        divided_interval: Ratio::from_integer(2),
+        tolerance: Default::default(),
+    };
+    let diags = Diagnostics::new();
+    g.get_note(&diags, &Spanned::new(0..1, name))
 }
 
 #[cfg(test)]

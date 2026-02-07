@@ -15,7 +15,7 @@ More details can be found in the [manual](https://syntoniq.cc/manual/)!
 
 # PRE-RELEASE
 
-January 2026
+February 2026
 
 This software has not been released and is still undergoing active development. Every aspect of it is still subject to change, though I am working toward a 1.0 release.
 

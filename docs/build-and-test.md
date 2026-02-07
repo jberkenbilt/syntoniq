@@ -23,15 +23,15 @@ export LLVM_PROFILE_FILE="$PWD/.grcov/%p-%m.profraw"
 to avoid creating profraw files when running things manually from a coverage build.
 
 100% coverage is generally a non-goal, but it is expected in parts of the parser:
-* common/parsing/pass1/
-* common/parsing/pass2/
-* In common/parsing/
+* common/src/parsing/pass1/
+* common/src/parsing/pass2/
+* In common/src/parsing/
   * layout.rs
   * model.rs
   * pass*.rs
   * score.rs
   * timeline.rs
-* In common/parsing/score/
+* In common/src/parsing/score/
   * generator.rs
 
 The rationale for 100% coverage is to ensure that all error conditions are tested and that there are no unreachable code paths. Unreachable code paths would indicate that the parser isn't coded as tightly as it should be. These would arise if later code relies on earlier validations, which is fragile. Requiring that 100% of the parser code is reachable helps to ensure that we have a tight grammar.

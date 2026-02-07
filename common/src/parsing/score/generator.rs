@@ -592,19 +592,24 @@ impl Generator for NoteGenerator {
         let mut notes = HashMap::new();
         let num = *self.divided_interval.numer();
         let den = *self.divided_interval.denom();
+        let mut deltas = HashMap::new();
         for step in 0..divisions {
             let mut name: Cow<str> = Cow::Owned(format!("A{step}"));
             let pitch = Pitch::new(vec![Factor::new(num, den, step, divisions).unwrap()]);
             notes.insert(name.clone(), pitch.clone());
+            let mut delta = 0.0;
             if let Some(candidate) = winners.get(&step) {
                 name = candidate.name();
                 notes.insert(name.clone(), pitch.clone());
+                delta = candidate.delta;
             }
+            deltas.insert(name.clone(), delta);
             primary_names.insert(pitch, name);
         }
         Assignments {
             notes,
             primary_names,
+            deltas,
         }
     }
 }
@@ -696,6 +701,7 @@ mod tests {
         assert_eq!(pitch_of(&g, "D!2/12"), Pitch::must_parse("^5|12"));
         assert_eq!(pitch_of(&g, "D!3/18"), Pitch::must_parse("3^5|18"));
         assert_eq!(pitch_of(&g, "D!7"), Pitch::must_parse("3/2^5|7"));
+        assert_eq!(pitch_of(&g, "D!3/2/7"), Pitch::must_parse("3/2^5|7"));
 
         assert!(!diags.has_errors());
     }

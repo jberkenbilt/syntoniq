@@ -3,8 +3,8 @@ use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 use log::LevelFilter;
 use std::{env, process};
-use syntoniq::generator;
 use syntoniq::generator::GenerateOptions;
+use syntoniq::{calc, generator};
 use syntoniq_common::parsing;
 use syntoniq_common::parsing::score;
 
@@ -27,6 +27,12 @@ enum Commands {
     Generate(GenerateOptions),
     /// Show built-in documentation
     Doc,
+    /// Perform various calculations about pitches and scales; see also calc --help and the
+    /// manual section: https://syntoniq.cc/manual/reference/calc/
+    Calc {
+        #[command(subcommand)]
+        command: calc::Commands,
+    },
     /// Generate shell completion
     Completion {
         /// shell
@@ -62,6 +68,7 @@ fn run() -> anyhow::Result<()> {
         }
         Commands::Generate(options) => generator::run(options),
         Commands::Doc => parsing::show_help(),
+        Commands::Calc { command } => calc::run(command),
     }
 }
 

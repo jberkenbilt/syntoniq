@@ -8,6 +8,8 @@ The `syntoniq` and `syntoniq-kbd` commands have detailed `--help` options that e
 
 The most important commands are `syntoniq-kbd run` and `syntoniq generate`. You can run `syntoniq-kbd run --help` and `syntoniq generate --help` for help on those.
 
+Syntoniq includes a pitch calculator, which is covered in [Pitch Calculator](../calc/).
+
 # Example Commands
 
 The following command converts a score to all available outputs.

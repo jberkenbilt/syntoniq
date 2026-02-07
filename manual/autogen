@@ -5,6 +5,7 @@ import argparse
 import glob
 import re
 import hashlib
+import subprocess
 
 whoami = os.path.basename(sys.argv[0])
 whereami = os.path.dirname(os.path.realpath(__file__))
@@ -81,6 +82,31 @@ class _Main:
                 with open(input_path, 'r') as f2:
                     out.extend(f2.readlines())
                 out.extend(after)
+                out.extend('<!-- generate-end -->\n')
+            if 'calc' in attrs:
+                args_text = attrs['calc']
+                args = args_text.split(',')
+                consume_until_end = True
+                p = subprocess.run([
+                    'cargo',
+                    'run',
+                    '--bin',
+                    'syntoniq',
+                    'calc',
+                    *args,
+                ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                if p.returncode == 0:
+                    out_bytes = p.stdout
+                else:
+                    out_bytes = p.stderr
+                out.extend(f'<!-- generate calc={args_text} -->\n')
+                out.extend(
+                    '```\n'
+                    f'syntoniq calc {args_text.replace(",", " ")}\n'
+                    '---\n'
+                )
+                out.extend(out_bytes.decode())
+                out.extend('```\n')
                 out.extend('<!-- generate-end -->\n')
         if lines != out:
             os.rename(fullpath, f'{fullpath}.auto-safe')

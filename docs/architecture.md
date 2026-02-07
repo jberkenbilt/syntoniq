@@ -30,6 +30,8 @@ TODO:
 
 Notes about mark/repeat for architectural docs. They are based on the timeline, not the token stream. This has both advantages and disadvantages.
 
+Mention scripts in misc for launchpad and hexboard
+
 ----------------------------------------------------------------------
 
 Below is very early (2025-07) from keyboard-design.md. Clean it up bring it up to date.

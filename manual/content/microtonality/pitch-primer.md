@@ -86,6 +86,10 @@ In regular 12-tone notation, notes have *enharmonic spellings*. For example, you
 
 Before leaving this topic, I'll point out one other interesting thing that comes into play with higher EDO scales. In 31-EDO, you can approximate a major scale by realizing that there are 5 steps to a whole tone and 3 steps to a semitone. (I'm hand-waving here and glossing over the 2-step chromatic semitone, but this is the gist. $31 = 5+5+3+5+5+5+3$, just like $12 = 2+2+1+2+2+2+1$.) If you want the major third in that scale, you can find it at step 10, numbered from 0. This is just where you'd expect it to land: two 5-step "whole steps" above the root. That means that, for a 31-EDO generated scale, `A10` is enharmonic with `E`. What happens if you take this in 41-EDO? 41-EDO also works for diatonic music because we have $41 = 7+7+3+7+7+7+3$. Following the above logic, we'd expect to find the major third at step 14 (two 7-step "whole tones" above the root)...and step 14 is an okay major third. But remember that the major third in 12-EDO is a little sharp. It turns out that the 13th step of 41-EDO is actually a better major third than the 14th step. In our notation `E` in 41-EDO is enharmonic with `A13`, not `A14`! But it's a little flat. If you wanted the sharper major third, you could write `E#`, and that would land on `A14`. It may take some getting used to, but I hope you can see how powerful and versatile this system is.
 
+# Pitch Calculator
+
+Syntoniq has a pitch calculator to help you work with pitches and notes. See [Pitch Calculator](../../reference/calc/) for details.
+
 # 12-EDO Cheat Sheet
 
 Here are some ways to spell pitches using generated notes that map to 12-EDO. This chart uses all 5-limit ratios, meaning ratios whose numerators and denominators contain no prime factors above 5. (This is a topic in just intonation. If you don't know about it, don't worry; you don't need to know for Syntoniq.)

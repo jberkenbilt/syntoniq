@@ -6,6 +6,10 @@ sort_by = "weight"
 
 This section includes release notes for the Syntoniq software. See also [docs/TODO.md](https://github.com/jberkenbilt/syntoniq/blob/main/docs/TODO.md) for the latest roadmap.
 
+# v0.3.1 - not yet released
+
+* Add the `syntoniq calc` command, which implements various pitch calculators.
+
 # v0.3.0 - February 1, 2026
 
 ## Breaking Changes
