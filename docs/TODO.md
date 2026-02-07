@@ -6,8 +6,6 @@ This is general TODO across internal docs, manual, and software.
 
 These are proposed pre-1.0 items. Details are below for many.
 
-* Make sure we explicitly test > 7 channel pairs for multiple ports
-* Fix edge cases -- see copilot-initial-review.md
 * Create a minimal emacs mode
 * Maybe: interactive chord builder
 
