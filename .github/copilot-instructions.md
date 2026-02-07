@@ -61,7 +61,7 @@ I maintain my own website on <https://syntoniq.cc>.
 
 ## Use of AI
 
-I have a firm rule against AI-generated code or documentation content, but I make frequent and effective use of AI review. As such, I prefer suggestions over rewrites, and I am much more likely to manually incorporate suggestions than accept a pull request. That said, suggested corrections to obvious typos or grammatical errors are welcome. Here are a few mistakes I make:
+I have a firm rule against AI-generated documentation content. AI-generated code is allowed only when explicitly requested and must be marked as such. I appreciate AI review. As such, I prefer suggestions over rewrites, and I am much more likely to manually incorporate suggestions than accept a pull request. That said, suggested corrections to obvious typos or grammatical errors are welcome. Small code changes in pull requests are also fine when illustrative of an obvious error. Here are a few mistakes I make:
 * `active` instead of `octave`, including `on active` instead of `an octave`
 * `ration` instead of `ratio`
 * `as` instead of `has`
