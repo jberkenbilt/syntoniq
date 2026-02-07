@@ -228,7 +228,7 @@ This table shows 12-EDO. Observe the following:
 ```
 syntoniq calc equal-scale --divisions 12
 ---
- pitch    simplified   value     cents      note   Δ scale degree      Δ cents
+ pitch    simplified   value     cents     note   Δ scale degree      Δ cents
  2^0|12       1        1.000      0.000¢     A      A! + 0.000°     A! +  0.000¢
  2^1|12      ^1|12     1.059    100.000¢     R      R! + 0.010°     R! +  1.045¢
  2^2|12      ^1|6      1.122    200.000¢     I      I! - 0.039°     I! -  3.910¢
@@ -254,7 +254,7 @@ Let's take a look at 19-EDO. If you're used to looking at scales defined in term
 ```
 syntoniq calc equal-scale --divisions 19
 ---
- pitch    simplified   value     cents      note   Δ scale degree      Δ cents
+ pitch    simplified   value     cents     note   Δ scale degree      Δ cents
  2^0|19       1        1.000      0.000¢     A      A! + 0.000°      A! +  0.000¢
  2^1|19      ^1|19     1.037     63.158¢     Y      Y! - 0.119°      Y! -  7.515¢
  2^2|19      ^2|19     1.076    126.316¢     N      N! - 0.031°      N! -  1.982¢
@@ -296,7 +296,7 @@ Let's take a fresh look at Bohlen-Pierce. Since this divides the tritave, we spe
 ```
 syntoniq calc equal-scale --divisions 13 --interval 3
 ---
- pitch    simplified   value     cents      note   Δ scale degree      Δ cents
+ pitch    simplified   value     cents     note   Δ scale degree      Δ cents
  3^0|13       1        1.000      0.000¢     A      A! + 0.000°     A! +  0.000¢
  3^1|13     3^1|13     1.088    146.304¢     L      L! - 0.030°     L! -  4.333¢
  3^2|13     3^2|13     1.184    292.608¢     F      F! - 0.157°     F! - 23.033¢

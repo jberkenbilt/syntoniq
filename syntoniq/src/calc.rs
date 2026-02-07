@@ -106,7 +106,7 @@ fn format_tabular(
     for (col, format) in formats.iter().enumerate() {
         for row in rows {
             let s = &row[col];
-            col_widths[col] = col_widths[col].max(s.len());
+            col_widths[col] = col_widths[col].max(s.chars().count());
 
             if let Format::Char(ch) = format {
                 char_positions[col].push(s.find(|c| ch.contains(c)));
@@ -122,8 +122,9 @@ fn format_tabular(
         if matches!(format, Format::Char(_)) {
             for (row_idx, row) in rows.iter().enumerate() {
                 let s = &row[col];
-                let left = char_positions[col][row_idx].unwrap_or(s.len());
-                let right = s.len() - left;
+                let n_chars = s.chars().count();
+                let left = char_positions[col][row_idx].unwrap_or(n_chars);
+                let right = n_chars - left;
                 max_left[col] = max_left[col].max(left);
                 max_right[col] = max_right[col].max(right);
             }
@@ -138,12 +139,13 @@ fn format_tabular(
 
     if !headers.is_empty() {
         for (col, header) in headers.iter().enumerate() {
-            if header.len() > col_widths[col] {
-                let extra = header.len() - col_widths[col];
+            let h_chars = header.chars().count();
+            if h_chars > col_widths[col] {
+                let extra = header.chars().count() - col_widths[col];
                 // Pad on the right first, then on the left.
                 pad_left[col] = extra / 2;
                 pad_right[col] = extra - pad_left[col];
-                col_widths[col] = header.len();
+                col_widths[col] = h_chars;
             }
         }
     }
@@ -160,7 +162,7 @@ fn format_tabular(
             .map(|(col, h)| {
                 let width = col_widths[col];
                 // Center the header within the column width
-                let total_pad = width - h.len();
+                let total_pad = width - h.chars().count();
                 let left = total_pad / 2;
                 let right = total_pad - left;
                 format!("{}{}{}", " ".repeat(left), h, " ".repeat(right))
@@ -181,9 +183,10 @@ fn format_tabular(
                     Format::Left => format!("{:<inner_width$}", s),
                     Format::Right => format!("{:>inner_width$}", s),
                     Format::Char(_) => {
-                        let left = char_positions[col][row_idx].unwrap_or(s.len());
+                        let n_chars = s.chars().count();
+                        let left = char_positions[col][row_idx].unwrap_or(n_chars);
                         let char_pad_left = max_left[col] - left;
-                        let char_pad_right = inner_width - char_pad_left - s.len();
+                        let char_pad_right = inner_width - char_pad_left - n_chars;
                         format!(
                             "{}{}{}",
                             " ".repeat(char_pad_left),
@@ -487,7 +490,7 @@ mod tests {
         assert_eq!(
             out,
             [
-                " pitch    simplified   value     cents      note   Δ scale degree      Δ cents",
+                " pitch    simplified   value     cents     note   Δ scale degree      Δ cents",
                 " 3^0|13       1        1.000      0.000¢     A      A! + 0.000°     A! +  0.000¢",
                 " 3^1|13     3^1|13     1.088    146.304¢     L      L! - 0.030°     L! -  4.333¢",
                 " 3^2|13     3^2|13     1.184    292.608¢     F      F! - 0.157°     F! - 23.033¢",
@@ -513,7 +516,7 @@ mod tests {
         assert_eq!(
             out,
             [
-                " pitch    simplified   value     cents      note   Δ scale degree      Δ cents",
+                " pitch    simplified   value     cents     note   Δ scale degree      Δ cents",
                 " 2^0|19       1        1.000      0.000¢     A      A! + 0.000°      A! +  0.000¢",
                 " 2^1|19      ^1|19     1.037     63.158¢     Y      Y! - 0.119°      Y! -  7.515¢",
                 " 2^2|19      ^2|19     1.076    126.316¢     N      N! - 0.031°      N! -  1.982¢",
