@@ -90,6 +90,7 @@ Generated sections are always delimited with
 
 Valid operations:
 * `include=file checksum=...` -- include the contents of `static-src/file` verbatim. The checksum is updated if the file changes so we can avoid gratuitously updating files. This can be used to include source examples or other things. Files in `static-src` can be generated or manual. The script knows to quote .stq files with ` ```syntoniq ` and may have other special case logic.
+* `calc=arg1,arg2,arg3,...` -- insert the output of `syntoniq calc arg1 arg2 ...`. The command is run via `cargo run` so changes to source are immediately reflected.
 
 Audio files can be automatically generated from stq files for the manual. You have to add them to `manual/static-src/Taskfile.yml`.
 

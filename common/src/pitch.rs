@@ -114,6 +114,16 @@ impl Factor {
         })
     }
 
+    pub fn as_rational(&self) -> Option<Ratio<u32>> {
+        if self.exp == Ratio::from_integer(0) {
+            Some(Ratio::from_integer(1))
+        } else if self.exp == Ratio::from_integer(1) {
+            Some(self.base)
+        } else {
+            None
+        }
+    }
+
     pub fn as_float(&self) -> f64 {
         if self.exp == Ratio::from_integer(1) {
             self.base.to_f64().unwrap()
@@ -122,6 +132,10 @@ impl Factor {
             let exp = self.exp.to_f64().unwrap();
             base.powf(exp)
         }
+    }
+
+    pub fn exponent(&self) -> Ratio<i32> {
+        self.exp
     }
 }
 
@@ -283,6 +297,17 @@ impl Pitch {
         }
 
         Self { factors: result }
+    }
+
+    pub fn as_rational(&self) -> Option<Ratio<u32>> {
+        if let Some(first) = self.factors.first() {
+            if self.factors.len() > 1 {
+                return None;
+            }
+            first.as_rational()
+        } else {
+            None
+        }
     }
 
     pub fn unit() -> Self {
@@ -600,5 +625,36 @@ mod tests {
     #[test]
     fn test_bend_edge() {
         assert_eq!(mpe_bend(47.9999), 16383);
+    }
+
+    #[test]
+    fn test_is_rational() {
+        assert_eq!(Pitch::unit().as_rational().unwrap(), Ratio::new(1, 1));
+        assert_eq!(
+            Pitch::must_parse("1/2").as_rational().unwrap(),
+            Ratio::new(1, 2)
+        );
+        assert_eq!(
+            Pitch::must_parse("3.14").as_rational().unwrap(),
+            Ratio::new(157, 50)
+        );
+        assert_eq!(
+            Pitch::must_parse("^0|41").as_rational().unwrap(),
+            Ratio::new(1, 1)
+        );
+        assert_eq!(
+            Pitch::must_parse("220*^0|19").as_rational().unwrap(),
+            Ratio::new(220, 1)
+        );
+        assert_eq!(
+            Pitch::must_parse("2/3^0|19").as_rational().unwrap(),
+            Ratio::new(1, 1)
+        );
+        assert_eq!(
+            Pitch::must_parse("2/3^34|17").as_rational().unwrap(),
+            Ratio::new(4, 9)
+        );
+        assert!(Pitch::must_parse("2/3^1|19").as_rational().is_none());
+        assert!(Pitch::must_parse("^1|19").as_rational().is_none());
     }
 }

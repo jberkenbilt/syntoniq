@@ -6,7 +6,6 @@ This is general TODO across internal docs, manual, and software.
 
 These are proposed pre-1.0 items. Details are below for many.
 
-* [calc](#calc)
 * Make sure we explicitly test > 7 channel pairs for multiple ports
 * Fix edge cases -- see copilot-initial-review.md
 * Create a minimal emacs mode
@@ -22,13 +21,15 @@ These are proposed pre-1.0 items. Details are below for many.
 * See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
 * Create the interactive chord builder -- see below
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
-* Articulation adjustment directives:
-  * four factors: default of each plus modifier for each option
-    * default velocity (72)
-    * accent velocity (96)
-    * marcato velocity (108)
-    * staccato shorten amount (1/4 beat)
-  * Can be applied globally or at the part level
+* Articulation markers control note length, attack velocity, and release velocity.
+    * default: full length, 72 attack, 64 release
+    * accent:  96 attack
+    * marcato: 108 attack, 96 release
+    * staccato: each repetition shortens note by 1/4 beat and adds 32 to release, capping at 127
+    * tenudo: each repetition subtracts 32 from release as long as >= 0
+  * Csound: these translate to channels and are normalized from 0.0 to 1.0 and are up to the instrument to interpret. The default instrument uses attack velocity to control the length and peak of the attack phase and the release to control the length and slope of the release phase.
+  * MIDI: these translate to velocity on note on and note off events.
+  * Add directives to change the numbers globally and at the part level
 * MIDI:
   * generate tuning files for midi by port and channel
   * generate summaries of part -> track/port/channel, etc.
@@ -46,19 +47,13 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
 
 # Documentation
 
+* Clean up docs/architecture.md
 * Have something that checks link integrity (internal and external)
 * Embed KeTeX rather than getting from a CDN
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
 * Tweak theme for better colors
 * Figure out where to document the stuff in misc. Somewhere in the docs directory
 * Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep. Main thrust is justification for 100% code coverage
-
-# Calc
-
-* `ratio --pitch=p --max-denom=d --tolerance=t` -- ratios within tolerance p of the pitch whose denominator is no more than `d`. `d` is a positive integer and defaults to 32 (maybe find a better default). Tolerance is a pitch that defaults to `^1|75` (16¢)
-* `division --pitch p --max-div=d --interval=i --tolerance=t` -- find close divisions of the specified interval (default 2) with tolerance (default `^1|75)`
-* `equal-scale --interval=i --divisions=d` -- show all degrees of the generated scale in pitch notation, cents, and the best generated scale note
-* `gen-note --note=gen` -- show pitch of generated note in the built-in JI scale (e.g. `JK`, `E!41`, etc.)
 
 # Reformatter
 
