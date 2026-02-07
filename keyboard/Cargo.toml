@@ -21,7 +21,7 @@ tokio-stream = { version = "0.1.18", features = ["sync"] }
 rust-embed = "8.11.0"
 derive_more = { version = "2.1.1", features = ["debug"] }
 num_enum = "0.7.5"
-arc-swap = "1.8.0"
+arc-swap = "1.8.1"
 bimap = "0.6.3"
 
 [build-dependencies]
