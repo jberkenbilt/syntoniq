@@ -17,7 +17,6 @@ These are proposed pre-1.0 items. Details are below for many.
 
 # Software
 
-* Implement `syntoniq calc` and mention it in the microtonal section and/or CLI reference sections of the manual.
 * See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
 * Create the interactive chord builder -- see below
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
