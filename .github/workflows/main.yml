@@ -19,7 +19,7 @@ jobs:
       - name: 'Linux build'
         run: ci-build/build-linux
       - name: 'Upload distributions'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: distribution-linux
           path: distribution
@@ -35,7 +35,7 @@ jobs:
         shell: bash
         run: ci-build/build-windows
       - name: 'Upload distributions'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: distribution-windows
           path: distribution
@@ -49,7 +49,7 @@ jobs:
       - name: 'Mac build and test'
         run: ci-build/build-mac
       - name: 'Upload distributions'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: distribution-mac
           path: distribution
@@ -61,7 +61,7 @@ jobs:
        - Mac
      steps:
        - name: Merge Artifacts
-         uses: actions/upload-artifact/merge@v6
+         uses: actions/upload-artifact/merge@v7
          with:
            name: distribution
            pattern: distribution-*
