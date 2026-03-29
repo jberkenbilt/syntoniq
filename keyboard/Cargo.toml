@@ -23,6 +23,7 @@ derive_more = { version = "2.1.1", features = ["debug"] }
 num_enum = "0.7.5"
 arc-swap = "1.8.1"
 bimap = "0.6.3"
+rustyline = "18.0.0"
 
 [build-dependencies]
 bindgen = "0.72.1"

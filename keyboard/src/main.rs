@@ -3,9 +3,8 @@ use clap::CommandFactory;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 use log::LevelFilter;
-use std::env;
 use std::sync::Arc;
-use syntoniq_kbd::DeviceType;
+use std::{env, mem};
 use syntoniq_kbd::controller::Controller;
 use syntoniq_kbd::engine;
 use syntoniq_kbd::engine::{Keyboard, SoundType};
@@ -13,6 +12,7 @@ use syntoniq_kbd::events::Events;
 use syntoniq_kbd::hexboard::HexBoard;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
+use syntoniq_kbd::{DeviceType, repl};
 use tokio::sync::oneshot;
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -31,6 +31,8 @@ struct Cli {
 enum Commands {
     /// Main command -- handle events and send music commands
     Run(Run),
+    /// Interactive command-based note/chord player
+    Repl(Repl),
     /// Output the built-in keyboard configuration
     DefaultConfig,
     /// Generate shell completion
@@ -48,6 +50,18 @@ struct Run {
     /// Syntoniq score file containing layouts; if omitted, a built-in default is used.
     #[arg(long)]
     score: Option<String>,
+    #[clap(flatten)]
+    sound_config: SoundConfig,
+}
+
+#[derive(Parser)]
+struct Repl {
+    #[clap(flatten)]
+    sound_config: SoundConfig,
+}
+
+#[derive(Parser)]
+struct SoundConfig {
     /// Send notes to a virtual output port named Syntoniq
     #[arg(long)]
     midi: bool,
@@ -58,7 +72,7 @@ struct Run {
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
-    let cli = Cli::parse();
+    let mut cli = Cli::parse();
     match cli.command {
         Commands::Completion { shell } => {
             let mut cmd = Cli::command();
@@ -69,7 +83,7 @@ async fn main() -> anyhow::Result<()> {
             print!("{}", engine::DEFAULT_SCORE);
             return Ok(());
         }
-        Commands::Run { .. } => {}
+        Commands::Run { .. } | Commands::Repl { .. } => {}
     }
 
     let mut log_builder = env_logger::builder();
@@ -82,42 +96,18 @@ async fn main() -> anyhow::Result<()> {
     let events_tx = events.sender().await;
     let events_rx = events.receiver();
 
-    // Create midi controller.
-    let Commands::Run(run) = cli.command else {
-        unreachable!("already handled");
+    let sound_config = match &mut cli.command {
+        Commands::Run(r) => &mut r.sound_config,
+        Commands::Repl(r) => &mut r.sound_config,
+        _ => unreachable!(),
     };
-    let tx2 = events_tx.clone();
-    let (id_tx, id_rx) = oneshot::channel();
-    let controller = Controller::new(&run.port, id_tx)?;
-    let device_type = id_rx.await?;
-    let keyboard = match device_type {
-        DeviceType::Empty => {
-            bail!("unable to identify device on port {}", run.port);
-        }
-        DeviceType::Launchpad => Arc::new(Launchpad::new(tx2)) as Arc<dyn Keyboard>,
-        DeviceType::HexBoard => Arc::new(HexBoard::new(tx2)) as Arc<dyn Keyboard>,
-    };
-    let main_handle =
-        engine::start_keyboard(Some(controller), keyboard.clone(), events_rx.resubscribe()).await?;
-    let tx2 = events_tx.clone();
-    let rx2 = events_rx.resubscribe();
-    tokio::spawn(async move {
-        web::http_view(tx2, rx2, 8440, device_type).await;
-    });
 
-    // Make sure everything is cleaned up on exit.
-    tokio::spawn(async move {
-        println!("Hit CTRL-C to exit");
-        let _ = tokio::signal::ctrl_c().await;
-        events.shutdown().await;
-    });
-
-    let sound_type = if run.midi {
+    let sound_type = if sound_config.midi {
         SoundType::Midi
     } else {
         #[cfg(feature = "csound")]
         {
-            SoundType::Csound(run.csound_arg)
+            SoundType::Csound(mem::take(&mut sound_config.csound_arg))
         }
         #[cfg(not(feature = "csound"))]
         {
@@ -125,14 +115,48 @@ async fn main() -> anyhow::Result<()> {
             bail!("MIDI not requested and csound not available");
         }
     };
-    engine::run(
-        run.score,
-        sound_type,
-        keyboard,
-        events_tx.clone(),
-        events_rx.resubscribe(),
-    )
-    .await?;
+    engine::start_sound(sound_type, events_tx.clone(), events_rx.resubscribe()).await;
+
+    let main_handle = match cli.command {
+        Commands::Run(run) => {
+            let tx2 = events_tx.clone();
+            let (id_tx, id_rx) = oneshot::channel();
+            let controller = Controller::new(&run.port, id_tx)?;
+            let device_type = id_rx.await?;
+            let keyboard = match device_type {
+                DeviceType::Empty => {
+                    bail!("unable to identify device on port {}", run.port);
+                }
+                DeviceType::Launchpad => Arc::new(Launchpad::new(tx2)) as Arc<dyn Keyboard>,
+                DeviceType::HexBoard => Arc::new(HexBoard::new(tx2)) as Arc<dyn Keyboard>,
+            };
+            let h =
+                engine::start_keyboard(Some(controller), keyboard.clone(), events_rx.resubscribe())
+                    .await?;
+            let tx2 = events_tx.clone();
+            let rx2 = events_rx.resubscribe();
+            tokio::spawn(async move {
+                web::http_view(tx2, rx2, 8440, device_type).await;
+            });
+            // Make sure everything is cleaned up on exit.
+            tokio::spawn(async move {
+                println!("Hit CTRL-C to exit");
+                let _ = tokio::signal::ctrl_c().await;
+                events.shutdown().await;
+            });
+            engine::run(
+                run.score,
+                keyboard,
+                events_tx.clone(),
+                events_rx.resubscribe(),
+            )
+            .await?;
+            h
+        }
+        Commands::Repl(_) => repl::run(events),
+        Commands::DefaultConfig | Commands::Completion { .. } => unreachable!("already handled"),
+    };
+
     drop(events_tx);
     drop(events_rx);
     main_handle.await?

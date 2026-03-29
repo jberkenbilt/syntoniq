@@ -1,6 +1,6 @@
 use crate::DeviceType;
 use crate::controller::Device;
-use crate::engine::{Keyboard, SoundType};
+use crate::engine::Keyboard;
 use crate::events::{
     Color, EngineState, Event, Events, FromDevice, KeyData, KeyEvent, Note, RawLightEvent,
     StateView, TestEvent,
@@ -102,14 +102,7 @@ impl TestController {
         let keyboard = Arc::new(lp);
         let k2 = keyboard.clone();
         let engine_handle = tokio::spawn(async move {
-            engine::run(
-                Some("test-data/keyboard.stq".to_string()),
-                SoundType::None,
-                k2,
-                tx2,
-                rx2,
-            )
-            .await
+            engine::run(Some("test-data/keyboard.stq".to_string()), k2, tx2, rx2).await
         });
         let tx2 = events_tx_weak.clone();
         let rx2 = events_rx.resubscribe();

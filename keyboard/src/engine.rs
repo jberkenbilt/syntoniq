@@ -106,7 +106,6 @@ impl Engine {
 
         #[cfg(test)]
         events::send_test_event(&self.events_tx, TestEvent::ResetComplete);
-        println!("** Syntoniq Keyboard is initialized **");
         Ok(())
     }
 
@@ -720,9 +719,33 @@ pub async fn start_keyboard(
     }))
 }
 
+pub async fn start_sound(
+    sound_type: SoundType,
+    events_tx: events::WeakSender,
+    events_rx: events::Receiver,
+) {
+    match sound_type {
+        SoundType::None => {}
+        SoundType::Midi => {
+            tokio::spawn(async move {
+                if let Err(e) = midi_player::play_midi(events_rx).await {
+                    log::error!("midi player error: {e}");
+                };
+            });
+        }
+        #[cfg(feature = "csound")]
+        SoundType::Csound(args) => {
+            tokio::spawn(async move {
+                if let Err(e) = csound::run_csound(events_rx, events_tx, args).await {
+                    log::error!("csound player error: {e}");
+                };
+            });
+        }
+    }
+}
+
 pub async fn run(
     score_file: Option<String>,
-    sound_type: SoundType,
     keyboard: Arc<dyn Keyboard>,
     events_tx: events::WeakSender,
     mut events_rx: events::Receiver,
@@ -733,26 +756,6 @@ pub async fn run(
         events_tx: events_tx.clone(),
         transient_state: Default::default(),
     };
-    let rx2 = events_rx.resubscribe();
-    match sound_type {
-        SoundType::None => {}
-        SoundType::Midi => {
-            tokio::spawn(async move {
-                if let Err(e) = midi_player::play_midi(rx2).await {
-                    log::error!("midi player error: {e}");
-                };
-            });
-        }
-        #[cfg(feature = "csound")]
-        SoundType::Csound(args) => {
-            let tx2 = events_tx.clone();
-            tokio::spawn(async move {
-                if let Err(e) = csound::run_csound(rx2, tx2, args).await {
-                    log::error!("csound player error: {e}");
-                };
-            });
-        }
-    }
     if let Some(tx) = events_tx.upgrade() {
         tx.send(Event::Reset)?;
     }
