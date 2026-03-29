@@ -398,7 +398,7 @@ impl Keyboard for Launchpad {
         Arc::new(LaunchpadDevice)
     }
 
-    fn handle_raw_event(&self, msg: FromDevice) -> anyhow::Result<()> {
+    fn handle_device_event(&self, msg: FromDevice) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -444,9 +444,8 @@ impl Keyboard for Launchpad {
         Ok(())
     }
 
-    fn main_event_loop(&self, event: Event) -> anyhow::Result<()> {
+    fn handle_event(&self, event: Event) -> anyhow::Result<()> {
         match event {
-            Event::Shutdown => return Ok(()),
             Event::SelectLayout(e) => {
                 self.state.write().expect("lock").cur_layout = Some(e.idx);
                 self.fix_layout_lights()?;
@@ -457,7 +456,7 @@ impl Keyboard for Launchpad {
                 self.state.write().expect("lock").num_layouts = e.names.len();
                 self.fix_layout_lights()?;
             }
-            Event::Reset | Event::UpdateNote(_) | Event::PlayNote(_) => {}
+            Event::Shutdown | Event::Reset | Event::UpdateNote(_) | Event::PlayNote(_) => {}
             #[cfg(test)]
             Event::TestEngine(_) | Event::TestWeb(_) | Event::TestEvent(_) | Event::TestSync => {}
         }
@@ -553,7 +552,7 @@ mod tests {
         }))?;
         tc.wait_for_test_event(TestEvent::LayoutsHandled).await;
 
-        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        launchpad.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: 105,
             velocity: 0,
         }))?;
@@ -561,13 +560,13 @@ mod tests {
         let ts = tc.get_engine_state().await;
         assert_eq!(ts.layout.unwrap(), 4);
         // Scroll layout
-        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        launchpad.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: 19,
             velocity: 0,
         }))?;
         tc.wait_for_test_event(TestEvent::LayoutsHandled).await;
         assert_eq!(launchpad.state.read().expect("lock").layout_offset, 8);
-        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        launchpad.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: 101,
             velocity: 0,
         }))?;
@@ -575,13 +574,13 @@ mod tests {
         let ts = tc.get_engine_state().await;
         assert_eq!(ts.layout.unwrap(), 8);
 
-        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        launchpad.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: 19,
             velocity: 0,
         }))?;
         tc.wait_for_test_event(TestEvent::LayoutsHandled).await;
         assert_eq!(launchpad.state.read().expect("lock").layout_offset, 0);
-        launchpad.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        launchpad.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: 102,
             velocity: 0,
         }))?;

@@ -72,11 +72,11 @@ impl Keyboard for TestKeyboard {
         unreachable!();
     }
 
-    fn handle_raw_event(&self, _msg: FromDevice) -> anyhow::Result<()> {
+    fn handle_device_event(&self, _msg: FromDevice) -> anyhow::Result<()> {
         Ok(())
     }
 
-    fn main_event_loop(&self, _event: Event) -> anyhow::Result<()> {
+    fn handle_event(&self, _event: Event) -> anyhow::Result<()> {
         Ok(())
     }
 }

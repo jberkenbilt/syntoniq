@@ -67,8 +67,8 @@ pub trait Keyboard: Sync + Send {
         velocity: u8,
     ) -> RawLightEvent;
     fn make_device(&self) -> Arc<dyn Device>;
-    fn handle_raw_event(&self, msg: FromDevice) -> anyhow::Result<()>;
-    fn main_event_loop(&self, event: Event) -> anyhow::Result<()>;
+    fn handle_device_event(&self, msg: FromDevice) -> anyhow::Result<()>;
+    fn handle_event(&self, event: Event) -> anyhow::Result<()>;
 }
 
 /// See toggle_move for interpretation of fields
@@ -687,7 +687,7 @@ pub async fn start_controller(
     let device = keyboard.make_device();
     tokio::spawn(async move {
         while let Ok(msg) = from_device_rx.recv_async().await {
-            if let Err(e) = keyboard.handle_raw_event(msg) {
+            if let Err(e) = keyboard.handle_device_event(msg) {
                 log::error!("error handling raw Launchpad event: {e}");
             }
         }
@@ -711,7 +711,7 @@ pub async fn start_keyboard(
     // function returns.
     Ok(task::spawn(async move {
         while let Some(event) = events::receive_check_lag(&mut events_rx, Some("engine")).await {
-            keyboard.main_event_loop(event)?;
+            keyboard.handle_event(event)?;
         }
         if let Some(h) = controller_h {
             h.await??;

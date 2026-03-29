@@ -515,7 +515,7 @@ impl Keyboard for HexBoard {
         Arc::new(HexBoardDevice)
     }
 
-    fn handle_raw_event(&self, msg: FromDevice) -> anyhow::Result<()> {
+    fn handle_device_event(&self, msg: FromDevice) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -562,9 +562,8 @@ impl Keyboard for HexBoard {
         Ok(())
     }
 
-    fn main_event_loop(&self, event: Event) -> anyhow::Result<()> {
+    fn handle_event(&self, event: Event) -> anyhow::Result<()> {
         match event {
-            Event::Shutdown => return Ok(()),
             Event::SelectLayout(e) => {
                 let mut state = self.state.write().unwrap();
                 state.cur_layout = Some(e.idx);
@@ -578,7 +577,7 @@ impl Keyboard for HexBoard {
                 #[cfg(test)]
                 events::send_test_event(&self.events_tx, TestEvent::LayoutsHandled);
             }
-            Event::Reset | Event::UpdateNote(_) | Event::PlayNote(_) => {}
+            Event::Shutdown | Event::Reset | Event::UpdateNote(_) | Event::PlayNote(_) => {}
             #[cfg(test)]
             Event::TestEngine(_) | Event::TestWeb(_) | Event::TestEvent(_) | Event::TestSync => {}
         }
@@ -810,7 +809,7 @@ mod tests {
         let layout_key = 20 * u8::from(CommandKey::Layout);
 
         // Enter layout mode
-        hexboard.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        hexboard.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: layout_key,
             velocity: 0,
         }))?;
@@ -818,7 +817,7 @@ mod tests {
         assert!(hexboard.state.read().unwrap().layout_mode);
 
         // Cancel layout mode
-        hexboard.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        hexboard.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: layout_key,
             velocity: 0,
         }))?;
@@ -826,7 +825,7 @@ mod tests {
         assert!(!hexboard.state.read().unwrap().layout_mode);
 
         // Enter layout mode
-        hexboard.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        hexboard.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: layout_key,
             velocity: 0,
         }))?;
@@ -842,7 +841,7 @@ mod tests {
         assert!(HexBoard::key_to_layout_idx(22, 0).is_none());
         assert!(HexBoard::key_to_layout_idx(22, 20).is_none());
         assert!(HexBoard::key_to_layout_idx(22, 24).is_none());
-        hexboard.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        hexboard.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: 24,
             velocity: 0,
         }))?;
@@ -850,7 +849,7 @@ mod tests {
         assert!(hexboard.state.read().unwrap().layout_mode);
 
         // Select a layout
-        hexboard.handle_raw_event(FromDevice::Key(RawKeyEvent {
+        hexboard.handle_device_event(FromDevice::Key(RawKeyEvent {
             key: 3,
             velocity: 0,
         }))?;
