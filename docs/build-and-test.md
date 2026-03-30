@@ -13,7 +13,7 @@ You can build and test for routine development with
 # Coverage
 ```sh
 ./coverage
-open target/debug/coverage/index.html
+open target.coverage/debug/coverage/index.html
 ```
 
 Run
@@ -33,6 +33,8 @@ to avoid creating profraw files when running things manually from a coverage bui
   * timeline.rs
 * In common/src/parsing/score/
   * generator.rs
+  * repl.rs
+Also check common/src/parsing/score_helpers.rs, which should have coverage except some error conditions or defensive code.
 
 The rationale for 100% coverage is to ensure that all error conditions are tested and that there are no unreachable code paths. Unreachable code paths would indicate that the parser isn't coded as tightly as it should be. These would arise if later code relies on earlier validations, which is fragile. Requiring that 100% of the parser code is reachable helps to ensure that we have a tight grammar.
 
