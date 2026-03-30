@@ -9,6 +9,7 @@ use midir::{MidiOutput, MidiOutputConnection};
 use std::collections::HashMap;
 use syntoniq_common::pitch::Pitch;
 use syntoniq_common::to_anyhow;
+use tokio::sync::mpsc;
 
 struct Player {
     output_connection: MidiOutputConnection,
@@ -92,7 +93,7 @@ pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
     //   - Start in midi mode so the output port exists
     //   - Start Surge-XT and ensure only Syntoniq input
     //   - Exit surge before exiting syntoniq.
-    let (tx, rx) = flume::unbounded();
+    let (tx, mut rx) = mpsc::channel(100);
     let h = tokio::spawn(async move {
         while let Some(event) = events::receive_check_lag(&mut events_rx, Some("midi player")).await
         {
@@ -101,7 +102,7 @@ pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
                 Event::PlayNote(_) => {}
                 _ => continue,
             }
-            tx.send_async(event).await.unwrap();
+            tx.send(event).await.unwrap();
         }
     });
 
@@ -125,7 +126,7 @@ pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
             channels: [false; 16],
         };
         p.channels[0] = true; // reserve channel 1 -- MPE doesn't expect note on it
-        while let Ok(event) = rx.recv() {
+        while let Some(event) = rx.blocking_recv() {
             match event {
                 Event::PlayNote(e) => p.handle_note(&e.pitch, e.velocity)?,
                 Event::SelectLayout(_) => p.init_mpe()?,

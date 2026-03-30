@@ -9,7 +9,7 @@ use std::sync::{Arc, Mutex};
 use std::thread;
 use std::time::Duration;
 use syntoniq_common::to_anyhow;
-use tokio::sync::oneshot;
+use tokio::sync::{mpsc, oneshot};
 use tokio::task::JoinHandle;
 
 enum DeviceData {
@@ -20,7 +20,7 @@ enum DeviceData {
 }
 
 struct LiveDevice {
-    from_device_tx: flume::Sender<FromDevice>,
+    from_device_tx: mpsc::Sender<FromDevice>,
     device: Arc<dyn Device>,
 }
 
@@ -121,7 +121,7 @@ fn on_midi(_stamp_ms: u64, event: &[u8], device: &mut Arc<ArcSwap<DeviceData>>) 
         }
         DeviceData::Identified(d) => {
             if let Some(event) = d.device.on_midi(event)
-                && let Err(e) = d.from_device_tx.send(event)
+                && let Err(e) = d.from_device_tx.blocking_send(event)
             {
                 log::error!("error notifying of device event: {e}")
             }
@@ -179,8 +179,8 @@ impl Controller {
 
     pub fn run(
         mut self,
-        to_device_rx: flume::Receiver<ToDevice>,
-        from_device_tx: flume::Sender<FromDevice>,
+        to_device_rx: mpsc::Receiver<ToDevice>,
+        from_device_tx: mpsc::Sender<FromDevice>,
         device: Arc<dyn Device>,
     ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
         // Ensure init is called synchronously before we return.
@@ -197,10 +197,10 @@ impl Controller {
 
     fn relay_to_device(
         mut self,
-        to_device_rx: flume::Receiver<ToDevice>,
+        mut to_device_rx: mpsc::Receiver<ToDevice>,
         device: Arc<dyn Device>,
     ) -> anyhow::Result<()> {
-        while let Ok(e) = to_device_rx.recv() {
+        while let Some(e) = to_device_rx.blocking_recv() {
             device.handle_event(e, &mut self.output_connection)?;
         }
         log::debug!("device received shutdown request");

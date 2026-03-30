@@ -3,6 +3,7 @@ use anyhow::anyhow;
 use std::ffi::{CStr, CString, c_char, c_int};
 use std::ptr;
 use syntoniq_common::to_anyhow;
+use tokio::sync::mpsc;
 use tokio::task;
 use tokio::task::JoinHandle;
 
@@ -25,7 +26,7 @@ unsafe impl Send for CsoundPtr {}
 struct CsoundPtr(*mut cs::CSOUND);
 
 pub struct CsoundApi {
-    tx: flume::Sender<CsoundMessage>,
+    tx: mpsc::Sender<CsoundMessage>,
     performance_handle: Option<JoinHandle<()>>,
 }
 
@@ -51,7 +52,7 @@ impl CsoundApi {
         events_tx: events::WeakSender,
         args: Vec<String>,
     ) -> anyhow::Result<Self> {
-        let (tx, rx) = flume::unbounded();
+        let (tx, rx) = mpsc::channel(100);
         let csound = Self::start(csound_file, args)?;
         let h = task::spawn_blocking(|| {
             Self::main_loop(csound, rx, events_tx);
@@ -63,7 +64,7 @@ impl CsoundApi {
     }
 
     pub async fn shutdown(mut self) {
-        let _ = self.tx.send_async(CsoundMessage::Shutdown).await;
+        let _ = self.tx.send(CsoundMessage::Shutdown).await;
         if let Some(h) = self.performance_handle.take() {
             _ = h.await;
         }
@@ -71,7 +72,7 @@ impl CsoundApi {
 
     pub async fn input_message<M: Into<String>>(&self, msg: M) -> anyhow::Result<()> {
         self.tx
-            .send_async(CsoundMessage::InputMessage(msg.into()))
+            .send(CsoundMessage::InputMessage(msg.into()))
             .await
             .map_err(to_anyhow)
     }
@@ -109,7 +110,7 @@ impl CsoundApi {
 
     fn main_loop(
         csound: CsoundPtr,
-        rx: flume::Receiver<CsoundMessage>,
+        mut rx: mpsc::Receiver<CsoundMessage>,
         events_tx: events::WeakSender,
     ) {
         'top: while unsafe { cs::csoundPerformKsmps(csound.0) } == 0 {

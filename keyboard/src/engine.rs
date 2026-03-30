@@ -16,6 +16,7 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 use syntoniq_common::parsing;
 use syntoniq_common::parsing::{Coordinate, Layout, Layouts};
+use tokio::sync::mpsc;
 use tokio::task;
 use tokio::task::JoinHandle;
 
@@ -670,22 +671,22 @@ pub async fn start_controller(
 ) -> anyhow::Result<JoinHandle<anyhow::Result<()>>> {
     // Communicating with the MIDI device must be sync. The rest of the application must be
     // async. To bridge the gap, we create flume channels to relay back and forth.
-    let (to_device_tx, to_device_rx) = flume::unbounded::<ToDevice>();
-    let (from_device_tx, from_device_rx) = flume::unbounded::<FromDevice>();
+    let (to_device_tx, to_device_rx) = mpsc::channel::<ToDevice>(100);
+    let (from_device_tx, mut from_device_rx) = mpsc::channel::<FromDevice>(100);
     tokio::spawn(async move {
         while let Some(event) = events::receive_check_lag(&mut events_rx, Some("controller")).await
         {
             let Event::ToDevice(event) = event else {
                 continue;
             };
-            if let Err(e) = to_device_tx.send_async(event).await {
+            if let Err(e) = to_device_tx.send(event).await {
                 log::error!("failed to relay message to device: {e}");
             }
         }
     });
     let device = keyboard.make_device();
     tokio::spawn(async move {
-        while let Ok(msg) = from_device_rx.recv_async().await {
+        while let Some(msg) = from_device_rx.recv().await {
             if let Err(e) = keyboard.handle_device_event(msg) {
                 log::error!("error handling raw Launchpad event: {e}");
             }
