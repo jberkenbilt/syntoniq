@@ -125,11 +125,11 @@ i "SetPartParam" 3 1 1 "freq_1" 1080
 ; C!' @143
 i 1.1 3 1 1 1 0.567
 ; C!18@147
-i "SetPartParam" 4 1 1 "freq_1" 367.924
+i "SetPartParam" 4 1 1 "freq_1" 366.584
 ; C!18 @147
 i 1.1 4 1 1 1 0.567
 ; C!18,@152
-i "SetPartParam" 5 1 1 "freq_1" 122.641
+i "SetPartParam" 5 1 1 "freq_1" 122.195
 ; C!18, @152
 i 1.1 5 1 1 1 0.567
 ; C!2/12@158
@@ -141,7 +141,7 @@ i "SetPartParam" 7 1 1 "freq_1" 119.865
 ; C!2/12, @165
 i 1.1 7 1 1 1 0.567
 ; A1!17@173
-i "SetPartParam" 8 1 1 "freq_1" 256.022
+i "SetPartParam" 8 1 1 "freq_1" 249.988
 ; A1!17 @173
 i 1.1 8 1 1 1 0.567
 ; 1:C@267
@@ -161,11 +161,11 @@ i "SetPartParam" 12 1 1 "freq_1" 720
 ; C!' @277
 i 1.1 12 1 1 1 0.567
 ; C!18@281
-i "SetPartParam" 13 1 1 "freq_1" 367.924
+i "SetPartParam" 13 1 1 "freq_1" 366.584
 ; C!18 @281
 i 1.1 13 1 1 1 0.567
 ; C!18,@286
-i "SetPartParam" 14 1 1 "freq_1" 183.962
+i "SetPartParam" 14 1 1 "freq_1" 183.292
 ; C!18, @286
 i 1.1 14 1 1 1 0.567
 ; C!2/12@292
@@ -177,7 +177,7 @@ i "SetPartParam" 16 1 1 "freq_1" 179.797
 ; C!2/12, @299
 i 1.1 16 1 1 1 0.567
 ; A1!17@307
-i "SetPartParam" 17 1 1 "freq_1" 256.022
+i "SetPartParam" 17 1 1 "freq_1" 249.988
 ; A1!17 @307
 i 1.1 17 1 1 1 0.567
 ; 1:C@430
@@ -197,11 +197,11 @@ i "SetPartParam" 21 1 1 "freq_1" 1080
 ; C!' @440
 i 1.1 21 1 1 1 0.567
 ; C!18@444
-i "SetPartParam" 22 1 1 "freq_1" 355.135
+i "SetPartParam" 22 1 1 "freq_1" 366.584
 ; C!18 @444
 i 1.1 22 1 1 1 0.567
 ; C!18,@449
-i "SetPartParam" 23 1 1 "freq_1" 118.378
+i "SetPartParam" 23 1 1 "freq_1" 122.195
 ; C!18, @449
 i 1.1 23 1 1 1 0.567
 ; C!2/12@455
@@ -213,7 +213,7 @@ i "SetPartParam" 25 1 1 "freq_1" 119.865
 ; C!2/12, @462
 i 1.1 25 1 1 1 0.567
 ; A1!17@470
-i "SetPartParam" 26 1 1 "freq_1" 248.443
+i "SetPartParam" 26 1 1 "freq_1" 249.988
 ; A1!17 @470
 i 1.1 26 1 1 1 0.567
 ; A1@476

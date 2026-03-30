@@ -128,14 +128,15 @@ For dynamics, like the `@` up with the beat but only add spaces as necessary to 
 Consider an interactive mode for building chords using generated notes. For now, let this just be a CLI tool. It can be an alternative subcommand to syntoniq-kbd since it will share all its output options and use the same internal messaging system, or we can still have it be `run` and can make `--port` optional if `--prompt` is given.
 
 ```
-!n              -- divisions = n (or ! for pure JI)
+!!              -- silence all notes
+![[a[/b]]/n]    -- set interval and divisions -- divisions absent or 0 or 1 = JI
 = pitch         -- set_base_pitch(absolute=pitch)
 * pitch         -- set_base_pitch(relative=pitch)
+% a[/b]         -- set the cycle ratio
 note1 > note2   -- transpose(pitch_from=note1 written=note2)
 note            -- play note
-- n             -- stop playing note n
-n < note        -- replace note n with a note
-0               -- silence all notes
+n <             -- stop playing note n
+n < note        -- set note n to note, replacing any existing value
 ```
 Each time a note is played, print a numbered list of all the notes currently played with useful metadata.
 

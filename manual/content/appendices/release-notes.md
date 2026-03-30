@@ -6,6 +6,12 @@ sort_by = "weight"
 
 This section includes release notes for the Syntoniq software. See also [docs/TODO.md](https://github.com/jberkenbilt/syntoniq/blob/main/docs/TODO.md) for the latest roadmap.
 
+# v0.4 - TBD
+
+## Bug Fix/Breaking Change
+
+* A generated note with a `!n` override that specified only a number of divisions, not an interval, was interpreted to divide the scale's default interval rather than dividing the octave. This was inconsistent with documented behavior and also resulted in the `!` override creating a context-dependent pitch, which defeats the purpose.
+
 # v0.3.1 - February 7, 2026
 
 * Add the `syntoniq calc` command, which implements various pitch calculators.

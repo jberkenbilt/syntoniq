@@ -2692,7 +2692,7 @@
               228,
               229
             ],
-            "value": "for pure Just Intonation step must be 0 or omitted"
+            "value": "for pure Just Intonation, step must be 0 or omitted"
           }
         },
         {
@@ -2736,7 +2736,7 @@
               235,
               237
             ],
-            "value": "for pure Just Intonation step must be 0 or omitted"
+            "value": "for pure Just Intonation, step must be 0 or omitted"
           }
         },
         {
@@ -2912,7 +2912,7 @@
               390,
               391
             ],
-            "value": "for pure Just Intonation step must be 0 or omitted"
+            "value": "for pure Just Intonation, step must be 0 or omitted"
           }
         },
         {

@@ -10,7 +10,7 @@ use crate::parsing::model::{
 };
 use crate::parsing::model::{DynamicChange, DynamicLeader, RegularDynamic};
 use crate::parsing::pass1::{Pass1, Token1};
-use crate::parsing::{model, pass1};
+use crate::parsing::{model, pass1, score_helpers};
 use crate::pitch::{Factor, Pitch};
 use crate::to_anyhow;
 use anyhow::anyhow;
@@ -497,34 +497,13 @@ fn directive<'s>(
     }
 }
 
-fn octave(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<i8>> {
+pub(crate) fn octave(
+    diags: &Diagnostics,
+) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<i8>> {
     move |input| {
         (alt((character('\''), character(','), fail)), opt(number))
             .parse_next(input)
-            .map(|(sym, num)| {
-                let mut span = sym.span;
-                let mut count: i8 = if let Some(n) = num {
-                    span.end = n.span.end;
-                    let count: i8 = if let Ok(n) = i8::try_from(n.value) {
-                        n
-                    } else {
-                        diags.err(code::NOTE_SYNTAX, n.span, "octave count is too large");
-                        1
-                    };
-                    if count == 0 {
-                        // It can be zero, but not explicitly zero.
-                        diags.err(code::NOTE_SYNTAX, n.span, "octave count may not be zero");
-                    }
-                    count
-                } else {
-                    1
-                };
-                if sym.value == ',' {
-                    count = -count;
-                }
-
-                Spanned::new(span, count)
-            })
+            .map(|(sym, num)| score_helpers::check_note_octave(diags, sym, num))
     }
 }
 

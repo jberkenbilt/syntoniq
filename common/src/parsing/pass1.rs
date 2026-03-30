@@ -242,7 +242,7 @@ fn comment<'s>() -> impl Parser1<'s> {
     )
 }
 
-fn space<'s>() -> impl Parser1<'s> {
+pub(crate) fn space<'s>() -> impl Parser1<'s> {
     parse1_token(take_while(0.., is_space), |_raw, _span, _out| Pass1::Space)
 }
 

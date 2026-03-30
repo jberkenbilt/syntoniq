@@ -308,6 +308,35 @@ pub fn format_note_cycle<'s>(note_name: Cow<'s, str>, cycle: i32) -> Cow<'s, str
     }
 }
 
+pub(crate) fn check_note_octave(
+    diags: &Diagnostics,
+    sym: Spanned<char>,
+    num: Option<Spanned<u32>>,
+) -> Spanned<i8> {
+    let mut span = sym.span;
+    let mut count: i8 = if let Some(n) = num {
+        span.end = n.span.end;
+        let count: i8 = if let Ok(n) = i8::try_from(n.value) {
+            n
+        } else {
+            diags.err(code::NOTE_SYNTAX, n.span, "octave count is too large");
+            1
+        };
+        if count == 0 {
+            // It can be zero, but not explicitly zero.
+            diags.err(code::NOTE_SYNTAX, n.span, "octave count may not be zero");
+        }
+        count
+    } else {
+        1
+    };
+    if sym.value == ',' {
+        count = -count;
+    }
+
+    Spanned::new(span, count)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

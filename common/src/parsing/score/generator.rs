@@ -10,6 +10,7 @@ use serde::Serialize;
 use std::borrow::Cow;
 use std::collections::HashMap;
 use std::collections::hash_map::Entry;
+use std::fmt::{Display, Formatter};
 use std::mem;
 use winnow::combinator::{alt, opt, preceded};
 use winnow::token::take_while;
@@ -61,10 +62,75 @@ enum GenTokenType {
 type GenToken<'s> = Spanned<Token<'s, GenTokenType>>;
 trait GenParser<'s>: Parser1Intermediate<'s, GenToken<'s>> {}
 impl<'s, P: Parser1Intermediate<'s, GenToken<'s>>> GenParser<'s> for P {}
-struct Step {
+pub(crate) struct Step {
     a: Option<Spanned<u32>>,
     b: Option<Spanned<u32>>,
     c: Option<Spanned<u32>>,
+}
+#[derive(Serialize, Debug, Clone, PartialEq)]
+pub struct Divisions {
+    pub interval: Ratio<u32>,
+    pub divisions: Option<u32>,
+}
+impl Default for Divisions {
+    fn default() -> Self {
+        Self {
+            interval: Ratio::from_integer(2),
+            divisions: None,
+        }
+    }
+}
+impl Display for Divisions {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        match self.divisions {
+            None => write!(f, "just intonation"),
+            Some(n) => write!(f, "interval: {}, divisions: {}", self.interval, n),
+        }
+    }
+}
+
+impl Step {
+    pub(crate) fn to_divisions(&self) -> Divisions {
+        // If there are no values, we don't overlay. If there is one value, it is the number
+        // of divisions of the octave We use the octave rather than a default interval so that
+        // presence of `!` in a note name is deterministic. If two values, the first is a
+        // division interval, and the second is divisions. If three values, the first two
+        // are a rational division interval, and the third is divisions. The parser
+        // guarantees that `b` is Some if `c` is Some and `a` is Some if `b` is Some.
+        let (interval, divisions) = match self.c {
+            None => match self.b {
+                None => match self.a {
+                    None => (Ratio::from_integer(2), None),
+                    Some(a) => {
+                        // If there is only one value, it is the number of divisions of the
+                        // octave, regardless of the default division interval.
+                        (Ratio::from_integer(2), Some(a.value))
+                    }
+                },
+                Some(b) => {
+                    // If there are two values, the first is a division interval integer and
+                    // the second is the number of divisions
+                    (Ratio::from_integer(self.a.unwrap().value), Some(b.value))
+                }
+            },
+            Some(c) => {
+                // If there are three values, the first two are a division interval and the
+                // third is the number of divisions
+                (
+                    Ratio::new(self.a.unwrap().value, self.b.unwrap().value),
+                    Some(c.value),
+                )
+            }
+        };
+        // If number of divisions is 0 or 1, treat as if absent. This makes it possible for the
+        // prompt repl to use !3/0 or !3/1 to set the interval to 3 without adding a number of
+        // steps.
+        let divisions = divisions.and_then(|x| if x <= 1 { None } else { Some(x) });
+        Divisions {
+            interval,
+            divisions,
+        }
+    }
 }
 
 fn parse_gen<'s, P, F, T>(p: P, f: F) -> impl GenParser<'s>
@@ -120,7 +186,7 @@ fn shift<'s>() -> impl GenParser<'s> {
     })
 }
 
-fn step<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, Step> {
+pub(crate) fn step<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, Step> {
     pass1::parse1_intermediate(
         preceded(
             '!',
@@ -179,37 +245,9 @@ impl<'a> NoteParser<'a> {
         };
         let (divided_interval, divisions) = match step {
             None => (self.generator.divided_interval, self.generator.divisions),
-            Some(Step { a, b, c }) => {
-                // If there are no values, we don't overlay. If there is one value, it is the number
-                // of divisions of the specified division interval. If two values, the first is a
-                // division interval, and the second is divisions. If three values, the first two
-                // are a rational division interval, and the third is divisions. The parser
-                // guarantees that `b` is Some if `c` is Some and `a` is Some if `b` is Some.
-                match c {
-                    None => match b {
-                        None => match a {
-                            None => (self.generator.divided_interval, None),
-                            Some(a) => {
-                                // If there is only one value, it is the number of divisions of the
-                                // default division interval.
-                                (self.generator.divided_interval, Some(a.value))
-                            }
-                        },
-                        Some(b) => {
-                            // If there are two values, the first is a division interval integer and
-                            // the second is the number of divisions
-                            (Ratio::from_integer(a.unwrap().value), Some(b.value))
-                        }
-                    },
-                    Some(c) => {
-                        // If there are three values, the first two are a division interval and the
-                        // third is the number of divisions
-                        (
-                            Ratio::new(a.unwrap().value, b.unwrap().value),
-                            Some(c.value),
-                        )
-                    }
-                }
+            Some(step) => {
+                let d = step.to_divisions();
+                (d.interval, d.divisions)
             }
         };
         for part in parts {
@@ -223,7 +261,7 @@ impl<'a> NoteParser<'a> {
                                 diags.err(
                                     code::GENERATED_NOTE,
                                     n.span,
-                                    "for pure Just Intonation step must be 0 or omitted",
+                                    "for pure Just Intonation, step must be 0 or omitted",
                                 );
                             }
                         }
@@ -700,7 +738,7 @@ mod tests {
         assert_eq!(pitch_of(&g, "D!"), Pitch::must_parse("4/3"));
         assert_eq!(pitch_of(&g, "D!2/12"), Pitch::must_parse("^5|12"));
         assert_eq!(pitch_of(&g, "D!3/18"), Pitch::must_parse("3^5|18"));
-        assert_eq!(pitch_of(&g, "D!7"), Pitch::must_parse("3/2^5|7"));
+        assert_eq!(pitch_of(&g, "D!7"), Pitch::must_parse("^3|7"));
         assert_eq!(pitch_of(&g, "D!3/2/7"), Pitch::must_parse("3/2^5|7"));
 
         assert!(!diags.has_errors());
@@ -736,5 +774,18 @@ mod tests {
         .collect();
 
         assert_eq!(a.primary_names, exp);
+    }
+
+    #[test]
+    fn test_divisions_fmt() {
+        assert_eq!(Divisions::default().to_string(), "just intonation");
+        assert_eq!(
+            Divisions {
+                interval: Ratio::from_integer(3),
+                divisions: Some(13),
+            }
+            .to_string(),
+            "interval: 3, divisions: 13"
+        );
     }
 }

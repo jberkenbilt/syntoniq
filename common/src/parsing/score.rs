@@ -19,6 +19,7 @@ use std::{cmp, mem};
 
 mod directives;
 mod generator;
+mod repl;
 use crate::parsing::layout::{
     Coordinate, IsomorphicMapping, Layout, LayoutMapping, Layouts, ManualMapping, MappingDetails,
 };
@@ -31,6 +32,7 @@ use crate::parsing::{
 };
 use crate::pitch::Pitch;
 pub use directives::*;
+pub use repl::{DivisionsAndCycle, PromptCommand};
 use to_static_derive::ToStatic;
 
 pub const BUILTIN_SCALES: &str = include_str!("built-in-scales.stq");
@@ -237,7 +239,6 @@ impl<'s> ScaleBuilder<'s> {
         diags: &Diagnostics,
         note: &Spanned<NoteOctave<'s>>,
     ) -> Option<Pitch> {
-        // TODO: work in octave
         let name = &note.value.name;
         let pitch = self.notes.get(&name.value).cloned().or_else(|| {
             let pitch = self.generator.as_ref()?.get_note(diags, &name.as_ref());
@@ -2148,6 +2149,17 @@ pub fn generated_note_pitch(name: &str) -> Option<Pitch> {
     };
     let diags = Diagnostics::new();
     g.get_note(&diags, &Spanned::new(0..1, name))
+}
+
+/// Helper function for `syntoniq-kbd prompt`
+pub fn parse_prompt_line(line: &str, dc: &DivisionsAndCycle) -> Option<PromptCommand> {
+    match repl::parse_repl_line(line, dc) {
+        Ok(t) => Some(t),
+        Err(diags) => {
+            anstream::eprintln!("{}", diags.render("", line));
+            None
+        }
+    }
 }
 
 #[cfg(test)]
