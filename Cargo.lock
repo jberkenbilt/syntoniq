@@ -1668,6 +1668,7 @@ dependencies = [
  "log",
  "midir",
  "midly",
+ "num-rational",
  "num_enum",
  "rust-embed",
  "rustyline",

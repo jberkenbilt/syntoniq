@@ -3,4 +3,4 @@
 /.grcov
 /target.x86_64-windows
 *.auto-safe
-syntoniq-repl.txt
+syntoniq-prompt-history.txt

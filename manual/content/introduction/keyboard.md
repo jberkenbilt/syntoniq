@@ -27,8 +27,6 @@ The Syntoniq Keyboard works on the following devices:
 
 Adding support for additional devices may be possible as the device support parts of the keyboard are isolated. To support Syntoniq Keyboard, the device must support some kind of external control where external software can receive button events and send light events. It would also be possible to create a software-based keyboard application based on an existing software programmable controller or on a custom tool. I highly recommend one of the hardware solutions. Both of the options above are affordable in comparison to many microtonal keyboard options. The HexBoard gives you 133 notes vs. the Launchpad's 64 and also works as a capable microtonal keyboard in its own right. The Launchpad is also an excellent device that has other uses, particularly as a controller for a digital audio workstation.
 
-FUTURE: Update if the interactive chord builder is added
-
-A future version of Syntoniq may support an interactive chord builder that uses the keyboard's output logic to send sounds to Csound or a MIDI device. This would allow you to type note names at a command-line prompt to build chords interactively. It could function in lieu of a keyboard if you don't have the hardware, or it could allow you to build scales using the full power of Syntoniq [generated scales](../../microtonality/generated-scales/).
+The Syntoniq keyboard application has a [prompt mode](../../keyboard/prompt-mode/). In this mode, you type notes at a command prompt to build chords a note at a time, and send sounds to Csound or a MIDI device. It can function in lieu of a keyboard if you don't have the hardware, and it can be a useful tool for transcribing microtonal music, especially if you're not sure what the tuning system is.
 
 The Syntoniq Keyboard application is covered in depth in [SYNTONIQ KEYBOARD](../../keyboard/).

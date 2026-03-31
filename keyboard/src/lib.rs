@@ -6,7 +6,7 @@ pub mod events;
 pub mod hexboard;
 pub mod launchpad;
 pub mod midi_player;
-pub mod repl;
+pub mod prompt;
 #[cfg(test)]
 pub mod test_util;
 pub mod view;

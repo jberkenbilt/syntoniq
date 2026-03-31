@@ -6,11 +6,17 @@ sort_by = "weight"
 
 This section includes release notes for the Syntoniq software. See also [docs/TODO.md](https://github.com/jberkenbilt/syntoniq/blob/main/docs/TODO.md) for the latest roadmap.
 
+<!-- See issues to resolve ... below -->
+
 # v0.4 - TBD
 
 ## Bug Fix/Breaking Change
 
 * A generated note with a `!n` override that specified only a number of divisions, not an interval, was interpreted to divide the scale's default interval rather than dividing the octave. This was inconsistent with documented behavior and also resulted in the `!` override creating a context-dependent pitch, which defeats the purpose.
+
+## Enhancements
+
+* This version introduces `syntoniq-kbd prompt`, an interactive chord builder that allows you to construct chords by typing generated note names at a command prompt.
 
 # v0.3.1 - February 7, 2026
 
@@ -43,16 +49,12 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 
 This is the initial release of Syntoniq.
 
-## Issues to Resolve Before 1.0
+# Issues to Resolve Before 1.0
 
-* Update Zola to 0.22 (manual, syntax highlighting); possible VSCode syntax highlighting (should use same format as manual)
-* Implement `syntoniq calc` to cover items from `misc` scripts and a few others
 * Fix a few MIDI generation edge cases/overflow conditions and improve pitch overflow handling
-* Implement pitch glide
 * Remove disclaimer about compatibility contract not being enforced before version 1.0.0
 
-## Enhancements for After 1.0
+# Enhancements for After 1.0
 
-* Interactive chord builder (CLI tool to type notes into)
 * Syntoniq formatter (`syntoniq fmt`)
 * LSP (Language Server Protocol) server with full syntax highlighting

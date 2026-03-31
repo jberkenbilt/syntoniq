@@ -17,14 +17,14 @@ use winnow::{LocatingSlice, Parser};
 
 #[derive(Serialize, Debug, Clone, Default, PartialEq)]
 pub struct ReplNote {
-    name: String,
-    pitch: Pitch,
+    pub name: String,
+    pub pitch: Pitch,
 }
 
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub struct DivisionsAndCycle {
-    divisions: Divisions,
-    cycle: Ratio<u32>,
+    pub divisions: Divisions,
+    pub cycle: Ratio<u32>,
 }
 impl Default for DivisionsAndCycle {
     fn default() -> Self {

@@ -32,7 +32,7 @@ use crate::parsing::{
 };
 use crate::pitch::Pitch;
 pub use directives::*;
-pub use repl::{DivisionsAndCycle, PromptCommand};
+pub use repl::{DivisionsAndCycle, PromptCommand, ReplNote};
 use to_static_derive::ToStatic;
 
 pub const BUILTIN_SCALES: &str = include_str!("built-in-scales.stq");

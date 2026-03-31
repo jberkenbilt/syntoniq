@@ -12,7 +12,7 @@ use syntoniq_kbd::events::Events;
 use syntoniq_kbd::hexboard::HexBoard;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
-use syntoniq_kbd::{DeviceType, repl};
+use syntoniq_kbd::{DeviceType, prompt};
 use tokio::sync::oneshot;
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -31,8 +31,8 @@ struct Cli {
 enum Commands {
     /// Main command -- handle events and send music commands
     Run(Run),
-    /// Interactive command-based note/chord player
-    Repl(Repl),
+    /// Interactive command-line prompt-based note/chord player
+    Prompt(Prompt),
     /// Output the built-in keyboard configuration
     DefaultConfig,
     /// Generate shell completion
@@ -55,7 +55,7 @@ struct Run {
 }
 
 #[derive(Parser)]
-struct Repl {
+struct Prompt {
     #[clap(flatten)]
     sound_config: SoundConfig,
 }
@@ -83,7 +83,7 @@ async fn main() -> anyhow::Result<()> {
             print!("{}", engine::DEFAULT_SCORE);
             return Ok(());
         }
-        Commands::Run { .. } | Commands::Repl { .. } => {}
+        Commands::Run { .. } | Commands::Prompt { .. } => {}
     }
 
     let mut log_builder = env_logger::builder();
@@ -98,7 +98,7 @@ async fn main() -> anyhow::Result<()> {
 
     let sound_config = match &mut cli.command {
         Commands::Run(r) => &mut r.sound_config,
-        Commands::Repl(r) => &mut r.sound_config,
+        Commands::Prompt(r) => &mut r.sound_config,
         _ => unreachable!(),
     };
 
@@ -153,7 +153,7 @@ async fn main() -> anyhow::Result<()> {
             .await?;
             h
         }
-        Commands::Repl(_) => repl::run(events),
+        Commands::Prompt(_) => prompt::run(events),
         Commands::DefaultConfig | Commands::Completion { .. } => unreachable!("already handled"),
     };
 
