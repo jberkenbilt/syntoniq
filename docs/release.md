@@ -30,6 +30,9 @@ Push to main.
 # Create Release
 
 Deploy the manual.
+```sh
+task deploy-manual
+```
 
 Tag the release. Do this *after* CI is built in case there is a problem. We don't trigger anything on the tag. In the source repository:
 

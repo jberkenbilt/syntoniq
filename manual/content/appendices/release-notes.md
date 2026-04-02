@@ -8,7 +8,7 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 
 <!-- See issues to resolve ... below -->
 
-# v0.4 - TBD
+# v0.4.0 - April 2, 2026
 
 ## Bug Fix/Breaking Change
 
