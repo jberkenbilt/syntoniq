@@ -8,7 +8,7 @@ You can run `syntoniq-kbd prompt` to enter the Syntoniq keyboard application's i
 
 The currently sounding chord consists of notes numbered from 0 to 255. If you type a note name by itself, it will add that note to the chord, assigning it the lowest available note number. You can also explicitly assign a note to a note number. The following commands are available:
 
-* `?` — show help
+* `?` — show help and current state
 * `!!!` — reset all state, turning off all notes and resetting base pitch and transposition
 * `!!` — silence all notes, preserving base pitch and transposition
 * `= pitch` — set absolute base pitch; this is the pitch of the note `A`
@@ -33,7 +33,7 @@ Below is a screen capture from a sample session. You may see slightly different 
 ```
 % syntoniq-kbd prompt
 ** Commands **
-?               -- show this help
+?               -- show this help and current state
 !!!             -- reset all state
 !!              -- silence all notes
 = pitch         -- set absolute base pitch

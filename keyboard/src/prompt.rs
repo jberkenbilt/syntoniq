@@ -40,6 +40,7 @@ fn repl(line_ch: mpsc::Sender<LineData>) -> anyhow::Result<()> {
     const HISTORY_FILE: &str = "syntoniq-prompt-history.txt";
     let mut rl = DefaultEditor::new()?;
     _ = rl.load_history(HISTORY_FILE);
+    print!("{}", player::HELP);
     loop {
         // Also considered as prompt: 𝄆, but it's harder to see and recognize, and fermata seems
         // fitting since we hold notes indefinitely.

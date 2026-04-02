@@ -12,8 +12,8 @@ use tokio::sync::mpsc;
 
 // Keep HELP consistent with actual parser behavior and the prompt-mode.md section of the
 // manual.
-const HELP: &str = r#"** Commands **
-?               -- show this help
+pub const HELP: &str = r#"** Commands **
+?               -- show this help and current state
 !!!             -- reset all state
 !!              -- silence all notes
 = pitch         -- set absolute base pitch
@@ -73,9 +73,10 @@ impl Display for NoteData {
             relative_with_cycle,
             computed,
         } = self;
+        let freq = format!("{:.3}", computed.as_float());
         write!(
             f,
-            "{name} = {computed} ({base} × {transposition} × {relative_with_cycle})"
+            "{name} = {computed} ({base} × {transposition} × {relative_with_cycle}) ≈ {freq}"
         )
     }
 }
@@ -117,13 +118,20 @@ impl Player {
         &mut self,
         mut line_rx: mpsc::Receiver<LineData>,
     ) -> anyhow::Result<()> {
-        print!("{HELP}");
         while let Some(line) = line_rx.recv().await {
             if line.line.is_empty() {
                 continue;
             }
             if line.line.trim() == "?" {
                 print!("{HELP}");
+                println!("base pitch = {}", self.state.base_pitch);
+                println!("transposition = {}", self.state.transposition);
+                println!("divisions = {}", self.state.divisions_and_cycle.divisions);
+                println!("cycle ratio = {}", self.state.divisions_and_cycle.cycle);
+                println!("current notes:");
+                for (&k, v) in &self.state.notes {
+                    println!("  {k:-3}: {v}");
+                }
                 continue;
             }
             let Some(command) =
@@ -245,6 +253,7 @@ impl Player {
             } => {
                 let p = &pitch_from.pitch / &written.pitch;
                 self.state.transposition *= &p;
+                println!("transposition = {}", self.state.transposition);
             }
             PromptCommand::Play { n, note } => self.handle_play(n, note).await,
         }
