@@ -16,6 +16,7 @@ pub const HELP: &str = r#"** Commands **
 ?               -- show this help and current state
 !!!             -- reset all state
 !!              -- silence all notes
+>>              -- reset transposition to 1
 = pitch         -- set absolute base pitch
 * pitch         -- apply relative factor to base pitch
 % a             -- set the cycle ratio to `a`
@@ -231,6 +232,10 @@ impl Player {
         match command {
             PromptCommand::Reset => self.reset().await,
             PromptCommand::Clear => self.clear().await,
+            PromptCommand::ResetTransposition => {
+                self.state.transposition = Pitch::unit();
+                println!("transposition = 1");
+            }
             PromptCommand::SetDivisions { divisions } => {
                 self.state.divisions_and_cycle.divisions = divisions;
                 println!("divisions = {}", self.state.divisions_and_cycle.divisions);

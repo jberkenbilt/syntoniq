@@ -39,6 +39,7 @@ impl Default for DivisionsAndCycle {
 pub enum PromptCommand {
     Reset,
     Clear,
+    ResetTransposition,
     SetDivisions {
         divisions: Divisions,
     },
@@ -142,6 +143,10 @@ fn clear<'s>() -> impl ReplParser<'s> {
     parse_repl("!!", |_raw, _span, _out| PromptCommand::Clear)
 }
 
+fn reset_transposition<'s>() -> impl ReplParser<'s> {
+    parse_repl(">>", |_raw, _span, _out| PromptCommand::ResetTransposition)
+}
+
 fn set_divisions<'s>(diags: &Diagnostics) -> impl ReplParser<'s> {
     parse_repl(generator::step(diags), |_raw, _span, step| {
         PromptCommand::SetDivisions {
@@ -243,6 +248,7 @@ fn command<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser<'
         alt((
             reset(),
             clear(),
+            reset_transposition(),
             set_divisions(diags),
             set_cycle_ratio(diags),
             transpose(diags, dc),
@@ -336,6 +342,10 @@ mod tests {
         let dc = DivisionsAndCycle::default();
         assert_eq!(parse_repl_line(" !!! ", &dc).unwrap(), PromptCommand::Reset);
         assert_eq!(parse_repl_line(" !! ", &dc).unwrap(), PromptCommand::Clear);
+        assert_eq!(
+            parse_repl_line(">>", &dc).unwrap(),
+            PromptCommand::ResetTransposition
+        );
         assert_eq!(
             parse_repl_line(" ! ", &dc).unwrap(),
             PromptCommand::SetDivisions {

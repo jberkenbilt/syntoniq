@@ -11,6 +11,7 @@ The currently sounding chord consists of notes numbered from 0 to 255. If you ty
 * `?` — show help and current state
 * `!!!` — reset all state, turning off all notes and resetting base pitch and transposition
 * `!!` — silence all notes, preserving base pitch and transposition
+* `>>` — reset transposition to `1`
 * `= pitch` — set absolute base pitch; this is the pitch of the note `A`
 * `* pitch` — apply relative factor to base pitch
 * `% a` — set the cycle ratio to `a`; this affects interpretation of `'` and `,` octave markers
@@ -36,6 +37,7 @@ Below is a screen capture from a sample session. You may see slightly different 
 ?               -- show this help and current state
 !!!             -- reset all state
 !!              -- silence all notes
+>>              -- reset transposition to 1
 = pitch         -- set absolute base pitch
 * pitch         -- apply relative factor to base pitch
 % a             -- set the cycle ratio to `a`
