@@ -722,7 +722,7 @@ pub async fn start_keyboard(
 
 pub async fn start_sound(
     sound_type: SoundType,
-    events_tx: events::WeakSender,
+    _events_tx: events::WeakSender, // unused without csound feature
     events_rx: events::Receiver,
 ) {
     match sound_type {
@@ -737,7 +737,7 @@ pub async fn start_sound(
         #[cfg(feature = "csound")]
         SoundType::Csound(args) => {
             tokio::spawn(async move {
-                if let Err(e) = csound::run_csound(events_rx, events_tx, args).await {
+                if let Err(e) = csound::run_csound(events_rx, _events_tx, args).await {
                     log::error!("csound player error: {e}");
                 };
             });

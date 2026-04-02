@@ -3,8 +3,8 @@ use clap::CommandFactory;
 use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 use log::LevelFilter;
+use std::env;
 use std::sync::Arc;
-use std::{env, mem};
 use syntoniq_kbd::controller::Controller;
 use syntoniq_kbd::engine;
 use syntoniq_kbd::engine::{Keyboard, SoundType};
@@ -107,11 +107,10 @@ async fn main() -> anyhow::Result<()> {
     } else {
         #[cfg(feature = "csound")]
         {
-            SoundType::Csound(mem::take(&mut sound_config.csound_arg))
+            SoundType::Csound(std::mem::take(&mut sound_config.csound_arg))
         }
         #[cfg(not(feature = "csound"))]
         {
-            let _ = run.csound_arg;
             bail!("MIDI not requested and csound not available");
         }
     };
