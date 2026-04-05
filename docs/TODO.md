@@ -2,12 +2,20 @@
 
 This is general TODO across internal docs, manual, and software.
 
+# Early Issues
+
+* Need a way to pass total duration into the Csound file and a way to get it in. In Requiem 2020, we need to set the duration of the Reverb instrument to a constant plus the duration. That will require some additional directive support and possibly some kind of token substitution. Maybe have a directive to specify additional control instruments with a parameter for extra duration. It would be nice if this could be automatic from the template and maybe if the template could be specified in the stq file, potentially still overridable. Using -1 isn't good enough unless we have some other way to extend the duration of the file.
+* When starting in the middle of a sustained note with a mark, the note should be on; advance the start time of notes in progress.
+* Allow mark to take an offset
+* would be nice to have variables in prompt mode. Maybe `$var < note` and `$var > note`
+* There's some bug with the end mark -- see git history for Requiem 2020.
+* Would be nice to override the instrument for the keyboard.
+
 # Pre-1.0
 
 These are proposed pre-1.0 items. Details are below for many.
 
 * Create a minimal emacs mode
-* Maybe: interactive chord builder
 
 # Build/CI
 
@@ -16,7 +24,6 @@ These are proposed pre-1.0 items. Details are below for many.
 # Software
 
 * See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
-* Create the interactive chord builder -- see below
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation markers control note length, attack velocity, and release velocity.
     * default: full length, 72 attack, 64 release
