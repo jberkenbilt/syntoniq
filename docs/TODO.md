@@ -4,6 +4,8 @@ This is general TODO across internal docs, manual, and software.
 
 # Early Issues
 
+* Need volume control for syntoniq-kbd regular and prompt.
+* Erroneous "unknown part" error when part appears outside of playing region as a dynamic line that doesn't otherwise appear in the region but appears before it.
 * When starting in the middle of a sustained note with a mark, the note should be on; advance the start time of notes in progress. When ending in the middle of a sustained note, the truncate the duration.
 * Allow mark to take an offset
 * Would be nice to override the instrument for the keyboard.
