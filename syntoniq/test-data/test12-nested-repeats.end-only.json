@@ -1710,5 +1710,6 @@
   "midi_instruments": {},
   "csound_instruments": {},
   "csound_global_instruments": [],
+  "csound_template": null,
   "time_lcm": 1
 }

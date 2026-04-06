@@ -49,6 +49,12 @@ pub fn run(options: GenerateOptions) -> anyhow::Result<()> {
         src,
         &options.parse_options,
     )?;
+    let csound_template = options.csound_template.or_else(|| {
+        timeline
+            .csound_template
+            .as_ref()
+            .map(|rel_path| options.score.parent().unwrap().join(rel_path.as_ref()))
+    });
     println!("syntoniq score '{}' is valid", options.score.display());
     let mut errors = Vec::new();
     if let Some(json_file) = options.json
@@ -62,7 +68,7 @@ pub fn run(options: GenerateOptions) -> anyhow::Result<()> {
         errors.push(format!("{score_file} -> MIDI: {e}"));
     }
     if let Some(csound_file) = options.csound
-        && let Err(e) = csound::generate(&timeline, csound_file, options.csound_template)
+        && let Err(e) = csound::generate(&timeline, csound_file, csound_template)
     {
         errors.push(format!("{score_file} -> Csound: {e}"));
     }

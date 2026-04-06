@@ -15248,6 +15248,7 @@
       "timeline": {
         "csound_global_instruments": [],
         "csound_instruments": {},
+        "csound_template": null,
         "events": [
           {
             "data": {

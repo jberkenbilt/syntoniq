@@ -270,7 +270,7 @@ If you use `<` or `>`, Syntoniq will enforce that there is a subsequent dynamic 
 
 Below is an alphabetical list of directives. You can get this by running `syntoniq doc`.
 
-<!-- generate include=directive_doc.md checksum=49b4ae994aaee792955bbb852b33effb5dec4cafcabbe16db17aecc81f9c5ea9 -->
+<!-- generate include=directive_doc.md checksum=c29c4e5133f733e80c19d7358fb9dc4222ac3a20bd60c70b8a81364dbd4ccca0 -->
 
 ## check_pitch
 
@@ -310,6 +310,14 @@ somewhere in the score. You must specify exactly one of number or name.
 * **name (optional)** — Csound instrument name
 * **part (repeatable)** — Which parts use this instrument; if not specified, all unassigned parts
 use it
+
+## csound_template
+
+Specify the name of a file, relative to the score file, that contains the
+Csound template to use. This can still be overridden from the command line.
+
+**Parameters**:
+* **path** — Path to template, interpreted as relative to the score file
 
 ## define_generated_scale
 

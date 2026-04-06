@@ -38,6 +38,14 @@ somewhere in the score. You must specify exactly one of number or name.
 * **part (repeatable)** — Which parts use this instrument; if not specified, all unassigned parts
 use it
 
+## csound_template
+
+Specify the name of a file, relative to the score file, that contains the
+Csound template to use. This can still be overridden from the command line.
+
+**Parameters**:
+* **path** — Path to template, interpreted as relative to the score file
+
 ## define_generated_scale
 
 Define a generated scale. Note pitches are generated according to the

@@ -371,6 +371,18 @@ impl<'s> CsoundGlobalInstrument<'s> {
 }
 
 #[derive(FromRawDirective)]
+/// Specify the name of a file, relative to the score file, that contains the
+/// Csound template to use. This can still be overridden from the command line.
+pub struct CsoundTemplate<'s> {
+    pub span: Span,
+    /// Path to template, interpreted as relative to the score file
+    pub path: Spanned<Cow<'s, str>>,
+}
+impl<'s> CsoundTemplate<'s> {
+    pub fn validate(&mut self, _diags: &Diagnostics) {}
+}
+
+#[derive(FromRawDirective)]
 /// Set tempo, with possible accelerando or ritardando (gradual change).
 pub struct Tempo<'s> {
     pub _s: &'s (),
@@ -527,6 +539,7 @@ pub enum Directive<'s> {
     MidiInstrument(MidiInstrument<'s>),
     CsoundInstrument(CsoundInstrument<'s>),
     CsoundGlobalInstrument(CsoundGlobalInstrument<'s>),
+    CsoundTemplate(CsoundTemplate<'s>),
     Tempo(Tempo<'s>),
     Mark(Mark<'s>),
     Repeat(Repeat<'s>),

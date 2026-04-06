@@ -912,6 +912,7 @@ impl<'s> Score<'s> {
             midi_instruments: Default::default(),
             csound_instruments: Default::default(),
             csound_global_instruments: Default::default(),
+            csound_template: None,
             time_lcm: 1,
         };
         let pending_tempo = Some(WithTime::new(
@@ -1031,6 +1032,7 @@ impl<'s> Score<'s> {
             Directive::MidiInstrument(x) => self.midi_instrument(diags, x),
             Directive::CsoundInstrument(x) => self.csound_instrument(diags, x),
             Directive::CsoundGlobalInstrument(x) => self.csound_global_instrument(diags, x),
+            Directive::CsoundTemplate(x) => self.csound_template(diags, x),
             Directive::Tempo(x) => self.tempo(diags, x),
             Directive::Mark(x) => self.mark(diags, x),
             Directive::Repeat(x) => self.repeat(diags, x),
@@ -1525,6 +1527,10 @@ impl<'s> Score<'s> {
                 .with_context(old, "here is the previous occurrence"),
             );
         }
+    }
+
+    fn csound_template(&mut self, _diags: &Diagnostics, directive: CsoundTemplate<'s>) {
+        self.timeline.csound_template = Some(directive.path.value);
     }
 
     pub fn tempo(&mut self, diags: &Diagnostics, directive: Tempo<'s>) {

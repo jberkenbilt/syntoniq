@@ -1,5 +1,11 @@
 syntoniq(version=1)
 midi_instrument(instrument=57)
+
+; Use test04's template via directive.
+csound_template(path="test04-17-edo.template.csd")
+csound_global_instrument(name="Reverb")
+csound_instrument(name="potato")
+
 [p1.0] 1:c:~    c:&~ d:~ d:&~ e:&~  d:&~   c:~ c
 [p2.0] 1:c,3:&~ ~    ~   ~    c'3:~ g'2:&~ c:&~ c,
 

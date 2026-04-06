@@ -27,8 +27,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        58,
-        63
+        223,
+        228
       ],
       "data": {
         "Note": {
@@ -41,8 +41,8 @@
               {
                 "text": "1:c:~",
                 "span": [
-                  58,
-                  63
+                  223,
+                  228
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -58,8 +58,8 @@
               {
                 "text": "c:&~",
                 "span": [
-                  67,
-                  71
+                  232,
+                  236
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -75,8 +75,8 @@
               {
                 "text": "d:~",
                 "span": [
-                  72,
-                  75
+                  237,
+                  240
                 ],
                 "start_pitch": "220*^5|12",
                 "start_time": [
@@ -92,8 +92,8 @@
               {
                 "text": "d:&~",
                 "span": [
-                  76,
-                  80
+                  241,
+                  245
                 ],
                 "start_pitch": "220*^5|12",
                 "start_time": [
@@ -109,8 +109,8 @@
               {
                 "text": "e:&~",
                 "span": [
-                  81,
-                  85
+                  246,
+                  250
                 ],
                 "start_pitch": "220*^7|12",
                 "start_time": [
@@ -126,8 +126,8 @@
               {
                 "text": "d:&~",
                 "span": [
-                  87,
-                  91
+                  252,
+                  256
                 ],
                 "start_pitch": "220*^5|12",
                 "start_time": [
@@ -143,8 +143,8 @@
               {
                 "text": "c:~",
                 "span": [
-                  94,
-                  97
+                  259,
+                  262
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -160,8 +160,8 @@
               {
                 "text": "c",
                 "span": [
-                  98,
-                  99
+                  263,
+                  264
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -186,8 +186,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        107,
-        115
+        272,
+        280
       ],
       "data": {
         "Note": {
@@ -200,8 +200,8 @@
               {
                 "text": "1:c,3:&~",
                 "span": [
-                  107,
-                  115
+                  272,
+                  280
                 ],
                 "start_pitch": "55/2*^1|4",
                 "start_time": [
@@ -217,8 +217,8 @@
               {
                 "text": "c'3:~",
                 "span": [
-                  130,
-                  135
+                  295,
+                  300
                 ],
                 "start_pitch": "1760*^1|4",
                 "start_time": [
@@ -234,8 +234,8 @@
               {
                 "text": "g'2:&~",
                 "span": [
-                  136,
-                  142
+                  301,
+                  307
                 ],
                 "start_pitch": "880*^5|6",
                 "start_time": [
@@ -251,8 +251,8 @@
               {
                 "text": "c:&~",
                 "span": [
-                  143,
-                  147
+                  308,
+                  312
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -268,8 +268,8 @@
               {
                 "text": "c,",
                 "span": [
-                  148,
-                  150
+                  313,
+                  315
                 ],
                 "start_pitch": "110*^1|4",
                 "start_time": [
@@ -294,8 +294,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        159,
-        165
+        324,
+        330
       ],
       "data": {
         "Note": {
@@ -308,8 +308,8 @@
               {
                 "text": "3:c:&~",
                 "span": [
-                  159,
-                  165
+                  324,
+                  330
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -325,8 +325,8 @@
               {
                 "text": "3:A:~",
                 "span": [
-                  225,
-                  230
+                  390,
+                  395
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -342,8 +342,8 @@
               {
                 "text": "3:A:&~",
                 "span": [
-                  265,
-                  271
+                  430,
+                  436
                 ],
                 "start_pitch": "220*^1|4",
                 "start_time": [
@@ -359,8 +359,8 @@
               {
                 "text": "3:A,2",
                 "span": [
-                  308,
-                  313
+                  473,
+                  478
                 ],
                 "start_pitch": "55*^1|4",
                 "start_time": [
@@ -385,8 +385,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        173,
-        179
+        338,
+        344
       ],
       "data": {
         "Note": {
@@ -399,8 +399,8 @@
               {
                 "text": "3:e:&~",
                 "span": [
-                  173,
-                  179
+                  338,
+                  344
                 ],
                 "start_pitch": "220*^7|12",
                 "start_time": [
@@ -416,8 +416,8 @@
               {
                 "text": "3:E:~",
                 "span": [
-                  238,
-                  243
+                  403,
+                  408
                 ],
                 "start_pitch": "275*^1|4",
                 "start_time": [
@@ -433,8 +433,8 @@
               {
                 "text": "3:E:&~",
                 "span": [
-                  279,
-                  285
+                  444,
+                  450
                 ],
                 "start_pitch": "275*^1|4",
                 "start_time": [
@@ -450,8 +450,8 @@
               {
                 "text": "3:E,",
                 "span": [
-                  321,
-                  325
+                  486,
+                  490
                 ],
                 "start_pitch": "137.5*^1|4",
                 "start_time": [
@@ -476,8 +476,8 @@
       ],
       "repeat_depth": 0,
       "span": [
-        187,
-        193
+        352,
+        358
       ],
       "data": {
         "Note": {
@@ -490,8 +490,8 @@
               {
                 "text": "3:g:&~",
                 "span": [
-                  187,
-                  193
+                  352,
+                  358
                 ],
                 "start_pitch": "220*^5|6",
                 "start_time": [
@@ -507,8 +507,8 @@
               {
                 "text": "3:C:~",
                 "span": [
-                  251,
-                  256
+                  416,
+                  421
                 ],
                 "start_pitch": "330*^1|4",
                 "start_time": [
@@ -524,8 +524,8 @@
               {
                 "text": "3:C:&~",
                 "span": [
-                  293,
-                  299
+                  458,
+                  464
                 ],
                 "start_pitch": "330*^1|4",
                 "start_time": [
@@ -541,8 +541,8 @@
               {
                 "text": "3:C'",
                 "span": [
-                  333,
-                  337
+                  498,
+                  502
                 ],
                 "start_pitch": "660*^1|4",
                 "start_time": [
@@ -1291,7 +1291,22 @@
       "instrument": 56
     }
   },
-  "csound_instruments": {},
-  "csound_global_instruments": [],
+  "csound_instruments": {
+    "": {
+      "Name": "potato"
+    }
+  },
+  "csound_global_instruments": [
+    {
+      "instrument": {
+        "Name": "Reverb"
+      },
+      "tail": [
+        3,
+        1
+      ]
+    }
+  ],
+  "csound_template": "test04-17-edo.template.csd",
   "time_lcm": 1
 }

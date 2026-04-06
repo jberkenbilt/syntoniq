@@ -1,7 +1,9 @@
 syntoniq(version=1)
 
 ; Basic 17-EDO tune and test of named instrument. The reverb must fade
-; out cleanly, not stop abruptly.
+; out cleanly, not stop abruptly. This use test04's template via
+; command-line options, driven from the test suite. See also
+; test18-glide.stq.
 csound_instrument(name="potato")
 csound_global_instrument(name="Reverb")
 
