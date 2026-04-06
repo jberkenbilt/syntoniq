@@ -35,6 +35,28 @@ impl Default for DivisionsAndCycle {
     }
 }
 
+enum NoteOrVar {
+    Note(ReplNote),
+    Var(String),
+}
+impl NoteOrVar {
+    fn is_var(&self) -> bool {
+        matches!(self, NoteOrVar::Var(_))
+    }
+    fn into_note(self) -> ReplNote {
+        match self {
+            NoteOrVar::Note(x) => x,
+            NoteOrVar::Var(_) => panic!("not a note"),
+        }
+    }
+    fn into_variable(self) -> String {
+        match self {
+            NoteOrVar::Note(_) => panic!("not a variable"),
+            NoteOrVar::Var(x) => x,
+        }
+    }
+}
+
 #[derive(Serialize, Debug, Clone, PartialEq)]
 pub enum PromptCommand {
     Reset,
@@ -55,6 +77,17 @@ pub enum PromptCommand {
     Transpose {
         pitch_from: ReplNote,
         written: ReplNote,
+    },
+    Save {
+        note: ReplNote,
+        variable: String,
+    },
+    Restore {
+        note: ReplNote,
+        variable: String,
+    },
+    ShowVar {
+        variable: String,
     },
     Play {
         n: Option<u8>,
@@ -87,6 +120,17 @@ fn octave<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, Spanned<i8>> 
     )
 }
 
+fn variable<'s>() -> impl Parser1Intermediate<'s, String> {
+    pass1::parse1_intermediate(
+        (
+            '$',
+            take_while(1, |c: char| AsChar::is_alpha(c)),
+            take_while(0.., |c: char| AsChar::is_alphanum(c) || c == '_'),
+        ),
+        |raw, _span, _out| raw.to_string(),
+    )
+}
+
 fn note<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl Parser1Intermediate<'s, ReplNote> {
     pass1::parse1_intermediate(
         (
@@ -101,6 +145,19 @@ fn note<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl Parser1Intermed
             opt(octave(diags)),
         ),
         |raw, _span, (name, octave)| to_repl_note(diags, dc, name, octave, raw),
+    )
+}
+
+fn note_or_variable<'s>(
+    diags: &Diagnostics,
+    dc: &DivisionsAndCycle,
+) -> impl Parser1Intermediate<'s, NoteOrVar> {
+    pass1::parse1_intermediate(
+        alt((
+            note(diags, dc).map(NoteOrVar::Note),
+            variable().map(NoteOrVar::Var),
+        )),
+        |_raw, _span, out| out,
     )
 }
 
@@ -226,18 +283,46 @@ fn play_bare<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser
     })
 }
 
+fn show_variable<'s>() -> impl ReplParser<'s> {
+    parse_repl(variable(), |_raw, _span, variable| PromptCommand::ShowVar {
+        variable,
+    })
+}
+
 fn transpose<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser<'s> {
     parse_repl(
         (
-            note(diags, dc),
+            note_or_variable(diags, dc),
             opt(pass1::space()),
             '>',
             opt(pass1::space()),
-            note(diags, dc),
+            note_or_variable(diags, dc),
         ),
-        |_raw, _span, (pitch_from, _, _, _, written)| PromptCommand::Transpose {
-            pitch_from,
-            written,
+        |_raw, span, (pitch_from, _, _, _, written)| {
+            if pitch_from.is_var() {
+                if written.is_var() {
+                    diags.err(code::SYNTAX, span, "at most one side may be a variable");
+                    PromptCommand::Save {
+                        note: Default::default(),
+                        variable: "".to_string(),
+                    }
+                } else {
+                    PromptCommand::Restore {
+                        note: written.into_note(),
+                        variable: pitch_from.into_variable(),
+                    }
+                }
+            } else if written.is_var() {
+                PromptCommand::Save {
+                    note: pitch_from.into_note(),
+                    variable: written.into_variable(),
+                }
+            } else {
+                PromptCommand::Transpose {
+                    pitch_from: pitch_from.into_note(),
+                    written: written.into_note(),
+                }
+            }
         },
     )
 }
@@ -246,15 +331,20 @@ fn command<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser<'
     delimited(
         opt(pass1::space()),
         alt((
-            reset(),
-            clear(),
-            reset_transposition(),
-            set_divisions(diags),
-            set_cycle_ratio(diags),
-            transpose(diags, dc),
-            set_base(diags),
-            play_n(diags, dc),
-            play_bare(diags, dc),
+            alt((
+                reset(),
+                clear(),
+                reset_transposition(),
+                set_divisions(diags),
+                set_cycle_ratio(diags),
+            )),
+            alt((
+                transpose(diags, dc),
+                set_base(diags),
+                play_n(diags, dc),
+                play_bare(diags, dc),
+                show_variable(),
+            )),
         )),
         opt(pass1::space()),
     )
@@ -535,6 +625,32 @@ mod tests {
                 note: None,
             }
         );
+        assert_eq!(
+            parse_repl_line("A > $potato", &div_27ed3).unwrap(),
+            PromptCommand::Save {
+                note: ReplNote {
+                    name: "A".to_string(),
+                    pitch: Pitch::unit(),
+                },
+                variable: "$potato".to_string(),
+            }
+        );
+        assert_eq!(
+            parse_repl_line("$salad > A1", &div_27ed3).unwrap(),
+            PromptCommand::Restore {
+                note: ReplNote {
+                    name: "A1".to_string(),
+                    pitch: Pitch::must_parse("3^1|27"),
+                },
+                variable: "$salad".to_string(),
+            }
+        );
+        assert_eq!(
+            parse_repl_line("$quack", &div_27ed3).unwrap(),
+            PromptCommand::ShowVar {
+                variable: "$quack".to_string(),
+            }
+        );
     }
 
     #[test]
@@ -576,6 +692,12 @@ mod tests {
                 .to_string()
                 .contains("unable to parse as pitch")
         );
+        assert!(
+            parse_repl_line("$potato > $salad", &dc)
+                .unwrap_err()
+                .to_string()
+                .contains("at most one side may be a variable")
+        );
     }
 
     #[test]
@@ -583,5 +705,19 @@ mod tests {
         let dc = DivisionsAndCycle::default();
         assert!(score::parse_prompt_line("A17", &dc).is_none());
         assert!(score::parse_prompt_line("E", &dc).is_some());
+    }
+
+    #[should_panic]
+    #[test]
+    fn test_coverage1() {
+        // 100% coverage is not usually a goal, but it is for the parser -- see
+        // docs/build-and-test.md
+        NoteOrVar::Var("".to_string()).into_note();
+    }
+
+    #[should_panic]
+    #[test]
+    fn test_coverage2() {
+        NoteOrVar::Note(Default::default()).into_variable();
     }
 }

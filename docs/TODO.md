@@ -6,7 +6,6 @@ This is general TODO across internal docs, manual, and software.
 
 * When starting in the middle of a sustained note with a mark, the note should be on; advance the start time of notes in progress. When ending in the middle of a sustained note, the truncate the duration.
 * Allow mark to take an offset
-* would be nice to have variables in prompt mode. Maybe `$var < note` and `$var > note`
 * Would be nice to override the instrument for the keyboard.
 
 # Pre-1.0

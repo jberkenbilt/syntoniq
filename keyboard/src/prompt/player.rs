@@ -14,7 +14,7 @@ use tokio::sync::mpsc;
 // manual.
 pub const HELP: &str = r#"** Commands **
 ?               -- show this help and current state
-!!!             -- reset all state
+!!!             -- reset all state except variables
 !!              -- silence all notes
 >>              -- reset transposition to 1
 = pitch         -- set absolute base pitch
@@ -26,7 +26,10 @@ pub const HELP: &str = r#"** Commands **
 !a/n            -- align with n divisions of `a`
 !a/b/n          -- align with n divisions of `a/b`
 note1 > note2   -- transpose to give note1's pitch to note2
+note > $var     -- save note's pitch into variable $var
+$var > note     -- transpose to set note's pitch to the value in $var
 note            -- play note, assigning to the lowest available note number
+$var            -- show the pitch saved into $var, if any
 n < note        -- play note as note n, replacing any existing value
 n <             -- stop playing note n
 ** All notes use generated note syntax. **
@@ -44,6 +47,7 @@ struct PlayerState {
     divisions_and_cycle: DivisionsAndCycle,
     base_pitch: Pitch,
     transposition: Pitch,
+    variables: BTreeMap<String, Pitch>,
 }
 impl Default for PlayerState {
     fn default() -> Self {
@@ -53,6 +57,7 @@ impl Default for PlayerState {
             divisions_and_cycle: Default::default(),
             base_pitch: Pitch::must_parse("220*^1|4"),
             transposition: Pitch::default(),
+            variables: Default::default(),
         }
     }
 }
@@ -104,7 +109,9 @@ impl Player {
     pub async fn reset(&mut self) {
         self.clear().await;
         println!("resetting state");
+        let variables = mem::take(&mut self.state.variables);
         self.state = Default::default();
+        self.state.variables = variables;
     }
 
     pub async fn clear(&mut self) {
@@ -129,9 +136,17 @@ impl Player {
                 println!("transposition = {}", self.state.transposition);
                 println!("divisions = {}", self.state.divisions_and_cycle.divisions);
                 println!("cycle ratio = {}", self.state.divisions_and_cycle.cycle);
-                println!("current notes:");
-                for (&k, v) in &self.state.notes {
-                    println!("  {k:-3}: {v}");
+                if !self.state.variables.is_empty() {
+                    println!("variables:");
+                    for (v, p) in &self.state.variables {
+                        println!("  {v} = {p}");
+                    }
+                }
+                if !self.state.notes.is_empty() {
+                    println!("current notes:");
+                    for (&k, v) in &self.state.notes {
+                        println!("  {k:-3}: {v}");
+                    }
                 }
                 continue;
             }
@@ -261,6 +276,25 @@ impl Player {
                 println!("transposition = {}", self.state.transposition);
             }
             PromptCommand::Play { n, note } => self.handle_play(n, note).await,
+            PromptCommand::Save { note, variable } => {
+                self.state
+                    .variables
+                    .insert(variable, &note.pitch * &self.state.transposition);
+            }
+            PromptCommand::Restore { note, variable } => {
+                match self.state.variables.get(&variable) {
+                    Some(pitch) => {
+                        println!("{variable} = {pitch}");
+                        self.state.transposition = pitch / &note.pitch;
+                        println!("transposition = {}", self.state.transposition);
+                    }
+                    None => println!("unknown variable {variable}"),
+                }
+            }
+            PromptCommand::ShowVar { variable } => match self.state.variables.get(&variable) {
+                Some(pitch) => println!("{variable} = {pitch}"),
+                None => println!("unknown variable {variable}"),
+            },
         }
     }
 }
@@ -335,6 +369,19 @@ mod tests {
                 .pitches
                 .contains_key(&Pitch::must_parse("1/5*220*^1|4*3^10|27"))
         );
+        cmd(&mut p, "!!!").await;
+        cmd(&mut p, "!67").await;
+        cmd(&mut p, "M>A").await;
+        cmd(&mut p, "A>$A").await;
+        assert_eq!(
+            p.state.variables.get("$A").unwrap(),
+            &Pitch::must_parse("^8|67")
+        );
+        assert_eq!(p.state.transposition, Pitch::must_parse("^8|67"));
+        cmd(&mut p, "G>A").await;
+        assert_eq!(p.state.transposition, Pitch::must_parse("^23|67"));
+        cmd(&mut p, "$A>A").await;
+        assert_eq!(p.state.transposition, Pitch::must_parse("^8|67"));
         events.shutdown().await;
     }
 }
