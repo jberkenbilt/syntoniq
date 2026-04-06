@@ -4,11 +4,9 @@ This is general TODO across internal docs, manual, and software.
 
 # Early Issues
 
-* Need a way to pass total duration into the Csound file and a way to get it in. In Requiem 2020, we need to set the duration of the Reverb instrument to a constant plus the duration. That will require some additional directive support and possibly some kind of token substitution. Maybe have a directive to specify additional control instruments with a parameter for extra duration. It would be nice if this could be automatic from the template and maybe if the template could be specified in the stq file, potentially still overridable. Using -1 isn't good enough unless we have some other way to extend the duration of the file.
-* When starting in the middle of a sustained note with a mark, the note should be on; advance the start time of notes in progress.
+* When starting in the middle of a sustained note with a mark, the note should be on; advance the start time of notes in progress. When ending in the middle of a sustained note, the truncate the duration.
 * Allow mark to take an offset
 * would be nice to have variables in prompt mode. Maybe `$var < note` and `$var > note`
-* There's some bug with the end mark -- see git history for Requiem 2020.
 * Would be nice to override the instrument for the keyboard.
 
 # Pre-1.0

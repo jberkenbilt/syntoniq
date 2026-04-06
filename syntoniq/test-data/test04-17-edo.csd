@@ -1,6 +1,6 @@
 ;; This file is a copy of csound-template.csd with the instrument name
-;; changed to "potato" and the function table changed so the wave form
-;; is audibly distinct.
+;; changed to "potato" and replaced with an audibly different sound.
+;; There's a Reverb instrument for exercising global instrument logic.
 
 <CsoundSynthesizer>
 
@@ -47,11 +47,64 @@ endin
 ; identification of part and note numbers. This allows arbitrary new
 ; parameters or changes in behavior, such as ramping previously
 ; constant values, without breaking backward compatibility.
+
+; Global audio buses for reverb send
+ga_rev_L init 0
+ga_rev_R init 0
+
+instr Reverb
+  ; reverbsc parameters
+  iRevFeedback = 0.65
+  iRevCutoff   = 6000   ; internal HF damping
+
+  ; Equalizer parameters
+  iPeakFreq    = 401     ; resonant peak frequency
+  iPeakGain    = 12
+  iPeakQ       = 0.7     ; peak bandwidth
+
+  aRevL, aRevR reverbsc ga_rev_L, ga_rev_R, iRevFeedback, iRevCutoff
+
+  ; Resonant peak boost
+  aRevL pareq aRevL, iPeakFreq, ampdb(iPeakGain), iPeakQ, 0
+  aRevR pareq aRevR, iPeakFreq, ampdb(iPeakGain), iPeakQ, 0
+
+  outs aRevL, aRevR
+
+  ga_rev_L = 0
+  ga_rev_R = 0
+endin
+
 instr potato
   ; p1..p3 are always instrument, start time, duration
   iPartNum = p4
   iNoteNum = p5
-  iVelocity = p6 // 0 to 1
+  iVelocity = p6 ; 0 to 1
+
+  ; Oscillator mix proportions
+  iTriMix   = 1.00
+  iPulseMix = 0.26
+  iSawMix   = 0.22
+
+  ; Pulse width
+  iPulseWidth = 0.5257
+
+  ; Unison: 4 voices with detuning and stereo pan positions
+  ; Two voices at pitch, two detuned.
+  ; Pan values: 0 = hard left, 0.5 = center, 1 = hard right
+  iDetune1 = 0
+  iDetune2 = 0
+  iDetune3 = 6
+  iDetune4 = -6
+  iPan1 = 0.35
+  iPan2 = 0.65
+  iPan3 = 0.2
+  iPan4 = 0.8
+
+  ; Filter
+  iFilterCutoff = 1600
+
+  ; Reverb send level (0 to 1)
+  iRevSend = 0.4
 
   SFreqChan sprintf "p%d_freq_%d", iPartNum, iNoteNum
   SAmpChan sprintf "p%d_amp", iPartNum
@@ -66,37 +119,67 @@ instr potato
   kFinalAmp = kAmp / sqrt(kNoteCount)
   aEnv madsr 0.05, 0.05, 0.9, 0.15
 
-  ; For most of the frequency range, we use a custom sound mixed with
-  ; specific harmonics. At higher frequency ranges, we fall back to a
-  ; sine/triangle mix for fewer artifacts.
-  aMain poscil3 1, kFreq, 1
+  ; Oscillator: 4 unison voices x 3 waveforms, panned in stereo
+  kFreq1 = kFreq * cent(iDetune1)
+  kFreq2 = kFreq * cent(iDetune2)
+  kFreq3 = kFreq * cent(iDetune3)
+  kFreq4 = kFreq * cent(iDetune4)
 
-  ; blend sine and triangle
-  aSine poscil3 0.9, kFreq
-  aTriangle vco2 0.9, kFreq, 12
-  aHigh = (aSine * 0.5) + (aTriangle * 0.5)
+  ; Voice 1
+  aTri1   vco2 iTriMix,   kFreq1, 12
+  aPulse1 vco2 iPulseMix, kFreq1, 2, iPulseWidth
+  aSaw1   vco2 iSawMix,   kFreq1, 0
+  aVoice1 = aTri1 + aPulse1 + aSaw1
 
-  ; For frequencies in the range of iLowThresh to iHighThresh,
-  ; interpolate how much of the main mix we want. It drops to 0
-  ; through that range.
-  iLowThresh = 2000
-  iHighThresh = 4000
-  ; map iLowThresh, iHighThresh -> 1, 0 and clamp
-  kInterp linlin kFreq, 1, 0, iLowThresh, iHighThresh
-  kMainMix limit kInterp, 0, 1
+  ; Voice 2
+  aTri2   vco2 iTriMix,   kFreq2, 12
+  aPulse2 vco2 iPulseMix, kFreq2, 2, iPulseWidth
+  aSaw2   vco2 iSawMix,   kFreq2, 0
+  aVoice2 = aTri2 + aPulse2 + aSaw2
 
-  ; blend
-  kHighMix = 1 - kMainMix
-  aSignal = (aHigh * kHighMix) + (aMain * kMainMix) * aEnv * kFinalAmp
-  aOut moogladder aSignal, 2000, 0.1
-  outs aOut, aOut
+  ; Voice 3
+  aTri3   vco2 iTriMix,   kFreq3, 12
+  aPulse3 vco2 iPulseMix, kFreq3, 2, iPulseWidth
+  aSaw3   vco2 iSawMix,   kFreq3, 0
+  aVoice3 = aTri3 + aPulse3 + aSaw3
+
+  ; Voice 4
+  aTri4   vco2 iTriMix,   kFreq4, 12
+  aPulse4 vco2 iPulseMix, kFreq4, 2, iPulseWidth
+  aSaw4   vco2 iSawMix,   kFreq4, 0
+  aVoice4 = aTri4 + aPulse4 + aSaw4
+
+  ; Pan each voice and sum into stereo mix, normalize by 4 voices
+  aMixL = (aVoice1 * (1 - iPan1) \
+         + aVoice2 * (1 - iPan2) \
+         + aVoice3 * (1 - iPan3) \
+         + aVoice4 * (1 - iPan4)) * 0.25
+  aMixR = (aVoice1 * iPan1 \
+         + aVoice2 * iPan2 \
+         + aVoice3 * iPan3 \
+         + aVoice4 * iPan4) * 0.25
+
+  kFilterCutoff = iFilterCutoff + (kFreq * 0.5)
+
+  ; Filter
+  aFilteredL butterlp aMixL, kFilterCutoff
+  aFilteredR butterlp aMixR, kFilterCutoff
+
+  ; Amplitude and envelope
+  aOutL = aFilteredL * aEnv * kFinalAmp
+  aOutR = aFilteredR * aEnv * kFinalAmp
+
+  ; Output: dry to speakers, copy to reverb bus
+  aDryL = aOutL * (1 - iRevSend)
+  aDryR = aOutR * (1 - iRevSend)
+  outs aDryL, aDryR
+
+  ga_rev_L = ga_rev_L + aOutL * iRevSend
+  ga_rev_R = ga_rev_R + aOutR * iRevSend
 endin
 
 </CsInstruments>
 <CsScore>
-
-; function table for oscilator
-f 1 0 32768 10 1 1 1 1 1 1 1
 
 ; i instr start duration [params...]
 
@@ -114,98 +197,100 @@ f 1 0 32768 10 1 1 1 1 1 1 1
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 3
 t 0 72
-; 6:c,2@376
+; 6:c,2@472
 i "SetPartParam" 0 6 1 "freq_1" 65.406
-; 6:c,2 @376
+; 6:c,2 @472
 i "potato.1" 0 6 1 1 0.567
-; 1:g,@360
+; 1:g,@456
 i "SetPartParam" 2 1 1 "freq_2" 196.665
-; 1:g, @360
+; 1:g, @456
 i "potato.2" 2 1 1 2 0.567
-; 3:g@345
+; 3:g@441
 i "SetPartParam" 3 3 1 "freq_3" 393.33
-; 3:g @345
+; 3:g @441
 i "potato.3" 3 3 1 3 0.567
-; 3:c@365
+; 3:c@461
 i "SetPartParam" 3 3 1 "freq_2" 261.626
-; 3:c @365
+; 3:c @461
 i "potato.2" 3 3 1 2 0.567
-; 6:c,2@436
+; 6:c,2@532
 i "SetPartParam" 6 6 1 "freq_1" 65.406
-; 6:c,2 @436
+; 6:c,2 @532
 i "potato.1" 6 6 1 1 0.567
-; 1:g,@414
+; 1:g,@510
 i "SetPartParam" 7 1 1 "freq_2" 196.665
-; 1:g, @414
+; 1:g, @510
 i "potato.2" 7 1 1 2 0.567
-; a%,@419
+; a%,@515
 i "SetPartParam" 8 1 1 "freq_2" 213.374
-; a%, @419
+; a%, @515
 i "potato.2" 8 1 1 2 0.567
-; 3:g@399
+; 3:g@495
 i "SetPartParam" 9 3 1 "freq_3" 393.33
-; 3:g @399
+; 3:g @495
 i "potato.3" 9 3 1 3 0.567
-; c@423
+; c@519
 i "SetPartParam" 9 1 1 "freq_2" 261.626
-; c @423
+; c @519
 i "potato.2" 9 1 1 2 0.567
-; 2:d@425
+; 2:d@521
 i "SetPartParam" 10 2 1 "freq_2" 295.667
-; 2:d @425
+; 2:d @521
 i "potato.2" 10 2 1 2 0.567
-; 6:c,2@476
+; 6:c,2@572
 i "SetPartParam" 12 6 1 "freq_1" 65.406
-; 6:c,2 @476
+; 6:c,2 @572
 i "potato.1" 12 6 1 1 0.567
-; 1:g,@454
+; 1:g,@550
 i "SetPartParam" 13 1 1 "freq_2" 196.665
-; 1:g, @454
+; 1:g, @550
 i "potato.2" 13 1 1 2 0.567
-; a%,@459
+; a%,@555
 i "SetPartParam" 14 1 1 "freq_2" 213.374
-; a%, @459
+; a%, @555
 i "potato.2" 14 1 1 2 0.567
-; d@463
+; d@559
 i "SetPartParam" 15 1 1 "freq_2" 295.667
-; d @463
+; d @559
 i "potato.2" 15 1 1 2 0.567
-; e@465
+; e@561
 i "SetPartParam" 16 1 1 "freq_2" 334.138
-; e @465
+; e @561
 i "potato.2" 16 1 1 2 0.567
-; d@467
+; d@563
 i "SetPartParam" 17 1 1 "freq_2" 295.667
-; d @467
+; d @563
 i "potato.2" 17 1 1 2 0.567
-; 5:c,2@519
+; 5:c,2@615
 i "SetPartParam" 18 5 1 "freq_2" 65.406
-; 5:c,2 @519
+; 5:c,2 @615
 i "potato.2" 18 5 1 2 0.567
-; 1:g,@494
+; 1:g,@590
 i "SetPartParam" 19 1 1 "freq_3" 196.665
-; 1:g, @494
+; 1:g, @590
 i "potato.3" 19 1 1 3 0.567
-; a%,@499
+; a%,@595
 i "SetPartParam" 20 1 1 "freq_3" 213.374
-; a%, @499
+; a%, @595
 i "potato.3" 20 1 1 3 0.567
-; d@503
+; d@599
 i "SetPartParam" 21 1 1 "freq_3" 295.667
-; d @503
+; d @599
 i "potato.3" 21 1 1 3 0.567
-; e@505
+; e@601
 i "SetPartParam" 22 1 1 "freq_3" 334.138
-; e @505
+; e @601
 i "potato.3" 22 1 1 3 0.567
-; 4:c#@507
+; 4:c#@603
 i "SetPartParam" 23 4 1 "freq_3" 272.513
-; 4:c# @507
+; 4:c# @603
 i "potato.3" 23 4 1 3 0.567
-; 4:b%,3@536
+; 4:b%,3@632
 i "SetPartParam" 23 4 1 "freq_2" 60.284
-; 4:b%,3 @536
+; 4:b%,3 @632
 i "potato.2" 23 4 1 2 0.567
+; global instruments
+i "Reverb" 0 30
 ;; END SYNTONIQ
 
 e

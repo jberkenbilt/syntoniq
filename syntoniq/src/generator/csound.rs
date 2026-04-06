@@ -175,6 +175,7 @@ impl<'s> CsoundGenerator<'s> {
 
     fn generate(mut self) -> anyhow::Result<String> {
         self.analyze()?;
+        let mut max_time: Ratio<u32> = 0.into();
         for event in &self.timeline.events {
             let time = ratio_to_rounded_float(event.time, 3);
             let offset = event.span.start;
@@ -260,6 +261,7 @@ impl<'s> CsoundGenerator<'s> {
                     if event.time > end_time {
                         bail!("end time is in the past")
                     }
+                    max_time = cmp::max(max_time, end_time);
                     let duration = ratio_to_rounded_float(end_time - event.time, 3);
                     self.content.push_str(&format!("; {note_text} @{offset}\n"));
                     self.content.push_str(&format!(
@@ -278,6 +280,18 @@ impl<'s> CsoundGenerator<'s> {
                     self.content
                         .push_str(&format!("; repeat end '{}' @'{}\n", e.label, event.span));
                 }
+            }
+        }
+        if !self.timeline.csound_global_instruments.is_empty() {
+            self.content.push_str("; global instruments\n");
+            for global_instr in &self.timeline.csound_global_instruments {
+                let duration = ratio_to_rounded_float(global_instr.tail + max_time, 3);
+                let instr_val = match &global_instr.instrument {
+                    CsoundInstrumentId::Number(n) => n.to_string(),
+                    CsoundInstrumentId::Name(s) => format!("\"{s}\""),
+                };
+                self.content
+                    .push_str(&format!("i {instr_val} 0 {duration}\n"));
             }
         }
         Ok(self.content)

@@ -63,6 +63,9 @@ csound_instrument(scale="potato") ; duplicate
 csound_instrument(part=p1 number=3)
 csound_instrument(part=p1 number=3) ; duplicate
 csound_instrument(part=p29 number=3) ; unknown part
+csound_global_instrument(name="reverb")
+csound_global_instrument(name="reverb" tail=12) ; duplicate
+csound_global_instrument(name="reverb" number=3) ; both name and number
 
 check_pitch() ; no items to compare
 check_pitch(note=c) ; only one item to compare

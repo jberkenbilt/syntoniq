@@ -5351,5 +5351,6 @@
   ],
   "midi_instruments": {},
   "csound_instruments": {},
+  "csound_global_instruments": [],
   "time_lcm": 1
 }

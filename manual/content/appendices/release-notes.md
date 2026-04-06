@@ -8,6 +8,10 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 
 <!-- See issues to resolve ... below -->
 
+# v0.4.1 - April 2, 2026
+
+* Add the `csound_global_instrument` directive for enabling global effect instruments, such as reverb, when using custom Csound templates.
+
 # v0.4.0 - April 2, 2026
 
 ## Bug Fix/Breaking Change

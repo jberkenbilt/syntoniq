@@ -11688,27 +11688,17 @@
       {
         "span": [
           2217,
-          2218
+          2241
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          2218,
-          2229
-        ],
-        "value": {
-          "raw": "check_pitch",
+          "raw": "csound_global_instrument",
           "t": "NoteName"
         }
       },
       {
         "span": [
-          2229,
-          2230
+          2241,
+          2242
         ],
         "value": {
           "raw": "(",
@@ -11717,78 +11707,18 @@
       },
       {
         "span": [
-          2230,
-          2231
+          2242,
+          2246
         ],
         "value": {
-          "raw": ")",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2231,
-          2232
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          2232,
-          2253
-        ],
-        "value": {
-          "raw": "; no items to compare",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          2253,
-          2254
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          2254,
-          2265
-        ],
-        "value": {
-          "raw": "check_pitch",
+          "raw": "name",
           "t": "NoteName"
         }
       },
       {
         "span": [
-          2265,
-          2266
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2266,
-          2270
-        ],
-        "value": {
-          "raw": "note",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          2270,
-          2271
+          2246,
+          2247
         ],
         "value": {
           "raw": "=",
@@ -11797,18 +11727,25 @@
       },
       {
         "span": [
-          2271,
-          2272
+          2247,
+          2255
         ],
         "value": {
-          "raw": "c",
-          "t": "NoteName"
+          "raw": "\"reverb\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2248,
+                2254
+              ]
+            }
+          }
         }
       },
       {
         "span": [
-          2272,
-          2273
+          2255,
+          2256
         ],
         "value": {
           "raw": ")",
@@ -11817,8 +11754,75 @@
       },
       {
         "span": [
-          2273,
-          2274
+          2256,
+          2257
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2257,
+          2281
+        ],
+        "value": {
+          "raw": "csound_global_instrument",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2281,
+          2282
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2282,
+          2286
+        ],
+        "value": {
+          "raw": "name",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2286,
+          2287
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2287,
+          2295
+        ],
+        "value": {
+          "raw": "\"reverb\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2288,
+                2294
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2295,
+          2296
         ],
         "value": {
           "raw": " ",
@@ -11827,12 +11831,12 @@
       },
       {
         "span": [
-          2274,
+          2296,
           2300
         ],
         "value": {
-          "raw": "; only one item to compare",
-          "t": "Comment"
+          "raw": "tail",
+          "t": "NoteName"
         }
       },
       {
@@ -11841,75 +11845,25 @@
           2301
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
+          "raw": "=",
+          "t": "Punctuation"
         }
       },
       {
         "span": [
           2301,
-          2302
+          2303
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          2302,
-          2307
-        ],
-        "value": {
-          "raw": "tempo",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          2307,
-          2308
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2308,
-          2311
-        ],
-        "value": {
-          "raw": "bpm",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          2311,
-          2312
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2312,
-          2313
-        ],
-        "value": {
-          "raw": "5",
+          "raw": "12",
           "t": {
             "Number": {
               "n": {
                 "span": [
-                  2312,
-                  2313
+                  2301,
+                  2303
                 ],
-                "value": 5
+                "value": 12
               }
             }
           }
@@ -11917,58 +11871,8 @@
       },
       {
         "span": [
-          2313,
-          2314
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          2314,
-          2321
-        ],
-        "value": {
-          "raw": "end_bpm",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          2321,
-          2322
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2322,
-          2323
-        ],
-        "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  2322,
-                  2323
-                ],
-                "value": 5
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          2323,
-          2324
+          2303,
+          2304
         ],
         "value": {
           "raw": ")",
@@ -11977,8 +11881,8 @@
       },
       {
         "span": [
-          2324,
-          2325
+          2304,
+          2305
         ],
         "value": {
           "raw": " ",
@@ -11987,18 +11891,38 @@
       },
       {
         "span": [
-          2325,
-          2330
+          2305,
+          2316
         ],
         "value": {
-          "raw": "tempo",
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2316,
+          2317
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2317,
+          2341
+        ],
+        "value": {
+          "raw": "csound_global_instrument",
           "t": "NoteName"
         }
       },
       {
         "span": [
-          2330,
-          2331
+          2341,
+          2342
         ],
         "value": {
           "raw": "(",
@@ -12007,72 +11931,12 @@
       },
       {
         "span": [
-          2331,
-          2334
-        ],
-        "value": {
-          "raw": "bpm",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          2334,
-          2335
-        ],
-        "value": {
-          "raw": "=",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2335,
-          2336
-        ],
-        "value": {
-          "raw": "5",
-          "t": {
-            "Number": {
-              "n": {
-                "span": [
-                  2335,
-                  2336
-                ],
-                "value": 5
-              }
-            }
-          }
-        }
-      },
-      {
-        "span": [
-          2336,
-          2337
-        ],
-        "value": {
-          "raw": " ",
-          "t": "Space"
-        }
-      },
-      {
-        "span": [
-          2337,
-          2345
-        ],
-        "value": {
-          "raw": "duration",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          2345,
+          2342,
           2346
         ],
         "value": {
-          "raw": "=",
-          "t": "Punctuation"
+          "raw": "name",
+          "t": "NoteName"
         }
       },
       {
@@ -12081,13 +11945,340 @@
           2347
         ],
         "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2347,
+          2355
+        ],
+        "value": {
+          "raw": "\"reverb\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2348,
+                2354
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2355,
+          2356
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2356,
+          2362
+        ],
+        "value": {
+          "raw": "number",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2362,
+          2363
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2363,
+          2364
+        ],
+        "value": {
+          "raw": "3",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2363,
+                  2364
+                ],
+                "value": 3
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2364,
+          2365
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2365,
+          2366
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2366,
+          2388
+        ],
+        "value": {
+          "raw": "; both name and number",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2388,
+          2389
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2389,
+          2390
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2390,
+          2401
+        ],
+        "value": {
+          "raw": "check_pitch",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2401,
+          2402
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2402,
+          2403
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2403,
+          2404
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2404,
+          2425
+        ],
+        "value": {
+          "raw": "; no items to compare",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2425,
+          2426
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2426,
+          2437
+        ],
+        "value": {
+          "raw": "check_pitch",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2437,
+          2438
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2438,
+          2442
+        ],
+        "value": {
+          "raw": "note",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2442,
+          2443
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2443,
+          2444
+        ],
+        "value": {
+          "raw": "c",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2444,
+          2445
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2445,
+          2446
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2446,
+          2472
+        ],
+        "value": {
+          "raw": "; only one item to compare",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2472,
+          2473
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2473,
+          2474
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2474,
+          2479
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2479,
+          2480
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2480,
+          2483
+        ],
+        "value": {
+          "raw": "bpm",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2483,
+          2484
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2484,
+          2485
+        ],
+        "value": {
           "raw": "5",
           "t": {
             "Number": {
               "n": {
                 "span": [
-                  2346,
-                  2347
+                  2484,
+                  2485
                 ],
                 "value": 5
               }
@@ -12097,88 +12288,28 @@
       },
       {
         "span": [
-          2347,
-          2348
+          2485,
+          2486
         ],
         "value": {
-          "raw": ")",
-          "t": "Punctuation"
+          "raw": " ",
+          "t": "Space"
         }
       },
       {
         "span": [
-          2348,
-          2349
+          2486,
+          2493
         ],
         "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          2349,
-          2350
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          2350,
-          2410
-        ],
-        "value": {
-          "raw": "; unresolved define_scale must be the last thing in the file",
-          "t": "Comment"
-        }
-      },
-      {
-        "span": [
-          2410,
-          2411
-        ],
-        "value": {
-          "raw": "\n",
-          "t": "Newline"
-        }
-      },
-      {
-        "span": [
-          2411,
-          2423
-        ],
-        "value": {
-          "raw": "define_scale",
+          "raw": "end_bpm",
           "t": "NoteName"
         }
       },
       {
         "span": [
-          2423,
-          2424
-        ],
-        "value": {
-          "raw": "(",
-          "t": "Punctuation"
-        }
-      },
-      {
-        "span": [
-          2424,
-          2429
-        ],
-        "value": {
-          "raw": "scale",
-          "t": "NoteName"
-        }
-      },
-      {
-        "span": [
-          2429,
-          2430
+          2493,
+          2494
         ],
         "value": {
           "raw": "=",
@@ -12187,25 +12318,28 @@
       },
       {
         "span": [
-          2430,
-          2436
+          2494,
+          2495
         ],
         "value": {
-          "raw": "\"oops\"",
+          "raw": "5",
           "t": {
-            "String": {
-              "inner_span": [
-                2431,
-                2435
-              ]
+            "Number": {
+              "n": {
+                "span": [
+                  2494,
+                  2495
+                ],
+                "value": 5
+              }
             }
           }
         }
       },
       {
         "span": [
-          2436,
-          2437
+          2495,
+          2496
         ],
         "value": {
           "raw": ")",
@@ -12214,8 +12348,245 @@
       },
       {
         "span": [
-          2437,
-          2438
+          2496,
+          2497
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2497,
+          2502
+        ],
+        "value": {
+          "raw": "tempo",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2502,
+          2503
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2503,
+          2506
+        ],
+        "value": {
+          "raw": "bpm",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2506,
+          2507
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2507,
+          2508
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2507,
+                  2508
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2508,
+          2509
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2509,
+          2517
+        ],
+        "value": {
+          "raw": "duration",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2517,
+          2518
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2518,
+          2519
+        ],
+        "value": {
+          "raw": "5",
+          "t": {
+            "Number": {
+              "n": {
+                "span": [
+                  2518,
+                  2519
+                ],
+                "value": 5
+              }
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2519,
+          2520
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2520,
+          2521
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2521,
+          2522
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2522,
+          2582
+        ],
+        "value": {
+          "raw": "; unresolved define_scale must be the last thing in the file",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2582,
+          2583
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2583,
+          2595
+        ],
+        "value": {
+          "raw": "define_scale",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2595,
+          2596
+        ],
+        "value": {
+          "raw": "(",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2596,
+          2601
+        ],
+        "value": {
+          "raw": "scale",
+          "t": "NoteName"
+        }
+      },
+      {
+        "span": [
+          2601,
+          2602
+        ],
+        "value": {
+          "raw": "=",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2602,
+          2608
+        ],
+        "value": {
+          "raw": "\"oops\"",
+          "t": {
+            "String": {
+              "inner_span": [
+                2603,
+                2607
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2608,
+          2609
+        ],
+        "value": {
+          "raw": ")",
+          "t": "Punctuation"
+        }
+      },
+      {
+        "span": [
+          2609,
+          2610
         ],
         "value": {
           "raw": "\n",
@@ -20688,7 +21059,51 @@
       {
         "span": [
           2217,
-          2218
+          2256
+        ],
+        "value": {
+          "raw": "csound_global_instrument(name=\"reverb\")",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2217,
+                  2241
+                ],
+                "value": {
+                  "name": "csound_global_instrument"
+                }
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2242,
+                      2246
+                    ],
+                    "value": {
+                      "name": "name"
+                    }
+                  },
+                  "value": {
+                    "span": [
+                      2247,
+                      2255
+                    ],
+                    "value": {
+                      "String": "reverb"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2256,
+          2257
         ],
         "value": {
           "raw": "\n",
@@ -20697,8 +21112,216 @@
       },
       {
         "span": [
-          2218,
-          2231
+          2257,
+          2304
+        ],
+        "value": {
+          "raw": "csound_global_instrument(name=\"reverb\" tail=12)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2257,
+                  2281
+                ],
+                "value": {
+                  "name": "csound_global_instrument"
+                }
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2282,
+                      2286
+                    ],
+                    "value": {
+                      "name": "name"
+                    }
+                  },
+                  "value": {
+                    "span": [
+                      2287,
+                      2295
+                    ],
+                    "value": {
+                      "String": "reverb"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2296,
+                      2300
+                    ],
+                    "value": {
+                      "name": "tail"
+                    }
+                  },
+                  "value": {
+                    "span": [
+                      2301,
+                      2303
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          12,
+                          "12"
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2304,
+          2305
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2305,
+          2316
+        ],
+        "value": {
+          "raw": "; duplicate",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2316,
+          2317
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2317,
+          2365
+        ],
+        "value": {
+          "raw": "csound_global_instrument(name=\"reverb\" number=3)",
+          "t": {
+            "Directive": {
+              "name": {
+                "span": [
+                  2317,
+                  2341
+                ],
+                "value": {
+                  "name": "csound_global_instrument"
+                }
+              },
+              "params": [
+                {
+                  "key": {
+                    "span": [
+                      2342,
+                      2346
+                    ],
+                    "value": {
+                      "name": "name"
+                    }
+                  },
+                  "value": {
+                    "span": [
+                      2347,
+                      2355
+                    ],
+                    "value": {
+                      "String": "reverb"
+                    }
+                  }
+                },
+                {
+                  "key": {
+                    "span": [
+                      2356,
+                      2362
+                    ],
+                    "value": {
+                      "name": "number"
+                    }
+                  },
+                  "value": {
+                    "span": [
+                      2363,
+                      2364
+                    ],
+                    "value": {
+                      "PitchOrNumber": {
+                        "Integer": [
+                          3,
+                          "3"
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      {
+        "span": [
+          2365,
+          2366
+        ],
+        "value": {
+          "raw": " ",
+          "t": "Space"
+        }
+      },
+      {
+        "span": [
+          2366,
+          2388
+        ],
+        "value": {
+          "raw": "; both name and number",
+          "t": "Comment"
+        }
+      },
+      {
+        "span": [
+          2388,
+          2389
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2389,
+          2390
+        ],
+        "value": {
+          "raw": "\n",
+          "t": "Newline"
+        }
+      },
+      {
+        "span": [
+          2390,
+          2403
         ],
         "value": {
           "raw": "check_pitch()",
@@ -20706,8 +21329,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  2218,
-                  2229
+                  2390,
+                  2401
                 ],
                 "value": {
                   "name": "check_pitch"
@@ -20720,8 +21343,8 @@
       },
       {
         "span": [
-          2231,
-          2232
+          2403,
+          2404
         ],
         "value": {
           "raw": " ",
@@ -20730,8 +21353,8 @@
       },
       {
         "span": [
-          2232,
-          2253
+          2404,
+          2425
         ],
         "value": {
           "raw": "; no items to compare",
@@ -20740,8 +21363,8 @@
       },
       {
         "span": [
-          2253,
-          2254
+          2425,
+          2426
         ],
         "value": {
           "raw": "\n",
@@ -20750,8 +21373,8 @@
       },
       {
         "span": [
-          2254,
-          2273
+          2426,
+          2445
         ],
         "value": {
           "raw": "check_pitch(note=c)",
@@ -20759,8 +21382,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  2254,
-                  2265
+                  2426,
+                  2437
                 ],
                 "value": {
                   "name": "check_pitch"
@@ -20770,8 +21393,8 @@
                 {
                   "key": {
                     "span": [
-                      2266,
-                      2270
+                      2438,
+                      2442
                     ],
                     "value": {
                       "name": "note"
@@ -20779,8 +21402,8 @@
                   },
                   "value": {
                     "span": [
-                      2271,
-                      2272
+                      2443,
+                      2444
                     ],
                     "value": {
                       "NoteOrIdentifier": {
@@ -20791,8 +21414,8 @@
                           {
                             "name": {
                               "span": [
-                                2271,
-                                2272
+                                2443,
+                                2444
                               ],
                               "value": "c"
                             },
@@ -20810,8 +21433,8 @@
       },
       {
         "span": [
-          2273,
-          2274
+          2445,
+          2446
         ],
         "value": {
           "raw": " ",
@@ -20820,8 +21443,8 @@
       },
       {
         "span": [
-          2274,
-          2300
+          2446,
+          2472
         ],
         "value": {
           "raw": "; only one item to compare",
@@ -20830,8 +21453,8 @@
       },
       {
         "span": [
-          2300,
-          2301
+          2472,
+          2473
         ],
         "value": {
           "raw": "\n",
@@ -20840,8 +21463,8 @@
       },
       {
         "span": [
-          2301,
-          2302
+          2473,
+          2474
         ],
         "value": {
           "raw": "\n",
@@ -20850,8 +21473,8 @@
       },
       {
         "span": [
-          2302,
-          2324
+          2474,
+          2496
         ],
         "value": {
           "raw": "tempo(bpm=5 end_bpm=5)",
@@ -20859,8 +21482,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  2302,
-                  2307
+                  2474,
+                  2479
                 ],
                 "value": {
                   "name": "tempo"
@@ -20870,8 +21493,8 @@
                 {
                   "key": {
                     "span": [
-                      2308,
-                      2311
+                      2480,
+                      2483
                     ],
                     "value": {
                       "name": "bpm"
@@ -20879,8 +21502,8 @@
                   },
                   "value": {
                     "span": [
-                      2312,
-                      2313
+                      2484,
+                      2485
                     ],
                     "value": {
                       "PitchOrNumber": {
@@ -20895,8 +21518,8 @@
                 {
                   "key": {
                     "span": [
-                      2314,
-                      2321
+                      2486,
+                      2493
                     ],
                     "value": {
                       "name": "end_bpm"
@@ -20904,8 +21527,8 @@
                   },
                   "value": {
                     "span": [
-                      2322,
-                      2323
+                      2494,
+                      2495
                     ],
                     "value": {
                       "PitchOrNumber": {
@@ -20924,8 +21547,8 @@
       },
       {
         "span": [
-          2324,
-          2325
+          2496,
+          2497
         ],
         "value": {
           "raw": " ",
@@ -20934,8 +21557,8 @@
       },
       {
         "span": [
-          2325,
-          2348
+          2497,
+          2520
         ],
         "value": {
           "raw": "tempo(bpm=5 duration=5)",
@@ -20943,8 +21566,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  2325,
-                  2330
+                  2497,
+                  2502
                 ],
                 "value": {
                   "name": "tempo"
@@ -20954,8 +21577,8 @@
                 {
                   "key": {
                     "span": [
-                      2331,
-                      2334
+                      2503,
+                      2506
                     ],
                     "value": {
                       "name": "bpm"
@@ -20963,8 +21586,8 @@
                   },
                   "value": {
                     "span": [
-                      2335,
-                      2336
+                      2507,
+                      2508
                     ],
                     "value": {
                       "PitchOrNumber": {
@@ -20979,8 +21602,8 @@
                 {
                   "key": {
                     "span": [
-                      2337,
-                      2345
+                      2509,
+                      2517
                     ],
                     "value": {
                       "name": "duration"
@@ -20988,8 +21611,8 @@
                   },
                   "value": {
                     "span": [
-                      2346,
-                      2347
+                      2518,
+                      2519
                     ],
                     "value": {
                       "PitchOrNumber": {
@@ -21008,8 +21631,8 @@
       },
       {
         "span": [
-          2348,
-          2349
+          2520,
+          2521
         ],
         "value": {
           "raw": "\n",
@@ -21018,8 +21641,8 @@
       },
       {
         "span": [
-          2349,
-          2350
+          2521,
+          2522
         ],
         "value": {
           "raw": "\n",
@@ -21028,8 +21651,8 @@
       },
       {
         "span": [
-          2350,
-          2410
+          2522,
+          2582
         ],
         "value": {
           "raw": "; unresolved define_scale must be the last thing in the file",
@@ -21038,8 +21661,8 @@
       },
       {
         "span": [
-          2410,
-          2411
+          2582,
+          2583
         ],
         "value": {
           "raw": "\n",
@@ -21048,8 +21671,8 @@
       },
       {
         "span": [
-          2411,
-          2437
+          2583,
+          2609
         ],
         "value": {
           "raw": "define_scale(scale=\"oops\")",
@@ -21057,8 +21680,8 @@
             "Directive": {
               "name": {
                 "span": [
-                  2411,
-                  2423
+                  2583,
+                  2595
                 ],
                 "value": {
                   "name": "define_scale"
@@ -21068,8 +21691,8 @@
                 {
                   "key": {
                     "span": [
-                      2424,
-                      2429
+                      2596,
+                      2601
                     ],
                     "value": {
                       "name": "scale"
@@ -21077,8 +21700,8 @@
                   },
                   "value": {
                     "span": [
-                      2430,
-                      2436
+                      2602,
+                      2608
                     ],
                     "value": {
                       "String": "oops"
@@ -21092,8 +21715,8 @@
       },
       {
         "span": [
-          2437,
-          2438
+          2609,
+          2610
         ],
         "value": {
           "raw": "\n",
@@ -21955,11 +22578,41 @@
         },
         {
           "code": "E1017 incorrect directive usage",
+          "context": [
+            {
+              "span": [
+                2217,
+                2241
+              ],
+              "value": "here is the previous occurrence"
+            }
+          ],
+          "message": {
+            "span": [
+              2257,
+              2281
+            ],
+            "value": "this global Csound instrument has already been specified"
+          }
+        },
+        {
+          "code": "E1020 general usage",
           "context": [],
           "message": {
             "span": [
-              2218,
-              2229
+              2317,
+              2341
+            ],
+            "value": "exactly one of 'number' or 'name' must be present"
+          }
+        },
+        {
+          "code": "E1017 incorrect directive usage",
+          "context": [],
+          "message": {
+            "span": [
+              2390,
+              2401
             ],
             "value": "at least two items must be given for comparison"
           }
@@ -21969,8 +22622,8 @@
           "context": [],
           "message": {
             "span": [
-              2254,
-              2265
+              2426,
+              2437
             ],
             "value": "at least two items must be given for comparison"
           }
@@ -21980,8 +22633,8 @@
           "context": [],
           "message": {
             "span": [
-              2302,
-              2307
+              2474,
+              2479
             ],
             "value": "'end_bpm' and 'duration' must either both be present or both be absent"
           }
@@ -21991,8 +22644,8 @@
           "context": [],
           "message": {
             "span": [
-              2325,
-              2330
+              2497,
+              2502
             ],
             "value": "'end_bpm' and 'duration' must either both be present or both be absent"
           }
@@ -22002,8 +22655,8 @@
           "context": [],
           "message": {
             "span": [
-              2411,
-              2437
+              2583,
+              2609
             ],
             "value": "this directive must be followed by a scale block"
           }

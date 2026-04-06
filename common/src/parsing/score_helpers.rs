@@ -260,6 +260,26 @@ pub fn check_part(diags: &Diagnostics, items: &[Spanned<Identifier<'_>>]) {
     check_unique(diags, items);
 }
 
+pub fn exactly_one_of<T, U>(
+    diags: &Diagnostics,
+    span: Span,
+    first: &Option<T>,
+    first_name: &str,
+    second: &Option<U>,
+    second_name: &str,
+) {
+    let n = [first.is_some(), second.is_some()]
+        .into_iter()
+        .fold(0usize, |x, v| x + if v { 1 } else { 0 });
+    if n != 1 {
+        diags.err(
+            code::USAGE,
+            span,
+            format!("exactly one of '{first_name}' or '{second_name}' must be present"),
+        );
+    }
+}
+
 pub fn check_duplicate_by_part<'s, T: Clone>(
     diags: &Diagnostics,
     thing: &str,

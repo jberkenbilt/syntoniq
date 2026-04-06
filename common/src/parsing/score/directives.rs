@@ -343,16 +343,30 @@ pub struct CsoundInstrument<'s> {
 impl<'s> CsoundInstrument<'s> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
-        let n = [self.number.is_some(), self.name.is_some()]
-            .into_iter()
-            .fold(0usize, |x, v| x + if v { 1 } else { 0 });
-        if n != 1 {
-            diags.err(
-                code::USAGE,
-                self.span,
-                "exactly one of 'number' or 'name' must be present",
-            );
-        }
+        score_helpers::exactly_one_of(diags, self.span, &self.number, "number", &self.name, "name");
+    }
+}
+
+#[derive(FromRawDirective)]
+/// Indicate the name or number of a Csound instrument number that must be
+/// turned on at the beginning and must remain on for the direction of the
+/// score. You may optionally provide a value for `tail`, which is a number of
+/// beats beyond the total duration to leave the instrument on. This is useful
+/// for effect instruments, like reverb. This is only useful when combined with
+/// a custom Csound template that defines the instrument.
+pub struct CsoundGlobalInstrument<'s> {
+    pub span: Span,
+    /// Csound instrument number
+    pub number: Option<Spanned<u32>>,
+    /// Csound instrument name
+    pub name: Option<Spanned<Cow<'s, str>>>,
+    /// Number of beats beyond the end of the piece to add to the instrument's
+    /// duration. Defaults to 3 beats.
+    pub tail: Option<Spanned<Ratio<u32>>>,
+}
+impl<'s> CsoundGlobalInstrument<'s> {
+    pub fn validate(&mut self, diags: &Diagnostics) {
+        score_helpers::exactly_one_of(diags, self.span, &self.number, "number", &self.name, "name");
     }
 }
 
@@ -512,6 +526,7 @@ pub enum Directive<'s> {
     ResetTuning(ResetTuning<'s>),
     MidiInstrument(MidiInstrument<'s>),
     CsoundInstrument(CsoundInstrument<'s>),
+    CsoundGlobalInstrument(CsoundGlobalInstrument<'s>),
     Tempo(Tempo<'s>),
     Mark(Mark<'s>),
     Repeat(Repeat<'s>),

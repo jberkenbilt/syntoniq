@@ -1,7 +1,9 @@
 syntoniq(version=1)
 
-; Basic 17-EDO tune and test of named instrument
+; Basic 17-EDO tune and test of named instrument. The reverb must fade
+; out cleanly, not stop abruptly.
 csound_instrument(name="potato")
+csound_global_instrument(name="Reverb")
 
 define_scale(scale="17-EDO") <<
  ^0|17 c

@@ -28,7 +28,7 @@ use crate::parsing::score::generator::NoteGenerator;
 use crate::parsing::{
     CsoundInstrumentId, DynamicEvent, MarkEvent, MidiInstrumentNumber, NoteEvent, NoteValue,
     Options, PartNote, PitchChange, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime,
-    pass2, score_helpers,
+    pass2, score_helpers, timeline,
 };
 use crate::pitch::Pitch;
 pub use directives::*;
@@ -64,6 +64,7 @@ pub struct Score<'s> {
     line_start_time: Ratio<u32>,
     midi_instruments: HashMap<Cow<'s, str>, Span>,
     csound_instruments: HashMap<Cow<'s, str>, Span>,
+    csound_global_instruments: BTreeMap<CsoundInstrumentId<'s>, Span>,
     known_parts: HashSet<Cow<'s, str>>,
     marks: HashMap<Cow<'s, str>, MarkData<'s>>,
     layouts: HashMap<LayoutKey<'s>, LayoutData<'s>>,
@@ -910,6 +911,7 @@ impl<'s> Score<'s> {
             events: Default::default(),
             midi_instruments: Default::default(),
             csound_instruments: Default::default(),
+            csound_global_instruments: Default::default(),
             time_lcm: 1,
         };
         let pending_tempo = Some(WithTime::new(
@@ -936,6 +938,7 @@ impl<'s> Score<'s> {
             line_start_time: Ratio::from_integer(0),
             midi_instruments: Default::default(),
             csound_instruments: Default::default(),
+            csound_global_instruments: Default::default(),
             known_parts: Default::default(),
             marks: Default::default(),
             layouts: Default::default(),
@@ -1027,6 +1030,7 @@ impl<'s> Score<'s> {
             Directive::ResetTuning(x) => self.reset_tuning(x),
             Directive::MidiInstrument(x) => self.midi_instrument(diags, x),
             Directive::CsoundInstrument(x) => self.csound_instrument(diags, x),
+            Directive::CsoundGlobalInstrument(x) => self.csound_global_instrument(diags, x),
             Directive::Tempo(x) => self.tempo(diags, x),
             Directive::Mark(x) => self.mark(diags, x),
             Directive::Repeat(x) => self.repeat(diags, x),
@@ -1485,6 +1489,42 @@ impl<'s> Score<'s> {
             instrument,
             &mut self.timeline.csound_instruments,
         );
+    }
+
+    fn csound_global_instrument(
+        &mut self,
+        diags: &Diagnostics,
+        directive: CsoundGlobalInstrument<'s>,
+    ) {
+        // Validate has assured that exactly one of `name` or `number` is defined.
+        let instrument = directive
+            .name
+            .map(|x| CsoundInstrumentId::Name(x.value))
+            .unwrap_or_else(|| CsoundInstrumentId::Number(directive.number.unwrap().value));
+        // Keep this default value consistent with the doc comment for the `tail` field.
+        let tail = directive
+            .tail
+            .map(Spanned::value)
+            .unwrap_or(Ratio::from_integer(3));
+        self.timeline
+            .csound_global_instruments
+            .push(timeline::CsoundGlobalInstrument {
+                instrument: instrument.clone(),
+                tail,
+            });
+        if let Some(old) = self
+            .csound_global_instruments
+            .insert(instrument, directive.span)
+        {
+            diags.push(
+                Diagnostic::new(
+                    code::DIRECTIVE_USAGE,
+                    directive.span,
+                    "this global Csound instrument has already been specified",
+                )
+                .with_context(old, "here is the previous occurrence"),
+            );
+        }
     }
 
     pub fn tempo(&mut self, diags: &Diagnostics, directive: Tempo<'s>) {

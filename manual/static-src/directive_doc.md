@@ -10,6 +10,21 @@ exist in all the parts' tunings. All parameters may be repeated.
 * **pitch (repeatable)** — Pitches to compare
 * **part (repeatable)** — Which parts check; if none given, the default tuning is checked.
 
+## csound_global_instrument
+
+Indicate the name or number of a Csound instrument number that must be
+turned on at the beginning and must remain on for the direction of the
+score. You may optionally provide a value for `tail`, which is a number of
+beats beyond the total duration to leave the instrument on. This is useful
+for effect instruments, like reverb. This is only useful when combined with
+a custom Csound template that defines the instrument.
+
+**Parameters**:
+* **number (optional)** — Csound instrument number
+* **name (optional)** — Csound instrument name
+* **tail (optional)** — Number of beats beyond the end of the piece to add to the instrument's
+duration. Defaults to 3 beats.
+
 ## csound_instrument
 
 Set the Csound instrument number or name for zero or more parts. If no part

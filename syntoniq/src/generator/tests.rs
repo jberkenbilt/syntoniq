@@ -51,7 +51,7 @@ fn test_generator() -> anyhow::Result<()> {
             errors.push(format!("{base}: {e}"));
         }
         for suf in ["json", "midi", "csd"] {
-            let actual = fs::read(outfile(suf))?;
+            let actual = fs::read(outfile(suf)).unwrap();
             let exp = fs::read(input_file(suf)).unwrap_or_default();
             if actual == exp {
                 println!("{base}: {suf} PASSED");

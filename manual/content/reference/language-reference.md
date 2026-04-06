@@ -270,7 +270,7 @@ If you use `<` or `>`, Syntoniq will enforce that there is a subsequent dynamic 
 
 Below is an alphabetical list of directives. You can get this by running `syntoniq doc`.
 
-<!-- generate include=directive_doc.md checksum=d15aa6ab8ec6138f34db5c4042813c89052e4722b509bd7741c91c7c5a903a21 -->
+<!-- generate include=directive_doc.md checksum=49b4ae994aaee792955bbb852b33effb5dec4cafcabbe16db17aecc81f9c5ea9 -->
 
 ## check_pitch
 
@@ -282,6 +282,21 @@ exist in all the parts' tunings. All parameters may be repeated.
 * **var (repeatable)** — Variables to compare
 * **pitch (repeatable)** — Pitches to compare
 * **part (repeatable)** — Which parts check; if none given, the default tuning is checked.
+
+## csound_global_instrument
+
+Indicate the name or number of a Csound instrument number that must be
+turned on at the beginning and must remain on for the direction of the
+score. You may optionally provide a value for `tail`, which is a number of
+beats beyond the total duration to leave the instrument on. This is useful
+for effect instruments, like reverb. This is only useful when combined with
+a custom Csound template that defines the instrument.
+
+**Parameters**:
+* **number (optional)** — Csound instrument number
+* **name (optional)** — Csound instrument name
+* **tail (optional)** — Number of beats beyond the end of the piece to add to the instrument's
+duration. Defaults to 3 beats.
 
 ## csound_instrument
 
