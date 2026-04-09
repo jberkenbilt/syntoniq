@@ -1,0 +1,10 @@
+{
+  "start_mark": "a",
+  "end_mark": "b",
+  "skip_repeats": false,
+  "tempo_factor": null,
+  "skip_beats": 3,
+  "skip_end_beats": 2,
+  "part": [],
+  "omit_parts": false
+}

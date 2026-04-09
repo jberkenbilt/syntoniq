@@ -7,6 +7,22 @@
       ],
       "repeat_depth": 0,
       "span": [
+        502,
+        513
+      ],
+      "data": {
+        "RepeatEnd": {
+          "label": "verse-end"
+        }
+      }
+    },
+    {
+      "time": [
+        0,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
         550,
         553
       ],

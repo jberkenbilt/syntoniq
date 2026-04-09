@@ -108,6 +108,7 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 1
 t 0 180
+; repeat end 'verse-end' @'[502,513)
 ; 2:g@550
 i "SetPartParam" 0 2 1 "freq_1" 391.995
 ; 2:g @550

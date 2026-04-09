@@ -103,77 +103,113 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 ; [part] => csound part
 ; [p1] => 1
 ; [part.note] => instr.note
-; [p1.0] => 1.1
+; [p1.1] => 1.1
+; [p1.2] => 1.2
+; [p1.3] => 1.3
 
 i "SetPartParam" 0 0.01 1 "amp" 0.5
-i "SetPartParam" 0 0.01 1 "notes" 1
-t 0 90 2 90 2 60 4 60 4 90 6 90 6 90 7 90 7 60
-; 1/2:f@693
-i "SetPartParam" 0 0.5 1 "freq_1" 349.228
-; 1/2:f @693
-i 1.1 0 0.5 1 1 0.567
-; f@699
-i "SetPartParam" 0.5 0.5 1 "freq_1" 349.228
-; f @699
-i 1.1 0.5 0.5 1 1 0.567
-; f@701
-i "SetPartParam" 1 0.5 1 "freq_1" 349.228
-; f @701
-i 1.1 1 0.5 1 1 0.567
-; f@703
-i "SetPartParam" 1.5 0.5 1 "freq_1" 349.228
-; f @703
-i 1.1 1.5 0.5 1 1 0.567
-; 1/2:g@857
-i "SetPartParam" 2 0.5 1 "freq_1" 391.995
-; 1/2:g @857
-i 1.1 2 0.5 1 1 0.567
-; g@863
-i "SetPartParam" 2.5 0.5 1 "freq_1" 391.995
-; g @863
-i 1.1 2.5 0.5 1 1 0.567
-; g@865
-i "SetPartParam" 3 0.5 1 "freq_1" 391.995
-; g @865
-i 1.1 3 0.5 1 1 0.567
-; g@867
-i "SetPartParam" 3.5 0.5 1 "freq_1" 391.995
-; g @867
-i 1.1 3.5 0.5 1 1 0.567
-; mark 'c' @'[910,913)
-; 1/2:a@940
-i "SetPartParam" 4 0.5 1 "freq_1" 440
-; 1/2:a @940
-i 1.1 4 0.5 1 1 0.567
-; a@946
-i "SetPartParam" 4.5 0.5 1 "freq_1" 440
-; a @946
-i 1.1 4.5 0.5 1 1 0.567
-; a@948
-i "SetPartParam" 5 0.5 1 "freq_1" 440
-; a @948
-i 1.1 5 0.5 1 1 0.567
-; a@950
-i "SetPartParam" 5.5 0.5 1 "freq_1" 440
-; a @950
-i 1.1 5.5 0.5 1 1 0.567
-; mark 'd' @'[1008,1011)
-; 1/2:b@1270
-i "SetPartParam" 7 0.5 1 "freq_1" 493.883
-; 1/2:b @1270
-i 1.1 7 0.5 1 1 0.567
-; b@1276
-i "SetPartParam" 7.5 0.5 1 "freq_1" 493.883
-; b @1276
-i 1.1 7.5 0.5 1 1 0.567
-; b@1278
-i "SetPartParam" 8 0.5 1 "freq_1" 493.883
-; b @1278
-i 1.1 8 0.5 1 1 0.567
-; b@1280
-i "SetPartParam" 8.5 0.5 1 "freq_1" 493.883
-; b @1280
-i 1.1 8.5 0.5 1 1 0.567
+i "SetPartParam" 0 0.01 1 "notes" 3
+t 0 60 0.5 60 0.5 90 3.5 120 3.5 120 3.5 120 6.5 90 6.5 90 6.5 60 8 60 8 72
+; 1/2:c,:~@578
+i "SetPartParam" 0 0.5 1 "freq_1" 132
+; 3:c,:&~@690
+i "SetPartParamRamp" 0.5 3 1 "freq_1" 132 264
+; 3:c:&~@803
+i "SetPartParamRamp" 3.5 3 1 "freq_1" 264 528
+; 1/2:c'@896
+i "SetPartParam" 6.5 0.5 1 "freq_1" 528
+; 1/2:c,:~ @578
+i 1.1 0 7 1 1 0.567
+; 1/2:c:~@594
+i "SetPartParam" 0 0.5 1 "freq_2" 264
+; 1/2:c@705
+i "SetPartParam" 0.5 0.5 1 "freq_2" 264
+; 1/2:c:~ @594
+i 1.2 0 1 1 2 0.567
+; 1/2:c,2:~@609
+i "SetPartParam" 0 0.5 1 "freq_3" 66
+; 3:c,2:~@734
+i "SetPartParam" 0.5 3 1 "freq_3" 66
+; 3:c,2:~@850
+i "SetPartParam" 3.5 3 1 "freq_3" 66
+; 1/2:c,2@925
+i "SetPartParam" 6.5 0.5 1 "freq_3" 66
+; 1/2:c,2:~ @609
+i 1.3 0 7 1 3 0.567
+i "SetPartParamRamp" 0 7 1 "amp" 0.063 1 ; 8@0< @624
+; mark 'a' @'[678,681)
+; 1:e@711
+i "SetPartParam" 1 1 1 "freq_2" 332.619
+; 1:e @711
+i 1.2 1 1 1 2 0.567
+; g#@715
+i "SetPartParam" 2 1 1 "freq_2" 419.074
+; g# @715
+i 1.2 2 1 1 2 0.567
+; 1/2:c':~@718
+i "SetPartParam" 3 0.5 1 "freq_2" 528
+; 1/2:c'@817
+i "SetPartParam" 3.5 0.5 1 "freq_2" 528
+; 1/2:c':~ @718
+i 1.2 3 1 1 2 0.567
+; mark 'b' @'[791,794)
+; 1:e'@824
+i "SetPartParam" 4 1 1 "freq_2" 665.238
+; 1:e' @824
+i 1.2 4 1 1 2 0.567
+; g#'@829
+i "SetPartParam" 5 1 1 "freq_2" 838.148
+; g#' @829
+i 1.2 5 1 1 2 0.567
+; 1/2:c'2:~@833
+i "SetPartParam" 6 0.5 1 "freq_2" 1056
+; 1/2:c'2@910
+i "SetPartParam" 6.5 0.5 1 "freq_2" 1056
+; 1/2:c'2:~ @833
+i 1.2 6 1 1 2 0.567
+; mark 'c' @'[884,887)
+i "SetPartParam" 7 0.01 1 "amp" 1 ; 127@0 @950
+; mark 'd' @'[982,985)
+; 1/2:c':~@994
+i "SetPartParam" 8 0.5 1 "freq_1" 528
+; 3:c':&~@1073
+i "SetPartParamRamp" 8.5 3 1 "freq_1" 528 264
+; 3:c:&~@1153
+i "SetPartParamRamp" 11.5 0.5 1 "freq_1" 264 235.197
+; 1/2:c':~ @994
+i 1.1 8 4 1 1 0.567
+; 1/2:c'2:~@1010
+i "SetPartParam" 8 0.5 1 "freq_2" 1056
+; 1/2:c'2@1088
+i "SetPartParam" 8.5 0.5 1 "freq_2" 1056
+; 1/2:c'2:~ @1010
+i 1.2 8 1 1 2 0.567
+; 1/2:c,2:~@1027
+i "SetPartParam" 8 0.5 1 "freq_3" 66
+; 3:c,2:~@1121
+i "SetPartParam" 8.5 3 1 "freq_3" 66
+; 3:c,2:~@1196
+i "SetPartParam" 11.5 0.5 1 "freq_3" 66
+; 1/2:c,2:~ @1027
+i 1.3 8 4 1 3 0.567
+i "SetPartParamRamp" 8 4 1 "amp" 1 0.425 ; 127@0> @1042
+; mark 'e' @'[1061,1064)
+; 1:g#'@1096
+i "SetPartParam" 9 1 1 "freq_2" 838.148
+; 1:g#' @1096
+i 1.2 9 1 1 2 0.567
+; e'@1102
+i "SetPartParam" 10 1 1 "freq_2" 665.238
+; e' @1102
+i 1.2 10 1 1 2 0.567
+; 1/2:c':~@1105
+i "SetPartParam" 11 0.5 1 "freq_2" 528
+; 1/2:c'@1167
+i "SetPartParam" 11.5 0.5 1 "freq_2" 528
+; 1/2:c':~ @1105
+i 1.2 11 1 1 2 0.567
+; mark 'f' @'[1141,1144)
+i "SetPartParam" 14.5 0.01 1 "amp" 0.063 ; 8@0 @1268
 ;; END SYNTONIQ
 
 e

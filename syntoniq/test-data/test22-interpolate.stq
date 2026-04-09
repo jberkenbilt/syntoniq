@@ -1,0 +1,66 @@
+syntoniq(version=1)
+
+; This test is designed to exercise the boundary conditions of start
+; and end marks and skipping beats when the start/end points land in
+; the middle of actively changing pitches, dynamics, or tempos.
+
+; What you should hear:
+; - Low fixed note
+; - Gliding note
+; - Discrete notes one octave above the gliding note
+
+; The pitch of the discrete note lands exactly an octave above the
+; pitch of the gliding note half way through its duration. This can be
+; heard clearly if you slow the tempo down to 25.
+
+set_base_pitch(absolute=264)
+
+tempo(bpm=60)
+[p1.1] 1/2:c,:~
+[p1.2] 1/2:c:~
+[p1.3] 1/2:c,2:~
+[p1] 8@0<
+
+tempo(bpm=90 end_bpm=120 duration=3)
+mark(label="a")
+[p1.1] 3:c,:&~
+[p1.2] 1/2:c 1:e g# 1/2:c':~
+[p1.3] 3:c,2:~
+
+tempo(bpm=120 end_bpm=90 duration=3)
+mark(label="b")
+[p1.1] 3:c:&~
+[p1.2] 1/2:c' 1:e' g#' 1/2:c'2:~
+[p1.3] 3:c,2:~
+
+tempo(bpm=60)
+mark(label="c")
+[p1.1] 1/2:c'
+[p1.2] 1/2:c'2
+[p1.3] 1/2:c,2
+
+[p1.1] 1:~
+[p1] 127@0
+
+tempo(bpm=72)
+mark(label="d")
+[p1.1] 1/2:c':~
+[p1.2] 1/2:c'2:~
+[p1.3] 1/2:c,2:~
+[p1] 127@0>
+
+mark(label="e")
+[p1.1] 3:c':&~
+[p1.2] 1/2:c'2 1:g#' e' 1/2:c':~
+[p1.3] 3:c,2:~
+
+mark(label="f")
+[p1.1] 3:c:&~
+[p1.2] 1/2:c' 1:g# e 1/2:c:~
+[p1.3] 3:c,2:~
+
+mark(label="g")
+[p1.1] 1/2:c,
+[p1.2] 1/2:c
+[p1.3] 1/2:c,2
+[p1] 8@0

@@ -10,17 +10,21 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 
 # v0.4.1 - TBD
 
+This release includes fixes to issues I encountered while actively creating music with the Syntoniq language for the first time.
+
 ## Enhancements
 
 * Add the `csound_global_instrument` directive for enabling global effect instruments, such as reverb, when using custom Csound templates.
 * Add the `csound_template` directive, which takes a relative path, for specifying a Csound template. This can still be overridden from the command line.
 * Add prompt syntax for saving pitches to and restoring pitches from variables.
 * Add human-readable text output as a choice for `syntoniq generate`
+* Add `--skip-end-beats` to `syntoniq generate`
 
 ## Bug Fixes
 
 * Remove false "unknown part" error in Csound processor dynamics lines that appear in parts that don't otherwise appear in the region.
 * Fix bugs in MIDI generator for gradual changes in pitch or dynamics in the negative direction.
+* Properly handle boundary conditions around start/end mark and beat skipping when they occur in the middle of an actively changing pitch, dynamic, or tempo.
 
 # v0.4.0 - April 2, 2026
 

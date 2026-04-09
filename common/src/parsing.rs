@@ -86,10 +86,13 @@ pub struct Options {
     /// Skip all repeats
     #[arg(long)]
     pub skip_repeats: bool,
-    /// Skip specified number of whole beats from beginning or specified start
+    /// Skip specified number of whole beats from the beginning or specified start
     /// mark
     #[arg(long)]
     pub skip_beats: Option<u32>,
+    /// Skip specified number of whole beats from the end or specified end mark
+    #[arg(long)]
+    pub skip_end_beats: Option<u32>,
     /// Generate output at the given percentage of the specified tempos
     #[arg(long)]
     pub tempo_percent: Option<u32>,

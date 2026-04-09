@@ -6,6 +6,7 @@ use crate::parsing::model::{
     Span, Spanned,
 };
 use num_rational::Ratio;
+use num_traits::CheckedSub;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::cell::RefCell;
@@ -27,8 +28,8 @@ use crate::parsing::pass2::Pass2;
 use crate::parsing::score::generator::NoteGenerator;
 use crate::parsing::{
     CsoundInstrumentId, DynamicEvent, MarkEvent, MidiInstrumentNumber, NoteEvent, NoteValue,
-    Options, PartNote, PitchChange, TempoEvent, Timeline, TimelineData, TimelineEvent, WithTime,
-    pass2, score_helpers, timeline,
+    Options, PartNote, PitchChange, TempoEvent, TimeBoundaries, Timeline, TimelineData,
+    TimelineEvent, WithTime, pass2, score_helpers, timeline,
 };
 use crate::pitch::Pitch;
 pub use directives::*;
@@ -1699,11 +1700,12 @@ impl<'s> Score<'s> {
                 && let Some(end_bpm) = &tempo.end_bpm
                 && end_bpm.time > end_time
             {
-                // If this check is relaxed, it will have implications around mark/repeat. Study
-                // the code in post_process carefully, and remember about Self::effective_tempo.
-                // We would have to split tempo changes up around boundaries most likely. It's
-                // probably better from an application design standpoint to not allow it as it would
-                // be confusing for users in addition to being logically complex to code.
+                // If this check is relaxed, it will have implications around mark/repeat. Study the
+                // code in post_process carefully, and remember about
+                // TimelineEvent::copy_with_time_delta. We would have to split tempo changes up
+                // around boundaries most likely. It's probably better from an application design
+                // standpoint to not allow it as it would be confusing for users in addition to
+                // being logically complex to code.
                 let over_by = end_bpm.time - end_time;
                 diags.push(Diagnostic::new(
                     code::SCORE,
@@ -1959,35 +1961,102 @@ impl<'s> Score<'s> {
         }
     }
 
-    fn effective_tempo(
-        last_tempo_event: &TempoEvent,
-        event_time: Ratio<u32>,
-        current_time: Ratio<u32>,
-    ) -> TempoEvent {
-        let mut event = last_tempo_event.clone();
-        if event_time > current_time {
-            return event;
+    fn find_time_boundaries(
+        &self,
+        diags: &Diagnostics,
+        options: &Options,
+    ) -> Option<TimeBoundaries> {
+        // Identify the boundaries as implied by start/end marks and any other CLI-based adjustments
+        // in a separate pass. This significantly simplifies boundary condition logic during the
+        // actual event filtering.
+        let mut start_time: Option<Ratio<u32>> = None;
+        let mut end_time: Option<Ratio<u32>> = None;
+        let mut start_span: Option<Span> = None;
+        let mut end_span: Option<Span> = None;
+        let mut max_time: Ratio<u32> = 0.into();
+        for event in &self.timeline.events {
+            max_time = cmp::max(max_time, event.end_time());
+            let TimelineData::Mark(mark) = &event.data else {
+                continue;
+            };
+            // Only detect the first occurrence of start and end marks. Marks that have a repeat
+            // depth > 1 will always appear after the original mark since repeat can only reference
+            // previously seen marks.
+            if start_time.is_none()
+                && let Some(m) = options.start_mark.as_deref()
+                && m == mark.label
+            {
+                start_time = Some(event.time);
+                start_span = Some(event.span);
+            }
+            if end_time.is_none()
+                && let Some(m) = options.end_mark.as_deref()
+                && m == mark.label
+            {
+                end_time = Some(event.time);
+                end_span = Some(event.span);
+            }
         }
-        let Some(end_bpm) = &last_tempo_event.end_bpm else {
-            // If no tempo change is in progress, the last tempo event is currently effective.
-            return event;
-        };
-        if end_bpm.time <= current_time {
-            // We have reached the tempo event's end time, so the effective tempo is the end tempo.
-            event.bpm = end_bpm.item;
-            event.end_bpm = None;
-            return event;
+        if start_time.is_none()
+            && let Some(start_mark) = &options.start_mark
+        {
+            diags.err(
+                code::USAGE,
+                0..1,
+                format!("requested start mark '{start_mark}' not found"),
+            );
         }
-        // We are part way through a tempo change. Perform a linear interpolation to generate an
-        // event that starts where we are now and ends where we would have ended.
-
-        // Compute the tempo at this point.
-        let tempo_delta = end_bpm.item - last_tempo_event.bpm;
-        let tempo_duration = end_bpm.time - event_time;
-        let elapsed_fraction = (current_time - event_time) / tempo_duration;
-        let current = elapsed_fraction * tempo_delta + last_tempo_event.bpm;
-        event.bpm = current;
-        event
+        if end_time.is_none()
+            && let Some(end_mark) = &options.end_mark
+        {
+            diags.err(
+                code::USAGE,
+                0..1,
+                format!("requested end mark '{end_mark}' not found"),
+            );
+        }
+        if diags.has_errors() {
+            return None;
+        }
+        let mut start_time = start_time.unwrap_or_default();
+        let mut end_time = end_time.unwrap_or(max_time);
+        // Note: check end_time >= start_time rather than end_time > start_time so we don't get
+        // this error for empty files. It can be useful to have empty files that contain layouts
+        // and also to validate things like scale definitions, etc., before adding any score blocks.
+        if end_time >= start_time {
+            if let Some(delta) = options.skip_beats {
+                start_time += Ratio::from_integer(delta);
+            }
+            if let Some(delta) = options.skip_end_beats {
+                end_time = end_time
+                    .checked_sub(&Ratio::from_integer(delta))
+                    .unwrap_or_default();
+            }
+            if end_time < start_time {
+                diags.err(
+                    code::USAGE,
+                    0..1,
+                    "after adjusting start/end time, end time is not after start time",
+                );
+            }
+        } else {
+            let mut diag = Diagnostic::new(
+                code::USAGE,
+                end_span.unwrap_or((0..1).into()),
+                "end mark must be after start mark",
+            );
+            if let Some(s) = start_span {
+                diag = diag.with_context(s, "here is the start mark");
+            }
+            diags.push(diag);
+        }
+        if diags.has_errors() {
+            return None;
+        }
+        Some(TimeBoundaries {
+            start_time,
+            end_time,
+        })
     }
 
     pub fn post_process(&mut self, diags: &Diagnostics, options: &Options) {
@@ -2003,9 +2072,12 @@ impl<'s> Score<'s> {
         if diags.has_errors() {
             return;
         }
+        let Some(time_boundaries) = self.find_time_boundaries(diags, options) else {
+            return;
+        };
         let tempo_percent = options.tempo_percent.unwrap_or(100);
         let tempo_factor = Ratio::new(tempo_percent, 100);
-        // Filter timeline events
+        // Keep only timeline events relevant to selected parts.
         let events = mem::take(&mut self.timeline.events);
         let events = if options.part.is_empty() {
             events
@@ -2033,91 +2105,42 @@ impl<'s> Score<'s> {
                 })
                 .collect()
         };
-        let mut pending_tempo = None;
-        let mut iter = events.into_iter();
-        // Scan until we find the start mark. Keep track of the tempo. When scanning for marks,
-        // we can always just match on the first occurrence. Marks that have a repeat depth > 1
-        // will always appear after the original mark since repeat can only reference previously
-        // seen marks.
-        let mut delta: Ratio<u32> = Ratio::from_integer(0);
-        if let Some(start_mark) = options.start_mark.as_ref() {
-            let mut found_start = false;
-            for event in iter.by_ref() {
-                match &event.data {
-                    TimelineData::Tempo(e) => pending_tempo = Some((event.clone(), e.clone())),
-                    TimelineData::Mark(e) => {
-                        if e.label.as_ref() == start_mark {
-                            found_start = true;
-                            delta = event.time;
-                            break;
-                        }
-                        if let Some(end) = options.end_mark.as_ref()
-                            && e.label.as_ref() == end
-                        {
-                            diags.err(code::USAGE, event.span, "end mark must precede start mark");
-                            return;
-                        }
-                    }
-                    _ => {}
-                }
+        let mut current_tempo = None;
+        let mut delta: Ratio<u32> = time_boundaries.start_time;
+        let mut last_event_time: Ratio<u32> = 0.into();
+        for event in events {
+            if let Some(end_mark) = &options.end_mark.as_deref()
+                && let TimelineData::Mark(m) = &event.data
+                && &m.label == end_mark
+            {
+                // Short-circuit remaining checks since no additional events are of interest.
+                break;
             }
-            if !found_start {
-                diags.err(
-                    code::USAGE,
-                    0..1,
-                    format!("requested start mark '{start_mark}' not found"),
-                );
-                return;
-            }
-        }
-        if let Some(skip_beats) = options.skip_beats {
-            delta += skip_beats;
-        }
-        let mut found_end = options.end_mark.is_none();
-        let mut last_event_time = Ratio::from_integer(0);
-        // Set into effect any tempo that would have been effective at this point in the timeline.
-        let mut current_tempo = pending_tempo.map(|(timeline_event, tempo_event)| {
-            let mut new_pending_tempo =
-                Self::effective_tempo(&tempo_event, timeline_event.time, delta);
-            new_pending_tempo.adjust(tempo_factor);
-            let t = TimelineEvent {
-                time: delta,
-                repeat_depth: timeline_event.repeat_depth,
-                span: timeline_event.span,
-                data: TimelineData::Tempo(new_pending_tempo.clone()),
+            let Some(mut new_event) =
+                event.copy_with_time_delta(delta, Some(&time_boundaries), true)
+            else {
+                continue;
             };
-            let new_event = t.copy_with_time_delta(delta, true);
-            Arc::new(new_event)
-        });
-        for event in iter {
-            let mut new_event = event.copy_with_time_delta(delta, true);
             if options.skip_repeats
                 && (event.repeat_depth > 0 || matches!(event.data, TimelineData::RepeatEnd(_)))
             {
                 // Skip repeated passages and advance delta so we don't have silence.
                 delta += new_event.time - last_event_time;
                 // Re-compute time with new delta.
-                new_event = event.copy_with_time_delta(delta, true);
-                if let TimelineData::Tempo(e) = &mut new_event.data {
+                if let Some(mut new_event) =
+                    event.copy_with_time_delta(delta, Some(&time_boundaries), true)
+                    && let TimelineData::Tempo(e) = &mut new_event.data
+                {
                     // Keep track of tempo events inside skipped repeats, but don't insert
                     // anything. Regular validation logic ensures tempo changes that start inside
                     // repeated sections also finish within them, so we don't need in-flight
                     // computations.
                     e.adjust(tempo_factor);
                     current_tempo = Some(Arc::new(new_event));
-                    continue;
                 }
                 continue;
             }
             match &mut new_event.data {
-                TimelineData::Mark(e) => {
-                    if let Some(end_mark) = options.end_mark.as_ref()
-                        && end_mark == &e.label
-                    {
-                        found_end = true;
-                        break;
-                    }
-                }
                 TimelineData::RepeatStart(_) => {
                     last_event_time = new_event.time;
                     // Store the time of the repeat start, but don't put the event in the timeline.
@@ -2125,42 +2148,29 @@ impl<'s> Score<'s> {
                         continue;
                     }
                 }
-                TimelineData::Note(note_event) => {
-                    if note_event.value.pitches[0].start_time
-                        == note_event.value.pitches.last().unwrap().end_time
-                    {
-                        // Skipped notes end up having zero duration. Omit from timeline.
-                        continue;
-                    }
+                TimelineData::Note(_) => {
                     if let Some(e) = current_tempo.take() {
                         self.timeline.events.insert(e);
                     }
                 }
                 TimelineData::Tempo(e) => {
-                    e.adjust(tempo_factor);
+                    // Try to avoid emitting extraneous tempo change events. Check that the event
+                    // time is different is a partial solution. Based on the order in which events
+                    // are processed, it is still possible to generate extraneous tempo events
+                    // when start/end modifications are used, but it's harmless.
                     if let Some(t) = current_tempo.take()
                         && t.time != new_event.time
                     {
                         self.timeline.events.insert(t);
                     }
-                    let save = new_event.copy_with_time_delta(Ratio::from_integer(0), false);
-                    current_tempo = Some(Arc::new(save));
+                    e.adjust(tempo_factor);
+                    current_tempo = Some(Arc::new(new_event.clone()));
+                    continue;
                 }
-                TimelineData::Dynamic(_) | TimelineData::RepeatEnd(_) => {}
+                TimelineData::Mark(_) | TimelineData::Dynamic(_) | TimelineData::RepeatEnd(_) => {}
             }
             last_event_time = new_event.time;
             self.timeline.events.insert(Arc::new(new_event));
-        }
-        if !found_end {
-            // found_end can only be false if end_mark is Some.
-            diags.err(
-                code::USAGE,
-                0..1,
-                format!(
-                    "requested end mark '{}' not found",
-                    options.end_mark.as_ref().unwrap()
-                ),
-            );
         }
     }
 }
@@ -2205,50 +2215,5 @@ pub fn parse_prompt_line(line: &str, dc: &DivisionsAndCycle) -> Option<PromptCom
             anstream::eprintln!("{}", diags.render("", line));
             None
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_effective_tempo() {
-        fn r(n: u32) -> Ratio<u32> {
-            Ratio::from_integer(n)
-        }
-
-        let event = TempoEvent {
-            bpm: r(60),
-            end_bpm: Some(WithTime::new(r(12), r(120))),
-        };
-        assert_eq!(
-            Score::effective_tempo(&event, r(6), r(3)),
-            TempoEvent {
-                bpm: r(60),
-                end_bpm: event.end_bpm.clone(),
-            }
-        );
-        assert_eq!(
-            Score::effective_tempo(&event, r(6), r(9)),
-            TempoEvent {
-                bpm: r(90),
-                end_bpm: event.end_bpm.clone(),
-            }
-        );
-        assert_eq!(
-            Score::effective_tempo(&event, r(6), r(12)),
-            TempoEvent {
-                bpm: r(120),
-                end_bpm: None,
-            }
-        );
-        assert_eq!(
-            Score::effective_tempo(&event, r(6), r(15)),
-            TempoEvent {
-                bpm: r(120),
-                end_bpm: None,
-            }
-        );
     }
 }

@@ -302,7 +302,7 @@
           57
         ],
         "value": {
-          "raw": "1",
+          "raw": "4",
           "t": {
             "Number": {
               "n": {
@@ -310,7 +310,7 @@
                   56,
                   57
                 ],
-                "value": 1
+                "value": 4
               }
             }
           }
@@ -732,7 +732,7 @@
           60
         ],
         "value": {
-          "raw": "[p1.0] 1:d\n",
+          "raw": "[p1.0] 4:d\n",
           "t": {
             "NoteLine": {
               "leader": {
@@ -771,7 +771,7 @@
                           57
                         ],
                         "value": [
-                          1,
+                          4,
                           1
                         ]
                       },
@@ -941,21 +941,13 @@
       "list": [
         {
           "code": "E1020 general usage",
-          "context": [
-            {
-              "span": [
-                71,
-                74
-              ],
-              "value": "here is the start mark"
-            }
-          ],
+          "context": [],
           "message": {
             "span": [
-              44,
-              47
+              0,
+              1
             ],
-            "value": "end mark must be after start mark"
+            "value": "after adjusting start/end time, end time is not after start time"
           }
         }
       ]

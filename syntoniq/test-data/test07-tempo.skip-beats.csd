@@ -116,7 +116,7 @@ f 1 0 32768 10 1 .4 .3 .2 .1 .05 .02
 
 i "SetPartParam" 0 0.01 1 "amp" 0.5
 i "SetPartParam" 0 0.01 1 "notes" 10
-t 0 60 0 60 0 72 1 108
+t 0 60 0 60 0 99 1 108
 ; 10:c,@215
 i "SetPartParam" 0 6 1 "freq_1" 130.813
 ; 10:c, @215

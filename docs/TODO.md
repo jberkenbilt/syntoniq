@@ -2,25 +2,16 @@
 
 This is general TODO across internal docs, manual, and software.
 
-# Early Issues
-
-* Need volume control for syntoniq-kbd regular and prompt.
-* When starting in the middle of a sustained note with a mark, the note should be on; advance the start time of notes in progress. When ending in the middle of a sustained note, the truncate the duration.
-* Allow mark to take an offset
-* Would be nice to override the instrument for the keyboard.
-
-# Pre-1.0
-
-These are proposed pre-1.0 items. Details are below for many.
-
-* Create a minimal emacs mode
-
 # Build/CI
 
-* Do the lychee check in build_all
+* Do the lychee check (for valid HTML links in manual -- see [manual/README.md](../manual/README.md)) in build_all. Or at least remember about it when adding new external links to the documentation.
 
 # Software
 
+* Periodically search for `jetbrains.com/issue` to see if we can remove workarounds.
+  * timeline.rs has a workaround for RUST-20121
+* Need volume control for syntoniq-kbd regular and prompt.
+* Would be nice to be able to override the instrument for the keyboard.
 * See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation markers control note length, attack velocity, and release velocity.
@@ -38,6 +29,7 @@ These are proposed pre-1.0 items. Details are below for many.
 * Note: not tested (generator):
   * MPE: more than 16 channels; multi-port
 * Editing experience
+  * Create a minimal emacs mode
   * Write LSP
   * Reformatting -- see below
 

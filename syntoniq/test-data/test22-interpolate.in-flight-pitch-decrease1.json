@@ -7,13 +7,32 @@
       ],
       "repeat_depth": 0,
       "span": [
-        532,
-        537
+        950,
+        955
+      ],
+      "data": {
+        "Dynamic": {
+          "text": "127@0",
+          "part": "p1",
+          "start_level": 127,
+          "end_level": null
+        }
+      }
+    },
+    {
+      "time": [
+        0,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        957,
+        962
       ],
       "data": {
         "Tempo": {
           "bpm": [
-            90,
+            72,
             1
           ],
           "end_bpm": null
@@ -27,24 +46,129 @@
       ],
       "repeat_depth": 0,
       "span": [
-        693,
-        698
+        994,
+        1002
       ],
       "data": {
         "Note": {
           "part": "p1",
-          "note_number": 0,
+          "note_number": 1,
           "value": {
-            "text": "1/2:f",
+            "text": "1/2:c':~",
             "velocity": 72,
             "pitches": [
               {
-                "text": "1/2:f",
+                "text": "3:c':&~",
                 "span": [
-                  693,
-                  698
+                  1073,
+                  1080
                 ],
-                "start_pitch": "220*^2|3",
+                "start_pitch": "264*^2|3",
+                "start_time": [
+                  0,
+                  1
+                ],
+                "end_pitch": "264*^1|3",
+                "end_time": [
+                  1,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        0,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1027,
+        1036
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 3,
+          "value": {
+            "text": "1/2:c,2:~",
+            "velocity": 72,
+            "pitches": [
+              {
+                "text": "3:c,2:~",
+                "span": [
+                  1121,
+                  1128
+                ],
+                "start_pitch": "66",
+                "start_time": [
+                  0,
+                  1
+                ],
+                "end_pitch": null,
+                "end_time": [
+                  1,
+                  1
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        0,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1042,
+        1048
+      ],
+      "data": {
+        "Dynamic": {
+          "text": "127@0>",
+          "part": "p1",
+          "start_level": 100,
+          "end_level": {
+            "time": [
+              1,
+              1
+            ],
+            "item": 81
+          }
+        }
+      }
+    },
+    {
+      "time": [
+        0,
+        1
+      ],
+      "repeat_depth": 0,
+      "span": [
+        1096,
+        1101
+      ],
+      "data": {
+        "Note": {
+          "part": "p1",
+          "note_number": 2,
+          "value": {
+            "text": "1:g#'",
+            "velocity": 72,
+            "pitches": [
+              {
+                "text": "1:g#'",
+                "span": [
+                  1096,
+                  1101
+                ],
+                "start_pitch": "528*^2|3",
                 "start_time": [
                   0,
                   1
@@ -67,24 +191,24 @@
       ],
       "repeat_depth": 0,
       "span": [
-        699,
-        700
+        1102,
+        1104
       ],
       "data": {
         "Note": {
           "part": "p1",
-          "note_number": 0,
+          "note_number": 2,
           "value": {
-            "text": "f",
+            "text": "e'",
             "velocity": 72,
             "pitches": [
               {
-                "text": "f",
+                "text": "e'",
                 "span": [
-                  699,
-                  700
+                  1102,
+                  1104
                 ],
-                "start_pitch": "220*^2|3",
+                "start_pitch": "528*^1|3",
                 "start_time": [
                   1,
                   2
@@ -92,678 +216,6 @@
                 "end_pitch": null,
                 "end_time": [
                   1,
-                  1
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        1,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        701,
-        702
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "f",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "f",
-                "span": [
-                  701,
-                  702
-                ],
-                "start_pitch": "220*^2|3",
-                "start_time": [
-                  1,
-                  1
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  3,
-                  2
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        3,
-        2
-      ],
-      "repeat_depth": 0,
-      "span": [
-        703,
-        704
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "f",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "f",
-                "span": [
-                  703,
-                  704
-                ],
-                "start_pitch": "220*^2|3",
-                "start_time": [
-                  3,
-                  2
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  2,
-                  1
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        2,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        836,
-        841
-      ],
-      "data": {
-        "Tempo": {
-          "bpm": [
-            60,
-            1
-          ],
-          "end_bpm": null
-        }
-      }
-    },
-    {
-      "time": [
-        2,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        857,
-        862
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "1/2:g",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "1/2:g",
-                "span": [
-                  857,
-                  862
-                ],
-                "start_pitch": "220*^5|6",
-                "start_time": [
-                  2,
-                  1
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  5,
-                  2
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        5,
-        2
-      ],
-      "repeat_depth": 0,
-      "span": [
-        863,
-        864
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "g",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "g",
-                "span": [
-                  863,
-                  864
-                ],
-                "start_pitch": "220*^5|6",
-                "start_time": [
-                  5,
-                  2
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  3,
-                  1
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        3,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        865,
-        866
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "g",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "g",
-                "span": [
-                  865,
-                  866
-                ],
-                "start_pitch": "220*^5|6",
-                "start_time": [
-                  3,
-                  1
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  7,
-                  2
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        7,
-        2
-      ],
-      "repeat_depth": 0,
-      "span": [
-        867,
-        868
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "g",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "g",
-                "span": [
-                  867,
-                  868
-                ],
-                "start_pitch": "220*^5|6",
-                "start_time": [
-                  7,
-                  2
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  4,
-                  1
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        4,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        910,
-        913
-      ],
-      "data": {
-        "Mark": {
-          "label": "c"
-        }
-      }
-    },
-    {
-      "time": [
-        4,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        940,
-        945
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "1/2:a",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "1/2:a",
-                "span": [
-                  940,
-                  945
-                ],
-                "start_pitch": "440",
-                "start_time": [
-                  4,
-                  1
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  9,
-                  2
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        4,
-        1
-      ],
-      "repeat_depth": 1,
-      "span": [
-        532,
-        537
-      ],
-      "data": {
-        "Tempo": {
-          "bpm": [
-            90,
-            1
-          ],
-          "end_bpm": null
-        }
-      }
-    },
-    {
-      "time": [
-        9,
-        2
-      ],
-      "repeat_depth": 0,
-      "span": [
-        946,
-        947
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "a",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "a",
-                "span": [
-                  946,
-                  947
-                ],
-                "start_pitch": "440",
-                "start_time": [
-                  9,
-                  2
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  5,
-                  1
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        5,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        948,
-        949
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "a",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "a",
-                "span": [
-                  948,
-                  949
-                ],
-                "start_pitch": "440",
-                "start_time": [
-                  5,
-                  1
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  11,
-                  2
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        11,
-        2
-      ],
-      "repeat_depth": 0,
-      "span": [
-        950,
-        951
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "a",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "a",
-                "span": [
-                  950,
-                  951
-                ],
-                "start_pitch": "440",
-                "start_time": [
-                  11,
-                  2
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  6,
-                  1
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        6,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        1008,
-        1011
-      ],
-      "data": {
-        "Mark": {
-          "label": "d"
-        }
-      }
-    },
-    {
-      "time": [
-        6,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        1133,
-        1138
-      ],
-      "data": {
-        "Tempo": {
-          "bpm": [
-            90,
-            1
-          ],
-          "end_bpm": null
-        }
-      }
-    },
-    {
-      "time": [
-        7,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        1249,
-        1254
-      ],
-      "data": {
-        "Tempo": {
-          "bpm": [
-            60,
-            1
-          ],
-          "end_bpm": null
-        }
-      }
-    },
-    {
-      "time": [
-        7,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        1270,
-        1275
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "1/2:b",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "1/2:b",
-                "span": [
-                  1270,
-                  1275
-                ],
-                "start_pitch": "440*^1|6",
-                "start_time": [
-                  7,
-                  1
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  15,
-                  2
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        15,
-        2
-      ],
-      "repeat_depth": 0,
-      "span": [
-        1276,
-        1277
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "b",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "b",
-                "span": [
-                  1276,
-                  1277
-                ],
-                "start_pitch": "440*^1|6",
-                "start_time": [
-                  15,
-                  2
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  8,
-                  1
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        8,
-        1
-      ],
-      "repeat_depth": 0,
-      "span": [
-        1278,
-        1279
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "b",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "b",
-                "span": [
-                  1278,
-                  1279
-                ],
-                "start_pitch": "440*^1|6",
-                "start_time": [
-                  8,
-                  1
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  17,
-                  2
-                ]
-              }
-            ]
-          }
-        }
-      }
-    },
-    {
-      "time": [
-        17,
-        2
-      ],
-      "repeat_depth": 0,
-      "span": [
-        1280,
-        1281
-      ],
-      "data": {
-        "Note": {
-          "part": "p1",
-          "note_number": 0,
-          "value": {
-            "text": "b",
-            "velocity": 72,
-            "pitches": [
-              {
-                "text": "b",
-                "span": [
-                  1280,
-                  1281
-                ],
-                "start_pitch": "440*^1|6",
-                "start_time": [
-                  17,
-                  2
-                ],
-                "end_pitch": null,
-                "end_time": [
-                  9,
                   1
                 ]
               }
