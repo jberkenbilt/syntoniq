@@ -2054,7 +2054,7 @@ impl<'s> Score<'s> {
                         if let Some(end) = options.end_mark.as_ref()
                             && e.label.as_ref() == end
                         {
-                            diags.err(code::USAGE, event.span, "end mark must preceded start mark");
+                            diags.err(code::USAGE, event.span, "end mark must precede start mark");
                             return;
                         }
                     }
