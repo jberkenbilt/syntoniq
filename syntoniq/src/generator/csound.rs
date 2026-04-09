@@ -182,10 +182,11 @@ impl<'s> CsoundGenerator<'s> {
             match &event.data {
                 TimelineData::Tempo(_) => { /* already handled */ }
                 TimelineData::Dynamic(e) => {
-                    let &part_data = &self
-                        .part_data
-                        .get(e.part)
-                        .ok_or_else(|| anyhow!("unknown part"))?;
+                    let Some(part_data) = &self.part_data.get(e.part) else {
+                        // When using start and end mark, it's possible for a dynamic line to appear
+                        // for a part that has no note events within the region.
+                        continue;
+                    };
                     let part_number = part_data.part_number;
                     let comment = format!("; {} @{offset}", e.text);
                     match &e.end_level {
