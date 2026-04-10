@@ -1,7 +1,7 @@
 use crate::parsing::pass2;
 use anyhow::bail;
 use num_rational::Ratio;
-use num_traits::{CheckedDiv, CheckedMul, ToPrimitive};
+use num_traits::{CheckedDiv, CheckedMul, FromPrimitive, ToPrimitive};
 use serde::de::Visitor;
 use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 use std::cmp::Ordering;
@@ -61,6 +61,18 @@ impl From<Ratio<u32>> for Factor {
             exp: Ratio::from_integer(1),
         }
     }
+}
+
+// Round to the nearest ratio with a denominator <= 256
+fn round_to_d256<T: ToPrimitive + Copy>(r: T) -> Ratio<i32> {
+    let a = r.to_f64().unwrap();
+    if let Some(candidate) = Ratio::<i32>::from_f64(a)
+        && *candidate.denom() <= 256
+    {
+        return candidate;
+    }
+    let n = (a * 256.0).round() as i32;
+    Ratio::new(n, 256)
 }
 
 impl Display for Factor {
@@ -393,6 +405,28 @@ impl Pitch {
     pub fn midi(&self) -> Option<(u8, u16)> {
         Some(note_bend(self.fractional_midi_note()?))
     }
+
+    /// Compute a pitch that is perceptually between `p1` and `p2`. With `amount` = 0, return `p1`.
+    /// With `amount` = 1, return `p2`. For any value in between, return a pitch that perceptually
+    /// sounds like a linear interpolation between p1 and p2 by the given amount. Panics on amount
+    /// not between 0 and 1 inclusive.
+    pub fn interpolate(p1: &Pitch, p2: &Pitch, amount: Ratio<u32>) -> Pitch {
+        if amount > Ratio::from(1) {
+            panic!("amount must be between 0 and 1 inclusive");
+        }
+        if amount == 0.into() || p1 == p2 {
+            return p1.clone();
+        }
+        if amount == 1.into() {
+            return p2.clone();
+        }
+        let delta = p2 / p1;
+        let octaves = round_to_d256(delta.as_float().log2());
+        let amount = round_to_d256(amount);
+        let exponent = round_to_d256(octaves * amount);
+        let factor = Factor::new(2, 1, *exponent.numer() as i32, *exponent.denom() as i32).unwrap();
+        p1 * &Pitch::new(vec![factor])
+    }
 }
 
 impl FromStr for Pitch {
@@ -656,5 +690,70 @@ mod tests {
         );
         assert!(Pitch::must_parse("2/3^1|19").as_rational().is_none());
         assert!(Pitch::must_parse("^1|19").as_rational().is_none());
+    }
+
+    #[test]
+    fn test_round() {
+        let r = Ratio::new;
+        assert_eq!(round_to_d256(r(15, 15)), r(1, 1));
+        assert_eq!(round_to_d256(r(1025, 2048)), r(1, 2));
+        assert_eq!(round_to_d256(r(513, 1024)), r(1, 2));
+        assert_eq!(round_to_d256(r(257, 512)), r(129, 256));
+        assert_eq!(round_to_d256(r(259, 512)), r(65, 128));
+        assert_eq!(round_to_d256(r(769, 512)), r(385, 256));
+        assert_eq!(round_to_d256(r(1, 3).to_f64().unwrap()), r(1, 3));
+        assert_eq!(round_to_d256(r(2, 3).to_f64().unwrap()), r(2, 3));
+    }
+
+    #[test]
+    fn test_interpolate() {
+        assert_eq!(
+            Pitch::interpolate(
+                &Pitch::must_parse("100"),
+                &Pitch::must_parse("800"),
+                Ratio::from_integer(0)
+            ),
+            Pitch::must_parse("100")
+        );
+        assert_eq!(
+            Pitch::interpolate(
+                &Pitch::must_parse("100"),
+                &Pitch::must_parse("800"),
+                Ratio::from_integer(1)
+            ),
+            Pitch::must_parse("800")
+        );
+        assert_eq!(
+            Pitch::interpolate(
+                &Pitch::must_parse("100"),
+                &Pitch::must_parse("800"),
+                Ratio::new(1, 3)
+            ),
+            Pitch::must_parse("200")
+        );
+        assert_eq!(
+            Pitch::interpolate(
+                &Pitch::must_parse("100"),
+                &Pitch::must_parse("800"),
+                Ratio::new(2, 3)
+            ),
+            Pitch::must_parse("400")
+        );
+        assert_eq!(
+            Pitch::interpolate(
+                &Pitch::must_parse("800"),
+                &Pitch::must_parse("100"),
+                Ratio::new(2, 3)
+            ),
+            Pitch::must_parse("200")
+        );
+        assert_eq!(
+            Pitch::interpolate(
+                &Pitch::must_parse("250"),
+                &Pitch::must_parse("250"),
+                Ratio::new(12, 19)
+            ),
+            Pitch::must_parse("250")
+        );
     }
 }
