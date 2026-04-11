@@ -470,13 +470,17 @@ fn ramp_smooth<T>(
     steps: u32,
 ) -> Vec<(Ratio<u32> /*time*/, T /*level*/)>
 where
-    T: MultiplyByRatio + Num,
+    T: MultiplyByRatio + Num + PartialOrd,
 {
     let mut result = Vec::with_capacity(steps as usize);
     for i in 1..=steps {
         let frac = Ratio::new(i, steps);
         let t = start_time + duration.times_ratio(frac);
-        let v = start_level + (end_level - start_level).times_ratio(frac);
+        let v = if end_level > start_level {
+            start_level + (end_level - start_level).times_ratio(frac)
+        } else {
+            start_level - (start_level - end_level).times_ratio(frac)
+        };
         result.push((t, v));
     }
     result

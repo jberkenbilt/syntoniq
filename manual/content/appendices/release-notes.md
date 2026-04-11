@@ -19,6 +19,7 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 ## Bug Fixes
 
 * Remove false "unknown part" error in Csound processor dynamics lines that appear in parts that don't otherwise appear in the region.
+* Fix bugs in MIDI generator for gradual changes in pitch or dynamics in the negative direction.
 
 # v0.4.0 - April 2, 2026
 
