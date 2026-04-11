@@ -8,13 +8,14 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 
 <!-- See issues to resolve ... below -->
 
-# v0.4.1 - April 2, 2026
+# v0.4.1 - TBD
 
 ## Enhancements
 
 * Add the `csound_global_instrument` directive for enabling global effect instruments, such as reverb, when using custom Csound templates.
 * Add the `csound_template` directive, which takes a relative path, for specifying a Csound template. This can still be overridden from the command line.
 * Add prompt syntax for saving pitches to and restoring pitches from variables.
+* Add human-readable text output as a choice for `syntoniq generate`
 
 ## Bug Fixes
 

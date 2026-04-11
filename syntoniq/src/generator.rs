@@ -7,6 +7,7 @@ use syntoniq_common::parsing::Timeline;
 
 mod csound;
 mod midi;
+mod text;
 
 pub const CSOUND_TEMPLATE: &str = csound::DEFAULT_TEMPLATE;
 
@@ -25,6 +26,9 @@ pub struct GenerateOptions {
     /// built-in one.
     #[arg(long)]
     csound: Option<PathBuf>,
+    /// Output a human-readable text dump of the timeline.
+    #[arg(long)]
+    text: Option<PathBuf>,
     /// Override the built-in Csound template. The template has to conform to a certain structure
     /// to be usable. Run `syntoniq csound-template` to print the contents of the built-in template.
     /// You can also use a previous output as a template to just replace the generated portion.
@@ -69,6 +73,11 @@ pub fn run(options: GenerateOptions) -> anyhow::Result<()> {
     }
     if let Some(csound_file) = options.csound
         && let Err(e) = csound::generate(&timeline, csound_file, csound_template)
+    {
+        errors.push(format!("{score_file} -> Csound: {e}"));
+    }
+    if let Some(text_file) = options.text
+        && let Err(e) = text::generate(&timeline, text_file)
     {
         errors.push(format!("{score_file} -> Csound: {e}"));
     }

@@ -44,14 +44,22 @@ fn test_generator() -> anyhow::Result<()> {
             json: Some(outfile("json")),
             midi: Some(outfile("midi")),
             csound: Some(outfile("csd")),
+            text: Some(outfile("txt")),
             csound_template,
             parse_options: Default::default(),
         };
         if let Err(e) = generator::run(options) {
             errors.push(format!("{base}: {e}"));
         }
-        for suf in ["json", "midi", "csd"] {
-            let actual = fs::read(outfile(suf)).unwrap();
+        for suf in ["json", "midi", "csd", "txt"] {
+            let out = outfile(suf);
+            let actual = match fs::read(&out) {
+                Ok(x) => x,
+                Err(e) => {
+                    errors.push(format!("read {}: {e}", out.display()));
+                    continue;
+                }
+            };
             let exp = fs::read(input_file(suf)).unwrap_or_default();
             if actual == exp {
                 println!("{base}: {suf} PASSED");
@@ -326,6 +334,7 @@ fn test_options() -> anyhow::Result<()> {
             json: Some(outfile("json")),
             midi: Some(outfile("midi")),
             csound: Some(outfile("csd")),
+            text: Some(outfile("txt")),
             csound_template: None,
             parse_options,
         };
@@ -336,8 +345,15 @@ fn test_options() -> anyhow::Result<()> {
             errors.push(format!("{base}: {e}"));
         }
         assert!(!name.contains("error"), "expected error was not seen");
-        for suf in ["json", "midi", "csd"] {
-            let actual = fs::read(outfile(suf))?;
+        for suf in ["json", "midi", "csd", "txt"] {
+            let out = outfile(suf);
+            let actual = match fs::read(outfile(suf)) {
+                Ok(x) => x,
+                Err(e) => {
+                    errors.push(format!("read {}: {e}", out.display()));
+                    continue;
+                }
+            };
             let exp = fs::read(exp_file(suf)).unwrap_or_default();
             if actual == exp {
                 println!("{base}: {name}, {suf} PASSED");

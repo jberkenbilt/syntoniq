@@ -18,7 +18,8 @@ syntoniq generate \
    --score=score.stq \
    --csound=score.csd \
    --midi=score.midi \
-   --json=score-timeline.json
+   --json=score-timeline.json \
+   --text=score-timeline.txt
 ```
 
 There are several command-line examples in the [Complete Example](../../microtonality/example/) section. The [Keyboard](../../keyboard/) chapters include examples of running the keyboard.
