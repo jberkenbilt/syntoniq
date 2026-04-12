@@ -26,11 +26,15 @@ pub const HELP: &str = r#"** Commands **
 !a/n            -- align with n divisions of `a`
 !a/b/n          -- align with n divisions of `a/b`
 note1 > note2   -- transpose to give note1's pitch to note2
+pitch > note2   -- transpose to give pitch, relative to base, to note2
 note > $var     -- save note's pitch into variable $var
+pitch > $var    -- save pitch into variable $var
 $var > note     -- transpose to set note's pitch to the value in $var
 note            -- play note, assigning to the lowest available note number
+pitch           -- play pitch, relative to base, assigning to the lowest available note number
 $var            -- show the pitch saved into $var, if any
 n < note        -- play note as note n, replacing any existing value
+n < pitch       -- play pitch, relative to base, as note n, replacing any existing value
 n <             -- stop playing note n
 ** All notes use generated note syntax. **
 Exit with CTRL-C or CTRL-D.

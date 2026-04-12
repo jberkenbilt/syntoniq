@@ -21,11 +21,15 @@ The currently sounding chord consists of notes numbered from 0 to 255. If you ty
 * `!a/n` — align with n divisions of `a`; like appending `!a/n` to the note name
 * `!a/b/n` — align with n divisions of `a/b`; like appending `!a/b/n` to the note name
 * `note1 > note2` — transpose to give note1's pitch to note2
-* `note > $var` — save note's pitch into variable $var
-* `$var > note` — transpose to set note's pitch to the value in $var
+* `pitch > note2` — transpose to give pitch, relative to base, to note2
+* `note > $var` — save note's pitch into variable `$var`
+* `pitch > $var` — save pitch into variable `$var`
+* `$var > note` — transpose to set note's pitch to the value in `$var`
 * `note` — play note, assigning the lowest available note number
-* `$var` — show the pitch saved into $var, if any
+* `pitch` — play pitch, relative to base, assigning to the lowest available note number
+* `$var` — show the pitch saved into `$var`, if any
 * `n < note` — play note as note n, replacing any existing value
+* `n < pitch` —  play pitch, relative to base, as note n, replacing any existing value
 * `n <` — stop playing note n
 
 To exit, press `CTRL-C` or `CTRL-D`.
@@ -49,11 +53,15 @@ Below is a screen capture from a sample session. You may see slightly different 
 !a/n            -- align with n divisions of `a`
 !a/b/n          -- align with n divisions of `a/b`
 note1 > note2   -- transpose to give note1's pitch to note2
+pitch > note2   -- transpose to give pitch, relative to base, to note2
 note > $var     -- save note's pitch into variable $var
+pitch > $var    -- save pitch into variable $var
 $var > note     -- transpose to set note's pitch to the value in $var
 note            -- play note, assigning to the lowest available note number
+pitch           -- play pitch, relative to base, assigning to the lowest available note number
 $var            -- show the pitch saved into $var, if any
 n < note        -- play note as note n, replacing any existing value
+n < pitch       -- play pitch, relative to base, as note n, replacing any existing value
 n <             -- stop playing note n
 ** All notes use generated note syntax. **
 Exit with CTRL-C or CTRL-D.
@@ -143,6 +151,14 @@ divisions = interval: 2, divisions: 17
    1: JK = 220*^37|68 (220*^1|4 × 1 × ^5|17) ≈ 320.788
    2: C = 220*^57|68 (220*^1|4 × 1 × ^10|17) ≈ 393.330
 *  3: CJK = 440*^9|68 (220*^1|4 × 1 × ^15|17) ≈ 482.275
+𝄐 !!!
+turning off all notes
+resetting state
+𝄐 5/4
+*  0: 5/4 = 275*^1|4 (220*^1|4 × 1 × 5/4) ≈ 327.032
+𝄐 9/8
+   0: 5/4 = 275*^1|4 (220*^1|4 × 1 × 5/4) ≈ 327.032
+*  1: 9/8 = 247.5*^1|4 (220*^1|4 × 1 × 9/8) ≈ 294.329
 𝄐 !!!
 turning off all notes
 resetting state

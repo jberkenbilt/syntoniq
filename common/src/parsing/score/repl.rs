@@ -35,24 +35,35 @@ impl Default for DivisionsAndCycle {
     }
 }
 
-enum NoteOrVar {
+enum NoteLike {
     Note(ReplNote),
     Var(String),
+    Pitch(Spanned<String>),
 }
-impl NoteOrVar {
+impl NoteLike {
     fn is_var(&self) -> bool {
-        matches!(self, NoteOrVar::Var(_))
+        matches!(self, NoteLike::Var(_))
     }
-    fn into_note(self) -> ReplNote {
+    fn is_pitch(&self) -> bool {
+        matches!(self, NoteLike::Pitch(_))
+    }
+    fn into_note(self, diags: &Diagnostics) -> ReplNote {
         match self {
-            NoteOrVar::Note(x) => x,
-            NoteOrVar::Var(_) => panic!("not a note"),
+            NoteLike::Note(x) => x,
+            NoteLike::Pitch(x) => {
+                let pitch = parse_pitch(diags, x.span, &x.value);
+                ReplNote {
+                    name: x.value,
+                    pitch,
+                }
+            }
+            NoteLike::Var(_) => panic!("not a note"),
         }
     }
     fn into_variable(self) -> String {
         match self {
-            NoteOrVar::Note(_) => panic!("not a variable"),
-            NoteOrVar::Var(x) => x,
+            NoteLike::Var(x) => x,
+            _ => panic!("not a variable"),
         }
     }
 }
@@ -120,6 +131,26 @@ fn octave<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, Spanned<i8>> 
     )
 }
 
+fn parse_pitch(diags: &Diagnostics, span: Span, s: &str) -> Pitch {
+    match Pitch::parse(s) {
+        Ok(p) => p,
+        Err(e) => {
+            diags.err(code::SYNTAX, span, e.to_string());
+            Pitch::default()
+        }
+    }
+}
+
+fn pitch<'s>() -> impl Parser1Intermediate<'s, Spanned<String>> {
+    // We must delay pitch parsing until after the overall matcher that contains the pitch has
+    // accepted the input. Otherwise, the beginning of parsing a transpose line will report errors
+    // when rejecting the valid (non-tranpose) command `0<`.
+    pass1::parse1_intermediate(
+        take_while(1.., |c| AsChar::is_dec_digit(c) || "^*/|".contains(c)),
+        |raw, span, _out| Spanned::new(span, raw.to_string()),
+    )
+}
+
 fn variable<'s>() -> impl Parser1Intermediate<'s, String> {
     pass1::parse1_intermediate(
         (
@@ -148,14 +179,28 @@ fn note<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl Parser1Intermed
     )
 }
 
-fn note_or_variable<'s>(
+fn note_like<'s>(
     diags: &Diagnostics,
     dc: &DivisionsAndCycle,
-) -> impl Parser1Intermediate<'s, NoteOrVar> {
+) -> impl Parser1Intermediate<'s, NoteLike> {
     pass1::parse1_intermediate(
         alt((
-            note(diags, dc).map(NoteOrVar::Note),
-            variable().map(NoteOrVar::Var),
+            note(diags, dc).map(NoteLike::Note),
+            variable().map(NoteLike::Var),
+            pitch().map(NoteLike::Pitch),
+        )),
+        |_raw, _span, out| out,
+    )
+}
+
+fn note_or_pitch<'s>(
+    diags: &Diagnostics,
+    dc: &DivisionsAndCycle,
+) -> impl Parser1Intermediate<'s, NoteLike> {
+    pass1::parse1_intermediate(
+        alt((
+            note(diags, dc).map(NoteLike::Note),
+            pitch().map(NoteLike::Pitch),
         )),
         |_raw, _span, out| out,
     )
@@ -237,13 +282,7 @@ fn set_base<'s>(diags: &Diagnostics) -> impl ReplParser<'s> {
         ),
         |_raw, _span, (ch, _, (rest, rest_span))| {
             let rest_span = Span::from(rest_span);
-            let pitch = match Pitch::parse(rest) {
-                Ok(p) => p,
-                Err(e) => {
-                    diags.err(code::SYNTAX, rest_span, e.to_string());
-                    Pitch::default()
-                }
-            };
+            let pitch = parse_pitch(diags, rest_span, rest);
             if ch == '=' {
                 PromptCommand::SetBaseAbsolute { pitch }
             } else {
@@ -261,7 +300,7 @@ fn play_n<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser<'s
             opt(pass1::space()),
             '<',
             opt(pass1::space()),
-            opt(note(diags, dc)),
+            opt(note_or_pitch(diags, dc)),
         ),
         |_raw, _span, (num, _, _, _, note)| {
             let n = match u8::try_from(num.value) {
@@ -271,15 +310,20 @@ fn play_n<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser<'s
                     0
                 }
             };
-            PromptCommand::Play { n: Some(n), note }
+            PromptCommand::Play {
+                n: Some(n),
+                note: note.map(|x| x.into_note(diags)),
+            }
         },
     )
 }
 
 fn play_bare<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser<'s> {
-    parse_repl(note(diags, dc), |_raw, _span, note| PromptCommand::Play {
-        n: None,
-        note: Some(note),
+    parse_repl(note_or_pitch(diags, dc), |_raw, _span, note| {
+        PromptCommand::Play {
+            n: None,
+            note: Some(note.into_note(diags)),
+        }
     })
 }
 
@@ -292,13 +336,20 @@ fn show_variable<'s>() -> impl ReplParser<'s> {
 fn transpose<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser<'s> {
     parse_repl(
         (
-            note_or_variable(diags, dc),
+            note_like(diags, dc),
             opt(pass1::space()),
             '>',
             opt(pass1::space()),
-            note_or_variable(diags, dc),
+            note_like(diags, dc),
         ),
         |_raw, span, (pitch_from, _, _, _, written)| {
+            if written.is_pitch() {
+                diags.err(
+                    code::SYNTAX,
+                    span,
+                    "right hand side of transpose may not be a pitch literal",
+                );
+            }
             if pitch_from.is_var() {
                 if written.is_var() {
                     diags.err(code::SYNTAX, span, "at most one side may be a variable");
@@ -308,19 +359,19 @@ fn transpose<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser
                     }
                 } else {
                     PromptCommand::Restore {
-                        note: written.into_note(),
+                        note: written.into_note(diags),
                         variable: pitch_from.into_variable(),
                     }
                 }
             } else if written.is_var() {
                 PromptCommand::Save {
-                    note: pitch_from.into_note(),
+                    note: pitch_from.into_note(diags),
                     variable: written.into_variable(),
                 }
             } else {
                 PromptCommand::Transpose {
-                    pitch_from: pitch_from.into_note(),
-                    written: written.into_note(),
+                    pitch_from: pitch_from.into_note(diags),
+                    written: written.into_note(diags),
                 }
             }
         },
@@ -523,6 +574,20 @@ mod tests {
             }
         );
         assert_eq!(
+            parse_repl_line(" 9/8 > Q ", &dc).unwrap(),
+            PromptCommand::Transpose {
+                pitch_from: ReplNote {
+                    name: "9/8".to_string(),
+                    pitch: Pitch::must_parse("9/8"),
+                },
+
+                written: ReplNote {
+                    name: "Q".to_string(),
+                    pitch: Pitch::must_parse("17/16"),
+                },
+            }
+        );
+        assert_eq!(
             parse_repl_line(" = 220*^3|4 ", &dc).unwrap(),
             PromptCommand::SetBaseAbsolute {
                 pitch: Pitch::must_parse("220*^3|4")
@@ -558,6 +623,16 @@ mod tests {
                 note: Some(ReplNote {
                     name: "C".to_string(),
                     pitch: Pitch::must_parse("^7|12"),
+                })
+            }
+        );
+        assert_eq!(
+            parse_repl_line(" ^10|19*1/2 ", &div_12edo).unwrap(),
+            PromptCommand::Play {
+                n: None,
+                note: Some(ReplNote {
+                    name: "^10|19*1/2".to_string(),
+                    pitch: Pitch::must_parse("1/2*^10|19"),
                 })
             }
         );
@@ -619,6 +694,16 @@ mod tests {
             }
         );
         assert_eq!(
+            parse_repl_line(" 4<7/4 ", &div_27ed3).unwrap(),
+            PromptCommand::Play {
+                n: Some(4),
+                note: Some(ReplNote {
+                    name: "7/4".to_string(),
+                    pitch: Pitch::must_parse("7/4"),
+                }),
+            }
+        );
+        assert_eq!(
             parse_repl_line("5<", &div_27ed3).unwrap(),
             PromptCommand::Play {
                 n: Some(5),
@@ -631,6 +716,16 @@ mod tests {
                 note: ReplNote {
                     name: "A".to_string(),
                     pitch: Pitch::unit(),
+                },
+                variable: "$potato".to_string(),
+            }
+        );
+        assert_eq!(
+            parse_repl_line("5/4*3^1|2 > $potato", &div_27ed3).unwrap(),
+            PromptCommand::Save {
+                note: ReplNote {
+                    name: "5/4*3^1|2".to_string(),
+                    pitch: Pitch::must_parse("5/4*3^1|2"),
                 },
                 variable: "$potato".to_string(),
             }
@@ -698,6 +793,18 @@ mod tests {
                 .to_string()
                 .contains("at most one side may be a variable")
         );
+        assert!(
+            parse_repl_line("$potato > 12", &dc)
+                .unwrap_err()
+                .to_string()
+                .contains("right hand side of transpose may not be a pitch literal")
+        );
+        assert!(
+            parse_repl_line("220^^", &dc)
+                .unwrap_err()
+                .to_string()
+                .contains("unable to parse as pitch")
+        );
     }
 
     #[test]
@@ -712,12 +819,18 @@ mod tests {
     fn test_coverage1() {
         // 100% coverage is not usually a goal, but it is for the parser -- see
         // docs/build-and-test.md
-        NoteOrVar::Var("".to_string()).into_note();
+        NoteLike::Var("".to_string()).into_note(&Diagnostics::new());
     }
 
     #[should_panic]
     #[test]
     fn test_coverage2() {
-        NoteOrVar::Note(Default::default()).into_variable();
+        NoteLike::Note(Default::default()).into_variable();
+    }
+
+    #[should_panic]
+    #[test]
+    fn test_coverage3() {
+        NoteLike::Pitch(Spanned::new(0..1, "")).into_variable();
     }
 }

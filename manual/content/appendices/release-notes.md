@@ -8,6 +8,12 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 
 <!-- See issues to resolve ... below -->
 
+# v0.4.2 - TBD
+
+## Enhancements
+
+* Accept pitch literals in `syntoniq-kbd prompt` mode, in addition to note names, for playing notes, saving into variables, and on the left-hand side of transpose operations. This makes it easier to work with ad hoc pitches without figuring out what note name to use.
+
 # v0.4.1 - April 12, 2026
 
 This release includes fixes to issues I encountered while actively creating music with the Syntoniq language for the first time.
