@@ -8,7 +8,7 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 
 <!-- See issues to resolve ... below -->
 
-# v0.4.1 - TBD
+# v0.4.1 - April 12, 2026
 
 This release includes fixes to issues I encountered while actively creating music with the Syntoniq language for the first time.
 
