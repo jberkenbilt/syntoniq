@@ -13,6 +13,8 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 ## Enhancements
 
 * Accept pitch literals in `syntoniq-kbd prompt` mode, in addition to note names, for playing notes, saving into variables, and on the left-hand side of transpose operations. This makes it easier to work with ad hoc pitches without figuring out what note name to use.
+* Add a `syntoniq-kbd csound-text` subcommand to show the Csound file that the keyboard sends commands to
+* Add the `--csound-file` option to `syntoniq-kbd` subcommands to enable specification of a different Csound file
 
 # v0.4.1 - April 12, 2026
 

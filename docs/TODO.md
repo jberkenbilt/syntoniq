@@ -11,7 +11,6 @@ This is general TODO across internal docs, manual, and software.
 * Periodically search for `jetbrains.com/issue` to see if we can remove workarounds.
   * timeline.rs has a workaround for RUST-20121
 * Need volume control for syntoniq-kbd regular and prompt.
-* Would be nice to be able to override the instrument for the keyboard.
 * See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation markers control note length, attack velocity, and release velocity.
