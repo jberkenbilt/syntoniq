@@ -12,6 +12,7 @@ use crate::{events, midi_player};
 use chrono::SubsecRound;
 use std::collections::HashSet;
 use std::fs;
+use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
 use syntoniq_common::parsing;
@@ -28,7 +29,10 @@ pub enum SoundType {
     None,
     Midi,
     #[cfg(feature = "csound")]
-    Csound(Vec<String>),
+    Csound {
+        file: Option<PathBuf>,
+        args: Vec<String>,
+    },
 }
 
 struct Engine {
@@ -735,9 +739,9 @@ pub async fn start_sound(
             });
         }
         #[cfg(feature = "csound")]
-        SoundType::Csound(args) => {
+        SoundType::Csound { file, args } => {
             tokio::spawn(async move {
-                if let Err(e) = csound::run_csound(events_rx, _events_tx, args).await {
+                if let Err(e) = csound::run_csound(file, events_rx, _events_tx, args).await {
                     log::error!("csound player error: {e}");
                 };
             });

@@ -1,7 +1,10 @@
 use crate::csound::wrapper::CsoundApi;
 use crate::events;
 use crate::events::Event;
+use std::borrow::Cow;
 use std::collections::HashMap;
+use std::fs;
+use std::path::Path;
 use syntoniq_common::pitch::Pitch;
 
 mod wrapper;
@@ -13,11 +16,23 @@ struct Csound {
     number_to_note: HashMap<u32, Pitch>,
 }
 
-const CSOUND_FILE: &str = include_str!("sound.csd");
+pub const CSOUND_TEXT: &str = include_str!("sound.csd");
 
 impl Csound {
-    pub async fn new(events_tx: events::WeakSender, args: Vec<String>) -> anyhow::Result<Self> {
-        let api = CsoundApi::new(CSOUND_FILE, events_tx, args).await?;
+    pub async fn new(
+        file: Option<impl AsRef<Path>>,
+        events_tx: events::WeakSender,
+        args: Vec<String>,
+    ) -> anyhow::Result<Self> {
+        let csound_text = match file {
+            None => Cow::Borrowed(CSOUND_TEXT),
+            Some(p) => {
+                let buf = fs::read(p)?;
+                let text = String::from_utf8(buf)?;
+                Cow::Owned(text)
+            }
+        };
+        let api = CsoundApi::new(&csound_text, events_tx, args).await?;
         Ok(Self {
             api,
             notes: Default::default(),
@@ -78,11 +93,12 @@ impl Csound {
 }
 
 pub async fn run_csound(
+    csound_file: Option<impl AsRef<Path>>,
     mut events_rx: events::Receiver,
     events_tx: events::WeakSender,
     args: Vec<String>,
 ) -> anyhow::Result<()> {
-    let mut csound = Csound::new(events_tx, args).await?;
+    let mut csound = Csound::new(csound_file, events_tx, args).await?;
     while let Some(event) = events::receive_check_lag(&mut events_rx, Some("csound player")).await {
         let Event::PlayNote(e) = event else {
             continue;

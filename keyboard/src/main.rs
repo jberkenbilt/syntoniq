@@ -4,15 +4,16 @@ use clap::{Parser, Subcommand};
 use clap_complete::Shell;
 use log::LevelFilter;
 use std::env;
+use std::path::PathBuf;
 use std::sync::Arc;
 use syntoniq_kbd::controller::Controller;
-use syntoniq_kbd::engine;
 use syntoniq_kbd::engine::{Keyboard, SoundType};
 use syntoniq_kbd::events::Events;
 use syntoniq_kbd::hexboard::HexBoard;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
 use syntoniq_kbd::{DeviceType, prompt};
+use syntoniq_kbd::{csound, engine};
 use tokio::sync::oneshot;
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -35,6 +36,8 @@ enum Commands {
     Prompt(Prompt),
     /// Output the built-in keyboard configuration
     DefaultConfig,
+    /// Output the built-in Csound text file containing the instrument
+    CsoundText,
     /// Generate shell completion
     Completion {
         /// shell
@@ -68,6 +71,10 @@ struct SoundConfig {
     /// Additional option to pass to csound, e.g. --csound-arg=-odac1; repeatable
     #[arg(long)]
     csound_arg: Vec<String>,
+    /// Csound file containing the keyboard's instrument; start with `syntoniq-kbd csound-text`
+    /// and modify based on the comments.
+    #[arg(long)]
+    csound_file: Option<PathBuf>,
 }
 
 #[tokio::main]
@@ -81,6 +88,10 @@ async fn main() -> anyhow::Result<()> {
         }
         Commands::DefaultConfig => {
             print!("{}", engine::DEFAULT_SCORE);
+            return Ok(());
+        }
+        Commands::CsoundText => {
+            print!("{}", csound::CSOUND_TEXT);
             return Ok(());
         }
         Commands::Run { .. } | Commands::Prompt { .. } => {}
@@ -107,7 +118,10 @@ async fn main() -> anyhow::Result<()> {
     } else {
         #[cfg(feature = "csound")]
         {
-            SoundType::Csound(std::mem::take(&mut sound_config.csound_arg))
+            SoundType::Csound {
+                file: sound_config.csound_file.take(),
+                args: std::mem::take(&mut sound_config.csound_arg),
+            }
         }
         #[cfg(not(feature = "csound"))]
         {
@@ -153,7 +167,9 @@ async fn main() -> anyhow::Result<()> {
             h
         }
         Commands::Prompt(_) => prompt::run(events),
-        Commands::DefaultConfig | Commands::Completion { .. } => unreachable!("already handled"),
+        Commands::DefaultConfig | Commands::CsoundText | Commands::Completion { .. } => {
+            unreachable!("already handled")
+        }
     };
 
     drop(events_tx);
