@@ -11,7 +11,6 @@ This is general TODO across internal docs, manual, and software.
 * Periodically search for `jetbrains.com/issue` to see if we can remove workarounds.
   * timeline.rs has a workaround for RUST-20121
 * Need volume control for syntoniq-kbd regular and prompt.
-* See [Copilot Initial Review](copilot-initial-review.md) for things found by GitHub copilot. Some of these are worth doing. All are already on my radar.
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
 * Articulation markers control note length, attack velocity, and release velocity.
     * default: full length, 72 attack, 64 release
@@ -23,10 +22,7 @@ This is general TODO across internal docs, manual, and software.
   * MIDI: these translate to velocity on note on and note off events.
   * Add directives to change the numbers globally and at the part level
 * MIDI:
-  * generate tuning files for midi by port and channel
   * generate summaries of part -> track/port/channel, etc.
-* Note: not tested (generator):
-  * MPE: more than 16 channels; multi-port
 * Editing experience
   * Create a minimal emacs mode
   * Write LSP
@@ -41,12 +37,9 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
 # Documentation
 
 * Clean up docs/architecture.md
-* Have something that checks link integrity (internal and external)
 * Embed KeTeX rather than getting from a CDN
 * Pay special attention to "on active" or "on octave" instead of "an octave" and "ration" instead of "ratio"
 * Tweak theme for better colors
-* Figure out where to document the stuff in misc. Somewhere in the docs directory
-* Remember https://gemini.google.com/app/81c4b4fb40317cdf for parsing blog. Gemini stuck something in Google Keep. Main thrust is justification for 100% code coverage
 
 # Reformatter
 
