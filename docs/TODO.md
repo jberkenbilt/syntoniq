@@ -45,6 +45,8 @@ Bug: hexboard HTML doesn't look good in light mode. Maybe I should hard-code dar
 
 These notes predate parser implementation.
 
+Work in: make the representation more compact. Make sure the `:` or `@` markers are in order but don't space things out so much.
+
 * Use a lossless token stream for the reformatter.
 * Reformatter: Two-pass (Parse-to-AST, then Token-Walk + AST-Peek).
 
