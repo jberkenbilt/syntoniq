@@ -9,15 +9,17 @@ Major Features:
 * Ability to define arbitrary scales with a semantically meaningful and lossless pitch notation (no cents)
 * Generated scales, allowing dynamic naming of notes based on intervals for pure Just Intonation and overlay of Just Intonation on scales based on interval division (EDO)
 * Generalized transposition: transpose by absolute frequency, relative pitch multiplier, or by pivot notes in the scale
+* Linear glide from one pitch to another
 * Optional keyboard program with a flexible layout engine
+* Interactive command prompt interface for playing arbitrary pitches and building chords
 
 More details can be found in the [manual](https://syntoniq.cc/manual/)!
 
 # PRE-RELEASE
 
-February 2026
+April 2026
 
-This software has not been released and is still undergoing active development. Every aspect of it is still subject to change, though I am working toward a 1.0 release.
+Syntoniq is close to a 1.0 release. All major language features have been implemented. There are still some auxiliary tools, like a formatter or language server, that haven't been done, but they may wait until after a 1.0 release.
 
 # Resources
 
