@@ -10,8 +10,8 @@ build_search_index = true
 theme = "book"
 
 [markdown.highlighting]
-light_theme = "github-light"
-dark_theme = "github-dark"
+light_theme = "github-light-high-contrast"
+dark_theme = "github-dark-high-contrast"
 error_on_missing_language = true
 extra_grammars = ["syntaxes/syntoniq.tmLanguage.json"]
 

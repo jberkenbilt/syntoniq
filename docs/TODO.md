@@ -58,7 +58,7 @@ Suggested reformatting rules:
 * In a multi-line structure (score block, scale definition block, multiline directive), keep comments aligned and offset by two spaces from the longest line
 * Remove spaces from around `=` in directive parameters
 * If a directive with any trailing comment exceeds 100 columns, move the trailing comment to the preceding line. If still over 100 columns, break the directive to one parameter per line.
-* If a directive that contains no parameter-level comments fits on one line in <= 100 columns, reformat as a single line. Never move a preceding comment to after a single-line directive.
+* If a directive that contains no parameter-level comments fits on one line in <= 100 columns, reformat as a single line. Never move a preceding comment to after a single-line directive or collapse to a single line if there are embedded comments.
 * Apply alignment to score blocks as above
 * Within scale definition blocks, right-justify pitches or indices with columns, then align and left-justify note names
 
