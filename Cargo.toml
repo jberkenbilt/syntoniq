@@ -12,9 +12,9 @@ edition = "2024"
 version  = "0.4.2"
 
 [workspace.dependencies]
-clap = { version = "4.6.0", features = ["derive"] }
-clap_complete = "4.6.1"
-midir = "0.10.3"
+clap = { version = "4.6.1", features = ["derive"] }
+clap_complete = "4.6.2"
+midir = "0.11.0"
 midly = "0.5.3"
 log = "0.4.29"
 env_logger = "0.11.10"

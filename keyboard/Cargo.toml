@@ -15,8 +15,8 @@ anyhow.workspace = true
 askama.workspace = true
 chrono.workspace = true
 num-rational.workspace = true
-tokio = { version = "1.51.1", features = ["full"] }
-axum = { version = "0.8.8", features = ["macros", "json"] }
+tokio = { version = "1.52.1", features = ["full"] }
+axum = { version = "0.8.9", features = ["macros", "json"] }
 tokio-stream = { version = "0.1.18", features = ["sync"] }
 rust-embed = "8.11.0"
 derive_more = { version = "2.1.1", features = ["debug"] }
