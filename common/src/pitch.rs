@@ -424,7 +424,7 @@ impl Pitch {
         let octaves = round_to_d256(delta.as_float().log2());
         let amount = round_to_d256(amount);
         let exponent = round_to_d256(octaves * amount);
-        let factor = Factor::new(2, 1, *exponent.numer() as i32, *exponent.denom() as i32).unwrap();
+        let factor = Factor::new(2, 1, *exponent.numer(), *exponent.denom()).unwrap();
         p1 * &Pitch::new(vec![factor])
     }
 }
