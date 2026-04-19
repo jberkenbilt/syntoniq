@@ -7,13 +7,15 @@ use std::env;
 use std::path::PathBuf;
 use std::sync::Arc;
 use syntoniq_kbd::controller::Controller;
+#[cfg(feature = "csound")]
+use syntoniq_kbd::csound;
+use syntoniq_kbd::engine;
 use syntoniq_kbd::engine::{Keyboard, SoundType};
 use syntoniq_kbd::events::Events;
 use syntoniq_kbd::hexboard::HexBoard;
 use syntoniq_kbd::launchpad::Launchpad;
 use syntoniq_kbd::view::web;
 use syntoniq_kbd::{DeviceType, prompt};
-use syntoniq_kbd::{csound, engine};
 use tokio::sync::oneshot;
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
@@ -91,8 +93,13 @@ async fn main() -> anyhow::Result<()> {
             return Ok(());
         }
         Commands::CsoundText => {
-            print!("{}", csound::CSOUND_TEXT);
-            return Ok(());
+            #[cfg(not(feature = "csound"))]
+            bail!("MIDI not requested and csound not available");
+            #[cfg(feature = "csound")]
+            {
+                print!("{}", csound::CSOUND_TEXT);
+                return Ok(());
+            }
         }
         Commands::Run { .. } | Commands::Prompt { .. } => {}
     }
@@ -124,9 +131,7 @@ async fn main() -> anyhow::Result<()> {
             }
         }
         #[cfg(not(feature = "csound"))]
-        {
-            bail!("MIDI not requested and csound not available");
-        }
+        bail!("MIDI not requested and csound not available");
     };
     engine::start_sound(sound_type, events_tx.clone(), events_rx.resubscribe()).await;
 

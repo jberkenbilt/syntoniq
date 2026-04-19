@@ -4,6 +4,8 @@ cd $(dirname $0)
 cargo fmt
 cargo clippy --no-deps
 cargo clippy --tests --no-deps
+cargo clippy --no-default-features --no-deps
+cargo clippy --tests --no-default-features --no-deps
 # Avoid --document-private-items -- generates warnings with csound docs
 cargo doc --no-deps
 cargo build --workspace --all-targets "$@"

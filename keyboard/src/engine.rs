@@ -12,6 +12,7 @@ use crate::{events, midi_player};
 use chrono::SubsecRound;
 use std::collections::HashSet;
 use std::fs;
+#[cfg(feature = "csound")]
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::{Duration, Instant};
