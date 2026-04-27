@@ -8,9 +8,7 @@ The Syntoniq keyboard works with the following hardware keyboards:
 * [Novation Launchpad MK3 Pro](https://novationmusic.com/products/launchpad-pro-mk3)
 * [HexBoard MIDI Controller](https://shapingthesilence.com/tech/hexboard-midi-controller/)
 
-The Launchpad MK3 Pro works "out of the box" with the Syntoniq keyboard.
-
-As of version 1.2 of the HexBoard firmware (released October 23, 2025), the features required by the `syntoniq-kbd` application are not yet included in the official firmware, but the HexBoard maintainer has indicated his intention to include it in the next official release. In the meantime, you can use this [unofficial firmware](../../HexBoard_syntoniq.uf2). This was built from the changes on [GitHub in the syntoniq branch of jberkenbilt/HexBoard](https://github.com/jberkenbilt/HexBoard/tree/syntoniq), which includes preliminary support for device identity and addition of a "delegated control" mode. The changes were submitted for inclusion on this [pull request](https://github.com/shapingthesilence/HexBoard/pull/6). To use the unofficial firmware, [download the unofficial firmware](../../HexBoard_syntoniq.uf2) and follow the instructions on the [HexBoard GitHub Repository page](https://github.com/shapingthesilence/HexBoard?tab=readme-ov-file#flashing-the-firmware). The version will show as `1.2.0+q1`.
+The Launchpad MK3 Pro works "out of the box" with the Syntoniq keyboard. The HexBoard also works out of the box with firmware version 1.3 or later.
 
 Once you have the device connected, you can run the keyboard application using the `syntoniq-kbd` command. Run `syntoniq-kbd --help` for help.
 
