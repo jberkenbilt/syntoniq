@@ -8,6 +8,12 @@ This section includes release notes for the Syntoniq software. See also [docs/TO
 
 <!-- See issues to resolve ... below -->
 
+# vXXX
+
+## Notes
+
+* HexBoard firmware 1.3 was released on May 11, 2026. That version and later work out of the box with `syntoniq-kbd`, so it is no longer necessary to build custom firmware.
+
 # v0.4.2 - April 19, 2026
 
 ## Enhancements

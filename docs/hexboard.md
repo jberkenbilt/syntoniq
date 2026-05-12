@@ -1,6 +1,6 @@
 # HexBoard Arduino
 
-The HexBoard works out of the box with syntoniq-kbd as long as you have firmware version 1.3 or later.
+The HexBoard works out of the box with syntoniq-kbd as long as you have firmware version 1.3 (released May 11, 2026) or later.
 
 Prior to release 1.3 of the HexBoard firmware, it was necessary to build a modified firmware. This document describes how to do that and also how to work with delegated control mode. It is largely of historical value now that the official HexBoard firmware supports delegated control mode.
 
