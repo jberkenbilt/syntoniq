@@ -11,6 +11,28 @@ members = [
 edition = "2024"
 version  = "0.4.2"
 
+[workspace.lints.clippy]
+pedantic = { level = "warn", priority = -1 }
+# Allow some lints that would be me more important if we were creating
+# a library crate for public use rather than methods for internal use.
+missing_panics_doc = "allow"
+missing_errors_doc = "allow"
+must_use_candidate = "allow"
+# We have a decent amount of movement between usize, i32, and u32 for
+# things that will never be very large because of compatibility with
+# other APIs. We could tighten this up sometime, but for now, it's not
+# worth it.
+cast_possible_truncation = "allow"
+cast_possible_wrap = "allow"
+cast_sign_loss = "allow"
+# Using Default::default makes it easier to change types of things,
+# e.g., from HashMap to BTreeMap, without changing initialization
+# code.
+default_trait_access = "allow"
+# Personal style
+single_match_else = "allow"
+similar_names = "allow"
+
 [workspace.dependencies]
 clap = { version = "4.6.1", features = ["derive"] }
 clap_complete = "4.6.2"

@@ -9,6 +9,7 @@ use tokio::task::JoinHandle;
 
 mod cs {
     #![allow(clippy::all)]
+    #![allow(clippy::pedantic)]
     #![allow(unnecessary_transmutes)]
     #![allow(improper_ctypes)]
     #![allow(unused_imports)]
@@ -47,14 +48,14 @@ extern "C" fn csound_message_callback(_: *mut cs::CSOUND, attr: c_int, msg: *con
 }
 
 impl CsoundApi {
-    pub async fn new(
+    pub fn new(
         csound_file: &str,
         events_tx: events::WeakSender,
         args: Vec<String>,
     ) -> anyhow::Result<Self> {
         let (tx, rx) = mpsc::channel(100);
         let csound = Self::start(csound_file, args)?;
-        let h = task::spawn_blocking(|| {
+        let h = task::spawn_blocking(move || {
             Self::main_loop(csound, rx, events_tx);
         });
         Ok(Self {
@@ -108,6 +109,10 @@ impl CsoundApi {
         }
     }
 
+    #[expect(
+        clippy::needless_pass_by_value,
+        reason = "intentionally consuming arguments to prevent reuse"
+    )]
     fn main_loop(
         csound: CsoundPtr,
         mut rx: mpsc::Receiver<CsoundMessage>,

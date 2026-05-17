@@ -134,9 +134,9 @@ async fn main_loop(state: LockedState, mut events_rx: events::Receiver) {
             Event::ToDevice(td) => match td {
                 ToDevice::Light(e) => state.write().await.handle_light_event(&e),
             },
-            Event::SelectLayout(e) => state.write().await.handle_select_layout(e).await,
-            Event::SetLayoutNames(e) => state.write().await.handle_layout_names(e).await,
-            Event::Reset => state.write().await.handle_reset().await,
+            Event::SelectLayout(e) => state.write().await.handle_select_layout(&e),
+            Event::SetLayoutNames(e) => state.write().await.handle_layout_names(&e),
+            Event::Reset => state.write().await.handle_reset(),
             #[cfg(test)]
             Event::TestWeb(test_tx) => {
                 test_tx

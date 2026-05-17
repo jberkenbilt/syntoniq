@@ -59,8 +59,8 @@ impl<'a> HexBoardView<'a> {
     }
 }
 
-impl<'a> HexBoardKeyboard<'a> {
-    fn get_cell(&self, grid_row: &u8, grid_col: &u8, skip_sse: bool) -> String {
+impl HexBoardKeyboard<'_> {
+    fn get_cell(&self, grid_row: u8, grid_col: u8, skip_sse: bool) -> String {
         let key_col = grid_col + 1 - grid_row % 2;
         let key = key_col + grid_row * 10;
         let empty = Cell::empty(key);

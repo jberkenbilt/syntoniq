@@ -1,6 +1,3 @@
-// Rust 1.89.0 is giving false positive on needless lifetimes.
-#![allow(clippy::needless_lifetimes)]
-
 // HOW TO UNDERSTAND THIS PARSING
 //
 // This code parses using the `winnow` parser combinator library. It uses winnow in a particular
@@ -120,11 +117,7 @@ pub fn timeline<'s>(
     Ok(parse(filename, src, options)?.timeline)
 }
 
-pub fn layouts<'s>(
-    filename: &str,
-    src: &'s str,
-    options: &Options,
-) -> anyhow::Result<Layouts<'static>> {
+pub fn layouts(filename: &str, src: &str, options: &Options) -> anyhow::Result<Layouts<'static>> {
     let mut arc_context = ArcContext::default();
     Ok(parse(filename, src, options)?
         .layouts

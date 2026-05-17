@@ -11,14 +11,15 @@ use syn::{Data, DataStruct, DeriveInput, GenericParam, Generics};
 use syn::{DataEnum, parse_macro_input};
 
 struct LtTokens {
-    orig_lt: TokenStream2,
-    static_lt: TokenStream2,
-    fish_lt: TokenStream2,
+    orig: TokenStream2,
+    static_: TokenStream2,
+    fish: TokenStream2,
 }
 
 #[proc_macro_derive(ToStatic)]
 pub fn from_raw_directive_derive(input: TokenStream) -> TokenStream {
     let derive_input = parse_macro_input!(input as DeriveInput);
+    #[allow(clippy::match_wildcard_for_single_variants)]
     match &derive_input.data {
         Data::Struct(data) => to_static_struct(&derive_input, data),
         Data::Enum(data) => to_static_enum(&derive_input, data),
@@ -40,15 +41,15 @@ fn to_static_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Toke
     }
 
     let LtTokens {
-        orig_lt,
-        static_lt,
-        fish_lt,
+        orig,
+        static_,
+        fish,
     } = lt_tokens(&input.generics);
     quote! {
-         impl<'s> crate::parsing::score_helpers::ToStatic<'s> for #top_name #orig_lt {
-            type Static = #top_name #static_lt;
+         impl<'s> crate::parsing::score_helpers::ToStatic<'s> for #top_name #orig {
+            type Static = #top_name #static_;
             fn to_static(&self, arc_context: &mut crate::parsing::score_helpers::ArcContext) -> Self::Static {
-                #top_name #fish_lt {
+                #top_name #fish {
                     #(#field_inits)*
                 }
             }
@@ -60,9 +61,9 @@ fn to_static_enum(input: &DeriveInput, data: &DataEnum) -> proc_macro2::TokenStr
     let top_name = &input.ident;
     let mut match_arms = Vec::new();
     let LtTokens {
-        orig_lt,
-        static_lt,
-        fish_lt,
+        orig: orig_lt,
+        static_: static_lt,
+        fish: fish_lt,
     } = lt_tokens(&input.generics);
 
     for v in &data.variants {
@@ -109,8 +110,8 @@ fn lt_tokens(generics: &Generics) -> LtTokens {
         quote! {}
     };
     LtTokens {
-        orig_lt,
-        static_lt,
-        fish_lt,
+        orig: orig_lt,
+        static_: static_lt,
+        fish: fish_lt,
     }
 }

@@ -5,6 +5,7 @@ use num_rational::Ratio;
 use serde::Serialize;
 use std::borrow::Cow;
 use std::fmt::Debug;
+use std::fmt::Write as _;
 use std::sync::atomic::{AtomicI32, Ordering};
 use std::sync::{Arc, RwLock};
 use to_static_derive::ToStatic;
@@ -129,7 +130,7 @@ pub struct PlacedNote<'s> {
     /// used in standard output representation of pitch.
     pub untiled_base_relative: Pitch,
     /// Contribution to pitch from tile factor; this is included in pitch and base interval but not
-    /// in untiled_base_relative.
+    /// in `untiled_base_relative`.
     pub tile_factor: Pitch,
     /// Normalized interval over the base pitch; used on keyboard web display. This includes tile
     /// offsets.
@@ -182,10 +183,10 @@ impl<'s> LayoutMapping<'s> {
             .cols_right
             .map(|x| self.anchor_col + x + stagger_offset);
         // If there is no bound specified, a value is considered in bounds.
-        let ge_min_row = min_row.map(|x| location.row >= x).unwrap_or(true);
-        let le_max_row = max_row.map(|x| location.row <= x).unwrap_or(true);
-        let ge_min_col = min_col.map(|x| location.col >= x).unwrap_or(true);
-        let le_max_col = max_col.map(|x| location.col <= x).unwrap_or(true);
+        let ge_min_row = min_row.is_none_or(|x| location.row >= x);
+        let le_max_row = max_row.is_none_or(|x| location.row <= x);
+        let ge_min_col = min_col.is_none_or(|x| location.col >= x);
+        let le_max_col = max_col.is_none_or(|x| location.col <= x);
         ge_min_row && le_max_row && ge_min_col && le_max_col
     }
 
@@ -305,6 +306,10 @@ pub struct IsomorphicMapping<'s> {
     pub steps_v: i32,
 }
 impl<'s> IsomorphicMapping<'s> {
+    #[expect(
+        clippy::unnecessary_wraps,
+        reason = "wrapped in option for API consistency"
+    )]
     fn note_at_anchor_delta(
         &self,
         scale: &Scale<'s>,
@@ -354,6 +359,20 @@ impl<'s> ManualMapping<'s> {
         col_delta: i32,
         stagger: i32,
     ) -> Option<MappedPitch<'s>> {
+        fn adjust(factor: &mut Pitch, mut repetitions: i32, tile_factor: &Pitch) {
+            while repetitions > 0 {
+                *factor *= tile_factor;
+                repetitions -= 1;
+            }
+            if repetitions < 0 {
+                let f = tile_factor.invert();
+                while repetitions < 0 {
+                    *factor *= &f;
+                    repetitions += 1;
+                }
+            }
+        }
+
         let row = self.anchor_row + row_delta;
         let num_rows = self.notes.len() as i32;
         let num_cols = self.notes.first().expect("notes is empty").len() as i32;
@@ -377,20 +396,6 @@ impl<'s> ManualMapping<'s> {
             .as_ref();
         let mapping_item = note_col?.clone();
 
-        fn adjust(factor: &mut Pitch, mut repetitions: i32, tile_factor: &Pitch) {
-            while repetitions > 0 {
-                *factor *= tile_factor;
-                repetitions -= 1;
-            }
-            if repetitions < 0 {
-                let f = tile_factor.invert();
-                while repetitions < 0 {
-                    *factor *= &f;
-                    repetitions += 1;
-                }
-            }
-        }
-
         let mut tile_factor = Pitch::from(Ratio::from_integer(1));
         adjust(&mut tile_factor, v_repetitions, &self.v_factor);
         adjust(&mut tile_factor, h_repetitions, &self.h_factor);
@@ -405,16 +410,16 @@ impl<'s> ManualMapping<'s> {
         let mut name = given_name.to_string();
         match v_repetitions {
             1 => name.push('↑'),
-            x if x > 1 => name.push_str(&format!("↑{x}")),
+            x if x > 1 => write!(name, "↑{x}").unwrap(),
             -1 => name.push('↓'),
-            x if x < -1 => name.push_str(&format!("↓{}", -x)),
+            x if x < -1 => write!(name, "↓{}", -x).unwrap(),
             _ => {}
         }
         match h_repetitions {
             1 => name.push('→'),
-            x if x > 1 => name.push_str(&format!("→{x}")),
+            x if x > 1 => write!(name, "→{x}").unwrap(),
             -1 => name.push('←'),
-            x if x < -1 => name.push_str(&format!("y{}", -x)),
+            x if x < -1 => write!(name, "y{}", -x).unwrap(),
             _ => {}
         }
         Some(MappedPitch {
@@ -431,6 +436,7 @@ impl<'s> ManualMapping<'s> {
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::too_many_lines)]
     use super::*;
     use crate::parsing;
     use crate::parsing::Options;

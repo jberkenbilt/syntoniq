@@ -50,6 +50,10 @@ struct PendingNote<'s> {
     tied: bool,
 }
 
+#[expect(
+    clippy::struct_field_names,
+    reason = "score blocks are called that specifically to distinguish from other blocks"
+)]
 pub struct Score<'s> {
     src: &'s str,
     _version: u32,
@@ -212,7 +216,7 @@ pub struct ScaleDegree {
     pub base_relative: Pitch,
     /// Normalized interval between pitch and scale base; falls within cycle
     pub normalized_relative: Pitch,
-    /// Scale degree of base_relative; may extend outside of cycle
+    /// Scale degree of `base_relative`; may extend outside of cycle
     pub degree: i32,
 }
 
@@ -254,7 +258,7 @@ impl<'s> ScaleBuilder<'s> {
         });
         pitch.map(|p| match note.value.octave {
             Some(cycle) if cycle.value != 0 => {
-                &p * &Pitch::from(self.definition.cycle.pow(cycle.value as i32))
+                &p * &Pitch::from(self.definition.cycle.pow(i32::from(cycle.value)))
             }
             _ => p,
         })
@@ -289,7 +293,7 @@ impl<'s> ScaleBuilder<'s> {
         for (name, pitch) in assignments.notes {
             self.notes.insert(name, pitch);
         }
-        for (pitch, name) in assignments.primary_names.into_iter() {
+        for (pitch, name) in assignments.primary_names {
             self.primary_names.entry(pitch).or_insert(name);
         }
 
@@ -404,7 +408,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                     "a line for this part/note has already occurred in this block",
                 )
                 .with_context(old, "here is the previous occurrence"),
-            )
+            );
         }
     }
 
@@ -418,7 +422,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                     "a dynamic line for this part has already occurred in this block",
                 )
                 .with_context(old, "here is the previous occurrence"),
-            )
+            );
         }
     }
 
@@ -482,9 +486,10 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                 duration = min_duration;
             }
             last_pitch.end_time = start_time + duration;
-        };
+        }
     }
 
+    #[allow(clippy::too_many_lines)]
     fn validate_note_line(&mut self, line: &NoteLine<'s>) {
         self.score
             .known_parts
@@ -529,7 +534,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                 bar_checks.push((beats_so_far, note.span));
                 Ratio::from_integer(0)
             } else {
-                let beats = beats.map(Spanned::value).unwrap_or(prev_beats);
+                let beats = beats.map_or(prev_beats, Spanned::value);
                 prev_beats = beats;
                 self.score.update_time_lcm(beats);
                 beats
@@ -543,8 +548,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                             { scale.borrow_mut().get_note(self.diags, note_octave).clone() }
                     {
                         let absolute_pitch = &tuning.base_pitch * &base_relative;
-                        let end_time =
-                            time + r_note.duration.map(Spanned::value).unwrap_or(prev_beats);
+                        let end_time = time + r_note.duration.map_or(prev_beats, Spanned::value);
                         // Get any note that might be currently sustained either by tie or glide.
                         let mut pending = self.score.pending_notes.remove(&part_note);
                         // If the current note is accented, end the pending note.
@@ -624,12 +628,12 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                                 "note '{}' is not in the current scale ('{}')",
                                 note_octave.value.name.value, tuning.scale_name,
                             ),
-                        )
+                        );
                     }
                 }
                 Note::Hold(h) => {
                     if let Some(p) = self.score.pending_notes.get_mut(&part_note) {
-                        let end_time = time + h.duration.map(Spanned::value).unwrap_or(prev_beats);
+                        let end_time = time + h.duration.map_or(prev_beats, Spanned::value);
                         // It is guaranteed that there is at least one pitch in any pending note.
                         // Extend the end time of the last pitch to cover the hold. For a tie, this
                         // extends the tie. For a glide, it extends the duration of the glide.
@@ -703,7 +707,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
                 let mut e = Diagnostic::new(
                     code::SCORE,
                     sb.note_lines[0].leader.span,
-                    format!("in this score block, {what} is inconsistent across lines",),
+                    format!("in this score block, {what} is inconsistent across lines"),
                 );
                 for lbc in &self.note_line_bar_checks {
                     let (this_one, span) = lbc[check_idx];
@@ -733,10 +737,11 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
         Some(beats_per_bar)
     }
 
+    #[allow(clippy::too_many_lines)]
     fn validate_dynamic_line(
         &mut self,
         line: &DynamicLine<'s>,
-        beats_per_bar: &Option<Vec<Ratio<u32>>>,
+        beats_per_bar: Option<&Vec<Ratio<u32>>>,
     ) {
         if !self
             .score
@@ -895,7 +900,7 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
         }
         let beats_per_bar = self.validate_bar_checks(sb);
         for line in &sb.dynamic_lines {
-            self.validate_dynamic_line(line, &beats_per_bar);
+            self.validate_dynamic_line(line, beats_per_bar.as_ref());
         }
         if let Some(x) = beats_per_bar {
             for beats in x {
@@ -905,6 +910,10 @@ impl<'a, 's> ScoreBlockValidator<'a, 's> {
     }
 }
 
+#[expect(
+    clippy::needless_pass_by_value,
+    reason = "Intentionally consuming directives when using them"
+)]
 impl<'s> Score<'s> {
     pub fn new(src: &'s str, s: Syntoniq) -> Self {
         let timeline = Timeline {
@@ -958,7 +967,7 @@ impl<'s> Score<'s> {
         for tok in tokens {
             if let Pass2::Directive(rd) = tok.value.t {
                 self.handle_directive(&temp_diags, Span::from(0..1), &rd);
-            };
+            }
         }
         debug_assert!(!temp_diags.has_errors(), "{}", temp_diags.to_string());
     }
@@ -1049,8 +1058,7 @@ impl<'s> Score<'s> {
             name: directive.scale.value,
             cycle: directive
                 .cycle_ratio
-                .map(Spanned::value)
-                .unwrap_or(Ratio::from_integer(2)),
+                .map_or(Ratio::from_integer(2), Spanned::value),
         };
         let scale_block = directive.scale_block.value;
         let mut pitches = HashMap::new();
@@ -1074,7 +1082,7 @@ impl<'s> Score<'s> {
                     diags.push(
                         Diagnostic::new(code::SCALE, span, "another note has this name")
                             .with_context(old, "here is the previous note with the same name"),
-                    )
+                    );
                 }
             }
         }
@@ -1099,7 +1107,7 @@ impl<'s> Score<'s> {
                 Diagnostic::new(
                     code::SCALE,
                     span,
-                    format!("a scale called '{}' has already been defined", name),
+                    format!("a scale called '{name}' has already been defined"),
                 )
                 .with_context(
                     old.borrow().definition.span,
@@ -1119,13 +1127,11 @@ impl<'s> Score<'s> {
             name: directive.scale.value,
             cycle: directive
                 .cycle_ratio
-                .map(Spanned::value)
-                .unwrap_or(Ratio::from_integer(2)),
+                .map_or(Ratio::from_integer(2), Spanned::value),
         };
         let divided_interval = directive
             .divided_interval
-            .map(Spanned::value)
-            .unwrap_or(definition.cycle);
+            .map_or(definition.cycle, Spanned::value);
         let generator: Option<Box<dyn Generator>> = Some(Box::new(NoteGenerator {
             divisions: directive.divisions.map(Spanned::value),
             divided_interval,
@@ -1162,7 +1168,7 @@ impl<'s> Score<'s> {
                 Some(new) => new.time != t.time,
             };
             if insert_pending {
-                self.insert_event(t.time, t.item.span, TimelineData::Tempo(t.item.value))
+                self.insert_event(t.time, t.item.span, TimelineData::Tempo(t.item.value));
             }
         }
         self.pending_tempo = new_tempo;
@@ -1190,11 +1196,7 @@ impl<'s> Score<'s> {
     fn tuning_for_part(&self, part: &Cow<'s, str>) -> Tuning<'s> {
         // Determine the name of the part we should use. If the part has a tuning, use it.
         // Otherwise, fall back to the empty string, which indicates the global tuning.
-        let part_to_use = self
-            .tunings
-            .get(part)
-            .map(|_| part)
-            .unwrap_or(&Cow::Borrowed(""));
+        let part_to_use = self.tunings.get(part).map_or(&Cow::Borrowed(""), |_| part);
         // Get the tuning. If not defined, fall back to the default tuning.
         self.tunings
             .get(part_to_use)
@@ -1230,7 +1232,7 @@ impl<'s> Score<'s> {
                 format!("unknown scale '{}'", directive.scale.value),
             );
             return;
-        };
+        }
         let cur_tunings = self.cur_tunings(&directive.part);
         // Keep the same base pitch.
         let base_pitches: HashMap<Cow<'s, str>, Pitch> = cur_tunings
@@ -1295,13 +1297,10 @@ impl<'s> Score<'s> {
             .iter()
             .map(|(part, existing)| {
                 // Validate checked that exactly one of `absolute` or `relative` was defined.
-                let p = directive
-                    .absolute
-                    .as_ref()
-                    .map(|x| x.value.clone())
-                    .unwrap_or_else(|| {
-                        &existing.base_pitch * &directive.relative.as_ref().unwrap().value
-                    });
+                let p = directive.absolute.as_ref().map_or_else(
+                    || &existing.base_pitch * &directive.relative.as_ref().unwrap().value,
+                    |x| x.value.clone(),
+                );
                 (part.clone(), p)
             })
             .collect();
@@ -1400,7 +1399,7 @@ impl<'s> Score<'s> {
         for pitch in &directive.pitch {
             let text = &self.src[pitch.span];
             to_compare.push((
-                Spanned::new(pitch.span, format!("pitch '{}'", text)),
+                Spanned::new(pitch.span, format!("pitch '{text}'")),
                 pitch.value.clone(),
             ));
         }
@@ -1411,7 +1410,7 @@ impl<'s> Score<'s> {
                 directive.span,
                 "not all items have the same pitch",
             );
-            to_compare.sort_by_key(|(x, _)| (x.span, x.value.to_string()));
+            to_compare.sort_by_key(|(x, _)| (x.span, x.value.clone()));
             for (description, pitch) in to_compare {
                 err = err.with_context(
                     description.span,
@@ -1464,7 +1463,7 @@ impl<'s> Score<'s> {
     fn midi_instrument(&mut self, diags: &Diagnostics, directive: MidiInstrument<'s>) {
         // Validate has checked ranges.
         let instrument = (directive.instrument.value - 1) as u8;
-        let bank = directive.bank.map(|x| x.value - 1).unwrap_or(0) as u16;
+        let bank = directive.bank.map_or(0, |x| x.value - 1) as u16;
         let midi_instrument = MidiInstrumentNumber { bank, instrument };
         score_helpers::check_duplicate_by_part(
             diags,
@@ -1479,10 +1478,10 @@ impl<'s> Score<'s> {
 
     fn csound_instrument(&mut self, diags: &Diagnostics, directive: CsoundInstrument<'s>) {
         // Validate has assured that exactly one of `name` or `number` is defined.
-        let instrument = directive
-            .name
-            .map(|x| CsoundInstrumentId::Name(x.value))
-            .unwrap_or_else(|| CsoundInstrumentId::Number(directive.number.unwrap().value));
+        let instrument = directive.name.map_or_else(
+            || CsoundInstrumentId::Number(directive.number.unwrap().value),
+            |x| CsoundInstrumentId::Name(x.value),
+        );
         score_helpers::check_duplicate_by_part(
             diags,
             "Csound instrument",
@@ -1500,15 +1499,14 @@ impl<'s> Score<'s> {
         directive: CsoundGlobalInstrument<'s>,
     ) {
         // Validate has assured that exactly one of `name` or `number` is defined.
-        let instrument = directive
-            .name
-            .map(|x| CsoundInstrumentId::Name(x.value))
-            .unwrap_or_else(|| CsoundInstrumentId::Number(directive.number.unwrap().value));
+        let instrument = directive.name.map_or_else(
+            || CsoundInstrumentId::Number(directive.number.unwrap().value),
+            |x| CsoundInstrumentId::Name(x.value),
+        );
         // Keep this default value consistent with the doc comment for the `tail` field.
         let tail = directive
             .tail
-            .map(Spanned::value)
-            .unwrap_or(Ratio::from_integer(3));
+            .map_or(Ratio::from_integer(3), Spanned::value);
         self.timeline
             .csound_global_instruments
             .push(timeline::CsoundGlobalInstrument {
@@ -1537,8 +1535,7 @@ impl<'s> Score<'s> {
     pub fn tempo(&mut self, diags: &Diagnostics, directive: Tempo<'s>) {
         let offset = directive
             .start_time
-            .map(Spanned::value)
-            .unwrap_or(Ratio::from_integer(0));
+            .map_or(Ratio::from_integer(0), Spanned::value);
         let start_time = self.line_start_time + offset;
         if let Some(in_flight) = self.tempo_in_flight_until.as_ref() {
             if in_flight.value > start_time {
@@ -1750,7 +1747,7 @@ impl<'s> Score<'s> {
     fn check_known_scale(
         &self,
         diags: &Diagnostics,
-        scale_name: &Option<Spanned<Cow<'s, str>>>,
+        scale_name: Option<&Spanned<Cow<'s, str>>>,
     ) -> Option<Cow<'s, str>> {
         let Some(scale) = scale_name else {
             return Some(Cow::Borrowed(DEFAULT_SCALE_NAME));
@@ -1774,7 +1771,7 @@ impl<'s> Score<'s> {
         diags: &Diagnostics,
         directive: DefineIsomorphicMapping<'s>,
     ) {
-        let Some(scale_name) = self.check_known_scale(diags, &directive.scale) else {
+        let Some(scale_name) = self.check_known_scale(diags, directive.scale.as_ref()) else {
             return;
         };
         let mapping = MappingDetails::Isomorphic(IsomorphicMapping {
@@ -1795,7 +1792,7 @@ impl<'s> Score<'s> {
         diags: &Diagnostics,
         directive: DefineManualMapping<'s>,
     ) {
-        let Some(scale_name) = self.check_known_scale(diags, &directive.scale) else {
+        let Some(scale_name) = self.check_known_scale(diags, directive.scale.as_ref()) else {
             // Skip additional diagnostics if the scale is not known.
             return;
         };
@@ -1837,14 +1834,14 @@ impl<'s> Score<'s> {
                                 note_row.push(None);
                             }
                             Some(adjusted_base_relative) => {
-                                let cycle = note.value.octave.map(|x| x.value as i32).unwrap_or(0);
+                                let cycle = note.value.octave.map_or(0, |x| i32::from(x.value));
                                 note_row.push(Some(MappingItem {
                                     note_name: note.value.name.value.clone(),
                                     cycle,
                                     adjusted_base_relative,
                                 }));
                             }
-                        };
+                        }
                     }
                     LayoutItemType::Empty(_) => note_row.push(None),
                 }
@@ -1858,7 +1855,7 @@ impl<'s> Score<'s> {
                     format!(
                         "layout rows must be the same length; count for this row: {row_len}, previous row: {prev_row_len}"
                     ),
-                )
+                );
             }
             prev_row_len = row_len;
         }
@@ -1878,8 +1875,7 @@ impl<'s> Score<'s> {
             h_factor: directive.h_factor.map(|x| x.value).unwrap_or_default(),
             v_factor: directive
                 .v_factor
-                .map(|x| x.value)
-                .unwrap_or(Pitch::must_parse("2")),
+                .map_or(Pitch::must_parse("2"), |x| x.value),
             anchor_row: anchor.value.row,
             anchor_col: anchor.value.col,
             notes,
@@ -1933,7 +1929,7 @@ impl<'s> Score<'s> {
             cols_right: directive.cols_right.map(|x| x.value as i32),
             details: mapping.mapping.clone(),
             offsets: Default::default(),
-        })
+        });
     }
 
     pub fn do_final_checks(&mut self, diags: &Diagnostics) {

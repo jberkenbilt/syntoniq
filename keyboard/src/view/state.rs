@@ -27,7 +27,7 @@ pub struct CellText {
 pub struct Cell {
     key: u8,
     color: String,
-    cell_text: CellText,
+    text: CellText,
 }
 
 pub struct AppState {
@@ -45,16 +45,16 @@ impl Values for SkipSse {
     }
 }
 pub fn maybe_strip_sse(val: String, strip_sse: bool) -> String {
-    if !strip_sse {
-        return val;
-    }
     fn inner(val: &str) -> Option<String> {
         let attr_start = val.find(" sse-swap=")?;
         let before = &val[..attr_start];
         let rest = &val[attr_start + 1..];
-        let attr_end = rest.find(" ")?;
+        let attr_end = rest.find(' ')?;
         let after = &rest[attr_end..];
         Some(format!("{before}{after}"))
+    }
+    if !strip_sse {
+        return val;
     }
     inner(&val).unwrap_or(val)
 }
@@ -65,7 +65,7 @@ impl Cell {
         Self {
             key,
             color,
-            cell_text: CellText {
+            text: CellText {
                 populated,
                 label1: label1.to_string(),
                 label2: label2.to_string(),
@@ -77,7 +77,7 @@ impl Cell {
         Cell {
             key,
             color: "var(--control-background)".to_string(),
-            cell_text: Default::default(),
+            text: Default::default(),
         }
     }
 
@@ -125,7 +125,7 @@ impl AppState {
                     let _ = upgraded.send(Event::default().event("heartbeat").data("keep-alive"));
                 }
                 None => return,
-            };
+            }
             tokio::time::sleep(Duration::from_secs(15)).await;
         }
     }
@@ -159,13 +159,13 @@ impl AppState {
     }
 
     pub fn clear_lights(&mut self) {
-        let positions: Vec<_> = self.cells.keys().cloned().collect();
+        let positions: Vec<_> = self.cells.keys().copied().collect();
         for p in positions {
             self.set_cell(p, events::OFF_RGB.to_string(), "", "");
         }
     }
 
-    async fn send_state_view(&mut self) {
+    fn send_state_view(&mut self) {
         let Some(tx) = self.sse_tx.clone() else {
             return;
         };
@@ -175,19 +175,19 @@ impl AppState {
         let _ = tx.send(event);
     }
 
-    pub async fn handle_select_layout(&mut self, e: SelectLayoutEvent) {
+    pub fn handle_select_layout(&mut self, e: &SelectLayoutEvent) {
         self.state_view.selected_layout = e.layout.name.to_string();
-        self.send_state_view().await;
+        self.send_state_view();
     }
 
-    pub async fn handle_layout_names(&mut self, e: LayoutNamesEvent) {
-        self.state_view.layout_names = e.names.clone();
-        self.send_state_view().await;
+    pub fn handle_layout_names(&mut self, e: &LayoutNamesEvent) {
+        self.state_view.layout_names.clone_from(&e.names);
+        self.send_state_view();
     }
 
-    pub async fn handle_reset(&mut self) {
+    pub fn handle_reset(&mut self) {
         self.state_view = Default::default();
-        self.send_state_view().await;
+        self.send_state_view();
     }
 }
 

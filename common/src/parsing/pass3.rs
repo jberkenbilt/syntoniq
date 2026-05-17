@@ -18,7 +18,7 @@ fn check_init<'s>(
 ) -> Option<(usize, Score<'s>)> {
     for (i, tok) in tokens.iter().enumerate() {
         match &tok.value.t {
-            Pass2::Space | Pass2::Newline | Pass2::Comment => continue,
+            Pass2::Space | Pass2::Newline | Pass2::Comment => {}
             Pass2::Directive(raw) if raw.name.value.name == "syntoniq" => {
                 if let Some(Directive::Syntoniq(x)) = Directive::from_raw(diags, tok.span, raw) {
                     return Some((i + 1, Score::new(src, x)));
@@ -51,10 +51,9 @@ pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<ScoreOutput<'s>, Di
         // specially at the end of the loop.
 
         let terminates_score_block = match &tok.value.t {
-            Pass2::Space | Pass2::Comment => false,
             Pass2::Newline => next_newline_is_blank_line,
             Pass2::Directive(_) => true,
-            Pass2::NoteLine(_) | Pass2::DynamicLine(_) => false,
+            Pass2::Space | Pass2::Comment | Pass2::NoteLine(_) | Pass2::DynamicLine(_) => false,
         };
         if terminates_score_block {
             score.handle_score_block(&diags);
@@ -70,11 +69,11 @@ pub fn parse3<'s>(src: &'s str, options: &Options) -> Result<ScoreOutput<'s>, Di
             Pass2::NoteLine(_) | Pass2::DynamicLine(_) | Pass2::Newline => true,
         };
         match tok.value.t {
-            Pass2::Space | Pass2::Newline | Pass2::Comment => continue,
+            Pass2::Space | Pass2::Newline | Pass2::Comment => {}
             Pass2::Directive(x) => score.handle_directive(&diags, tok.span, &x),
             Pass2::NoteLine(line) => score.add_note_line(line),
             Pass2::DynamicLine(line) => score.add_dynamic_line(line),
-        };
+        }
     }
     score.handle_score_block(&diags);
     score.do_final_checks(&diags);

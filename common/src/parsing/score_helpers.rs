@@ -33,35 +33,35 @@ pub trait ToStatic<'s> {
     fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static;
 }
 
-impl<'s> ToStatic<'s> for bool {
+impl ToStatic<'_> for bool {
     type Static = bool;
     fn to_static(&self, _: &mut ArcContext) -> Self::Static {
         *self
     }
 }
 
-impl<'s> ToStatic<'s> for i32 {
+impl ToStatic<'_> for i32 {
     type Static = i32;
     fn to_static(&self, _: &mut ArcContext) -> Self::Static {
         *self
     }
 }
 
-impl<'s> ToStatic<'s> for u32 {
+impl ToStatic<'_> for u32 {
     type Static = u32;
     fn to_static(&self, _: &mut ArcContext) -> Self::Static {
         *self
     }
 }
 
-impl<'s> ToStatic<'s> for usize {
+impl ToStatic<'_> for usize {
     type Static = usize;
     fn to_static(&self, _: &mut ArcContext) -> Self::Static {
         *self
     }
 }
 
-impl<'s, T: Copy> ToStatic<'s> for Ratio<T> {
+impl<T: Copy> ToStatic<'_> for Ratio<T> {
     type Static = Ratio<T>;
 
     fn to_static(&self, _: &mut ArcContext) -> Self::Static {
@@ -69,7 +69,7 @@ impl<'s, T: Copy> ToStatic<'s> for Ratio<T> {
     }
 }
 
-impl<'s> ToStatic<'s> for AtomicI32 {
+impl ToStatic<'_> for AtomicI32 {
     type Static = AtomicI32;
     fn to_static(&self, _: &mut ArcContext) -> Self::Static {
         AtomicI32::new(self.load(Ordering::Relaxed))
@@ -83,7 +83,7 @@ where
     type Static = Arc<T::Static>;
 
     fn to_static(&self, arc_context: &mut ArcContext) -> Self::Static {
-        let from_ptr = self.as_ref() as *const _ as *const ();
+        let from_ptr = ptr::from_ref(self.as_ref()).cast();
         let entry = match arc_context.converted.entry(from_ptr) {
             Entry::Occupied(e) => {
                 let Some(p) = e.get().as_ref() else {
@@ -104,9 +104,9 @@ where
             // get cleaned up by the Drop implementation for ArcContext.
             let p = Box::into_raw(Box::new(new));
             let ap = ArcPtr {
-                p: p as *mut _,
+                p: p.cast(),
                 delete: Box::new(|p| {
-                    drop(unsafe { Box::from_raw(p as *mut Arc<T::Static>) });
+                    drop(unsafe { Box::from_raw(p.cast::<Arc<T::Static>>()) });
                 }),
             };
             arc_context.converted.insert(from_ptr, Some(ap));
@@ -205,20 +205,20 @@ where
     }
 }
 
-impl<'s> CheckValue<'s> for u32 {
+impl CheckValue<'_> for u32 {
     fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
         pv.try_as_int().ok_or("should be an integer")
     }
 }
 
-impl<'s> CheckValue<'s> for Ratio<u32> {
+impl CheckValue<'_> for Ratio<u32> {
     fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
         pv.try_as_ratio()
             .ok_or("should be a rational number or decimal")
     }
 }
 
-impl<'s> CheckValue<'s> for Pitch {
+impl CheckValue<'_> for Pitch {
     fn check_value(pv: &ParamValue) -> Result<Self, impl AsRef<str>> {
         pv.try_as_pitch().cloned().ok_or("should be a pitch")
     }
@@ -263,14 +263,14 @@ pub fn check_part(diags: &Diagnostics, items: &[Spanned<Identifier<'_>>]) {
 pub fn exactly_one_of<T, U>(
     diags: &Diagnostics,
     span: Span,
-    first: &Option<T>,
+    first: Option<&T>,
     first_name: &str,
-    second: &Option<U>,
+    second: Option<&U>,
     second_name: &str,
 ) {
     let n = [first.is_some(), second.is_some()]
         .into_iter()
-        .fold(0usize, |x, v| x + if v { 1 } else { 0 });
+        .fold(0usize, |x, v| x + usize::from(v));
     if n != 1 {
         diags.err(
             code::USAGE,
@@ -318,7 +318,7 @@ pub fn check_duplicate_by_part<'s, T: Clone>(
     }
 }
 
-pub fn format_note_cycle<'s>(note_name: Cow<'s, str>, cycle: i32) -> Cow<'s, str> {
+pub fn format_note_cycle(note_name: Cow<str>, cycle: i32) -> Cow<str> {
     match cycle {
         1 => Cow::Owned(format!("{note_name}'")),
         -1 => Cow::Owned(format!("{note_name},")),

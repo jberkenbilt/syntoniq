@@ -1,3 +1,4 @@
+#![allow(clippy::too_many_lines)]
 use super::*;
 use crate::parsing::diagnostics::Diagnostic;
 use crate::parsing::pass1::parse1;
@@ -5,7 +6,7 @@ use std::borrow::Cow;
 
 macro_rules! make_parser2 {
     ($f:ident, $p:ident, $r:ty) => {
-        fn $f<'s>(s: &'s str) -> Result<($r, &'s str), Diagnostics> {
+        fn $f(s: &str) -> Result<($r, &str), Diagnostics> {
             let tokens = parse1(s)?;
             let mut input = tokens.as_slice();
             let diags = Diagnostics::new();
@@ -28,9 +29,9 @@ make_parser2!(parse_ratio, ratio, Spanned<Ratio<u32>>);
 make_parser2!(parse_ratio_or_zero, ratio_or_zero, Spanned<Ratio<u32>>);
 make_parser2!(parse_exponent, exponent, Factor);
 make_parser2!(parse_pitch, pitch_or_number, Spanned<PitchOrNumber>);
-make_parser2!(parse_string, string, Spanned<Cow<'s, str>>);
-make_parser2!(parse_param, param, Param<'s>);
-make_parser2!(parse_directive, directive, Spanned<RawDirective<'s>>);
+make_parser2!(parse_string, string, Spanned<Cow<'_, str>>);
+make_parser2!(parse_param, param, Param<'_>);
+make_parser2!(parse_directive, directive, Spanned<RawDirective<'_>>);
 make_parser2!(parse_octave, octave, Spanned<i8>);
 
 fn ident(s: &str) -> Identifier<'_> {
@@ -46,7 +47,7 @@ fn for_coverage() {
     // normal flow for coverage.
     let v: Vec<Token1> = Vec::new();
     let mut s = v.as_slice();
-    consume_one(&mut s)
+    consume_one(&mut s);
 }
 
 #[test]

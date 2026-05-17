@@ -1,6 +1,6 @@
 fn main() {
     #[cfg(feature = "csound")]
-    csound()
+    csound();
 }
 
 #[cfg(feature = "csound")]
@@ -35,16 +35,16 @@ fn csound() {
             .output()
             .expect("cmake failed");
         let lines: Vec<_> = String::from_utf8_lossy(&output.stderr)
-            .split("\n")
+            .split('\n')
             .filter_map(|x| x.strip_prefix("!"))
             .map(str::to_string)
             .collect();
-        if lines.len() != 3 {
-            panic!("cmake generated unexpected output: {lines:?}");
-        }
-        if lines[0] != "TRUE" {
-            panic!("cmake did not found csound");
-        }
+        assert_eq!(
+            lines.len(),
+            3,
+            "cmake generated unexpected output: {lines:?}"
+        );
+        assert_eq!(lines[0], "TRUE", "cmake did not found csound");
         include_dir = PathBuf::from(&lines[1]).to_str().unwrap().to_string();
         let full_lib = PathBuf::from(&lines[2]);
         lib_dir = full_lib

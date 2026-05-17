@@ -26,6 +26,10 @@ impl PartialOrd for Pitch {
     }
 }
 impl Ord for Pitch {
+    #[expect(
+        clippy::float_cmp,
+        reason = "exact float comparison used for validating canonicalization"
+    )]
     fn cmp(&self, other: &Self) -> Ordering {
         if self == other {
             Ordering::Equal
@@ -93,7 +97,7 @@ impl Display for Factor {
             // represent as a decimal.
             if self.base > Ratio::from_integer(32) && 1000 % den == 0 {
                 let decimal = num * 1000 / den;
-                write!(f, "{}", decimal as f32 / 1000.0)?;
+                write!(f, "{}", f64::from(decimal) / 1000.0)?;
             } else {
                 write_frac(f, num, den)?;
             }
@@ -191,7 +195,7 @@ pub fn mpe_bend(semitones: f64) -> u16 {
 /// Compute a fractional MIDI note to a midi note number and a pitch bend value using ±48 semitones.
 pub fn note_bend(fractional_note: f64) -> (u8, u16) {
     let note = fractional_note.round() as u8;
-    let delta = fractional_note - note as f64;
+    let delta = fractional_note - f64::from(note);
     let bend = mpe_bend(delta);
     (note, bend)
 }
@@ -231,7 +235,7 @@ impl Pitch {
                         base: Ratio::from_integer(base_d),
                         exp: -f.exp,
                     });
-                };
+                }
             }
             collect
         };
@@ -289,7 +293,7 @@ impl Pitch {
                 result.push(Factor {
                     base: Ratio::from_integer(base),
                     exp,
-                })
+                });
             }
         }
 
@@ -326,10 +330,12 @@ impl Pitch {
         Self::new(vec![Factor::from(Ratio::from_integer(1))])
     }
 
+    #[must_use]
     pub fn concat(&self, other: &Self) -> Self {
         Self::new(self.factors.iter().chain(&other.factors).cloned().collect())
     }
 
+    #[must_use]
     pub fn invert(&self) -> Self {
         let factors = self
             .factors
@@ -394,10 +400,10 @@ impl Pitch {
         let r1 = self.as_float() / 440.0;
         // Calculate semitones above 440, then add 69, the MIDI note number for 440.
         let note_number = 12.0 * r1.log2() + 69.0;
-        if !(0.0..128.0).contains(&note_number) {
-            None
-        } else {
+        if (0.0..128.0).contains(&note_number) {
             Some(note_number)
+        } else {
+            None
         }
     }
 
@@ -411,9 +417,10 @@ impl Pitch {
     /// sounds like a linear interpolation between p1 and p2 by the given amount. Panics on amount
     /// not between 0 and 1 inclusive.
     pub fn interpolate(p1: &Pitch, p2: &Pitch, amount: Ratio<u32>) -> Pitch {
-        if amount > Ratio::from(1) {
-            panic!("amount must be between 0 and 1 inclusive");
-        }
+        assert!(
+            amount <= Ratio::from(1),
+            "amount must be between 0 and 1 inclusive"
+        );
         if amount == 0.into() || p1 == p2 {
             return p1.clone();
         }
@@ -504,6 +511,7 @@ impl Serialize for Pitch {
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::float_cmp)]
     use super::*;
 
     #[test]
@@ -522,7 +530,7 @@ mod tests {
         assert_eq!(
             p,
             Pitch {
-                factors: vec![Factor::new(392439, 1000, 1, 1).unwrap(),],
+                factors: vec![Factor::new(392_439, 1000, 1, 1).unwrap(),],
             }
         );
         let p = Pitch::must_parse("500*4/3^4|7");
@@ -576,7 +584,7 @@ mod tests {
         assert_eq!(
             p,
             Pitch {
-                factors: vec![Factor::new(400123, 1000, 1, 1).unwrap()],
+                factors: vec![Factor::new(400_123, 1000, 1, 1).unwrap()],
             }
         );
     }
@@ -651,7 +659,7 @@ mod tests {
     }
 
     #[test]
-    #[should_panic]
+    #[should_panic(expected = "mpe_bend was called with >= 48 semitones")]
     fn test_bend() {
         mpe_bend(48.0);
     }

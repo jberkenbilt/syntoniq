@@ -54,16 +54,16 @@ impl HSV {
             return 127;
         }
 
-        let h0 = HW[i] as u16;
-        let h1 = HW[i + 1] as u16;
-        let s0 = STD[i] as u16;
-        let s1 = STD[i + 1] as u16;
+        let h0 = u16::from(HW[i]);
+        let h1 = u16::from(HW[i + 1]);
+        let s0 = u16::from(STD[i]);
+        let s1 = u16::from(STD[i + 1]);
 
         if h1 == h0 {
             return s0 as u8;
         }
 
-        let x = h as u16;
+        let x = u16::from(h);
 
         // Linear interpolation:
         // t = (x - h0) / (h1 - h0)
@@ -75,6 +75,7 @@ impl HSV {
         y.min(127) as u8
     }
 
+    #[allow(clippy::many_single_char_names)]
     fn to_rgb(self) -> String {
         // This function was AI-generated.
         let h = Self::remap_hue_piecewise(self.hue);
@@ -82,29 +83,29 @@ impl HSV {
         let v = self.val;
 
         // Fudge to lighten darker colors a bit. Interpolate 0..127 to 32..127
-        let v = (v as u16 * 95 / 127 + 32) as u8;
+        let v = (u16::from(v) * 95 / 127 + 32) as u8;
 
         // 1. Handle grayscale (Saturation = 0)
         if s == 0 {
-            let v_out = (v as u16 * 255 / 127) as u8;
-            return format!("#{0:02x}{0:02x}{0:02x}", v_out);
+            let v_out = (u16::from(v) * 255 / 127) as u8;
+            return format!("#{v_out:02x}{v_out:02x}{v_out:02x}");
         }
 
         // 2. Determine Sector (0-5)
         // 128 / 6 = 21.33. We use (h * 6) >> 7 to safely map 0-127 into 0-5.
-        let region = (h as u16 * 6) >> 7;
+        let region = (u16::from(h) * 6) >> 7;
 
         // 3. Calculate "fractional" part within the sector (0-127 range)
         // Equivalent to (h mod 21.33) scaled up
-        let rem = ((h as u16 * 6) & 127) as u8;
+        let rem = ((u16::from(h) * 6) & 127) as u8;
 
         // 4. Calculate p, q, t vars (scaled 0-127)
         // p = v * (1 - s)
-        let p = (v as u16 * (127 - s as u16) / 127) as u8;
+        let p = (u16::from(v) * (127 - u16::from(s)) / 127) as u8;
         // q = v * (1 - s * f)
-        let q = (v as u16 * (127 - (s as u16 * rem as u16) / 127) / 127) as u8;
+        let q = (u16::from(v) * (127 - (u16::from(s) * u16::from(rem)) / 127) / 127) as u8;
         // t = v * (1 - s * (1 - f))
-        let t = (v as u16 * (127 - (s as u16 * (127 - rem as u16)) / 127) / 127) as u8;
+        let t = (u16::from(v) * (127 - (u16::from(s) * (127 - u16::from(rem))) / 127) / 127) as u8;
 
         // 5. Assign to R, G, B based on sector
         let (r, g, b) = match region {
@@ -117,7 +118,7 @@ impl HSV {
         };
 
         // 6. Scale to 0-255 for standard Hex output
-        let scale = |val: u8| (val as u16 * 255 / 127) as u8;
+        let scale = |val: u8| (u16::from(val) * 255 / 127) as u8;
         format!("#{:02x}{:02x}{:02x}", scale(r), scale(g), scale(b))
     }
 }
@@ -159,7 +160,7 @@ impl HexBoard {
     pub fn new(events_tx: events::WeakSender) -> Self {
         let state: Arc<RwLock<State>> = Default::default();
         HexBoard {
-            events_tx: events_tx.clone(),
+            events_tx,
             state: state.clone(),
         }
     }
@@ -208,7 +209,7 @@ impl HexBoard {
                     color,
                     rgb_color: hexboard_color(color).to_rgb(),
                     label1,
-                    label2: "".to_string(),
+                    label2: String::new(),
                 }
             })
             .collect();
@@ -385,23 +386,23 @@ impl Device for HexBoardDevice {
 
 impl Keyboard for HexBoard {
     fn reset(&self) -> anyhow::Result<()> {
-        let Some(tx) = self.events_tx.upgrade() else {
-            return Ok(());
-        };
-        *self.state.write().expect("lock") = Default::default();
-        let mut light_events = Vec::new();
-        // Clear lights.
         static ALL_OFF: LazyLock<Vec<RawLightEvent>> = LazyLock::new(|| {
             (0u8..=139)
                 .map(|key| RawLightEvent {
                     key,
                     color: Color::Off,
                     rgb_color: events::OFF_RGB.to_string(),
-                    label1: "".to_string(),
-                    label2: "".to_string(),
+                    label1: String::new(),
+                    label2: String::new(),
                 })
                 .collect()
         });
+        let Some(tx) = self.events_tx.upgrade() else {
+            return Ok(());
+        };
+        *self.state.write().expect("lock") = Default::default();
+        let mut light_events = Vec::new();
+        // Clear lights.
         light_events.extend_from_slice(&ALL_OFF);
         // Draw the logo.
         for (color, keys) in [
@@ -452,7 +453,7 @@ impl Keyboard for HexBoard {
         tx.send(Event::ToDevice(ToDevice::Light(light_events)))?;
         println!("HexBoard command keys, top to bottom:");
         for i in 0u8..7 {
-            println!("  {:?}", CommandKey::try_from(i).unwrap())
+            println!("  {:?}", CommandKey::try_from(i).unwrap());
         }
         Ok(())
     }
@@ -554,7 +555,7 @@ impl Keyboard for HexBoard {
                 CommandKey::Sustain => send(KeyData::Sustain)?,
                 CommandKey::Layout => {
                     if off {
-                        self.enter_layout_mode()?
+                        self.enter_layout_mode()?;
                     }
                 }
             }
@@ -633,7 +634,7 @@ fn init_key_map() -> HashMap<Orientation, BiMap<u8, Coordinate>> {
     // to left.
     //
     // Keys on the HexBoard are numbered from 0 to 139, left to right, top to bottom. The multiples
-    // of 20 are command keys and correspond do the "missing" keys in the 9-column rows. The logic
+    // of 20 are command keys and correspond to the "missing" keys in the 9-column rows. The logic
     // below can be verified with the diagram. Rows are numbered from 1 starting at the bottom.
 
     // We will populate in key order. The first note key is 1. Key 0 is a command key. That means
@@ -750,6 +751,7 @@ pub fn hexboard_color(color: Color) -> HSV {
     };
     let on_val = 127;
     let off_val = 64;
+    #[allow(clippy::match_same_arms)]
     match color {
         // See misc/hexboard-scripts/colors
         Color::Off => hsv(0, 0, 40),
@@ -798,7 +800,7 @@ mod tests {
         let events_rx = tc.rx();
         let tx = events_tx.upgrade().unwrap();
         let hexboard = Arc::new(HexBoard::new(events_tx));
-        engine::start_keyboard(None, hexboard.clone(), events_rx).await?;
+        engine::start_keyboard(None, hexboard.clone(), events_rx)?;
         let layout_names: Vec<_> = (0..22).map(|x| x.to_string()).collect();
         tx.send(Event::SetLayoutNames(LayoutNamesEvent {
             names: layout_names.clone(),

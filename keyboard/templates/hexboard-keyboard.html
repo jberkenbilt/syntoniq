@@ -3,7 +3,7 @@
     {%- for row in (0..14).into_iter() %}
     <div class="hex-row">
       {%- for col in (0..9 + row%2).into_iter() %}
-      {{ self.get_cell(row, col, ("skip_sse"|value::<bool>).is_ok()) | safe }}
+      {{ self.get_cell(*row, *col, ("skip_sse"|value::<bool>).is_ok()) | safe }}
       {%- endfor %}
     </div>
     {%- endfor %}

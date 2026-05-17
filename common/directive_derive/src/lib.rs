@@ -18,8 +18,9 @@ use syn::{DataEnum, parse_macro_input};
 fn option_inner_type<'a>(outer: &'static str, ty: &'a Type) -> Option<&'a Type> {
     fn strip(ty: &Type) -> &Type {
         match ty {
-            Type::Group(TypeGroup { elem, .. }) => strip(elem),
-            Type::Paren(TypeParen { elem, .. }) => strip(elem),
+            Type::Group(TypeGroup { elem, .. }) | Type::Paren(TypeParen { elem, .. }) => {
+                strip(elem)
+            }
             _ => ty,
         }
     }
@@ -47,6 +48,7 @@ fn option_inner_type<'a>(outer: &'static str, ty: &'a Type) -> Option<&'a Type> 
 pub fn from_raw_directive_derive(input: TokenStream) -> TokenStream {
     let derive_input = parse_macro_input!(input as DeriveInput);
     // Dispatch based on whether this is a struct or an enum.
+    #[allow(clippy::match_wildcard_for_single_variants)]
     match &derive_input.data {
         Data::Struct(data) => from_raw_struct(&derive_input, data),
         Data::Enum(data) => from_raw_enum(&derive_input, data),
@@ -56,6 +58,7 @@ pub fn from_raw_directive_derive(input: TokenStream) -> TokenStream {
     .into()
 }
 
+#[allow(clippy::too_many_lines)]
 fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::TokenStream {
     // Iterate through all the fields in the structure. Fields of type Option are for optional
     // parameters. Fields of type Vec are for optional, repeatable parameters. Other fields are
@@ -157,7 +160,7 @@ fn from_raw_struct(input: &DeriveInput, data: &DataStruct) -> proc_macro2::Token
         if doc_comment.is_empty() {
             arg_help.push(quote! {
                 write!(w, "\n")?;
-            })
+            });
         } else {
             arg_help.push(quote! {
                 write!(w, " — {}", #doc_comment)?;

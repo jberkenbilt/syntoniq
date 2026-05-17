@@ -51,7 +51,7 @@ pub struct TimelineEvent<'s> {
     pub span: Span,
     pub data: TimelineData<'s>,
 }
-impl<'s> TimelineEvent<'s> {
+impl TimelineEvent<'_> {
     pub fn end_time(&self) -> Ratio<u32> {
         let maybe = match &self.data {
             TimelineData::Note(e) => e.value.pitches.last().map(|x| x.end_time),
@@ -64,9 +64,9 @@ impl<'s> TimelineEvent<'s> {
         maybe.unwrap_or(self.time)
     }
 
-    fn add_or_subtract(v: &mut Ratio<u32>, delta: &Ratio<u32>, subtract: bool) {
+    fn add_or_subtract(v: &mut Ratio<u32>, delta: Ratio<u32>, subtract: bool) {
         if subtract {
-            if delta > v {
+            if &delta > v {
                 *v = Ratio::from_integer(0);
             } else {
                 *v -= delta;
@@ -151,6 +151,7 @@ impl<'s> TimelineEvent<'s> {
         }
     }
 
+    #[allow(clippy::too_many_lines)]
     pub fn copy_with_time_delta(
         &self,
         delta: Ratio<u32>,
@@ -277,25 +278,25 @@ impl<'s> TimelineEvent<'s> {
         match &mut data {
             TimelineData::Tempo(e) => {
                 if let Some(x) = e.end_bpm.as_mut() {
-                    Self::add_or_subtract(&mut x.time, &delta, subtract);
+                    Self::add_or_subtract(&mut x.time, delta, subtract);
                 }
             }
             TimelineData::Dynamic(e) => {
                 if let Some(x) = e.end_level.as_mut() {
-                    Self::add_or_subtract(&mut x.time, &delta, subtract);
+                    Self::add_or_subtract(&mut x.time, delta, subtract);
                 }
             }
             TimelineData::Note(e) => {
-                for p in e.value.pitches.iter_mut() {
-                    Self::add_or_subtract(&mut p.start_time, &delta, subtract);
-                    Self::add_or_subtract(&mut p.end_time, &delta, subtract);
+                for p in &mut e.value.pitches {
+                    Self::add_or_subtract(&mut p.start_time, delta, subtract);
+                    Self::add_or_subtract(&mut p.end_time, delta, subtract);
                 }
             }
             TimelineData::Mark(_) | TimelineData::RepeatStart(_) | TimelineData::RepeatEnd(_) => {}
-        };
+        }
 
         let mut new_time = event_start;
-        Self::add_or_subtract(&mut new_time, &delta, subtract);
+        Self::add_or_subtract(&mut new_time, delta, subtract);
         Some(Self {
             time: new_time,
             repeat_depth: self.repeat_depth,
@@ -304,6 +305,7 @@ impl<'s> TimelineEvent<'s> {
         })
     }
 
+    #[must_use]
     pub fn copy_for_repeat(&self, delta: Ratio<u32>) -> Self {
         // copy_with_time_delta always returns Some when time_boundaries is None.
         let mut event = self.copy_with_time_delta(delta, None, false).unwrap();
@@ -384,7 +386,7 @@ pub enum CsoundInstrumentId<'s> {
     Number(u32),
     Name(Cow<'s, str>),
 }
-impl<'s> CsoundInstrumentId<'s> {
+impl CsoundInstrumentId<'_> {
     pub fn output(&self, note: Option<String>) -> String {
         let note = note.map(|x| format!(".{x}")).unwrap_or_default();
         match self {
@@ -435,7 +437,7 @@ mod tests {
         s.insert((6, 2)); // after mark2
         let iter = s.range((Included(mark1), Included(mark2)));
         assert_eq!(
-            iter.cloned().collect::<Vec<_>>(),
+            iter.copied().collect::<Vec<_>>(),
             [(3, 1), (4, 1), (4, 2), (5, 1)]
         );
     }
@@ -446,9 +448,9 @@ mod tests {
         // is implemented prevents the boundary condition of subtracting too much from ever
         // happening organically.
         let mut v = Ratio::from_integer(3);
-        TimelineEvent::add_or_subtract(&mut v, &Ratio::from_integer(1), true);
+        TimelineEvent::add_or_subtract(&mut v, Ratio::from_integer(1), true);
         assert_eq!(v, Ratio::from_integer(2));
-        TimelineEvent::add_or_subtract(&mut v, &Ratio::from_integer(5), true);
+        TimelineEvent::add_or_subtract(&mut v, Ratio::from_integer(5), true);
         assert_eq!(v, Ratio::from_integer(0));
     }
 

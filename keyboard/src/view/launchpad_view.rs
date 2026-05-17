@@ -51,8 +51,8 @@ impl<'a> LaunchpadView<'a> {
     }
 }
 
-impl<'a> LaunchpadKeyboard<'a> {
-    fn get_cell(&self, grid_row: &u8, grid_col: &u8, skip_sse: bool) -> String {
+impl LaunchpadKeyboard<'_> {
+    fn get_cell(&self, grid_row: u8, grid_col: u8, skip_sse: bool) -> String {
         // Launchpad rows are, from bottom to top, are 0, 10, 1..=9. Grid rows are
         // 0 to 10 from top to bottom.
         let pad_row = match grid_row {
@@ -60,7 +60,7 @@ impl<'a> LaunchpadKeyboard<'a> {
             10 => 0,
             row => 9 - row,
         };
-        let pad_col = *grid_col;
+        let pad_col = grid_col;
         let position = 10 * pad_row + pad_col;
         let empty = Cell::empty(position);
         let t = self.cells.get(&position).unwrap_or(&empty);

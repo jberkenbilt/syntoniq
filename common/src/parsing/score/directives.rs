@@ -1,4 +1,6 @@
 // -*- fill-column: 80 -*-
+// This file contains doc comments that are extracted as text for help.
+#![allow(clippy::doc_markdown)]
 use crate::parsing::diagnostics::{Diagnostic, Diagnostics, code};
 use crate::parsing::model::{
     DataBlock, Identifier, LayoutBlock, NoteOctave, ScaleBlock, Span, Spanned,
@@ -24,12 +26,12 @@ pub trait FromRawDirective<'s>: Sized {
 /// Set the syntoniq file format version. This must be the first functional item
 /// in the file.
 pub struct Syntoniq<'s> {
-    pub _s: &'s (),
+    _s: &'s (),
     pub span: Span,
     /// syntoniq file format version; supported value: 1
     pub version: Spanned<u32>,
 }
-impl<'s> Syntoniq<'s> {
+impl Syntoniq<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         if self.version.value != 1 {
             diags.err(
@@ -52,7 +54,7 @@ pub struct DefineScale<'s> {
     pub cycle_ratio: Option<Spanned<Ratio<u32>>>,
     pub scale_block: Spanned<ScaleBlock<'s>>,
 }
-impl<'s> DefineScale<'s> {
+impl DefineScale<'_> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 
@@ -116,7 +118,7 @@ pub struct DefineGeneratedScale<'s> {
     /// is within `tolerance` of a scale degree; applies only when `divisions` is given
     pub tolerance: Option<Spanned<Pitch>>,
 }
-impl<'s> DefineGeneratedScale<'s> {
+impl DefineGeneratedScale<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         if let Some(divisions) = self.divisions
             && divisions.value < 2
@@ -141,7 +143,7 @@ pub struct UseScale<'s> {
     /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> UseScale<'s> {
+impl UseScale<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
     }
@@ -168,7 +170,7 @@ pub struct Transpose<'s> {
     /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> Transpose<'s> {
+impl Transpose<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
     }
@@ -190,12 +192,12 @@ pub struct SetBasePitch<'s> {
     /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> SetBasePitch<'s> {
+impl SetBasePitch<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
         let n = [self.absolute.is_some(), self.relative.is_some()]
             .into_iter()
-            .fold(0usize, |x, v| x + if v { 1 } else { 0 });
+            .fold(0usize, |x, v| x + usize::from(v));
         if n != 1 {
             diags.err(
                 code::TUNE,
@@ -222,7 +224,7 @@ pub struct SavePitch<'s> {
     /// must have the same pitch in all tunings.
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> SavePitch<'s> {
+impl SavePitch<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
     }
@@ -240,7 +242,7 @@ pub struct RestorePitch<'s> {
     /// Which parts to transpose; if not specified, the default tuning is updated.
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> RestorePitch<'s> {
+impl RestorePitch<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
     }
@@ -260,7 +262,7 @@ pub struct CheckPitch<'s> {
     /// Which parts check; if none given, the default tuning is checked.
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> CheckPitch<'s> {
+impl CheckPitch<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
         if self.note.len() + self.var.len() + self.pitch.len() < 2 {
@@ -281,7 +283,7 @@ pub struct ResetTuning<'s> {
     /// Which parts to tune; if not specified, all parts are tuned
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> ResetTuning<'s> {
+impl ResetTuning<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
     }
@@ -302,7 +304,7 @@ pub struct MidiInstrument<'s> {
     /// use it
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> MidiInstrument<'s> {
+impl MidiInstrument<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
         // User-facing numbers are 1-based. We will store as 0-based internally.
@@ -340,10 +342,17 @@ pub struct CsoundInstrument<'s> {
     /// use it
     pub part: Vec<Spanned<Identifier<'s>>>,
 }
-impl<'s> CsoundInstrument<'s> {
+impl CsoundInstrument<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         score_helpers::check_part(diags, &self.part);
-        score_helpers::exactly_one_of(diags, self.span, &self.number, "number", &self.name, "name");
+        score_helpers::exactly_one_of(
+            diags,
+            self.span,
+            self.number.as_ref(),
+            "number",
+            self.name.as_ref(),
+            "name",
+        );
     }
 }
 
@@ -364,9 +373,16 @@ pub struct CsoundGlobalInstrument<'s> {
     /// duration. Defaults to 3 beats.
     pub tail: Option<Spanned<Ratio<u32>>>,
 }
-impl<'s> CsoundGlobalInstrument<'s> {
+impl CsoundGlobalInstrument<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
-        score_helpers::exactly_one_of(diags, self.span, &self.number, "number", &self.name, "name");
+        score_helpers::exactly_one_of(
+            diags,
+            self.span,
+            self.number.as_ref(),
+            "number",
+            self.name.as_ref(),
+            "name",
+        );
     }
 }
 
@@ -378,14 +394,14 @@ pub struct CsoundTemplate<'s> {
     /// Path to template, interpreted as relative to the score file
     pub path: Spanned<Cow<'s, str>>,
 }
-impl<'s> CsoundTemplate<'s> {
+impl CsoundTemplate<'_> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 
 #[derive(FromRawDirective)]
 /// Set tempo, with possible accelerando or ritardando (gradual change).
 pub struct Tempo<'s> {
-    pub _s: &'s (),
+    _s: &'s (),
     pub span: Span,
     /// Tempo in beats per minute
     pub bpm: Spanned<Ratio<u32>>,
@@ -401,11 +417,11 @@ pub struct Tempo<'s> {
     /// change.
     pub duration: Option<Spanned<Ratio<u32>>>,
 }
-impl<'s> Tempo<'s> {
+impl Tempo<'_> {
     pub fn validate(&mut self, diags: &Diagnostics) {
         let n = [self.end_bpm.is_some(), self.duration.is_some()]
             .into_iter()
-            .fold(0usize, |x, v| x + if v { 1 } else { 0 });
+            .fold(0usize, |x, v| x + usize::from(v));
         if n == 1 {
             diags.err(
                 code::USAGE,
@@ -426,7 +442,7 @@ pub struct Mark<'s> {
     /// The mark's label
     pub label: Spanned<Cow<'s, str>>,
 }
-impl<'s> Mark<'s> {
+impl Mark<'_> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 
@@ -442,7 +458,7 @@ pub struct Repeat<'s> {
     pub end: Spanned<Cow<'s, str>>,
     pub times: Option<Spanned<u32>>,
 }
-impl<'s> Repeat<'s> {
+impl Repeat<'_> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 
@@ -460,7 +476,7 @@ pub struct DefineIsomorphicMapping<'s> {
     /// Number of scale degrees to go up in the vertical or up-right direction
     pub steps_v: Spanned<u32>,
 }
-impl<'s> DefineIsomorphicMapping<'s> {
+impl DefineIsomorphicMapping<'_> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 
@@ -481,7 +497,7 @@ pub struct DefineManualMapping<'s> {
     pub v_factor: Option<Spanned<Pitch>>,
     pub layout_block: Spanned<LayoutBlock<'s>>,
 }
-impl<'s> DefineManualMapping<'s> {
+impl DefineManualMapping<'_> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 
@@ -520,7 +536,7 @@ pub struct PlaceMapping<'s> {
     /// column of the keyboard. May be 0.
     pub cols_right: Option<Spanned<u32>>,
 }
-impl<'s> PlaceMapping<'s> {
+impl PlaceMapping<'_> {
     pub fn validate(&mut self, _diags: &Diagnostics) {}
 }
 

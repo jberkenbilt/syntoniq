@@ -62,7 +62,7 @@ impl Launchpad {
     pub fn new(events_tx: events::WeakSender) -> Self {
         let state: Arc<RwLock<State>> = Default::default();
         Launchpad {
-            events_tx: events_tx.clone(),
+            events_tx,
             state: state.clone(),
         }
     }
@@ -77,7 +77,7 @@ impl Launchpad {
             let idx = i as usize + state.layout_offset;
             let key = u8::from(CommandKeys::LayoutMin) + i as u8;
             let event = if idx < state.num_layouts {
-                let is_cur = state.cur_layout.map(|x| x == idx).unwrap_or(false);
+                let is_cur = state.cur_layout.is_some_and(|x| x == idx);
                 let color = if is_cur {
                     Color::ToggleOn
                 } else {
@@ -160,8 +160,8 @@ impl Launchpad {
         // launchpad was first, but more likely because it's the most logical way to lay out a
         // musical keyboard.
         Coordinate {
-            row: (key / 10) as i32,
-            col: (key % 10) as i32,
+            row: i32::from(key / 10),
+            col: i32::from(key % 10),
         }
     }
 
@@ -295,9 +295,9 @@ impl Keyboard for Launchpad {
                 key,
                 color,
                 rgb_color: rgb_color(color),
-                label1: "".to_string(),
-                label2: "".to_string(),
-            })
+                label1: String::new(),
+                label2: String::new(),
+            });
         }
         // Draw the logo.
         for (color, positions) in [
@@ -435,7 +435,7 @@ impl Keyboard for Launchpad {
                 CommandKeys::Record => send(KeyData::Print)?,
                 CommandKeys::LayoutScroll => {
                     if off {
-                        self.scroll_layouts()?
+                        self.scroll_layouts()?;
                     }
                 }
                 CommandKeys::LayoutMin | CommandKeys::LayoutMax => unreachable!(),
@@ -491,6 +491,7 @@ mod colors {
 }
 
 pub fn launchpad_color(color: Color) -> u8 {
+    #[allow(clippy::match_same_arms)]
     match color {
         Color::Off => 0,
         Color::ControlOff => 0,
@@ -545,7 +546,7 @@ mod tests {
         let events_rx = tc.rx();
         let tx = events_tx.upgrade().unwrap();
         let launchpad = Arc::new(Launchpad::new(events_tx));
-        engine::start_keyboard(None, launchpad.clone(), events_rx).await?;
+        engine::start_keyboard(None, launchpad.clone(), events_rx)?;
         let layout_names: Vec<_> = (0..12).map(|x| x.to_string()).collect();
         tx.send(Event::SetLayoutNames(LayoutNamesEvent {
             names: layout_names.clone(),

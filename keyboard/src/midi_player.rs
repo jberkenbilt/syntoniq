@@ -59,7 +59,7 @@ impl Player {
             if ch.is_none() {
                 log::warn!("midi player: no available channels; ignoring note operation");
                 return Ok(());
-            };
+            }
             *self.pitch_count.entry(pitch.clone()).or_default() += 1;
         }
         let Some(ch) = ch else {
@@ -98,8 +98,7 @@ pub async fn play_midi(mut events_rx: events::Receiver) -> anyhow::Result<()> {
         while let Some(event) = events::receive_check_lag(&mut events_rx, Some("midi player")).await
         {
             match event {
-                Event::SelectLayout(_) => {}
-                Event::PlayNote(_) => {}
+                Event::SelectLayout(_) | Event::PlayNote(_) => {}
                 _ => continue,
             }
             tx.send(event).await.unwrap();

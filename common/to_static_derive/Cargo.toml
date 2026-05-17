@@ -1,3 +1,5 @@
+lints.workspace = true
+
 [package]
 name = "to_static_derive"
 version = "0.1.0"

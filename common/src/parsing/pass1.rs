@@ -65,7 +65,7 @@ static NOTE_PUNCTUATION: &str = "|/.:>~&^,'";
 /// Characters allowed note names in addition to alphanumeric. This includes many punctuation
 /// characters so pitches can be used in note names as well as making several characters available
 /// for accidentals. We explicitly avoid characters that are syntactically ambiguous, like brackets
-/// and parentheses, anything in NOTE_PUNCTUATION (which appear before or after note names), or
+/// and parentheses, anything in `NOTE_PUNCTUATION` (which appear before or after note names), or
 /// characters used in dynamics. This helps with parsing and also makes scores less visually
 /// ambiguous. Avoid $ in case we introduce macros. Removing characters from this list breaks
 /// backward compatibility, so we want to be cautious about over-doing it. Avoid @ because of its
@@ -150,9 +150,9 @@ impl Pass1 {
         matches!(t.value.t, Pass1::NoteLeader { .. })
     }
 
-    pub fn get_note_leader<'s>(t: &'s Token1) -> Option<(Span, Spanned<u32>)> {
+    pub fn get_note_leader(t: &Token1) -> Option<(Span, Spanned<u32>)> {
         match t.value.t {
-            Pass1::NoteLeader { name_span, note } => Some((name_span, note.to_owned())),
+            Pass1::NoteLeader { name_span, note } => Some((name_span, note)),
             _ => None,
         }
     }
@@ -420,7 +420,8 @@ fn note_name<'s>() -> impl Parser1<'s> {
     )
 }
 
-pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
+#[expect(clippy::too_many_lines)]
+pub fn parse1(src: &str) -> Result<Vec<Token1<'_>>, Diagnostics> {
     // Pass1 Step 1: this is where parsing starts. Each "pass" of parsing creates a Diagnostics
     // object. If it is empty at the end of parsing, all concerns by this pass have been met.
     // Otherwise, we return the Diagnostics as the "Error" type of the Result. This "Step 1"
@@ -562,7 +563,7 @@ pub fn parse1<'s>(src: &'s str) -> Result<Vec<Token1<'s>>, Diagnostics> {
             Some(t) => {
                 // If we got a token, push it onto the output and give a trace log for debugging.
                 model::trace(format!("lex pass 1: {t}"));
-                out.push(t)
+                out.push(t);
             }
             None => {
                 // Consume the token. Issuing a diagnostic error will prevent the accumulated tokens

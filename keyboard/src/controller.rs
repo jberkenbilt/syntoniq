@@ -49,8 +49,7 @@ pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::P
             .inspect(|n| {
                 port_names.push(n.clone());
             })
-            .map(|n| n.contains(name))
-            .unwrap_or(false)
+            .is_ok_and(|n| n.contains(name))
     });
     match result {
         None => {
@@ -68,12 +67,7 @@ pub(crate) fn find_port<T: MidiIO>(ports: &T, name: &str) -> anyhow::Result<T::P
     }
 }
 
-fn identify_device(sys_ex: Vec<u8>) -> Option<DeviceType> {
-    // Response is 7E ?? 06 02 manufacturer-ID.
-    // Manufacturer ID is XX or 00 XX YY. 0x7D is reserved for education/development.
-    // Then we have family (2 bytes), model (two bytes), version (4 bytes), all LSB-first.
-    log::trace!("identity candidate sysex: {sys_ex:?}");
-
+fn identify_device(sys_ex: &[u8]) -> Option<DeviceType> {
     // My MK3 pro returns 00, 00 as model and 00, 04, 08, 03 as version.
     static LAUNCHPAD: &[u8] = &[
         0, 0x20, 0x29, // novation
@@ -83,6 +77,11 @@ fn identify_device(sys_ex: Vec<u8>) -> Option<DeviceType> {
         0x7D, // dev
         0x01, 0x00, 0x01, 0x00, // subject to change
     ];
+
+    // Response is 7E ?? 06 02 manufacturer-ID.
+    // Manufacturer ID is XX or 00 XX YY. 0x7D is reserved for education/development.
+    // Then we have family (2 bytes), model (two bytes), version (4 bytes), all LSB-first.
+    log::trace!("identity candidate sysex: {sys_ex:?}");
 
     if sys_ex.len() < 5 {
         return None;
@@ -113,7 +112,7 @@ fn on_midi(_stamp_ms: u64, event: &[u8], device: &mut Arc<ArcSwap<DeviceData>>) 
         DeviceData::WaitingForInit { id_tx } => {
             if let LiveEvent::Common(SysEx(sys_ex)) = event
                 && let Some(identity) =
-                    identify_device(sys_ex.iter().copied().map(u8::from).collect())
+                    identify_device(&sys_ex.iter().copied().map(u8::from).collect::<Vec<_>>())
                 && let Some(tx) = id_tx.lock().unwrap().take()
             {
                 let _ = tx.send(identity);
@@ -123,7 +122,7 @@ fn on_midi(_stamp_ms: u64, event: &[u8], device: &mut Arc<ArcSwap<DeviceData>>) 
             if let Some(event) = d.device.on_midi(event)
                 && let Err(e) = d.from_device_tx.blocking_send(event)
             {
-                log::error!("error notifying of device event: {e}")
+                log::error!("error notifying of device event: {e}");
             }
         }
     }
@@ -146,7 +145,7 @@ impl Controller {
         let midi_in = MidiInput::new("Syntoniq Keyboard")?;
         let in_port = find_port(&midi_in, port_name)?;
         let full_port_name = midi_in.port_name(&in_port)?;
-        log::debug!("opening input port: {full_port_name}",);
+        log::debug!("opening input port: {full_port_name}");
         // Handler keeps running until connection is dropped
         let input_connection = midi_in
             .connect(
@@ -190,15 +189,16 @@ impl Controller {
                 from_device_tx,
                 device: device.clone(),
             })));
-        let handle: JoinHandle<anyhow::Result<()>> =
-            tokio::task::spawn_blocking(move || self.relay_to_device(to_device_rx, device));
+        let handle: JoinHandle<anyhow::Result<()>> = tokio::task::spawn_blocking(move || {
+            self.relay_to_device(to_device_rx, device.as_ref())
+        });
         Ok(handle)
     }
 
     fn relay_to_device(
         mut self,
         mut to_device_rx: mpsc::Receiver<ToDevice>,
-        device: Arc<dyn Device>,
+        device: &dyn Device,
     ) -> anyhow::Result<()> {
         while let Some(e) = to_device_rx.blocking_recv() {
             device.handle_event(e, &mut self.output_connection)?;

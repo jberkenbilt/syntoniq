@@ -1,3 +1,5 @@
+lints.workspace = true
+
 [package]
 name = "syntoniq-kbd"
 version.workspace = true

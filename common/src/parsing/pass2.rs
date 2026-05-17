@@ -43,7 +43,7 @@ pub enum Pass2<'s> {
     NoteLine(NoteLine<'s>),
     DynamicLine(DynamicLine<'s>),
 }
-impl<'s> Display for Pass2<'s> {
+impl Display for Pass2<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Pass2::Directive(x) => write!(f, "Directive{{{x}}}"),
@@ -100,13 +100,11 @@ fn optional_space(input: &mut Input2) -> winnow::Result<()> {
 }
 
 fn some_space(input: &mut Input2) -> winnow::Result<()> {
-    space(true).parse_next(input).map(|_| ())
+    space(true).parse_next(input)
 }
 
 fn newline_or_eof(input: &mut Input2) -> winnow::Result<()> {
-    preceded(optional_space, alt((eof.map(|_| ()), newline)))
-        .parse_next(input)
-        .map(|_| ())
+    preceded(optional_space, alt((eof.map(|_| ()), newline))).parse_next(input)
 }
 
 fn character(ch: char) -> impl FnMut(&mut Input2) -> winnow::Result<Spanned<char>> {
@@ -282,7 +280,7 @@ fn exponent(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Result<Fa
                 }
                 if sign_t.is_some() {
                     exp_num = -exp_num;
-                };
+                }
                 // We have checked all errors that are checked by Factor::new, so this should always
                 // succeed.
                 Factor::new(base_num, base_den, exp_num, exp_den)
@@ -393,13 +391,13 @@ fn identifier<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<Identifi
     t
 }
 
-fn definition_start<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
+fn definition_start(input: &mut Input2<'_, '_>) -> winnow::Result<Spanned<String>> {
     one_of(|x: Token1| matches!(x.value.t, Pass1::DefinitionStart))
         .parse_next(input)
         .map(|t| Spanned::new(t.span, t.value.raw))
 }
 
-fn definition_end<'s>(input: &mut Input2<'_, 's>) -> winnow::Result<Spanned<String>> {
+fn definition_end(input: &mut Input2<'_, '_>) -> winnow::Result<Spanned<String>> {
     one_of(|x: Token1| matches!(x.value.t, Pass1::DefinitionEnd))
         .parse_next(input)
         .map(|t| Spanned::new(t.span, t.value.raw))
@@ -823,7 +821,7 @@ fn scale_note<'s>(
     }
 }
 
-fn check_scale_block<'s>(diags: &Diagnostics, input: &mut Input2<'_, 's>) -> bool {
+fn check_scale_block(diags: &Diagnostics, input: &mut Input2<'_, '_>) -> bool {
     peek((
         opt(some_space),
         definition_start,
@@ -884,7 +882,7 @@ fn layout_item<'s>(
     }
 }
 
-fn check_layout_block<'s>(diags: &Diagnostics, input: &mut Input2<'_, 's>) -> bool {
+fn check_layout_block(diags: &Diagnostics, input: &mut Input2<'_, '_>) -> bool {
     peek((
         opt(some_space),
         definition_start,
@@ -989,7 +987,6 @@ fn degraded_directive(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow:
             character(')'),
         )
         .parse_next(input)
-        .map(|_| ())
     }
 }
 
@@ -1010,7 +1007,6 @@ fn degraded_note(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resu
             newline_or_eof,
         )
         .parse_next(input)
-        .map(|_| ())
     }
 }
 
@@ -1035,7 +1031,6 @@ fn degraded_dynamic(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::R
             newline_or_eof,
         )
         .parse_next(input)
-        .map(|_| ())
     }
 }
 
@@ -1047,7 +1042,7 @@ fn degraded_definition(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow
                 1..,
                 alt((
                     space(false),
-                    newline.map(|_| ()),
+                    newline,
                     pitch_or_number(diags).map(|_| ()),
                     character('|').map(|_| ()),
                     character('@').map(|_| ()),
@@ -1068,7 +1063,6 @@ fn degraded_definition(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow
             newline_or_eof,
         )
         .parse_next(input)
-        .map(|_| ())
     }
 }
 
@@ -1090,13 +1084,12 @@ fn degraded_misc(diags: &Diagnostics) -> impl FnMut(&mut Input2) -> winnow::Resu
             character(')'),
         )
         .parse_next(input)
-        .map(|_| ())
     }
 }
 
 fn consume_one<T>(items: &mut &[T]) {
     if !items.is_empty() {
-        *items = &items[1..]
+        *items = &items[1..];
     }
 }
 
@@ -1254,10 +1247,10 @@ pub fn parse_pitch(s: &str) -> anyhow::Result<Pitch> {
                     }
                 }
                 Err(_) => diags = Some(d),
-            };
+            }
         }
         Err(d) => diags = Some(d),
-    };
+    }
     if let Some(p) = p {
         return Ok(p);
     }
@@ -1271,7 +1264,7 @@ pub fn parse_pitch(s: &str) -> anyhow::Result<Pitch> {
     Err(anyhow!("{s}: {err}"))
 }
 
-pub fn parse2<'s>(src: &'s str) -> Result<Vec<Token2<'s>>, Diagnostics> {
+pub fn parse2(src: &str) -> Result<Vec<Token2<'_>>, Diagnostics> {
     // Pass2 Step 2: this function performs pass 2 of the parsing. For ergonomic and lifetime
     // handling reasons, it must take the original input source. We first do pass1 parsing, and if
     // that fails, we stop. Otherwise, we continue with a simple parser for pass 2. The job of the

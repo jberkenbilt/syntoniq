@@ -93,7 +93,7 @@ fn check_spans<T: Debug + Serialize>(exp_end: usize, tokens: &[Spanned<T>]) -> V
     if exp_start != exp_end {
         errors.push(format!(
             "last token ended with {exp_start}; expected {exp_end}"
-        ))
+        ));
     }
     errors
 }

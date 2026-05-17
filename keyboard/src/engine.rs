@@ -5,12 +5,13 @@ use crate::csound;
 use crate::events::TestEvent;
 use crate::events::{
     Color, EngineState, Event, FromDevice, KeyData, KeyEvent, LayoutNamesEvent, LightData,
-    LightEvent, Note, NoteColors, PlayNoteEvent, RawLightEvent, SelectLayoutEvent, SpecificNote,
-    ToDevice, UpdateNoteEvent,
+    LightEvent, ModifierNote, Note, NoteColors, PlayNoteEvent, RawLightEvent, SelectLayoutEvent,
+    SpecificNote, ToDevice, UpdateNoteEvent,
 };
 use crate::{events, midi_player};
 use chrono::SubsecRound;
 use std::collections::HashSet;
+use std::fmt::Write as _;
 use std::fs;
 #[cfg(feature = "csound")]
 use std::path::PathBuf;
@@ -77,14 +78,14 @@ pub trait Keyboard: Sync + Send {
     fn handle_event(&self, event: Event) -> anyhow::Result<()>;
 }
 
-/// See toggle_move for interpretation of fields
+/// See `toggle_move` for interpretation of fields
 struct ToggleMoveResult {
     changed: bool,
-    val: Option<Option<SpecificNote>>,
+    val: ModifierNote,
 }
 
 impl Engine {
-    async fn reset(&mut self) -> anyhow::Result<()> {
+    fn reset(&mut self) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -100,7 +101,7 @@ impl Engine {
             .map(|layout| {
                 let mut name = layout.name.to_string();
                 if multiple_keyboards {
-                    name.push_str(&format!(" ({})", layout.keyboard));
+                    write!(name, " ({})", layout.keyboard).unwrap();
                 }
                 name
             })
@@ -147,14 +148,14 @@ impl Engine {
 
     fn send_move_light_event(
         tx: &events::UpgradedSender,
-        item: &Option<Option<SpecificNote>>,
+        item: &ModifierNote,
         light: LightData,
         label: &str,
     ) -> anyhow::Result<()> {
         let color = match item {
-            None => Color::ToggleOff,
-            Some(None) => Color::ToggleOn,
-            Some(Some(_)) => Color::NoteSelected,
+            ModifierNote::Inactive => Color::ToggleOff,
+            ModifierNote::Pending => Color::ToggleOn,
+            ModifierNote::Selected(_) => Color::NoteSelected,
         };
         tx.send(Event::LightEvent(LightEvent {
             light,
@@ -165,33 +166,30 @@ impl Engine {
         Ok(())
     }
 
-    fn toggle_move(&self, off: bool, old: Option<Option<SpecificNote>>) -> ToggleMoveResult {
+    fn toggle_move(off: bool, old: ModifierNote) -> ToggleMoveResult {
         // A key down event turns on the behavior when off. A key up event turns off the behavior
         // when active. This allows move trigger buttons to act as modifier keys.
 
         let handle = match old {
-            None => {
+            ModifierNote::Inactive => {
                 // We are not in move mode. Enter on a down event
                 !off
             }
-            Some(None) => {
+            ModifierNote::Pending => {
                 // We are in move mode but haven't selected the first note. We have to ignore
                 // key up events so we don't cancel just by releasing the button.
                 !off
             }
-            Some(Some(_)) => {
+            ModifierNote::Selected(_) => {
                 // We have selected the first note and are canceling. Do this on a key up event.
                 off
             }
         };
         if handle {
-            // Move operations store state in Option<Option<SpecificNote>>. If None, no operation is in
-            // flight. If Some(None), the operation has been triggered, but the first note has not been
-            // selected. If Some(Some(_)), the value is the first key. This toggles a potentially
-            // in-flight event.
+            // Toggles a potentially in-flight event.
             let val = match old {
-                None => Some(None),
-                Some(_) => None,
+                ModifierNote::Inactive => ModifierNote::Pending,
+                ModifierNote::Pending | ModifierNote::Selected(_) => ModifierNote::Inactive,
             };
             ToggleMoveResult { changed: true, val }
         } else {
@@ -203,24 +201,24 @@ impl Engine {
     }
 
     fn cancel_shift(&mut self, tx: &events::UpgradedSender) -> anyhow::Result<()> {
-        if self.transient_state.shift.take().is_some() {
+        if self.transient_state.shift.take().is_active() {
             self.send_shift_light_event(tx)?;
         }
         Ok(())
     }
 
     fn cancel_transpose(&mut self, tx: &events::UpgradedSender) -> anyhow::Result<()> {
-        if self.transient_state.transpose.take().is_some() {
+        if self.transient_state.transpose.take().is_active() {
             self.send_transpose_light_event(tx)?;
         }
         Ok(())
     }
 
-    async fn handle_key(&mut self, key_event: KeyEvent) -> anyhow::Result<()> {
+    fn handle_key(&mut self, key_event: &KeyEvent) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
-        let KeyEvent { key, velocity } = key_event;
+        let KeyEvent { key, velocity } = *key_event;
         let off = velocity == 0;
         let have_layout = self.transient_state.layout.is_some();
         match key {
@@ -229,7 +227,7 @@ impl Engine {
                 self.cancel_transpose(&tx)?;
                 if have_layout {
                     let old = self.transient_state.shift.take();
-                    let r = self.toggle_move(off, old);
+                    let r = Self::toggle_move(off, old);
                     self.transient_state.shift = r.val;
                     if r.changed {
                         self.send_shift_light_event(&tx)?;
@@ -241,7 +239,7 @@ impl Engine {
                 self.cancel_shift(&tx)?;
                 if have_layout {
                     let old = self.transient_state.transpose.take();
-                    let r = self.toggle_move(off, old);
+                    let r = Self::toggle_move(off, old);
                     self.transient_state.transpose = r.val;
                     if r.changed {
                         self.send_transpose_light_event(&tx)?;
@@ -301,9 +299,8 @@ impl Engine {
                     && self.transient_state.notes.contains_key(&position)
                     && let Some(note) = self.transient_state.notes.get(&position).unwrap()
                 {
-                    self.handle_note_key(&tx, note.clone(), position, off)
-                        .await?;
-                };
+                    self.handle_note_key(&tx, note.clone(), position, off)?;
+                }
             }
         }
         #[cfg(test)]
@@ -321,7 +318,7 @@ impl Engine {
         }
     }
 
-    async fn handle_note_key(
+    fn handle_note_key(
         &mut self,
         tx: &events::UpgradedSender,
         note: Arc<Note>,
@@ -337,26 +334,28 @@ impl Engine {
             note: note.clone(),
             position,
         };
-        if self.transient_state.transpose.is_some() {
+        if self.transient_state.transpose.is_active() {
             if off {
-                match self.transient_state.transpose.take().unwrap() {
-                    None => {
-                        self.transient_state.transpose = Some(Some(this_note));
+                match self.transient_state.transpose.take() {
+                    ModifierNote::Inactive => unreachable!(),
+                    ModifierNote::Pending => {
+                        self.transient_state.transpose = ModifierNote::Selected(this_note);
                     }
-                    Some(note1) => {
-                        self.handle_transpose(note1, this_note)?;
+                    ModifierNote::Selected(note1) => {
+                        self.handle_transpose(&note1, &this_note)?;
                     }
                 }
                 self.send_transpose_light_event(tx)?;
             }
-        } else if self.transient_state.shift.is_some() {
+        } else if self.transient_state.shift.is_active() {
             if off {
-                match self.transient_state.shift.take().unwrap() {
-                    None => {
-                        self.transient_state.shift = Some(Some(this_note));
+                match self.transient_state.shift.take() {
+                    ModifierNote::Inactive => unreachable!(),
+                    ModifierNote::Pending => {
+                        self.transient_state.shift = ModifierNote::Selected(this_note);
                     }
-                    Some(note1) => {
-                        self.handle_shift(note1, this_note)?;
+                    ModifierNote::Selected(note1) => {
+                        self.handle_shift(&note1, &this_note)?;
                     }
                 }
                 self.send_shift_light_event(tx)?;
@@ -370,7 +369,7 @@ impl Engine {
         Ok(())
     }
 
-    fn handle_shift(&mut self, note1: SpecificNote, note2: SpecificNote) -> anyhow::Result<()> {
+    fn handle_shift(&mut self, note1: &SpecificNote, note2: &SpecificNote) -> anyhow::Result<()> {
         if note1.layout_idx != note2.layout_idx {
             println!("shift: note1 and note2 are from different layouts, so not shifting");
             #[cfg(test)]
@@ -392,7 +391,11 @@ impl Engine {
         Ok(())
     }
 
-    fn handle_transpose(&mut self, note1: SpecificNote, note2: SpecificNote) -> anyhow::Result<()> {
+    fn handle_transpose(
+        &mut self,
+        note1: &SpecificNote,
+        note2: &SpecificNote,
+    ) -> anyhow::Result<()> {
         // Give pitch of note1 to note2
         let layout = &self.transient_state.layouts.layouts[note2.layout_idx];
         let update_layout = layout.transpose(
@@ -462,7 +465,7 @@ impl Engine {
             }
         } else if off {
             if *pitch_count > 0 {
-                *pitch_count -= 1
+                *pitch_count -= 1;
             }
         } else {
             *pitch_count += 1;
@@ -482,13 +485,13 @@ impl Engine {
             tx.send(Event::PlayNote(PlayNoteEvent {
                 pitch: pitch.clone(),
                 velocity,
-                note: Some(note.clone()),
+                note: Some(note),
             }))?;
         }
         Ok(())
     }
 
-    async fn update_note(&mut self, event: UpdateNoteEvent) -> anyhow::Result<()> {
+    fn update_note(&mut self, event: UpdateNoteEvent) {
         let UpdateNoteEvent { position, note } = event;
         self.transient_state.notes.insert(position, note.clone());
         if let Some(note) = note {
@@ -498,10 +501,9 @@ impl Engine {
                 .or_default()
                 .insert(position);
         }
-        Ok(())
     }
 
-    async fn handle_play_note(&mut self, e: PlayNoteEvent) -> anyhow::Result<()> {
+    fn handle_play_note(&mut self, e: PlayNoteEvent) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -534,7 +536,7 @@ impl Engine {
         Ok(())
     }
 
-    fn toggle_light_event(&self, on: bool, light: LightData, label1: &str, label2: &str) -> Event {
+    fn toggle_light_event(on: bool, light: LightData, label1: &str, label2: &str) -> Event {
         let color = if on {
             Color::ToggleOn
         } else {
@@ -549,7 +551,7 @@ impl Engine {
     }
 
     fn sustain_light_event(&self) -> Event {
-        self.toggle_light_event(
+        Self::toggle_light_event(
             self.transient_state.sustain,
             LightData::Sustain,
             "Sustain",
@@ -616,7 +618,7 @@ impl Engine {
         Ok(())
     }
 
-    async fn select_layout(&mut self, event: SelectLayoutEvent) -> anyhow::Result<()> {
+    fn select_layout(&mut self, event: &SelectLayoutEvent) -> anyhow::Result<()> {
         let Some(tx) = self.events_tx.upgrade() else {
             return Ok(());
         };
@@ -632,7 +634,7 @@ impl Engine {
         self.transient_state.pitch_positions.clear();
         self.transient_state.notes.clear();
         self.draw_layout(&event.layout)?;
-        println!("Selected layout: {}", event.layout.name,);
+        println!("Selected layout: {}", event.layout.name);
         tx.send(self.sustain_light_event())?;
         self.send_transpose_light_event(&tx)?;
         self.send_shift_light_event(&tx)?;
@@ -648,15 +650,17 @@ impl Engine {
         Ok(())
     }
 
+    // It needs to be async in test configuration.
+    #[allow(clippy::unused_async)]
     async fn handle_event(&mut self, event: Event) -> anyhow::Result<bool> {
         log::trace!("engine handle event: {event:?}");
         match event {
             Event::Shutdown => return Ok(true),
-            Event::Reset => self.reset().await?,
-            Event::KeyEvent(e) => self.handle_key(e).await?,
-            Event::SelectLayout(e) => self.select_layout(e).await?,
-            Event::UpdateNote(e) => self.update_note(e).await?,
-            Event::PlayNote(e) => self.handle_play_note(e).await?,
+            Event::Reset => self.reset()?,
+            Event::KeyEvent(e) => self.handle_key(&e)?,
+            Event::SelectLayout(e) => self.select_layout(&e)?,
+            Event::UpdateNote(e) => self.update_note(e),
+            Event::PlayNote(e) => self.handle_play_note(e)?,
             Event::LightEvent(_) | Event::ToDevice(_) | Event::SetLayoutNames(_) => {}
             #[cfg(test)]
             Event::TestEngine(test_tx) => test_tx.send(self.transient_state.clone()).await?,
@@ -664,12 +668,12 @@ impl Engine {
             Event::TestSync => events::send_test_event(&self.events_tx, TestEvent::Sync),
             #[cfg(test)]
             Event::TestWeb(_) | Event::TestEvent(_) => {}
-        };
+        }
         Ok(false)
     }
 }
 
-pub async fn start_controller(
+pub fn start_controller(
     keyboard: Arc<dyn Keyboard>,
     controller: Controller,
     mut events_rx: events::Receiver,
@@ -700,7 +704,7 @@ pub async fn start_controller(
     controller.run(to_device_rx, from_device_tx, device)
 }
 
-pub async fn start_keyboard(
+pub fn start_keyboard(
     controller: Option<Controller>,
     keyboard: Arc<dyn Keyboard>,
     mut events_rx: events::Receiver,
@@ -709,7 +713,11 @@ pub async fn start_keyboard(
         None => None,
         Some(c) => {
             // Start controller doesn't return until the device is initialized.
-            Some(start_controller(keyboard.clone(), c, events_rx.resubscribe()).await?)
+            Some(start_controller(
+                keyboard.clone(),
+                c,
+                events_rx.resubscribe(),
+            )?)
         }
     };
     // Start the background task after the device is initialized so we're fully up before this
@@ -725,26 +733,30 @@ pub async fn start_keyboard(
     }))
 }
 
-pub async fn start_sound(
+// Items are passed by value and not used without csound
+#[allow(clippy::needless_pass_by_value)]
+pub fn start_sound(
     sound_type: SoundType,
-    _events_tx: events::WeakSender, // unused without csound feature
+    events_tx: events::WeakSender,
     events_rx: events::Receiver,
 ) {
+    #[cfg(not(feature = "csound"))]
+    let _ = events_tx;
     match sound_type {
         SoundType::None => {}
         SoundType::Midi => {
             tokio::spawn(async move {
                 if let Err(e) = midi_player::play_midi(events_rx).await {
                     log::error!("midi player error: {e}");
-                };
+                }
             });
         }
         #[cfg(feature = "csound")]
         SoundType::Csound { file, args } => {
             tokio::spawn(async move {
-                if let Err(e) = csound::run_csound(file, events_rx, _events_tx, args).await {
+                if let Err(e) = csound::run_csound(file, events_rx, events_tx, args).await {
                     log::error!("csound player error: {e}");
-                };
+                }
             });
         }
     }
@@ -778,7 +790,7 @@ pub async fn run(
             Err(e) => {
                 log::error!("error: {e}");
             }
-        };
+        }
     }
     Ok(())
 }

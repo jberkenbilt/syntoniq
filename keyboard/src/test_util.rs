@@ -112,7 +112,7 @@ impl TestController {
         let mut rx2 = events_rx.resubscribe();
         tokio::spawn(async move {
             while let Some(event) = events::receive_check_lag(&mut rx2, None).await {
-                log::trace!("event: {event:?}")
+                log::trace!("event: {event:?}");
             }
         });
         let mut tc = Self {

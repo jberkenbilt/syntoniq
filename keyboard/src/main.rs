@@ -19,10 +19,10 @@ use syntoniq_kbd::{DeviceType, prompt};
 use tokio::sync::oneshot;
 
 /// This command operates with a Launchpad MK3 Pro MIDI Controller in various ways.
-/// Logging is controlled with RUST_LOG; see docs for the env_logger crate.
-/// If RUST_LOG is not set, the log level defaults to Info.
-/// Set RUST_LOG=syntoniq_kbd::module::path=level to see messages for a given module.
-/// Set RUST_LOG=syntoniq_kbd to see all messages.
+/// Logging is controlled with `RUST_LOG`; see docs for the `env_logger` crate.
+/// If `RUST_LOG` is not set, the log level defaults to Info.
+/// Set `RUST_LOG=syntoniq_kbd::module::path=level` to see messages for a given module.
+/// Set `RUST_LOG=syntoniq_kbd` to see all messages.
 #[derive(Parser)]
 #[command(version, about, long_about = None, verbatim_doc_comment)]
 struct Cli {
@@ -133,7 +133,7 @@ async fn main() -> anyhow::Result<()> {
         #[cfg(not(feature = "csound"))]
         bail!("MIDI not requested and csound not available");
     };
-    engine::start_sound(sound_type, events_tx.clone(), events_rx.resubscribe()).await;
+    engine::start_sound(sound_type, events_tx.clone(), events_rx.resubscribe());
 
     let main_handle = match cli.command {
         Commands::Run(run) => {
@@ -148,9 +148,11 @@ async fn main() -> anyhow::Result<()> {
                 DeviceType::Launchpad => Arc::new(Launchpad::new(tx2)) as Arc<dyn Keyboard>,
                 DeviceType::HexBoard => Arc::new(HexBoard::new(tx2)) as Arc<dyn Keyboard>,
             };
-            let h =
-                engine::start_keyboard(Some(controller), keyboard.clone(), events_rx.resubscribe())
-                    .await?;
+            let h = engine::start_keyboard(
+                Some(controller),
+                keyboard.clone(),
+                events_rx.resubscribe(),
+            )?;
             let tx2 = events_tx.clone();
             let rx2 = events_rx.resubscribe();
             tokio::spawn(async move {

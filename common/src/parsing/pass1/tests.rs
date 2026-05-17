@@ -5,7 +5,7 @@ use crate::to_anyhow;
 /// Test first stage parsers that work with strings
 macro_rules! make_parser1 {
     ($f:ident, $p:ident) => {
-        fn $f<'s>(src: &'s str) -> Result<(Token1<'s>, &'s str), Diagnostics> {
+        fn $f(src: &str) -> Result<(Token1<'_>, &str), Diagnostics> {
             let mut input = LocatingSlice::new(src);
             let diags = Diagnostics::new();
             let r = $p(&diags).parse_next(&mut input);
@@ -78,7 +78,7 @@ fn test_string_literal() -> anyhow::Result<()> {
     let s = Pass1::get_string(&s).unwrap();
     assert_eq!(
         s,
-        Spanned::new(1..34, Cow::Borrowed(r#"string with π but no backslashes"#))
+        Spanned::new(1..34, Cow::Borrowed(r"string with π but no backslashes"))
     );
 
     let (s, rest) = parse_string_literal(r#""string with \"π\" and \\"w"#).map_err(to_anyhow)?;

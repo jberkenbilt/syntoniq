@@ -1,3 +1,4 @@
+#![allow(clippy::too_many_lines)]
 use super::*;
 use crate::test_util::TestController;
 use syntoniq_common::pitch::Pitch;
@@ -129,29 +130,29 @@ async fn test_shift_and_transpose_keys() -> anyhow::Result<()> {
 
     // Start a shift operation
     let ts = tc.get_engine_state().await;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
     let ts = tc.shift().await?;
-    assert!(matches!(ts.shift, Some(None)));
+    assert!(matches!(ts.shift, ModifierNote::Pending));
 
     // Press and release shift again to toggle.
     let ts = tc.shift().await?;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
 
     // Start a shift operation
     let ts = tc.get_engine_state().await;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
     let ts = tc.shift().await?;
-    assert!(matches!(ts.shift, Some(None)));
+    assert!(matches!(ts.shift, ModifierNote::Pending));
 
     // A layout key cancels
     tc.press_and_release_key(KeyData::Layout { idx: 1 }).await?;
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     let ts = tc.get_engine_state().await;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
 
     // Press and release shift again to toggle.
     let ts = tc.shift().await?;
-    assert!(matches!(ts.shift, Some(None)));
+    assert!(matches!(ts.shift, ModifierNote::Pending));
 
     // Prelease and release a key; shift is pending
     tc.press_and_release_key(KeyData::Note {
@@ -160,12 +161,12 @@ async fn test_shift_and_transpose_keys() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.shift, Some(Some(_))));
+    assert!(matches!(ts.shift, ModifierNote::Selected(_)));
 
     // Press and release transpose; cancels shift and activates transpose.
     let ts = tc.transpose().await?;
-    assert!(ts.shift.is_none());
-    assert!(matches!(ts.transpose, Some(None)));
+    assert!(!ts.shift.is_active());
+    assert!(matches!(ts.transpose, ModifierNote::Pending));
 
     // Prelease and release a key; transpose is pending
     tc.press_and_release_key(KeyData::Note {
@@ -174,19 +175,19 @@ async fn test_shift_and_transpose_keys() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.transpose, Some(Some(_))));
+    assert!(matches!(ts.transpose, ModifierNote::Selected(_)));
 
     // Press and release transpose without finishing; cancels
     let ts = tc.transpose().await?;
-    assert!(ts.transpose.is_none());
+    assert!(!ts.transpose.is_active());
 
     // You can also enter with a key press alone.
     let ts = tc.get_engine_state().await;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
     tc.press_key(KeyData::Shift).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.shift, Some(None)));
+    assert!(matches!(ts.shift, ModifierNote::Pending));
 
     tc.press_and_release_key(KeyData::Note {
         position: pos(3, 4),
@@ -194,7 +195,7 @@ async fn test_shift_and_transpose_keys() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.shift, Some(Some(_))));
+    assert!(matches!(ts.shift, ModifierNote::Selected(_)));
 
     tc.press_and_release_key(KeyData::Note {
         position: pos(4, 4),
@@ -202,22 +203,22 @@ async fn test_shift_and_transpose_keys() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
 
     let ts = tc.get_engine_state().await;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
     tc.release_key(KeyData::Shift).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
 
     // Also works with transpose.
     let ts = tc.get_engine_state().await;
-    assert!(ts.transpose.is_none());
+    assert!(!ts.transpose.is_active());
     tc.press_key(KeyData::Transpose).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.transpose, Some(None)));
+    assert!(matches!(ts.transpose, ModifierNote::Pending));
 
     tc.press_and_release_key(KeyData::Note {
         position: pos(3, 4),
@@ -225,7 +226,7 @@ async fn test_shift_and_transpose_keys() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.transpose, Some(Some(_))));
+    assert!(matches!(ts.transpose, ModifierNote::Selected(_)));
 
     tc.press_and_release_key(KeyData::Note {
         position: pos(4, 4),
@@ -233,14 +234,14 @@ async fn test_shift_and_transpose_keys() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(ts.transpose.is_none());
+    assert!(!ts.transpose.is_active());
 
     let ts = tc.get_engine_state().await;
-    assert!(ts.transpose.is_none());
+    assert!(!ts.transpose.is_active());
     tc.release_key(KeyData::Transpose).await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(ts.transpose.is_none());
+    assert!(!ts.transpose.is_active());
 
     tc.shutdown().await
 }
@@ -309,7 +310,7 @@ async fn test_transpose() -> anyhow::Result<()> {
 
     // Enter transpose mode
     let ts = tc.transpose().await?;
-    assert!(matches!(ts.transpose, Some(None)));
+    assert!(matches!(ts.transpose, ModifierNote::Pending));
 
     // Select the first note
     tc.press_and_release_key(KeyData::Note {
@@ -318,7 +319,7 @@ async fn test_transpose() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.transpose, Some(Some(_))));
+    assert!(matches!(ts.transpose, ModifierNote::Selected(_)));
     assert_eq!(
         ts.current_layout().unwrap().mappings[0]
             .offsets
@@ -342,7 +343,7 @@ async fn test_transpose() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(ts.transpose.is_none());
+    assert!(!ts.transpose.is_active());
     // Now the second note has the pitch previously belonging to the first note. Don't refetch
     // the layout. It's an Arc, so it should be updated in place.
     assert_eq!(
@@ -356,7 +357,7 @@ async fn test_transpose() -> anyhow::Result<()> {
 
     // Assign that pitch to a note in a different layout. Enter transpose mode
     let ts = tc.transpose().await?;
-    assert!(matches!(ts.transpose, Some(None)));
+    assert!(matches!(ts.transpose, ModifierNote::Pending));
 
     // Select the first note
     tc.press_and_release_key(KeyData::Note {
@@ -365,7 +366,7 @@ async fn test_transpose() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.transpose, Some(Some(_))));
+    assert!(matches!(ts.transpose, ModifierNote::Selected(_)));
 
     // Select 31-EDO
     tc.press_and_release_key(KeyData::Layout { idx: 2 }).await?;
@@ -390,7 +391,7 @@ async fn test_transpose() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(ts.transpose.is_none());
+    assert!(!ts.transpose.is_active());
     // The first layout is unchanged.
     assert_eq!(
         layout1.mappings[0].offsets.read().expect("lock").transpose,
@@ -416,7 +417,7 @@ async fn test_transpose() -> anyhow::Result<()> {
     assert_eq!(layout.name, "JI-11+31-EDO");
     // Enter transpose mode
     let ts = tc.transpose().await?;
-    assert!(matches!(ts.transpose, Some(None)));
+    assert!(matches!(ts.transpose, ModifierNote::Pending));
     // Select the first note from the 31-EDO overlay
     tc.press_and_release_key(KeyData::Note {
         position: pos(7, 7),
@@ -466,7 +467,7 @@ async fn test_shift() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(matches!(ts.shift, Some(Some(_))));
+    assert!(matches!(ts.shift, ModifierNote::Selected(_)));
     // Over 1 column, up 2 rows
     tc.press_and_release_key(KeyData::Note {
         position: pos(5, 5),
@@ -474,7 +475,7 @@ async fn test_shift() -> anyhow::Result<()> {
     .await?;
     tc.wait_for_test_event(TestEvent::HandledKey).await;
     let ts = tc.get_engine_state().await;
-    assert!(ts.shift.is_none());
+    assert!(!ts.shift.is_active());
     tc.wait_for_test_event(TestEvent::LayoutSelected).await;
     let ts = tc.get_engine_state().await;
     let layout = ts.current_layout().unwrap();
@@ -490,9 +491,9 @@ async fn test_shift() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     let layout = ts.current_layout().unwrap();
     assert_eq!(layout.name, "JI-11+31-EDO");
-    // Enter transpose mode
+    // Enter shift mode
     let ts = tc.shift().await?;
-    assert!(matches!(ts.shift, Some(None)));
+    assert!(matches!(ts.shift, ModifierNote::Pending));
     // Select the first note from the 31-EDO overlay
     tc.press_and_release_key(KeyData::Note {
         position: pos(7, 7),

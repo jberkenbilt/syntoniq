@@ -1,6 +1,8 @@
 use askama::Template;
 use derive_more::Debug as DebugMore;
 use std::collections::{HashMap, HashSet};
+use std::fmt::Write as _;
+use std::mem;
 use std::sync::Arc;
 use std::time::Instant;
 use syntoniq_common::parsing::{Coordinate, Layout, Layouts, PlacedNote};
@@ -212,9 +214,11 @@ impl Note {
         let base_pitch = orig_base_pitch * transposition;
         let mut result = format!("{scale_name}, base={base_pitch}");
         if transposition != &Pitch::unit() {
-            result.push_str(&format!(
+            write!(
+                result,
                 " (transposition: {orig_base_pitch} × {transposition})"
-            ));
+            )
+            .unwrap();
         }
         result
     }
@@ -231,6 +235,24 @@ pub struct SpecificNote {
     pub layout_idx: usize,
     pub note: Arc<Note>,
     pub position: Coordinate,
+}
+
+#[derive(Default, Clone, Debug)]
+pub enum ModifierNote {
+    #[default]
+    Inactive,
+    Pending,
+    Selected(SpecificNote),
+}
+impl ModifierNote {
+    #[must_use]
+    pub fn take(&mut self) -> Self {
+        mem::take(self)
+    }
+
+    pub fn is_active(&self) -> bool {
+        !matches!(self, Self::Inactive)
+    }
 }
 
 #[derive(Default, Clone, DebugMore)]
@@ -256,8 +278,8 @@ pub struct EngineState {
     /// turned back on without intervening note events within a certain period of time, all notes
     /// are turned off.
     pub last_sustain_off_time: Option<Instant>,
-    pub shift: Option<Option<SpecificNote>>,
-    pub transpose: Option<Option<SpecificNote>>,
+    pub shift: ModifierNote,
+    pub transpose: ModifierNote,
 }
 impl EngineState {
     pub fn current_layout(&self) -> Option<Arc<Layout<'static>>> {
@@ -376,7 +398,6 @@ pub async fn receive_check_lag(rx: &mut Receiver, warn_prefix: Option<&str>) -> 
                     if let Some(p) = warn_prefix {
                         log::warn!("{p}: missed {n} events");
                     }
-                    continue;
                 }
             },
         }

@@ -8,7 +8,7 @@ use syntoniq_common::parsing::{Options, pass1, pass2, pass3};
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
 /// Tokenize an input file, mainly for debugging the parser.
-/// Set CLICOLOR_FORCE to force color output; set NO_COLOR to force non-color output.
+/// Set `CLICOLOR_FORCE` to force color output; set `NO_COLOR` to force non-color output.
 struct Cli {
     /// Show JSON output instead of pretty-printed text
     #[arg(long)]
@@ -38,7 +38,7 @@ fn main() -> anyhow::Result<()> {
                 let r = pass3::parse3(input, &options);
                 results.push(json!(&r));
             }
-        };
+        }
         serde_json::to_writer_pretty(io::stdout(), &results)?;
         _ = io::stdout().write(b"\n");
     } else {

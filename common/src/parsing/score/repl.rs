@@ -29,7 +29,7 @@ pub struct DivisionsAndCycle {
 impl Default for DivisionsAndCycle {
     fn default() -> Self {
         Self {
-            divisions: Default::default(),
+            divisions: Divisions::default(),
             cycle: Ratio::from_integer(2),
         }
     }
@@ -175,7 +175,7 @@ fn note<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl Parser1Intermed
                 .map(|((first, rest), r)| Spanned::<String>::new(r, format!("{first}{rest}"))),
             opt(octave(diags)),
         ),
-        |raw, _span, (name, octave)| to_repl_note(diags, dc, name, octave, raw),
+        |raw, _span, (name, octave)| to_repl_note(diags, dc, &name, octave, raw),
     )
 }
 
@@ -209,14 +209,14 @@ fn note_or_pitch<'s>(
 fn to_repl_note(
     diags: &Diagnostics,
     dc: &DivisionsAndCycle,
-    name: Spanned<String>,
+    name: &Spanned<String>,
     octave: Option<Spanned<i8>>,
     raw: &str,
 ) -> ReplNote {
     let g = NoteGenerator {
         divisions: dc.divisions.divisions,
         divided_interval: dc.divisions.interval,
-        tolerance: Default::default(),
+        tolerance: Pitch::default(),
     };
     match g.get_note(diags, &name.as_ref()) {
         None => {
@@ -227,7 +227,7 @@ fn to_repl_note(
             // The logic of multiplying by the cycle offset is duplicated in various places.
             let pitch = match octave {
                 None => p,
-                Some(count) => &p * &Pitch::from(dc.cycle.pow(count.value as i32)),
+                Some(count) => &p * &Pitch::from(dc.cycle.pow(i32::from(count.value))),
             };
             ReplNote {
                 name: raw.to_string(),
@@ -267,7 +267,7 @@ fn set_cycle_ratio<'s>(diags: &Diagnostics) -> impl ReplParser<'s> {
             ),
         ),
         |_raw, _span, (a, maybe_b)| {
-            let ratio = Ratio::new(a.value, maybe_b.map(Spanned::value).unwrap_or(1));
+            let ratio = Ratio::new(a.value, maybe_b.map_or(1, Spanned::value));
             PromptCommand::SetCycleRatio { cycle: ratio }
         },
     )
@@ -355,7 +355,7 @@ fn transpose<'s>(diags: &Diagnostics, dc: &DivisionsAndCycle) -> impl ReplParser
                     diags.err(code::SYNTAX, span, "at most one side may be a variable");
                     PromptCommand::Save {
                         note: Default::default(),
-                        variable: "".to_string(),
+                        variable: String::new(),
                     }
                 } else {
                     PromptCommand::Restore {
@@ -426,6 +426,7 @@ pub fn parse_repl_line(line: &str, dc: &DivisionsAndCycle) -> Result<PromptComma
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::too_many_lines)]
     use super::*;
     use crate::parsing::score;
 
@@ -814,21 +815,21 @@ mod tests {
         assert!(score::parse_prompt_line("E", &dc).is_some());
     }
 
-    #[should_panic]
+    #[should_panic = "not a note"]
     #[test]
     fn test_coverage1() {
         // 100% coverage is not usually a goal, but it is for the parser -- see
         // docs/build-and-test.md
-        NoteLike::Var("".to_string()).into_note(&Diagnostics::new());
+        NoteLike::Var(String::new()).into_note(&Diagnostics::new());
     }
 
-    #[should_panic]
+    #[should_panic = "not a variable"]
     #[test]
     fn test_coverage2() {
-        NoteLike::Note(Default::default()).into_variable();
+        NoteLike::Note(ReplNote::default()).into_variable();
     }
 
-    #[should_panic]
+    #[should_panic = "not a variable"]
     #[test]
     fn test_coverage3() {
         NoteLike::Pitch(Spanned::new(0..1, "")).into_variable();

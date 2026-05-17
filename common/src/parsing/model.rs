@@ -48,7 +48,8 @@ impl From<Span> for Range<usize> {
     }
 }
 impl Span {
-    pub fn relative_to(&self, other: Span) -> Span {
+    #[must_use]
+    pub fn relative_to(&self, other: Self) -> Self {
         Span {
             start: self.start - other.start,
             end: self.end - other.start,
@@ -76,7 +77,7 @@ pub struct Token<'s, T: Debug + Serialize> {
     pub(crate) raw: &'s str,
     pub(crate) t: T,
 }
-impl<'s, T: Debug + Display + Serialize> Display for Token<'s, T> {
+impl<T: Debug + Display + Serialize> Display for Token<'_, T> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let raw: String = self
             .raw
@@ -98,7 +99,7 @@ impl<'s, T: Debug + Serialize> Token<'s, T> {
         Spanned::new(span, Self { raw, t })
     }
 }
-impl<'s, T: Debug + Serialize + Copy> Copy for Token<'s, T> {}
+impl<T: Debug + Serialize + Copy> Copy for Token<'_, T> {}
 
 #[derive(Serialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Spanned<T: Debug + Serialize> {
@@ -155,17 +156,17 @@ impl Display for PitchOrNumber {
 impl PitchOrNumber {
     pub fn as_pitch(&self) -> &Pitch {
         match self {
-            PitchOrNumber::Integer((_, p)) => p,
-            PitchOrNumber::Ratio((_, p)) => p,
-            PitchOrNumber::Pitch(p) => p,
+            PitchOrNumber::Integer((_, p))
+            | PitchOrNumber::Ratio((_, p))
+            | PitchOrNumber::Pitch(p) => p,
         }
     }
 
     pub fn into_pitch(self) -> Pitch {
         match self {
-            PitchOrNumber::Integer((_, p)) => p,
-            PitchOrNumber::Ratio((_, p)) => p,
-            PitchOrNumber::Pitch(p) => p,
+            PitchOrNumber::Integer((_, p))
+            | PitchOrNumber::Ratio((_, p))
+            | PitchOrNumber::Pitch(p) => p,
         }
     }
 
@@ -189,7 +190,7 @@ impl PitchOrNumber {
 pub struct Identifier<'s> {
     pub name: Cow<'s, str>,
 }
-impl<'s> Display for Identifier<'s> {
+impl Display for Identifier<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.name)
     }
@@ -200,7 +201,7 @@ pub enum NoteOrIdentifier<'s> {
     Note(NoteOctave<'s>),
     Identifier(Identifier<'s>, NoteOctave<'s>),
 }
-impl<'s> Display for NoteOrIdentifier<'s> {
+impl Display for NoteOrIdentifier<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             NoteOrIdentifier::Note(n) => write!(f, "{n}"),
@@ -212,8 +213,7 @@ impl<'s> Display for NoteOrIdentifier<'s> {
 impl<'s> NoteOrIdentifier<'s> {
     pub fn as_note(&self) -> Option<&NoteOctave<'s>> {
         match self {
-            NoteOrIdentifier::Note(n) => Some(n),
-            NoteOrIdentifier::Identifier(_, n) => Some(n),
+            NoteOrIdentifier::Note(n) | NoteOrIdentifier::Identifier(_, n) => Some(n),
         }
     }
 
@@ -232,7 +232,7 @@ pub enum ParamValue<'s> {
     String(Cow<'s, str>),
     NoteOrIdentifier(NoteOrIdentifier<'s>),
 }
-impl<'s> Display for ParamValue<'s> {
+impl Display for ParamValue<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             ParamValue::Zero => color!(f, 6, "0"),
@@ -246,17 +246,15 @@ impl<'s> Display for ParamValue<'s> {
 impl<'s> ParamValue<'s> {
     pub fn try_as_pitch(&self) -> Option<&Pitch> {
         match self {
-            ParamValue::Zero => None,
             ParamValue::PitchOrNumber(pr) => Some(pr.as_pitch()),
-            ParamValue::String(_) | ParamValue::NoteOrIdentifier(_) => None,
+            ParamValue::Zero | ParamValue::String(_) | ParamValue::NoteOrIdentifier(_) => None,
         }
     }
 
     pub fn try_as_ratio(&self) -> Option<Ratio<u32>> {
         match self {
-            ParamValue::Zero => None, // 0 can be represented as a ratio, but we don't allow it
             ParamValue::PitchOrNumber(pr) => pr.try_as_ratio(),
-            ParamValue::String(_) | ParamValue::NoteOrIdentifier(_) => None,
+            ParamValue::Zero | ParamValue::String(_) | ParamValue::NoteOrIdentifier(_) => None,
         }
     }
 
@@ -299,7 +297,7 @@ pub struct Param<'s> {
     pub key: Spanned<Identifier<'s>>,
     pub value: Spanned<ParamValue<'s>>,
 }
-impl<'s> Display for Param<'s> {
+impl Display for Param<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.key)?;
         color!(f, 55, "=")?;
@@ -320,7 +318,7 @@ pub struct RawDirective<'s> {
     #[serde(skip_serializing_if = "Option::is_none")] // omit if None
     pub block: Option<Spanned<DataBlock<'s>>>,
 }
-impl<'s> Display for RawDirective<'s> {
+impl Display for RawDirective<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 39, "{}(", self.name.value)?;
         let mut first = true;
@@ -347,7 +345,7 @@ impl<'s> Display for RawDirective<'s> {
 pub struct DynamicLeader<'s> {
     pub name: Spanned<&'s str>,
 }
-impl<'s> Display for DynamicLeader<'s> {
+impl Display for DynamicLeader<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
         color!(f, 98, "{}", self.name.value)?;
@@ -360,7 +358,7 @@ pub struct NoteLeader<'s> {
     pub name: Spanned<&'s str>,
     pub note: Spanned<u32>,
 }
-impl<'s> Display for NoteLeader<'s> {
+impl Display for NoteLeader<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "[")?;
         color!(f, 98, "{}.{}", self.name.value, self.note.value)?;
@@ -395,7 +393,7 @@ pub struct RegularNote<'s> {
     pub note: Spanned<NoteOctave<'s>>,
     pub modifiers: Vec<Spanned<NoteModifier>>,
 }
-impl<'s> Display for RegularNote<'s> {
+impl Display for RegularNote<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if let Some(x) = self.duration {
             color!(f, 3, "{}", x.value)?;
@@ -411,7 +409,7 @@ impl<'s> Display for RegularNote<'s> {
         Ok(())
     }
 }
-impl<'s> RegularNote<'s> {
+impl RegularNote<'_> {
     pub fn is_sustain(&self) -> bool {
         self.modifiers
             .iter()
@@ -442,7 +440,7 @@ impl Display for Hold {
             f,
             "~{}",
             match self.duration {
-                None => "".to_string(),
+                None => String::new(),
                 Some(d) => d.value.to_string(),
             }
         )
@@ -455,7 +453,7 @@ pub enum Note<'s> {
     Hold(Hold),
     BarCheck(Span),
 }
-impl<'s> Display for Note<'s> {
+impl Display for Note<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         match self {
             Note::Regular(x) => write!(f, "{x}"),
@@ -516,7 +514,7 @@ pub struct DynamicLine<'s> {
     pub leader: Spanned<DynamicLeader<'s>>,
     pub dynamics: Vec<Spanned<Dynamic>>,
 }
-impl<'s> Display for DynamicLine<'s> {
+impl Display for DynamicLine<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.leader.value)?;
         for i in &self.dynamics {
@@ -531,7 +529,7 @@ pub struct NoteLine<'s> {
     pub leader: Spanned<NoteLeader<'s>>,
     pub notes: Vec<Spanned<Note<'s>>>,
 }
-impl<'s> Display for NoteLine<'s> {
+impl Display for NoteLine<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.leader.value)?;
         for i in &self.notes {
@@ -546,7 +544,7 @@ pub struct ScaleNote<'s> {
     pub pitch: Spanned<PitchOrNumber>,
     pub note_names: Vec<Spanned<&'s str>>,
 }
-impl<'s> Display for ScaleNote<'s> {
+impl Display for ScaleNote<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         Display::fmt(&self.pitch.value, f)?;
         for name in &self.note_names {
@@ -560,7 +558,7 @@ impl<'s> Display for ScaleNote<'s> {
 pub struct ScaleBlock<'s> {
     pub notes: Spanned<Vec<Spanned<ScaleNote<'s>>>>,
 }
-impl<'s> Display for ScaleBlock<'s> {
+impl Display for ScaleBlock<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "<<(scale)|")?;
         for n in &self.notes.value {
@@ -575,7 +573,7 @@ pub struct NoteOctave<'s> {
     pub name: Spanned<Cow<'s, str>>,
     pub octave: Option<Spanned<i8>>,
 }
-impl<'s> Display for NoteOctave<'s> {
+impl Display for NoteOctave<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         color!(f, 2, "{}", self.name.value)?;
         if let Some(x) = self.octave {
@@ -599,7 +597,7 @@ pub struct LayoutItem<'s> {
     pub item: LayoutItemType<'s>,
     pub is_anchor: Option<Span>,
 }
-impl<'s> Display for LayoutItem<'s> {
+impl Display for LayoutItem<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         if self.is_anchor.is_some() {
             write!(f, "@")?;
@@ -615,7 +613,7 @@ impl<'s> Display for LayoutItem<'s> {
 pub struct LayoutBlock<'s> {
     pub rows: Spanned<Vec<Spanned<Vec<Spanned<LayoutItem<'s>>>>>>,
 }
-impl<'s> Display for LayoutBlock<'s> {
+impl Display for LayoutBlock<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "<<(layout)|")?;
         for row in &self.rows.value {
@@ -641,7 +639,7 @@ pub fn trace(msg: impl Display) {
     }
 }
 
-/// Helper for merge_option_spans
+/// Helper for `merge_option_spans`
 pub trait GetSpan {
     fn get_span(&self) -> Option<Span>;
 }

@@ -8,6 +8,7 @@ use num_rational::Ratio;
 use num_traits::ToPrimitive;
 use serde::Serialize;
 use std::borrow::Cow;
+use std::cmp::Ordering;
 use std::collections::HashMap;
 use std::collections::hash_map::Entry;
 use std::fmt::{Display, Formatter};
@@ -217,7 +218,7 @@ pub(crate) fn step<'s>(diags: &Diagnostics) -> impl Parser1Intermediate<'s, Step
     )
 }
 
-impl<'a> NoteParser<'a> {
+impl NoteParser<'_> {
     fn handle_harmonic(&mut self, harmonic: u32, up: bool) {
         debug_assert!(harmonic >= 2);
         let (num, den) = if up {
@@ -228,6 +229,7 @@ impl<'a> NoteParser<'a> {
         self.factors.push(Factor::new(num, den, 1, 1).unwrap());
     }
 
+    #[allow(clippy::too_many_lines)]
     fn parse(mut self, diags: &Diagnostics, name: &Spanned<&str>) -> Option<Pitch> {
         let input = LocatingSlice::new(name.value);
         let Result::<(Vec<GenToken>, Option<Step>), _>::Ok((parts, step)) = (
@@ -280,7 +282,7 @@ impl<'a> NoteParser<'a> {
                             } else {
                                 // This is an EDO step. A value of zero doesn't change the pitch, so
                                 // omit.
-                                let n_value = n.map(Spanned::value).unwrap_or(0) as i32;
+                                let n_value = n.map_or(0, Spanned::value) as i32;
                                 if n_value > 0 {
                                     let steps = if is_upper { n_value } else { -n_value };
                                     self.factors.push(step_factor(
@@ -303,7 +305,7 @@ impl<'a> NoteParser<'a> {
                                 code::GENERATED_NOTE,
                                 ch.span,
                                 format!("{} must be followed by a number >= 2", ch.value),
-                            )
+                            );
                         }
                         Some(n) => {
                             if n.value >= 2 {
@@ -326,7 +328,7 @@ impl<'a> NoteParser<'a> {
                         if let Some(divisions) = divisions {
                             let step = if ch.value == '+' { 1 } else { -1 };
                             self.factors
-                                .push(step_factor(divided_interval, divisions, step))
+                                .push(step_factor(divided_interval, divisions, step));
                         } else {
                             diags.err(
                                 code::GENERATED_NOTE,
@@ -361,13 +363,13 @@ impl<'a> NoteParser<'a> {
                 let factors = mem::take(&mut self.factors);
                 let divided_interval_f64 = divided_interval.to_f64().unwrap();
                 let step =
-                    Pitch::new(factors).as_float().log(divided_interval_f64) * divisions as f64;
+                    Pitch::new(factors).as_float().log(divided_interval_f64) * f64::from(divisions);
                 let tolerance_steps = self
                     .generator
                     .tolerance
                     .as_float()
                     .log(divided_interval_f64)
-                    * divisions as f64;
+                    * f64::from(divisions);
                 let rounded = step.round();
                 let degree = if let Some(d) = self.direction
                     && (rounded - step).abs() > tolerance_steps
@@ -396,7 +398,7 @@ struct Candidate {
     note_path: NotePath,
 }
 impl Candidate {
-    /// Call as new_candidate.closer(old_candidate).
+    /// Call as `new_candidate.closer(old_candidate)`.
     fn closer_than(&self, other: &Candidate) -> bool {
         // If two pitches are the same distance from their closest step, consider the other one
         // closer. This way, earlier, "simpler" notes take precedence when this code is called the
@@ -440,7 +442,7 @@ impl Candidate {
 #[derive(Clone, PartialEq, Eq, Hash)]
 /// When assigning note names, we limit ourselves to notes with at most two intervals other than
 /// `B` (ratio 2). This is an efficient intermediate representation. Logic is divided between
-/// NotePath and Candidate.
+/// `NotePath` and Candidate.
 struct NotePath {
     octaves: i32,
     step1: i32,
@@ -463,14 +465,16 @@ impl NotePath {
     }
 
     fn step_to_ratio(step: i32) -> Ratio<i32> {
-        if step > 0 {
-            // 5 -> 5/4
-            Ratio::new(step, step - 1)
-        } else if step < 0 {
-            // -5 -> 4/5
-            Ratio::new(-step - 1, -step)
-        } else {
-            Ratio::from_integer(1)
+        match step.cmp(&0) {
+            Ordering::Greater => {
+                // 5 -> 5/4
+                Ratio::new(step, step - 1)
+            }
+            Ordering::Less => {
+                // -5 -> 4/5
+                Ratio::new(-step - 1, -step)
+            }
+            Ordering::Equal => Ratio::from_integer(1),
         }
     }
 
@@ -478,12 +482,12 @@ impl NotePath {
         // Find which step the ratio is closest to.
         let step1 = Self::step_to_ratio(self.step1);
         let step2 = Self::step_to_ratio(self.step2);
-        let val = (step1 * step2).to_f64().unwrap() * 2i32.pow(self.octaves as u32) as f64;
+        let val = (step1 * step2).to_f64().unwrap() * f64::from(2i32.pow(self.octaves as u32));
         if !(1.0..divided_interval).contains(&val) {
             // If this falls outside the interval, discard it regardless of how close it is.
             return None;
         }
-        let steps = val.log(divided_interval) * divisions as f64;
+        let steps = val.log(divided_interval) * f64::from(divisions);
         let closest_step = steps.round() as i32;
         let delta = steps - steps.round();
         if delta.abs() > 0.4 {
@@ -573,7 +577,7 @@ impl Generator for NoteGenerator {
                         divisions,
                     ) {
                         candidates1.push(candidate);
-                    };
+                    }
                     // Consider all the second step refinements of the single-letter notes.
                     if step1 == 2 {
                         // We don't need to consider two-latter cases starting with `B` -- those are
@@ -596,7 +600,7 @@ impl Generator for NoteGenerator {
                                 divisions,
                             ) {
                                 candidates2.push(candidate);
-                            };
+                            }
                         }
                     }
                 }
@@ -662,6 +666,15 @@ mod tests {
 
     #[test]
     fn test_generator() {
+        // EDO Overlay
+        fn make_g(divided_interval: Ratio<u32>, divisions: u32, tolerance: Pitch) -> NoteGenerator {
+            NoteGenerator {
+                divisions: Some(divisions),
+                divided_interval,
+                tolerance,
+            }
+        }
+
         // Error conditions are tested through parser tests.
         let g = NoteGenerator {
             divisions: None,
@@ -693,14 +706,6 @@ mod tests {
             let pitch = g.get_note(&diags, &make_note(name));
             assert!(pitch.is_some(), "failed to parse {name}");
             assert_eq!(pitch.unwrap(), Pitch::must_parse(wanted));
-        }
-        // EDO Overlay
-        fn make_g(divided_interval: Ratio<u32>, divisions: u32, tolerance: Pitch) -> NoteGenerator {
-            NoteGenerator {
-                divisions: Some(divisions),
-                divided_interval,
-                tolerance,
-            }
         }
         // Zero tolerance
         let pitch_of = |g: &NoteGenerator, n: &str| g.get_note(&diags, &make_note(n)).unwrap();

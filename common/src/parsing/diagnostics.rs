@@ -51,6 +51,7 @@ impl Diagnostic {
         }
     }
 
+    #[must_use]
     pub fn with_context(mut self, span: impl Into<Span>, msg: impl Into<String>) -> Self {
         self.context.push(Spanned::new(span, msg));
         self
@@ -81,7 +82,7 @@ impl Diagnostics {
     }
 }
 impl Display for Diagnostics {
-    /// Diagnostics can be formatted as a string, but it's better to use [Diagnostics::render].
+    /// Diagnostics can be formatted as a string, but it's better to use [`Diagnostics::render`].
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let list = self.list.borrow_mut();
         if list.is_empty() {
@@ -114,17 +115,17 @@ impl Display for Diagnostics {
 impl Diagnostics {
     /// Convenience function for adding a simple error without context
     pub fn err(&self, code: &'static str, span: impl Into<Span>, msg: impl Into<String>) {
-        self.push(Diagnostic::new(code, span, msg))
+        self.push(Diagnostic::new(code, span, msg));
     }
 
     pub fn push(&self, d: Diagnostic) {
         if self.seen.borrow_mut().insert(d.clone()) {
-            self.list.borrow_mut().push(d)
+            self.list.borrow_mut().push(d);
         }
     }
 
     pub fn merge_with_offset(&self, other: Diagnostics, offset: usize) {
-        let list: Vec<Diagnostic> = mem::take(other.list.borrow_mut().as_mut());
+        let list: Vec<Diagnostic> = other.list.into_inner();
         for d in list {
             let message = Spanned::<String>::new(
                 d.message.span.start + offset..d.message.span.end + offset,

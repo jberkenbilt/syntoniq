@@ -29,13 +29,17 @@ pub fn run(events: Events) -> JoinHandle<anyhow::Result<()>> {
         if let Err(e) = &r {
             eprintln!("error from prompt line reading interface: {e:?}");
         }
-        p.clear().await;
+        p.clear();
         events.shutdown().await;
         h.join().unwrap()?;
         r
     })
 }
 
+#[expect(
+    clippy::needless_pass_by_value,
+    reason = "intentionally consuming line_ch"
+)]
 fn repl(line_ch: mpsc::Sender<LineData>) -> anyhow::Result<()> {
     const HISTORY_FILE: &str = "syntoniq-prompt-history.txt";
     let mut rl = DefaultEditor::new()?;
