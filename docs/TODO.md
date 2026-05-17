@@ -12,6 +12,7 @@ This is general TODO across internal docs, manual, and software.
   * timeline.rs has a workaround for RUST-20121
 * Need volume control for syntoniq-kbd regular and prompt.
 * Csound: maybe: interpret accents with envelope, then figure out what this does to articulation adjustment.
+* Improve pitch overflow handling
 * Articulation markers control note length, attack velocity, and release velocity.
     * default: full length, 72 attack, 64 release
     * accent:  96 attack
@@ -23,6 +24,7 @@ This is general TODO across internal docs, manual, and software.
   * Add directives to change the numbers globally and at the part level
 * MIDI:
   * generate summaries of part -> track/port/channel, etc.
+  * Fix a few MIDI generation edge cases/overflow conditions
 * Editing experience
   * Create a minimal emacs mode
   * Write LSP

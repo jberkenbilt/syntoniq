@@ -8,9 +8,7 @@ This section provides precise descriptions of all the features of the Syntoniq L
 
 # Compatibility Contract
 
-This section describes Syntoniq's forward and backward compatibility contract.
-
-**Pre-1.0 Note:** The compatibility contract is not enforced until version 1.0.0.
+This section describes Syntoniq's forward and backward compatibility contract for the Syntoniq language. The compatibility contract does not apply to the keyboard application (hardware or prompt modes) or the command-line syntax of invoking the tools. It applies only to Syntoniq language files.
 
 The first directive in a Syntoniq file must be
 ```syntoniq
@@ -38,6 +36,7 @@ Within a version, we may do any of the following:
 * Change the implementation of the Csound instrument, though we would try to make it backward compatible.
   * We might pass more granular information about the timeline to the instrument.
   * We might improve how the instrument handles polyphony.
+* Change the behavior of the keyboard application in hardware or prompt mode as these are separate from the Syntoniq language.
 
 If we change anything about the MIDI or Csound generation, release notes will describe the changes in detail, including what you need to do if you are migrating. If a change to MIDI or Csound output is too invasive, we may allow the old behavior to be selected.
 

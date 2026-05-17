@@ -15,12 +15,6 @@ Major Features:
 
 More details can be found in the [manual](https://syntoniq.cc/manual/)!
 
-# PRE-RELEASE
-
-April 2026
-
-Syntoniq is close to a 1.0 release. All major language features have been implemented. There are still some auxiliary tools, like a formatter or language server, that haven't been done, but they may wait until after a 1.0 release.
-
 # Resources
 
 * [User Manual](https://syntoniq.cc/manual/) — everything you need to know to use Syntoniq

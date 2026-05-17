@@ -6,12 +6,11 @@ sort_by = "weight"
 
 This section includes release notes for the Syntoniq software. See also [docs/TODO.md](https://github.com/jberkenbilt/syntoniq/blob/main/docs/TODO.md) for the latest roadmap.
 
-<!-- See issues to resolve ... below -->
-
-# vXXX
+# v1.0.0 - May 17, 2026
 
 ## Notes
 
+* There are no changes from version 0.4.2. With the release of version 1.0.0, we are now enforcing the compatibility contract for the Syntoniq language as described in [the language reference](../../reference/language-reference/).
 * HexBoard firmware 1.3 was released on May 11, 2026. That version and later work out of the box with `syntoniq-kbd`, so it is no longer necessary to build custom firmware.
 
 # v0.4.2 - April 19, 2026
@@ -80,13 +79,3 @@ This release includes fixes to issues I encountered while actively creating musi
 # v0.1.0 - January 22, 2026
 
 This is the initial release of Syntoniq.
-
-# Issues to Resolve Before 1.0
-
-* Fix a few MIDI generation edge cases/overflow conditions and improve pitch overflow handling
-* Remove disclaimer about compatibility contract not being enforced before version 1.0.0
-
-# Enhancements for After 1.0
-
-* Syntoniq formatter (`syntoniq fmt`)
-* LSP (Language Server Protocol) server with full syntax highlighting
