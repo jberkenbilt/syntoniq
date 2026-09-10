@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           components: rustfmt, clippy
           target: x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu
@@ -30,7 +30,7 @@ jobs:
         shell: bash
         run: git config --global core.autocrlf input
       - uses: actions/checkout@v6
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
       - name: 'Windows build'
         shell: bash
         run: ci-build/build-windows
@@ -43,7 +43,7 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: actions-rust-lang/setup-rust-toolchain@v1
+      - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           target: x86_64-apple-darwin, aarch64-apple-darwin
       - name: 'Mac build and test'
