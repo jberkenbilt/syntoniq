@@ -652,6 +652,7 @@ impl Engine {
 
     // It needs to be async in test configuration.
     #[allow(clippy::unused_async)]
+    #[allow(clippy::unused_async_trait_impl)]
     async fn handle_event(&mut self, event: Event) -> anyhow::Result<bool> {
         log::trace!("engine handle event: {event:?}");
         match event {

@@ -562,7 +562,7 @@ impl Display for ScaleBlock<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(f, "<<(scale)|")?;
         for n in &self.notes.value {
-            write!(f, "{}|", &n.value)?;
+            write!(f, "{}|", n.value)?;
         }
         write!(f, ">>")
     }
@@ -624,7 +624,7 @@ impl Display for LayoutBlock<'_> {
                 } else {
                     write!(f, " ")?;
                 }
-                write!(f, "{}", &n.value)?;
+                write!(f, "{}", n.value)?;
             }
             write!(f, "|")?;
         }

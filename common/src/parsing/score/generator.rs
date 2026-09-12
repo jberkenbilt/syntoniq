@@ -126,7 +126,7 @@ impl Step {
         // If number of divisions is 0 or 1, treat as if absent. This makes it possible for the
         // prompt repl to use !3/0 or !3/1 to set the interval to 3 without adding a number of
         // steps.
-        let divisions = divisions.and_then(|x| if x <= 1 { None } else { Some(x) });
+        let divisions = divisions.filter(|&x| x > 1);
         Divisions {
             interval,
             divisions,
@@ -377,7 +377,7 @@ impl NoteParser<'_> {
                     if d == '#' {
                         step.ceil() as i32
                     } else {
-                        debug_assert!(d == '%');
+                        debug_assert_eq!(d, '%');
                         step.floor() as i32
                     }
                 } else {
