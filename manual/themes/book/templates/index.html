@@ -64,7 +64,7 @@
                             </a>
                 
                             {# Show pages if book_only_current_section_pages is false OR if this is the current subsection #}
-                            {% if subsection.pages and (not config.extra.book_only_current_section_pages or current_path == subsection.path or subsection.pages | filter(attribute="path", value=current_path) | length > 0) %}
+                            {% if subsection.pages and (not config.extra.book_only_current_section_pages or current_path == subsection.path or current_path in [p.path for p in subsection.pages]) %}
                                 <ul>
                                     {% for page in subsection.pages %}
                                         <li {% if current_path == page.path %}class="active"{% endif %}>

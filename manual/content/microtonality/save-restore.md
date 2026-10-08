@@ -66,7 +66,7 @@ check_pitch(note=b note=A,)
 ```
 <!-- generate-end -->
 
-{{ audio(src="save-restore1-csound.mp3", caption="Save/Restore Example 1") }}
+{{ <audio src="save-restore1-csound.mp3" caption="Save/Restore Example 1"/> }}
 
 As shown in the inline comments, we've used variables to save pitches to variables, restore pitches, and check the values of notes and pitches.
 

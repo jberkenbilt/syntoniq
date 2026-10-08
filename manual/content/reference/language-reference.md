@@ -185,7 +185,7 @@ syntoniq(version=1)
 ```
 <!-- generate-end -->
 
-{{ audio(src="hello-csound.mp3", caption="Audio Created with Csound") }}
+{{ <audio src="hello-csound.mp3" caption="Audio Created with Csound"/> }}
 
 ### Parts
 

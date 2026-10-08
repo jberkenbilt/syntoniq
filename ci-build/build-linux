@@ -11,9 +11,8 @@ sudo apt -y install --no-install-recommends csound \
      libasound2-dev:arm64 libcsound64-dev:arm64 \
      gcc-aarch64-linux-gnu libc6-dev-arm64-cross
 sudo snap install --classic task
-# Getting zola from snap is much faster. To install zola from source:
+# Zola comes from a github actions task. To install zola from source:
 # cargo install --locked --git https://github.com/getzola/zola
-sudo snap install --edge zola
 
 ./build_all --release
 mkdir -p distribution/syntoniq-linux-amd64-csound

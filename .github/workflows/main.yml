@@ -16,6 +16,9 @@ jobs:
         with:
           components: rustfmt, clippy
           target: x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: zola@0.23
       - name: 'Linux build'
         run: ci-build/build-linux
       - name: 'Upload distributions'

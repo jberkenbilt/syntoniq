@@ -22,7 +22,7 @@ syntoniq(version=1)
 ```
 <!-- generate-end -->
 
-{{ audio(src="hello-csound.mp3", caption="Audio Created with Csound") }}
+{{ <audio src="hello-csound.mp3" caption="Audio Created with Csound"/> }}
 
 In this example:
 * `syntoniq(version=1)` is a *directive*. The `syntoniq` directive has to appear before any other content (except comments, spaces, and blank lines).
@@ -92,7 +92,7 @@ The `--score` option is required. If no other options are given, `syntoniq` will
 
 The file `hello.csd` contains [Csound](https://csound.com) output. If you want to use Csound, you can install it from its website. Then just run `csound hello.csd` to hear the file. You can create your own Csound instruments to use with Syntoniq. By default, it includes a simple instrument with a simple wave form that's good for clearly hearing pitches and intervals...but you probably wouldn't want to listen to a piece of music with it! *Please note: you can create much better audio with csound. This is a limitation of Syntoniq's default instrument, not csound itself!*
 
-{{ audio(src="hello-csound.mp3", caption="Audio Created with Csound") }}
+{{ <audio src="hello-csound.mp3" caption="Audio Created with Csound"/> }}
 
 The file `hello.midi` is a standard MIDI file with MPE (Midi Polyphonic Expression) compatible pitch bend statements. In this example, which uses regular 12-tone pitches, there won't be any, but for microtonal music, these are essential. A file like this can be loaded into a Digital Audio Workstation (DAW) or consumed by other MIDI tools. You can play this with a MIDI player of your choice. You can also render it with [FluidSynth](https://www.fluidsynth.org). The command `fluidsynth -iq -F a.wav a.midi` converts `a.midi` to `a.wav`.
 
@@ -101,7 +101,7 @@ To generate
 * fluidsynth -iq -F /tmp/a.wav /tmp/a.midi
 * convert to mp3 using same lame as in static-src/Taskfile.yml
 -->
-{{ audio(src="introduction/hello-fluid.mp3", caption="Audio Created by FluidSynth") }}
+{{ <audio src="introduction/hello-fluid.mp3" caption="Audio Created by FluidSynth"/> }}
 
 For better quality with fluidsynth, you can run `fluidsynth` interactively and give it the `interp 7` command. Then you send MIDI files to its input port. See documentation for `fluidsynth` for more help.
 
@@ -121,6 +121,6 @@ To generate
 * Stop `rec`
 * Trim the with with audacity and convert to mp3 using same lame as in static-src/Taskfile.yml
 -->
-{{ audio(src="introduction/hello-surge.mp3", caption="Audio Created by Surge XT with Luna/Analog Brass") }}
+{{ <audio src="introduction/hello-surge.mp3" caption="Audio Created by Surge XT with Luna/Analog Brass"/> }}
 
 The file `hello.json` contains complete information about the timeline that `syntoniq` generated. You can use this for study, or it could be the basis for creating other ways to render the audio without modifying the Syntoniq software. All the information that the Csound and MIDI generators use is encoded in this JSON file.

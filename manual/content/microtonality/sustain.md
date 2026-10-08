@@ -26,7 +26,7 @@ use_scale(scale="JI")
 ```
 <!-- generate-end -->
 
-{{ audio(src="tie-glide1-csound.mp3", caption="Basic Tie and Glide") }}
+{{ <audio src="tie-glide1-csound.mp3" caption="Basic Tie and Glide"/> }}
 
 In the example above, you can see that `[p1.1]` has `E` gradually changing pitch to `C` (these being equivalent to `e` and `g` in 12-EDO) while `[p1.2]` stays on the same pitch. In both cases, the sustain activity carries across the line with the holds. In the last block, we see that the `C` (corresponding to the 12-EDO note `g`) is re-articulated because the original glide was not tied. `A` (corresponding to the 12-EDO note `c`) is re-articulated because of the explicit accent mark.
 
@@ -57,4 +57,4 @@ use_scale(scale="JI")
 ```
 <!-- generate-end -->
 
-{{ audio(src="tie-glide2-csound.mp3", caption="Glide Demonstration") }}
+{{ <audio src="tie-glide2-csound.mp3" caption="Glide Demonstration"/> }}

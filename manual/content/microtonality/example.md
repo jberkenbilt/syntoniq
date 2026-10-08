@@ -82,7 +82,7 @@ tempo(bpm=80 start_time=1 end_bpm=60 duration=3)
 ```
 <!-- generate-end -->
 
-{{ audio(src="full-example-csound.mp3", caption="Example Score") }}
+{{ <audio src="full-example-csound.mp3" caption="Example Score"/> }}
 
 # Overall Structure
 

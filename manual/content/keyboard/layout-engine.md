@@ -206,7 +206,7 @@ Below are some walk-throughs of computing notes on the various keyboards. You ca
 
 Here is a diagram of the JI-19-EDO layout on the Launchpad:
 
-{{ include(path="launchpad-ji-19-edo.html", caption="Launchpad with JI-19-EDO Layout") }}
+{{ <include path="launchpad-ji-19-edo.html" caption="Launchpad with JI-19-EDO Layout"/> }}
 
 On the Launchpad:
 
@@ -229,7 +229,7 @@ On the Launchpad:
 
 Here is a diagram of the JI-19-EDO layout on the HexBoard:
 
-{{ include(path="hexboard-ji-19-edo.html", caption="HexBoard with JI-19-EDO Layout") }}
+{{ <include path="hexboard-ji-19-edo.html" caption="HexBoard with JI-19-EDO Layout"/> }}
 
 Before we can work with this using the HexBoard, we have to introduce the concept of *stagger*. As discussed above, the *up* direction on a hexagonal keyboard is *up and to the left*. This is fine with isomorphic layouts, but with manual layouts, we always define a group of keys in a rectangular layout and tile them rectangularly. We effectively have a rectangular grid of groups of hexagonal keys. For this reason, we *stagger* columns for purposes of finding notes in a manual layout. Specifically, we take the *Euclidean quotient* of the *number of rows above the anchor row* and 2 and subtract that from the column. The Euclidean quotient is the integer part of the result of Euclidean division, which takes a quotient and a remainder that is always between 0 and the denominator. For positive numbers, it's the same as integer division. For negative numbers, you move toward negative infinity rather than toward 0. This is usually written as $\lfloor \frac{a}{b}$\rfloor$. This "corrects" for the columns drifting to the right. Because of stagger, you will have the best results for manual layouts if you ensure they are *an even number of rows high*. Note that you can leave some keys in a manual mapping blank by using the note `~` in a given spot.
 
@@ -267,7 +267,7 @@ An isomorphic mapping works best with even divisions of an interval. This is the
 
 Let's wrap up with an interesting scale: *27-ED3*. This is 27 divisions of the *tritave*, ratio 3, which is an octave and a just intonation perfect fifth. This is the third harmonic. Some scales, such as Bohlen-Pierce (13-ED3), are based on the tritave. Below is a diagram of 27-ED3 on the HexBoard.
 
-{{ include(path="hexboard-27-ed3.html", caption="HexBoard with 27-ED3 Layout") }}
+{{ <include path="hexboard-27-ed3.html" caption="HexBoard with 27-ED3 Layout"/> }}
 
 Here are several things to notice:
 * You can see yellow, cyan, green, and blue, but there is no red, orange, pink, or purple. The reason is that no notes in this scale (which is very similar to 17-EDO as, in 17-EDO, step 27 is very close to a tritave) are sufficiently close to a major or minor third, but we have good approximations of fourth and fifth. Cyan is present because we always use cyan for the single step note in an isomorphic layout.

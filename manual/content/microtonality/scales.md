@@ -24,7 +24,7 @@ use_scale(scale="5-EDO")
 ```
 <!-- generate-end -->
 
-{{ audio(src="5-edo-pqrst-csound.mp3", caption="5-EDO scale") }}
+{{ <audio src="5-edo-pqrst-csound.mp3" caption="5-EDO scale"/> }}
 
 Here's an example of a scale with a cycle size other than an octave: the [Bohlen-Pierce Scale](https://en.wikipedia.org/wiki/Bohlen%E2%80%93Pierce_scale). This scale divides the *tritave*, a ratio of 3/1, into 13 equal steps. This example defines the scale using the notes `j` through `v` for the steps. We call this "13-ED3", indicating 13 equal divisions of the ratio 3/1 (or just 3). This example shows how you can use a cycle size of other than an octave. We play a series of chords, followed by a pause, followed by the notes `j` and `j'`, so you can hear that there is an octave and a fifth, not an octave because of the cycle mark. Here are some things to notice:
 * We put more than one note definition per line. You can do this to save space or to organize pitches.
@@ -50,7 +50,7 @@ use_scale(scale="13-ED3")
 ```
 <!-- generate-end -->
 
-{{ audio(src="13-ed3-csound.mp3", caption="Bohlen-Pierce scale: 13-ED3") }}
+{{ <audio src="13-ed3-csound.mp3" caption="Bohlen-Pierce scale: 13-ED3"/> }}
 
 # Built-in Scales
 

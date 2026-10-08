@@ -64,7 +64,7 @@ set_base_pitch(relative=^2|53)
 ```
 <!-- generate-end -->
 
-{{ audio(src="transposition1-csound.mp3", caption="Transposition Example 1") }}
+{{ <audio src="transposition1-csound.mp3" caption="Transposition Example 1"/> }}
 
 Notes from above:
 1. When setting the base pitch, we chose `220*6/5` to clearly indicate a 6/5 minor third above 220 Hz. We could have written 264. This is just to show we can set the base pitch to any frequency.
@@ -124,7 +124,7 @@ transpose(written=CJK pitch_from=a4!13)
 ```
 <!-- generate-end -->
 
-{{ audio(src="transposition2-csound.mp3", caption="Transposition Example 2") }}
+{{ <audio src="transposition2-csound.mp3" caption="Transposition Example 2"/> }}
 
 Notes:
 1. This example introduces the `|` character as a "bar check". Syntoniq makes sure that each line in a score block has the same number of bar checks and that each bar check happens at the same beat offset. While Syntoniq doesn't have the concept of time signatures, these can be useful checks. Syntoniq also ensures beats are consistent at the end of each line. This first passage is some native 17-EDO harmonies involving use of the neutral third and the two-step 13/12 interval.

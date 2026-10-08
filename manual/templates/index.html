@@ -1,3 +1,60 @@
+{% component include(path, caption="") %}
+{% set data = load_data(path=path) %}
+<figure>
+  {{ data | safe }}
+  {%- if caption %}
+  <figcaption style="font-size: 0.9em; color: #666; text-align: center; margin-top: 0.5em;">
+    {{ caption }}
+  </figcaption>
+  {%- endif %}
+</figure>
+{% endcomponent include %}
+
+{% component photo(image, caption) %}
+<figure>
+  <img src="{{ get_url(path='images') }}/{{ image }}" alt="{{ caption }}">
+  <figcaption style="font-size: 0.9em; color: #666; text-align: center; margin-top: 0.5em;">
+    {{ caption }}
+  </figcaption>
+</figure>
+{% endcomponent photo %}
+
+{% component audio(src, caption = "") %}
+<figure>
+  <audio controls style="width: 100%;">
+    <source src="{{ get_url(path=src) }}" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
+  {%- if caption %}
+  <figcaption style="font-size: 0.9em; color: #666; text-align: center; margin-top: 0.5em;">
+    {{ caption }}
+  </figcaption>
+  {%- endif %}
+</figure>
+{% endcomponent audio %}
+
+{% component youtube(id, script="", caption="") %}
+<figure>
+  <center>
+    <iframe
+      src="https://www.youtube.com/embed/{{id}}"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+    </iframe>
+    {%- if caption %}
+    <figcaption style="font-size: 0.9em; color: #666; text-align: center; margin-top: 0.5em;">
+      {{ caption }}
+      {%- if script %}
+      (<a href="{{ get_url(path='video-scripts') }}/{{ script }}/">script</a>)
+      {%- endif %}
+    </figcaption>
+    {%- endif %}
+  </center>
+</figure>
+{% endcomponent youtube %}
+
 {% extends "book/templates/index.html" %}
 {% block extra_head %}
 <link href="{{ get_url(path='top.css') | safe }}" rel="stylesheet">

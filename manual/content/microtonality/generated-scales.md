@@ -38,7 +38,7 @@ use_scale(scale="gen-12")
 ```
 <!-- generate-end -->
 
-{{ audio(src="ji-sample-12-edo-csound.mp3", caption="12-EDO generated scale") }}
+{{ <audio src="ji-sample-12-edo-csound.mp3" caption="12-EDO generated scale"/> }}
 
 Now, here's the same exact notation, this time using the built-in pure just intonation generated scale. The notes below are identical to the second score block above. Listen to how it sounds with just intonation. After the audio, I'll dive into some explanation so you can see what's happening.
 
@@ -57,7 +57,7 @@ use_scale(scale="JI")
 ```
 <!-- generate-end -->
 
-{{ audio(src="ji-sample-csound.mp3", caption="Same passage with just intonation") }}
+{{ <audio src="ji-sample-csound.mp3" caption="Same passage with just intonation"/> }}
 
 Trying to represent a sequence of chords like that in just intonation is not as simple as you might think. There's no "cheat sheet" to map between a 12-EDO note and a pure interval ratio. Take the `a` from the first note of note 3 (the `[p1.3]` line). Which `a` is this? With the conventional 12-EDO notation, it's just `a`...but that's not good enough for JI (just intonation). The `c'` at the beginning of `[p1.4]` is also interesting. It is the root of the key, but in this case, it's functioning as minor seventh above the root of the chord, which is `d`. Let's take a look at the choices I made for the first chord, which I spelled as `I`, `IE`, `IC`, and `Ih'`.
 * `I` — this represents the ratio 9/8
@@ -106,7 +106,7 @@ use_scale(scale="gen-41")
 ```
 <!-- generate-end -->
 
-{{ audio(src="ji-sample-41-edo-csound.mp3", caption="Same passage in 41-EDO") }}
+{{ <audio src="ji-sample-41-edo-csound.mp3" caption="Same passage in 41-EDO"/> }}
 
 I don't know about you, but I like this better than either the 12-EDO or the JI version. But personal taste aside, the highlight here is that it was *very easy* to try this experiment. We didn't have to calculate any ratios, and we didn't have to decide what to call any of the notes. We just had to understand how our chords were built based on nature's building blocks: steps in the harmonic series. Here are a few highlights about the 41-EDO version:
 * While a whole step in 41-EDO is about 7 steps, the 5/4 ratio is better approximated with 13 steps than 14 steps. You don't have to know or care about that detail. The note `E` lands on the 13th step (numbering from 0). The note `IE` lands on the 20th step (from 0). It works automatically. If you wanted to specify the 13th step explicitly, you could always use the note `A13`.

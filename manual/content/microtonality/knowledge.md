@@ -24,7 +24,7 @@ syntoniq(version=1)
 ```
 <!-- generate-end -->
 
-{{ audio(src="440hz-csound.mp3", caption="440 Hz") }}
+{{ <audio src="440hz-csound.mp3" caption="440 Hz"/> }}
 
 If we play 110, 220, 440, and 880 Hz tones, we hear the A in four separate octaves.
 
@@ -35,7 +35,7 @@ syntoniq(version=1)
 ```
 <!-- generate-end -->
 
-{{ audio(src="110-to-880hz-csound.mp3", caption="110, 220, 440, 880 Hz") }}
+{{ <audio src="110-to-880hz-csound.mp3" caption="110, 220, 440, 880 Hz"/> }}
 
 # Pure Intervals
 
@@ -48,7 +48,7 @@ syntoniq(version=1)
 ```
 <!-- generate-end -->
 
-{{ audio(src="440-to-660hz-csound.mp3", caption="440, 660 Hz") }}
+{{ <audio src="440-to-660hz-csound.mp3" caption="440, 660 Hz"/> }}
 
 # The Harmonic Series
 
@@ -70,7 +70,7 @@ set_base_pitch(absolute=100)
 ```
 <!-- generate-end -->
 
-{{ audio(src="harmonic-1-to-12-csound.mp3", caption="First 12 notes in harmonic series") }}
+{{ <audio src="harmonic-1-to-12-csound.mp3" caption="First 12 notes in harmonic series"/> }}
 
 # Just Intonation and Equal Tuning
 
@@ -128,6 +128,6 @@ repeat(start="a" end="b")
 ```
 <!-- generate-end -->
 
-{{ audio(src="major-thirds-csound.mp3", caption="5/4, $\sqrt[3]{2}$, 81/64") }}
+{{ <audio src="major-thirds-csound.mp3" caption="5/4, $\\sqrt[3]{2}$, 81/64"/> }}
 
 Syntoniq has its own notation for [representing pitches](../pitch-primer/), which is covered in the next section. For now, this has been a review of the basics of just intonation and equal-step tuning. We'll continue to build upon that in the remainder of the manual.
