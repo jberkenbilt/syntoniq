@@ -14,7 +14,7 @@ async fn test_test_controller() -> anyhow::Result<()> {
     let ts = tc.get_engine_state().await;
     assert!(ts.current_layout().is_none());
     let ws = tc.get_web_state().await;
-    assert!(ws.selected_layout.is_empty());
+    assert_eq!(ws.selected_layout, "");
     loop {
         let ws = tc.get_web_state().await;
         if ws.layout_names.is_empty() {

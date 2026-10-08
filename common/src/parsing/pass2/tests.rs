@@ -60,27 +60,27 @@ fn test_ratio() -> anyhow::Result<()> {
     assert_eq!(f.value, Ratio::new(2, 3));
 
     let (f, rest) = parse_ratio("264").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f.value, Ratio::new(264, 1));
 
     let (f, rest) = parse_ratio("2.1/3").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f.value, Ratio::new(7, 10));
 
     let (f, rest) = parse_ratio("3.14").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f.value, Ratio::new(157, 50));
 
     let (f, rest) = parse_ratio("2.001/3").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f.value, Ratio::new(667, 1000));
 
     let (f, rest) = parse_ratio("22/7").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f.value, Ratio::new(22, 7));
 
     let (f, rest) = parse_ratio_or_zero("00").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f.value, Ratio::new(0, 1));
 
     let e = parse_ratio("2.0001/3").unwrap_err().get_all();
@@ -153,15 +153,15 @@ fn test_exponent() -> anyhow::Result<()> {
     assert_eq!(f, Factor::new(2, 1, 1, 31)?);
 
     let (f, rest) = parse_exponent("3^2|17").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f, Factor::new(3, 1, 2, 17)?);
 
     let (f, rest) = parse_exponent("3/2^-9|12").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f, Factor::new(3, 2, -9, 12)?);
 
     let (f, rest) = parse_exponent("3/2^0|12").map_err(to_anyhow)?;
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
     assert_eq!(f, Factor::new(3, 2, 0, 12)?);
 
     let e = parse_exponent("^5|0").unwrap_err().get_all();
@@ -233,7 +233,7 @@ fn test_param() -> anyhow::Result<()> {
             value: Spanned::new(2..3, ParamValue::Zero,),
         }
     );
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
 
     let (s, rest) = parse_param("a=^2|19").map_err(to_anyhow)?;
     assert_eq!(
@@ -246,7 +246,7 @@ fn test_param() -> anyhow::Result<()> {
             ),
         }
     );
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
 
     let (s, rest) = parse_param("potato = \"salad\"!").map_err(to_anyhow)?;
     assert_eq!(
@@ -272,7 +272,7 @@ fn test_param() -> anyhow::Result<()> {
             ),
         }
     );
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
 
     let (s, rest) = parse_param("potato = C#'").map_err(to_anyhow)?;
     assert_eq!(
@@ -288,7 +288,7 @@ fn test_param() -> anyhow::Result<()> {
             ),
         }
     );
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
 
     Ok(())
 }
@@ -317,7 +317,7 @@ fn test_directive() -> anyhow::Result<()> {
             block: None,
         }
     );
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
 
     let (d, rest) = parse_directive("f(a=0.5)").map_err(to_anyhow)?;
     assert_eq!(
@@ -337,7 +337,7 @@ fn test_directive() -> anyhow::Result<()> {
             block: None,
         }
     );
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
 
     let (d, rest) = parse_directive(
         r#"function ( ; opening comment
@@ -414,7 +414,7 @@ fn test_directive() -> anyhow::Result<()> {
             block: None,
         }
     );
-    assert!(rest.is_empty());
+    assert_eq!(rest, "");
 
     Ok(())
 }
