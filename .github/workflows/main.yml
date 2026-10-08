@@ -11,7 +11,7 @@ jobs:
   Linux:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           components: rustfmt, clippy
@@ -32,7 +32,7 @@ jobs:
       - name: 'Disable git autocrlf'
         shell: bash
         run: git config --global core.autocrlf input
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions-rust-lang/setup-rust-toolchain@v2
       - name: 'Windows build'
         shell: bash
@@ -45,7 +45,7 @@ jobs:
   Mac:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
           target: x86_64-apple-darwin, aarch64-apple-darwin
