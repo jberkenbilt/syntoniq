@@ -115,3 +115,122 @@ Step 3: prepend `]`-aligned part names:
 ```
 
 For dynamics, like the `@` up with the beat but only add spaces as necessary to keep dynamics from colliding so they don't make things too wide. See examples/hello.stq.
+
+# Easy Scale Enhancements
+
+There are two easy enhancements we could make:
+* define_merged_scale: create a scale by merging other non-generated scales that have no overlapping note names
+* snap_to_scale="scale" as a parameter to define_generated_scale; instead of snapping to equal divisions, snap to pitches present in the named scale
+
+This would make it possible to define any manual scale, including an uneven scale, and then snap to it using generated scale notation.
+
+# Stretched/Compressed Tunings
+
+We could add
+
+```
+stretch(from=x to=y voice=z ...)
+```
+
+with `from` and `to` both defaulting to 2. The result is to multiply the relative pitch by `log_x(y)` before multiplying by the base frequency. So `stretch(to=2.1)` would create a stretch tuning where the octave is 2.1. A note X would be (n/(n-1))^(log_x(y))*base_freq. For semantically written music where we transpose the base pitch to the melodic tonic, when combined with a timbre whose harmonics are designed to align with the stretch, it should create something recognizable. Making this a property of the voice is correct because stretched tunings would be used with specific timbres that are designed to support them.
+
+We should just attach a closed-form expression of the stretch values, along with the base frequency, to the voice and not try to extend the pitch syntax with some log_a(b) syntax. The final pitch would be `(pitch / base) × log_x(y) × pitch`. This basically transposes the pitch by an amount that's linearly related in *scale distance* from the base pitch of the scale at that time.
+
+An alternative would be to add some log_a(b) syntax as a pitch factor. While not as bad as Tenney Weights (see [Generalized Tempered Scales](#generalized-tempered-scales), this would be ugly and have limited usefulness, so I prefer attaching it as its own thing directly the voice. That's also much easier to implement.
+
+# Generalized Tempered Scales
+
+Interesting Reddit post on magic temperament: https://www.reddit.com/r/microtonal/comments/1xpnmcf/piece_piece_using_magic_7_temperament/
+Gemini chat where I worked out my mental model: https://gemini.google.com/app/ae0b860f86f74e4f
+
+## Temperament
+
+Temperament shrinks or stretches intervals to make a particular comma disappear. *Meantone temperament* specifically removes the syntonic (81/80) comma.
+
+Create a lattice where each dimension represents multiplying pitch by a particular prime. Example:
+
+ratio = 2^x + 3^y + 5^z
+
+Four perfect fifths minus two octaves = 81/64 = (-6, 4, 0)
+A major third = 5/4 = (-2, 0, 1)
+The ratio is 81/80 (the syntonic comma).
+
+A pitch on this lattice is
+
+The coefficients are "generators". Tempering ratio means replacing the coefficients with
+
+```
+g_x^x * g_y^y * g_z^z
+```
+
+two points that should have the same value are the same. For example
+
+```
+2^x * 2^(19/12)y * 2^(28/12)z
+```
+
+replaces the ratio 3 with a 12-EDO octave and a fifth and 5 with 2 octaves and a major third.
+
+Any g_x, g_y, g_z that evaluates the same for (-6, 4, 0) and (-2, 0, 1) is a meantone temperament. It solves the equations
+
+```
+g_x^(-6) * g_y^4 = g_x^(-2) * g_z ==>
+g_x^(-4) * g_y^4 = g_z
+```
+
+Fixing `g_x = 2` ensures that the octave remains pure, giving
+
+```
+2^(-4) * g_y^4 = g_z ==>
+g_y^4 = 16 g_z ==>
+```
+Does it work for 12-EDO? Yes -- both sides evaluate to 2^(76/12). It also works for 19-EDO and 31-EDO, showing that these are all meantone temperaments. You could also do something like fix the third and calculate the fift. This would fix `g_z = 5`, giving
+
+```
+g_y = 80^(1/4) =~ 2.99
+```
+
+which slightly shrinks the fifth. Or fix the fifth and compute the third:
+```
+3^4 = 16 g_z ==> g_z = 81/16 =~ 5.0625
+```
+for a slightly sharp major third. Any collection of values that satisfies this is a meantone temperament. There are various methods, such as Tenney Weighting (see Gemini chat) that minimizes the RMS delta with logarithmic scaling between each interval and its perfect interval. An equal temperament is just one in which a generated scale has intervals that are all the same size. It would have the property that 4*steps-in-fifth = steps in 2 octaves plus major third. 12-EDO: `4*7 = 24 + 4`. 19-EDO: `4*11 = 38 + 6`. 31-EDO: `4*18 = 62 + 10`. But 17-EDO and 41-EDO are not meantone temperaments.
+
+You can temper other commas in exactly the same way. Consider five 8/7 intervals = 32768/16807, which is an octave above 16384/16807. With
+
+2^x + 3^y + 5^z + 7^w, this is (14, 0, 0, 0) = (0, 0, 0, 5). For this, 5-EDO works:
+
+```
+g_x = 2
+g_w = 2^(14/5) =~ 6.9644
+2^14 = 2^(14/5)*5
+```
+
+So 5-EDO tempers away 16384/16807.
+
+The magic temperament from the Reddit post is 3125/3072, which is tempered away by 5-ED3. It is removing the comma from comparing 5 perfect major thirds with an octave and a perfect fifth.
+
+The Reddit poster defined a scale with these intervals.
+```
+0 – 322 – 381 – 703 – 762 – 1084 – 1142 – 1201
+```
+
+If you generate a scale based on 5-ED3, you can get this:
+
+```
+1           0.000
+1/2*3^4|5   321.564
+3^1|5       380.391
+1/2*3^5|5   701.955
+3^2|5       760.782
+1/2*3^6|5   1082.346
+3^3|5       1141.173
+```
+
+The Reddit post comes from the Tenney Weight optimization, which stretches the octave to 1201 cents (from 1200) and the fifth from 702 to 703, but the 5-ED3 result is perceptually indistinguishable.
+
+The Gemini chat outlines how to compute the poster's numbers, but the resulting pitches require 2 to the power of rational functions of products of (k + L_n) where L_n is log_2(nth prime). We could potentially support this, but it doesn't seem worth it.
+
+We could create tempered scales by imposing exactly the right number of constraints between specifying commas and fixed values. For example, comma: 81/80=1, g_x=2, and some fixed value for g_y OR g_z provide enough information to compute the other generator. It could also be done two commas as long as they don't contradict each other. If Syntoniq had a "lattice solver", it could generate arbitrary temperaments. That said, finding an EDO that supports the temperament is the easiest solution.
+
+It would also be possible to reproduce the Reddit post's scale by defining a manual scale either with the 3-ED5 pitches pulled into the octave and the snap to it using generated scale notation or even to define the poster's exact ratios by using `^x|1200` to specify cents. Of course, we could also just assign note names to the pitches in the magic-7 scale.
